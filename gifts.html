@@ -600,7 +600,17 @@ const GIFTS = [
 ];
 
 const STORAGE_KEY = 'ann_birthday_opened_v1';
-let opened = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'));
+
+/* ✅ FIX 1: safe localStorage parsing */
+let opened;
+try {
+  opened = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'));
+} catch (e) {
+  console.warn('Resetting broken localStorage data');
+  opened = new Set();
+  localStorage.removeItem(STORAGE_KEY);
+}
+
 let currentId = null;
 
 function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify([...opened])); }
@@ -620,9 +630,16 @@ function renderAll() {
 
   const navFinal = document.getElementById('nav-final');
   const navTl = document.getElementById('nav-timeline');
+
+  /* ✅ FIX 2: no more outerHTML replacement */
   if (allDone) {
-    navFinal.outerHTML = '<a href="final.html" class="nav-a" id="nav-final">The End</a>';
-    navTl.outerHTML = '<a href="timeline.html" class="nav-a" id="nav-timeline">Our Story</a>';
+    navFinal.classList.remove('locked');
+    navFinal.style.pointerEvents = 'auto';
+    navFinal.onclick = () => window.location.href = 'final.html';
+
+    navTl.classList.remove('locked');
+    navTl.style.pointerEvents = 'auto';
+    navTl.onclick = () => window.location.href = 'timeline.html';
   }
 
   GIFTS.forEach((g, i) => {
@@ -671,12 +688,14 @@ function openGift(id) {
   document.getElementById('modal-desc').textContent = g.desc;
   noteEl.textContent = g.note;
   numEl.textContent = g.id;
+
   numEl.className = 'modal-num';
   noteEl.className = 'modal-note';
   flapEl.className = 'env-flap';
   letterEl.className = 'env-letter';
 
   footer.innerHTML = '';
+
   const closeBtn = document.createElement('button');
   closeBtn.className = 'btn-modal-close';
   closeBtn.textContent = 'Close';
@@ -694,9 +713,11 @@ function openGift(id) {
   }
 
   const overlay = document.getElementById('overlay');
-  overlay.style.display = 'flex';
+
+  /* ✅ FIX 3: use class instead of inline styles */
+  overlay.classList.add('show');
+
   requestAnimationFrame(() => {
-    overlay.style.background = 'rgba(30,15,5,0.65)';
     setTimeout(() => { flapEl.classList.add('open'); }, 150);
     setTimeout(() => {
       letterEl.classList.add('revealed');
@@ -706,9 +727,26 @@ function openGift(id) {
   });
 }
 
+function closeModal() {
+  const overlay = document.getElementById('overlay');
+  overlay.classList.remove('show');
+}
+
+document.getElementById('overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+function markOpen(id) {
+  opened.add(id);
+  save();
+  burst(id);
+  setTimeout(renderAll, 500);
+}
+
 function buildNextBtn(footer, id) {
   const idx = GIFTS.findIndex(g => g.id === id);
   const isLast = idx === GIFTS.length - 1;
+
   if (!isLast) {
     const nb = document.createElement('button');
     nb.className = 'btn-modal-next';
@@ -724,33 +762,18 @@ function buildNextBtn(footer, id) {
   }
 }
 
-function markOpen(id) {
-  opened.add(id);
-  save();
-  burst(id);
-  setTimeout(renderAll, 500);
-}
-
-function closeModal() {
-  const overlay = document.getElementById('overlay');
-  overlay.style.background = 'rgba(30,15,5,0)';
-  setTimeout(() => { overlay.style.display = 'none'; }, 350);
-}
-
-document.getElementById('overlay').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
-
 function burst(id) {
   const colors = ['#c8943a','#b86858','#d4b483','#7a9870','#f0ddb8','#3a2010'];
   const shapes = ['50%','2px','0'];
   const cf = document.getElementById('confetti');
+
   for (let i = 0; i < 60; i++) {
     const b = document.createElement('div');
     b.className = 'bit';
     const size = 6 + Math.random() * 10;
     const color = colors[Math.floor(Math.random() * colors.length)];
     const br = shapes[Math.floor(Math.random() * shapes.length)];
+
     b.style.cssText = `
       left:${20 + Math.random()*60}%;
       top:${10 + Math.random()*30}%;
@@ -762,6 +785,7 @@ function burst(id) {
       --bx:${(Math.random()-0.5)*300}px;
       --br:${(Math.random()-0.5)*720}deg;
     `;
+
     cf.appendChild(b);
     setTimeout(() => b.remove(), 2500);
   }
