@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Gifts — For Ann ♡</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #faf4e8;
+    --warm: #f0ddb8;
+    --tan: #d4b483;
+    --brown: #7a5230;
+    --deep: #3a2010;
+    --rose: #b86858;
+    --gold: #c8943a;
+    --sage: #7a9870;
+    --paper: #fffdf5;
+    --ink: #2a1a08;
+    --locked-bg: #ede8de;
+    --locked-text: #b0a898;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--cream);
+    font-family: 'EB Garamond', Georgia, serif;
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* GRAIN */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.6;
+  }
+
+  /* NAV */
+  nav {
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--tan);
+    background: var(--paper);
+    position: sticky;
+    top: 0;
+    z-index: 500;
+  }
+  .nav-brand { font-family: 'Caveat', cursive; font-size: 1.3rem; color: var(--rose); font-weight: 700; text-decoration: none; }
+  .nav-links { display: flex; gap: 1.2rem; }
+  .nav-a {
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    color: var(--brown);
+    text-decoration: none;
+    padding: 0.3rem 0.7rem;
+    border-radius: 2px;
+    transition: color 0.2s, background 0.2s;
+    letter-spacing: 0.5px;
+    border: none; background: none; cursor: pointer;
+  }
+  .nav-a:hover { color: var(--deep); background: var(--warm); }
+  .nav-a.current { color: var(--deep); font-weight: 700; border-bottom: 2px solid var(--gold); }
+  .nav-a.locked { color: var(--locked-text); cursor: not-allowed; pointer-events: none; }
+
+  /* PAGE HEADER */
+  .page-header {
+    text-align: center;
+    padding: 3rem 2rem 1.5rem;
+    animation: headerIn 0.7s ease both;
+  }
+  @keyframes headerIn {
+    from { opacity: 0; transform: translateY(-16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .page-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 400;
+    color: var(--deep);
+  }
+  .page-header p {
+    font-family: 'Caveat', cursive;
+    font-size: 1.1rem;
+    color: var(--brown);
+    margin-top: 0.4rem;
+    letter-spacing: 0.5px;
+  }
+
+  /* PROGRESS */
+  .progress-section {
+    max-width: 520px;
+    margin: 1rem auto 2.5rem;
+    padding: 0 2rem;
+    animation: headerIn 0.7s ease 0.1s both;
+  }
+  .progress-rail {
+    height: 5px;
+    background: var(--warm);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 999px;
+    transition: width 1s cubic-bezier(0.34, 1.4, 0.64, 1);
+  }
+  .progress-label {
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    color: var(--brown);
+    text-align: center;
+  }
+
+  /* PATH CONTAINER */
+  .path-wrap {
+    max-width: 580px;
+    margin: 0 auto;
+    padding: 0 1.5rem 5rem;
+    position: relative;
+  }
+
+  /* DASHED SPINE */
+  .spine {
+    position: absolute;
+    left: calc(1.5rem + 27px);
+    top: 0; bottom: 0;
+    width: 2px;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .spine-bg {
+    position: absolute; inset: 0;
+    border-left: 2.5px dashed var(--warm);
+  }
+  .spine-fill {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 0;
+    background: linear-gradient(to bottom, var(--sage), var(--gold));
+    transition: height 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* STOP */
+  .stop {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    transform: translateX(-30px);
+    animation: stopSlide 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  @keyframes stopSlide {
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* DOT */
+  .stop-dot {
+    flex-shrink: 0;
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Caveat', cursive;
+    font-size: 1.4rem;
+    font-weight: 700;
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.34, 1.6, 0.64, 1), box-shadow 0.3s;
+  }
+
+  /* LOCKED DOT */
+  .stop.is-locked .stop-dot {
+    background: var(--locked-bg);
+    border: 2.5px dashed var(--locked-text);
+    color: var(--locked-text);
+  }
+
+  /* UNLOCKED DOT */
+  .stop.is-unlocked .stop-dot {
+    background: var(--warm);
+    border: 2.5px solid var(--gold);
+    color: var(--deep);
+    box-shadow: 0 0 0 4px rgba(200,148,58,0.15);
+    cursor: pointer;
+  }
+  .stop.is-unlocked .stop-dot:hover {
+    transform: scale(1.15) rotate(-5deg);
+    box-shadow: 0 0 0 8px rgba(200,148,58,0.2);
+  }
+
+  /* OPENED DOT */
+  .stop.is-opened .stop-dot {
+    background: var(--sage);
+    border: 2.5px solid var(--sage);
+    color: white;
+    box-shadow: 0 0 0 4px rgba(122,152,112,0.2);
+  }
+
+  /* PULSE RING on unlocked */
+  .stop.is-unlocked .stop-dot::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    opacity: 0;
+    animation: pulseRing 2s ease-in-out infinite;
+  }
+  @keyframes pulseRing {
+    0% { opacity: 0.8; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1.6); }
+  }
+
+  /* CARD */
+  .stop-card {
+    flex: 1;
+    background: var(--paper);
+    border: 1px solid var(--tan);
+    padding: 1.1rem 1.3rem 1.2rem;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.25s, transform 0.25s;
+  }
+
+  /* Accent bar */
+  .stop-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    transition: background 0.4s, width 0.3s;
+    background: var(--warm);
+  }
+
+  .stop.is-locked .stop-card {
+    background: var(--locked-bg);
+    border-color: #d0c8ba;
+  }
+  .stop.is-locked .stop-card::before { background: #d0c8ba; }
+  .stop.is-unlocked .stop-card::before { background: var(--gold); }
+  .stop.is-opened .stop-card::before { background: var(--sage); }
+
+  .stop.is-unlocked:hover .stop-card {
+    box-shadow: 6px 6px 0 var(--tan);
+    transform: translate(-3px, -3px);
+  }
+
+  .stop-label {
+    font-family: 'Caveat', cursive;
+    font-size: 0.78rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--brown);
+    margin-bottom: 0.25rem;
+  }
+  .stop.is-locked .stop-label { color: var(--locked-text); }
+
+  .stop-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--deep);
+    margin-bottom: 0.3rem;
+  }
+  .stop.is-locked .stop-title { color: var(--locked-text); filter: blur(4px); user-select: none; }
+
+  .stop-hint {
+    font-size: 0.9rem;
+    color: var(--brown);
+    font-style: italic;
+    line-height: 1.5;
+  }
+  .stop.is-locked .stop-hint { display: none; }
+
+  .stop-locked-msg {
+    font-family: 'Caveat', cursive;
+    font-size: 0.95rem;
+    color: var(--locked-text);
+    margin-top: 0.3rem;
+  }
+
+  .btn-open {
+    display: inline-block;
+    margin-top: 0.8rem;
+    background: var(--deep);
+    color: var(--cream);
+    border: none;
+    padding: 0.45rem 1.2rem;
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.15s;
+    box-shadow: 3px 3px 0 var(--brown);
+    position: relative;
+  }
+  .btn-open:hover { background: var(--brown); transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #5a3820; }
+  .btn-open:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--brown); }
+
+  .btn-revisit {
+    display: inline-block;
+    margin-top: 0.8rem;
+    background: transparent;
+    color: var(--brown);
+    border: 1px solid var(--tan);
+    padding: 0.4rem 1rem;
+    font-family: 'Caveat', cursive;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-revisit:hover { background: var(--warm); }
+
+  /* FINAL LOCKED BANNER */
+  #final-banner {
+    max-width: 460px;
+    margin: 0 auto 3rem;
+    padding: 1.5rem 2rem;
+    background: var(--locked-bg);
+    border: 1.5px dashed var(--locked-text);
+    text-align: center;
+    transition: opacity 0.5s;
+  }
+  #final-banner p {
+    font-family: 'Caveat', cursive;
+    font-size: 1.05rem;
+    color: var(--locked-text);
+    letter-spacing: 0.5px;
+  }
+
+  /* ══════════ GIFT MODAL ══════════ */
+  #overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    background: rgba(30,15,5,0);
+    transition: background 0.4s;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+  #overlay.show {
+    display: flex;
+    background: rgba(30,15,5,0.65);
+  }
+
+  .modal {
+    max-width: 460px;
+    width: 100%;
+    position: relative;
+    transform-origin: center top;
+  }
+
+  /* ENVELOPE */
+  .env-wrap {
+    position: relative;
+    perspective: 800px;
+  }
+
+  .env-flap {
+    width: 100%;
+    height: 80px;
+    background: var(--warm);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    border-left: 1px solid var(--tan);
+    border-right: 1px solid var(--tan);
+    transform-origin: top;
+    transform: rotateX(0deg);
+    transition: transform 0.6s cubic-bezier(0.4,0,0.2,1), clip-path 0.6s ease;
+    position: relative;
+    z-index: 2;
+  }
+  .env-flap.open {
+    transform: rotateX(-180deg);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+  }
+
+  .env-body {
+    background: var(--paper);
+    border: 1px solid var(--tan);
+    border-top: none;
+    box-shadow: 8px 8px 0 var(--tan), 16px 16px 0 rgba(0,0,0,0.08);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* inner letter sliding out */
+  .env-letter {
+    padding: 2rem 2.2rem 2.5rem;
+    transform: translateY(30px);
+    opacity: 0;
+    transition: transform 0.7s cubic-bezier(0.22,1,0.36,1) 0.3s, opacity 0.5s ease 0.3s;
+  }
+  .env-letter.revealed {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .modal-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    font-weight: 700;
+    color: var(--warm);
+    line-height: 1;
+    margin-bottom: 0.2rem;
+    transition: color 0.5s 0.4s, text-shadow 0.5s 0.4s;
+  }
+  .modal-num.lit {
+    color: var(--gold);
+    text-shadow: 0 0 40px rgba(200,148,58,0.4);
+  }
+
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--deep);
+    margin-bottom: 0.6rem;
+    line-height: 1.2;
+  }
+
+  .modal-badge {
+    display: inline-block;
+    border: 1.5px solid var(--tan);
+    padding: 0.2rem 0.9rem;
+    font-family: 'Caveat', cursive;
+    font-size: 0.8rem;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-bottom: 1.2rem;
+  }
+
+  .modal-desc {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--brown);
+    font-style: italic;
+    margin-bottom: 1.2rem;
+  }
+
+  .modal-note {
+    background: var(--cream);
+    border-left: 4px solid var(--gold);
+    padding: 1rem 1.2rem;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--deep);
+    position: relative;
+    overflow: hidden;
+  }
+  /* shimmering reveal */
+  .modal-note::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--cream);
+    transform: translateX(0%);
+    transition: transform 0.8s cubic-bezier(0.22,1,0.36,1) 0.7s;
+  }
+  .modal-note.revealed::before { transform: translateX(101%); }
+
+  .modal-footer {
+    display: flex;
+    gap: 0.7rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .btn-modal-close {
+    background: transparent;
+    border: 1px solid var(--tan);
+    color: var(--brown);
+    padding: 0.5rem 1.1rem;
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-modal-close:hover { background: var(--warm); }
+
+  .btn-modal-mark {
+    background: var(--sage);
+    border: none;
+    color: white;
+    padding: 0.5rem 1.3rem;
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 #5a7850;
+    transition: all 0.15s;
+  }
+  .btn-modal-mark:hover { background: #6a8860; transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #5a7850; }
+  .btn-modal-mark:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 #5a7850; }
+
+  .btn-modal-next {
+    background: var(--deep);
+    border: none;
+    color: var(--cream);
+    padding: 0.5rem 1.3rem;
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--brown);
+    transition: all 0.15s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-modal-next:hover { background: var(--brown); transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #5a3820; }
+
+  /* ══════════ CONFETTI ══════════ */
+  .confetti { position: fixed; pointer-events: none; z-index: 9998; top: 0; left: 0; width: 100%; height: 100%; }
+  .bit {
+    position: absolute;
+    opacity: 0;
+    animation: bitFall var(--bd) ease-out var(--bdelay) forwards;
+  }
+  @keyframes bitFall {
+    0% { opacity: 1; transform: translateY(-20px) translateX(0) rotate(0deg) scale(1); }
+    100% { opacity: 0; transform: translateY(calc(100vh + 40px)) translateX(var(--bx)) rotate(var(--br)) scale(0.4); }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand">For Ann ♡</a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-a">Home</a>
+    <span class="nav-a current">Gifts</span>
+    <span class="nav-a locked" id="nav-final">The End</span>
+    <span class="nav-a locked" id="nav-timeline">Our Story</span>
+  </div>
+</nav>
+
+<div class="page-header">
+  <h1>Your unboxing journey</h1>
+  <p id="subhead">open each gift in order — the path reveals as you go</p>
+</div>
+
+<div class="progress-section">
+  <div class="progress-rail"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  <div class="progress-label" id="prog-label">0 of 6 opened</div>
+</div>
+
+<div class="path-wrap">
+  <div class="spine">
+    <div class="spine-bg"></div>
+    <div class="spine-fill" id="spine-fill"></div>
+  </div>
+  <div id="stops"></div>
+</div>
+
+<div id="final-banner"><p>✦ open all the gifts to unlock the final message ✦</p></div>
+
+<!-- MODAL -->
+<div id="overlay">
+  <div class="modal" id="modal">
+    <div class="env-wrap">
+      <div class="env-flap" id="env-flap"></div>
+      <div class="env-body">
+        <div class="env-letter" id="env-letter">
+          <div class="modal-num" id="modal-num">1</div>
+          <div class="modal-title" id="modal-title"></div>
+          <div class="modal-badge" id="modal-badge"></div>
+          <div class="modal-desc" id="modal-desc"></div>
+          <div class="modal-note" id="modal-note"></div>
+          <div class="modal-footer" id="modal-footer"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="confetti" id="confetti"></div>
+
+<script>
+const GIFTS = [
+  { id:1, label:'Stop one',   title:'The Letter',            type:'handwritten',     hint:'Something from the heart — read this one first.',          desc:'A letter written just for you. Sit with it before you open anything else.',                                                                note:'"I wrote this on impulse and I meant every single word. No take-backsies."' },
+  { id:2, label:'Stop two',   title:'The Postcard',          type:'collectible',     hint:'The last in the series.',                                  desc:'The final WWI postcard. This one completes the collection I've been building over our last few gifts.',                                   note:'"Three or four postcards later — I genuinely lost count. We should frame them all one day."' },
+  { id:3, label:'Stop three', title:'The Plushie',           type:'✦ tradition ✦',   hint:'A little traveller, returning home.',                       desc:'This one has been living at mine for six months. Now it's your turn. Look after them until Christmas.',                                   note:'"It has my name on it but by now I think it belongs to both of us. Rules of the tradition."' },
+  { id:4, label:'Stop four',  title:'The Stickers',          type:'for decorating',  hint:'Stick them somewhere unexpected.',                         desc:'A curated little collection picked entirely with you in mind. There is no wrong place to put them.',                                      note:'"I dare you to put at least one somewhere unexpected. Report back immediately."' },
+  { id:5, label:'Stop five',  title:'The Biscuits',          type:'edible',          hint:'Best eaten right now, on the call.',                       desc:'Something delicious. You are required to eat at least one while we are still talking. This is law.',                                      note:'"Biscuit on call. Non-negotiable. I will be watching."' },
+  { id:6, label:'Stop six',   title:'[ Placeholder gift ]',  type:'surprise',        hint:'Something else lovely — it's in the box!',                 desc:'Something I picked especially for you — placeholder for now, the real description goes here when you know what it is!',                 note:'"Trust the process. And trust me. Always."' },
+];
+
+const STORAGE_KEY = 'ann_birthday_opened_v1';
+let opened = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'));
+let currentId = null;
+
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify([...opened])); }
+
+function renderAll() {
+  const container = document.getElementById('stops');
+  container.innerHTML = '';
+
+  const count = opened.size;
+  const total = GIFTS.length;
+  document.getElementById('prog-fill').style.width = (count / total * 100) + '%';
+  document.getElementById('prog-label').textContent = count + ' of ' + total + ' opened';
+  document.getElementById('spine-fill').style.height = (count / total * 100) + '%';
+
+  const allDone = count === total;
+  document.getElementById('final-banner').style.display = allDone ? 'none' : 'block';
+
+  const navFinal = document.getElementById('nav-final');
+  const navTl = document.getElementById('nav-timeline');
+  if (allDone) {
+    navFinal.outerHTML = '<a href="final.html" class="nav-a" id="nav-final">The End</a>';
+    navTl.outerHTML = '<a href="timeline.html" class="nav-a" id="nav-timeline">Our Story</a>';
+  }
+
+  GIFTS.forEach((g, i) => {
+    const prevDone = i === 0 || opened.has(GIFTS[i - 1].id);
+    const isOpen = opened.has(g.id);
+    const unlocked = prevDone;
+
+    const el = document.createElement('div');
+    const state = isOpen ? 'is-opened' : unlocked ? 'is-unlocked' : 'is-locked';
+    el.className = 'stop ' + state;
+    el.style.animationDelay = (i * 0.08) + 's';
+
+    const dotContent = isOpen
+      ? '<span style="font-size:1.2rem">✓</span>'
+      : (unlocked ? g.id : '✦');
+
+    el.innerHTML = `
+      <div class="stop-dot" ${unlocked && !isOpen ? 'onclick="openGift(' + g.id + ')"' : ''}>${dotContent}</div>
+      <div class="stop-card">
+        <div class="stop-label">${g.label}</div>
+        <div class="stop-title">${g.title}</div>
+        ${unlocked
+          ? `<div class="stop-hint">${g.hint}</div>
+             ${isOpen
+               ? `<button class="btn-revisit" onclick="openGift(${g.id})">Read again →</button>`
+               : `<button class="btn-open" onclick="openGift(${g.id})">Open this one →</button>`}`
+          : `<div class="stop-locked-msg">✦ open the one before this first</div>`}
+      </div>`;
+
+    container.appendChild(el);
+  });
+}
+
+function openGift(id) {
+  const g = GIFTS.find(x => x.id === id);
+  currentId = id;
+
+  const numEl = document.getElementById('modal-num');
+  const noteEl = document.getElementById('modal-note');
+  const letterEl = document.getElementById('env-letter');
+  const flapEl = document.getElementById('env-flap');
+  const footer = document.getElementById('modal-footer');
+
+  document.getElementById('modal-title').textContent = g.title;
+  document.getElementById('modal-badge').textContent = g.type;
+  document.getElementById('modal-desc').textContent = g.desc;
+  noteEl.textContent = g.note;
+  numEl.textContent = g.id;
+  numEl.className = 'modal-num';
+  noteEl.className = 'modal-note';
+  flapEl.className = 'env-flap';
+  letterEl.className = 'env-letter';
+
+  footer.innerHTML = '';
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'btn-modal-close';
+  closeBtn.textContent = 'Close';
+  closeBtn.onclick = closeModal;
+  footer.appendChild(closeBtn);
+
+  if (!opened.has(id)) {
+    const markBtn = document.createElement('button');
+    markBtn.className = 'btn-modal-mark';
+    markBtn.textContent = 'Opened it! ✓';
+    markBtn.onclick = () => { markOpen(id); markBtn.remove(); buildNextBtn(footer, id); };
+    footer.appendChild(markBtn);
+  } else {
+    buildNextBtn(footer, id);
+  }
+
+  const overlay = document.getElementById('overlay');
+  overlay.style.display = 'flex';
+  requestAnimationFrame(() => {
+    overlay.style.background = 'rgba(30,15,5,0.65)';
+    setTimeout(() => { flapEl.classList.add('open'); }, 150);
+    setTimeout(() => {
+      letterEl.classList.add('revealed');
+      numEl.classList.add('lit');
+    }, 400);
+    setTimeout(() => { noteEl.classList.add('revealed'); }, 700);
+  });
+}
+
+function buildNextBtn(footer, id) {
+  const idx = GIFTS.findIndex(g => g.id === id);
+  const isLast = idx === GIFTS.length - 1;
+  if (!isLast) {
+    const nb = document.createElement('button');
+    nb.className = 'btn-modal-next';
+    nb.textContent = 'Next gift →';
+    nb.onclick = () => { closeModal(); setTimeout(() => openGift(GIFTS[idx + 1].id), 320); };
+    footer.appendChild(nb);
+  } else if (opened.size === GIFTS.length) {
+    const nb = document.createElement('a');
+    nb.href = 'final.html';
+    nb.className = 'btn-modal-next';
+    nb.textContent = 'See the final message →';
+    footer.appendChild(nb);
+  }
+}
+
+function markOpen(id) {
+  opened.add(id);
+  save();
+  burst(id);
+  setTimeout(renderAll, 500);
+}
+
+function closeModal() {
+  const overlay = document.getElementById('overlay');
+  overlay.style.background = 'rgba(30,15,5,0)';
+  setTimeout(() => { overlay.style.display = 'none'; }, 350);
+}
+
+document.getElementById('overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+function burst(id) {
+  const colors = ['#c8943a','#b86858','#d4b483','#7a9870','#f0ddb8','#3a2010'];
+  const shapes = ['50%','2px','0'];
+  const cf = document.getElementById('confetti');
+  for (let i = 0; i < 60; i++) {
+    const b = document.createElement('div');
+    b.className = 'bit';
+    const size = 6 + Math.random() * 10;
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const br = shapes[Math.floor(Math.random() * shapes.length)];
+    b.style.cssText = `
+      left:${20 + Math.random()*60}%;
+      top:${10 + Math.random()*30}%;
+      width:${size}px;height:${size}px;
+      background:${color};
+      border-radius:${br};
+      --bd:${1 + Math.random()*1.5}s;
+      --bdelay:${Math.random()*0.4}s;
+      --bx:${(Math.random()-0.5)*300}px;
+      --br:${(Math.random()-0.5)*720}deg;
+    `;
+    cf.appendChild(b);
+    setTimeout(() => b.remove(), 2500);
+  }
+}
+
+renderAll();
+</script>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The End — For Ann ♡</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #faf4e8; --warm: #f0ddb8; --tan: #d4b483; --brown: #7a5230;
+    --deep: #3a2010; --rose: #b86858; --gold: #c8943a; --sage: #7a9870;
+    --paper: #fffdf5; --ink: #2a1a08;
+  }
+
+  body {
+    background: var(--deep);
+    font-family: 'EB Garamond', Georgia, serif;
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* GRAIN */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999; opacity: 0.5;
+  }
+
+  /* STARS background */
+  .stars { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+  .star {
+    position: absolute;
+    background: var(--gold);
+    border-radius: 50%;
+    opacity: 0;
+    animation: starTwinkle var(--sd) ease-in-out var(--sdelay) infinite;
+  }
+  @keyframes starTwinkle {
+    0%,100% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: var(--sop); transform: scale(1); }
+  }
+
+  /* NAV */
+  nav {
+    padding: 1rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    position: relative; z-index: 10;
+  }
+  .nav-brand { font-family: 'Caveat', cursive; font-size: 1.3rem; color: var(--rose); font-weight: 700; text-decoration: none; }
+  .nav-links { display: flex; gap: 1.2rem; }
+  .nav-a {
+    font-family: 'Caveat', cursive; font-size: 1rem;
+    color: rgba(250,244,232,0.5); text-decoration: none;
+    padding: 0.3rem 0.7rem; border-radius: 2px;
+    transition: color 0.2s, background 0.2s; letter-spacing: 0.5px;
+  }
+  .nav-a:hover { color: var(--cream); background: rgba(255,255,255,0.07); }
+  .nav-a.current { color: var(--gold); }
+
+  /* MAIN */
+  main {
+    min-height: 90vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 3rem 2rem 5rem;
+    position: relative; z-index: 1;
+    text-align: center;
+  }
+
+  /* ORNAMENT ROW */
+  .ornament-row {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--gold);
+    letter-spacing: 16px;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: glowIn 1s ease 0.2s forwards;
+  }
+  @keyframes glowIn {
+    from { opacity: 0; transform: scale(0.85); letter-spacing: 30px; }
+    to { opacity: 1; transform: scale(1); letter-spacing: 16px; }
+  }
+
+  /* HEADLINE */
+  .finale-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    font-weight: 700;
+    color: var(--cream);
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+  }
+  .finale-line {
+    display: block;
+    opacity: 0;
+    transform: translateY(110%);
+    animation: lineUp 0.8s cubic-bezier(0.22,1,0.36,1) forwards;
+  }
+  .finale-line:nth-child(1) { animation-delay: 0.5s; }
+  .finale-line:nth-child(2) { animation-delay: 0.7s; font-style: italic; color: var(--rose); }
+  @keyframes lineUp { to { opacity:1; transform: translateY(0); } }
+
+  .finale-sub {
+    font-family: 'Caveat', cursive;
+    font-size: 1.3rem;
+    color: var(--tan);
+    margin: 0.8rem 0 3rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 1s forwards;
+    letter-spacing: 1px;
+  }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(8px); }
+    to { opacity:1; transform:translateY(0); }
+  }
+
+  /* LETTER */
+  .finale-letter {
+    max-width: 500px;
+    width: 100%;
+    background: var(--paper);
+    border: 1px solid var(--tan);
+    padding: 2.5rem 2.5rem 2.2rem;
+    position: relative;
+    opacity: 0;
+    animation: letterReveal 1s cubic-bezier(0.22,1,0.36,1) 1.2s forwards;
+    box-shadow: 0 0 60px rgba(200,148,58,0.25), 8px 8px 0 var(--brown);
+    margin-bottom: 2.5rem;
+  }
+  @keyframes letterReveal {
+    0% { opacity:0; transform: scale(0.9) rotateX(8deg); }
+    100% { opacity:1; transform: scale(1) rotateX(0deg); }
+  }
+  .finale-letter::before {
+    content: '';
+    position: absolute; inset: -6px;
+    border: 1px dashed var(--warm);
+    pointer-events: none;
+  }
+
+  .finale-letter p {
+    font-size: 1.08rem;
+    line-height: 1.9;
+    color: var(--deep);
+    margin-bottom: 1rem;
+  }
+  .finale-letter p:last-child { margin-bottom: 0; }
+
+  .finale-sig {
+    font-family: 'Caveat', cursive;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--rose);
+    margin-top: 1.3rem;
+    display: block;
+  }
+
+  /* WAX SEAL */
+  .wax-seal {
+    position: absolute;
+    bottom: -20px; right: 2rem;
+    width: 54px; height: 54px;
+    background: var(--rose);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+    animation: sealDrop 0.6s cubic-bezier(0.34,1.6,0.64,1) 2s both;
+  }
+  @keyframes sealDrop {
+    0% { opacity:0; transform:scale(0) rotate(-180deg); }
+    100% { opacity:1; transform:scale(1) rotate(0deg); }
+  }
+
+  /* CTA */
+  .cta-wrap {
+    opacity: 0;
+    animation: fadeUp 0.7s ease 2.2s forwards;
+  }
+  .btn-story {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--deep);
+    border: none;
+    padding: 1rem 2.8rem;
+    font-family: 'Caveat', cursive;
+    font-size: 1.35rem;
+    cursor: pointer;
+    letter-spacing: 1px;
+    box-shadow: 5px 5px 0 var(--brown);
+    transition: all 0.15s;
+    text-decoration: none;
+  }
+  .btn-story:hover { background: #e0a840; transform: translate(-3px,-3px); box-shadow: 8px 8px 0 var(--brown); }
+  .btn-story:active { transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--brown); }
+
+  /* BURST canvas */
+  #burst-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 9998; }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+<canvas id="burst-canvas"></canvas>
+
+<nav>
+  <a href="index.html" class="nav-brand">For Ann ♡</a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-a">Home</a>
+    <a href="gifts.html" class="nav-a">Gifts</a>
+    <span class="nav-a current">The End</span>
+    <a href="timeline.html" class="nav-a">Our Story</a>
+  </div>
+</nav>
+
+<main>
+  <div class="ornament-row">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+  <h1 class="finale-headline">
+    <span class="finale-line">That's everything,</span>
+    <span class="finale-line">Ann. ♡</span>
+  </h1>
+
+  <p class="finale-sub">hope it felt like a warm hug through cardboard</p>
+
+  <div class="finale-letter">
+    <p>Three years of being the kind of friends that most people only ever dream about. I genuinely cannot imagine not having you in my life — and I am so grateful every single day that we found each other.</p>
+    <p>Here's to many more birthdays, many more parcels crossing the North Sea, many more hours on call doing absolutely nothing together.</p>
+    <p>And here's to that little plushie, doing its round trip between our two homes for years and years to come.</p>
+    <p>You deserve every good thing. Happy birthday. I love you to bits.</p>
+    <span class="finale-sig">[Your name] xo</span>
+    <div class="wax-seal">♡</div>
+  </div>
+
+  <div class="cta-wrap">
+    <a href="timeline.html" class="btn-story">See our story →</a>
+  </div>
+</main>
+
+<script>
+  // stars
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = 1 + Math.random() * 3;
+    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;width:${size}px;height:${size}px;--sd:${2+Math.random()*4}s;--sdelay:${Math.random()*5}s;--sop:${0.3+Math.random()*0.7}`;
+    starsEl.appendChild(s);
+  }
+
+  // firework burst on load
+  const canvas = document.getElementById('burst-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const colors = ['#c8943a','#b86858','#d4b483','#7a9870','#faf4e8','#f0ddb8'];
+  let particles = [];
+
+  function launchBurst(x, y) {
+    for (let i = 0; i < 80; i++) {
+      const angle = (Math.PI * 2 / 80) * i + (Math.random() - 0.5) * 0.3;
+      const speed = 3 + Math.random() * 6;
+      particles.push({
+        x, y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        life: 1,
+        decay: 0.012 + Math.random() * 0.015,
+        size: 3 + Math.random() * 5,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        gravity: 0.12
+      });
+    }
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles = particles.filter(p => p.life > 0);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += p.gravity;
+      p.vx *= 0.98;
+      p.life -= p.decay;
+      ctx.globalAlpha = Math.max(0, p.life);
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    if (particles.length > 0) requestAnimationFrame(animate);
+  }
+
+  setTimeout(() => {
+    const w = window.innerWidth, h = window.innerHeight;
+    launchBurst(w * 0.3, h * 0.4);
+    setTimeout(() => launchBurst(w * 0.7, h * 0.35), 300);
+    setTimeout(() => launchBurst(w * 0.5, h * 0.25), 600);
+    setTimeout(() => launchBurst(w * 0.2, h * 0.5), 900);
+    setTimeout(() => launchBurst(w * 0.8, h * 0.45), 1100);
+    animate();
+  }, 1400);
+</script>
+</body>
+</html>
