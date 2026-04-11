@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Ann ♡</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #faf4e8;
+    --warm: #f0ddb8;
+    --tan: #d4b483;
+    --brown: #7a5230;
+    --deep: #3a2010;
+    --rose: #b86858;
+    --gold: #c8943a;
+    --sage: #7a9870;
+    --paper: #fffdf5;
+    --ink: #2a1a08;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    font-family: 'EB Garamond', Georgia, serif;
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* GRAIN OVERLAY */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.6;
+  }
+
+  /* FLOATING PARTICLES */
+  .particles { position: fixed; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; }
+  .particle {
+    position: absolute;
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: var(--gold);
+    opacity: 0;
+    animation: particleDrift var(--dur) ease-in-out var(--delay) infinite;
+  }
+  @keyframes particleDrift {
+    0% { opacity: 0; transform: translateY(100vh) translateX(0) scale(0); }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.3; }
+    100% { opacity: 0; transform: translateY(-10vh) translateX(var(--drift)) scale(1.5); }
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    position: relative;
+    text-align: center;
+  }
+
+  /* STAMP */
+  .stamp-wrap {
+    position: relative;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: stampDrop 0.8s cubic-bezier(0.34, 1.6, 0.64, 1) 0.3s forwards;
+  }
+  @keyframes stampDrop {
+    0% { opacity: 0; transform: translateY(-60px) rotate(-8deg) scale(0.7); }
+    60% { transform: translateY(6px) rotate(2deg) scale(1.05); }
+    100% { opacity: 1; transform: translateY(0) rotate(-2deg) scale(1); }
+  }
+
+  .stamp {
+    width: 110px; height: 130px;
+    background: var(--paper);
+    border: 3px solid var(--rose);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    position: relative;
+    box-shadow: 3px 3px 0 var(--tan), 6px 6px 0 rgba(0,0,0,0.1);
+  }
+
+  /* Perforated edge */
+  .stamp::before {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    border: 1px dashed var(--rose);
+    opacity: 0.5;
+  }
+
+  .stamp-inner {
+    font-family: 'Caveat', cursive;
+    color: var(--rose);
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    line-height: 1.5;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .stamp-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--rose);
+    line-height: 1;
+    margin-bottom: 0.2rem;
+  }
+
+  /* POSTMARK CIRCLE - rotated over stamp */
+  .postmark {
+    position: absolute;
+    top: -20px; right: -30px;
+    width: 80px; height: 80px;
+    border: 2px solid var(--brown);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transform: rotate(18deg);
+    background: transparent;
+    opacity: 0;
+    animation: postmarkIn 0.5s ease 1s forwards;
+  }
+  @keyframes postmarkIn { to { opacity: 0.7; } }
+  .postmark-text {
+    font-family: 'Caveat', cursive;
+    font-size: 0.65rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--brown);
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  /* HEADLINE */
+  .headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 400;
+    color: var(--deep);
+    line-height: 1.05;
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+  }
+
+  .headline-line {
+    display: block;
+    opacity: 0;
+    transform: translateY(100%);
+    animation: lineReveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .headline-line:nth-child(1) { animation-delay: 0.6s; }
+  .headline-line:nth-child(2) { animation-delay: 0.8s; font-style: italic; color: var(--rose); }
+  @keyframes lineReveal {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .sub-line {
+    font-family: 'Caveat', cursive;
+    font-size: 1.4rem;
+    color: var(--brown);
+    opacity: 0;
+    animation: fadeUp 0.7s ease 1.1s forwards;
+    margin-bottom: 3rem;
+    letter-spacing: 1px;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* LETTER CARD */
+  .letter {
+    max-width: 480px;
+    width: 100%;
+    background: var(--paper);
+    border: 1px solid var(--tan);
+    padding: 2.5rem 2.5rem 2rem;
+    position: relative;
+    opacity: 0;
+    animation: letterUnfold 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.3s forwards;
+    transform-origin: top center;
+    margin-bottom: 3rem;
+  }
+  @keyframes letterUnfold {
+    0% { opacity: 0; transform: scaleY(0.3) translateY(-20px); }
+    60% { opacity: 1; transform: scaleY(1.03) translateY(2px); }
+    100% { opacity: 1; transform: scaleY(1) translateY(0); }
+  }
+
+  .letter::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border: 1px dashed var(--warm);
+    pointer-events: none;
+  }
+
+  /* Fold line at top */
+  .letter::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: var(--warm);
+  }
+
+  .letter p {
+    font-size: 1.05rem;
+    line-height: 1.9;
+    color: var(--deep);
+    margin-bottom: 1rem;
+  }
+  .letter p:last-child { margin-bottom: 0; }
+
+  .letter-sig {
+    font-family: 'Caveat', cursive;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--rose);
+    margin-top: 1.2rem;
+    display: block;
+  }
+
+  .letter-corner {
+    position: absolute;
+    bottom: 1.2rem; right: 1.5rem;
+    width: 48px; height: 62px;
+    border: 2px solid var(--warm);
+    outline: 1px dashed var(--tan);
+    outline-offset: -5px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .letter-corner span {
+    font-family: 'Caveat', cursive;
+    font-size: 0.6rem;
+    color: var(--rose);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  /* CTA BUTTON */
+  .cta-wrap {
+    opacity: 0;
+    animation: fadeUp 0.7s ease 2s forwards;
+  }
+
+  .btn-cta {
+    display: inline-block;
+    background: var(--deep);
+    color: var(--cream);
+    border: none;
+    padding: 1.1rem 3rem;
+    font-family: 'Caveat', cursive;
+    font-size: 1.4rem;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    position: relative;
+    text-decoration: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 5px 5px 0 var(--brown);
+  }
+  .btn-cta::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .btn-cta:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 8px 8px 0 var(--brown);
+  }
+  .btn-cta:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--brown);
+  }
+
+  /* DECORATIVE CORNER ORNAMENTS */
+  .ornament {
+    position: fixed;
+    width: 80px; height: 80px;
+    opacity: 0.15;
+    pointer-events: none;
+  }
+  .ornament-tl { top: 20px; left: 20px; border-top: 2px solid var(--brown); border-left: 2px solid var(--brown); }
+  .ornament-br { bottom: 20px; right: 20px; border-bottom: 2px solid var(--brown); border-right: 2px solid var(--brown); }
+</style>
+</head>
+<body>
+
+<div class="ornament ornament-tl"></div>
+<div class="ornament ornament-br"></div>
+
+<div class="particles" id="particles"></div>
+
+<main class="hero">
+  <div class="stamp-wrap">
+    <div class="stamp">
+      <div class="stamp-value">♡</div>
+      <div class="stamp-inner">First Class<br>Friend</div>
+    </div>
+    <div class="postmark">
+      <div class="postmark-text">From<br>the UK<br>with love</div>
+    </div>
+  </div>
+
+  <h1 class="headline">
+    <span class="headline-line">Happy Birthday,</span>
+    <span class="headline-line">Annika.</span>
+  </h1>
+
+  <p class="sub-line">a little journey through your box ♡</p>
+
+  <div class="letter">
+    <p>Hello, my dearest Ann.</p>
+    <p>Somewhere in the world right now, you're holding a box with our whole story drawn on the outside of it. Inside is a journey I put together just for you.</p>
+    <p>This little site is your guide. Open each gift in order — there's a note with every single one. I'll be right here on the call the whole time.</p>
+    <p>I can't believe it's been over three years. You are one of my favourite people on this entire earth.</p>
+    <span class="letter-sig">[Your name] xo</span>
+    <div class="letter-corner"><span>First<br>class<br>friend</span></div>
+  </div>
+
+  <div class="cta-wrap">
+    <a href="gifts.html" class="btn-cta">Open the box →</a>
+  </div>
+</main>
+
+<script>
+  // floating particles
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `left:${Math.random()*100}%;--dur:${6+Math.random()*10}s;--delay:${Math.random()*8}s;--drift:${(Math.random()-0.5)*120}px;width:${2+Math.random()*4}px;height:${2+Math.random()*4}px;background:${['#c8943a','#b86858','#d4b483','#7a9870'][Math.floor(Math.random()*4)]}`;
+    container.appendChild(p);
+  }
+</script>
+</body>
+</html>
