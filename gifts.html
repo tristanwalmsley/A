@@ -550,7 +550,7 @@
 
 <div class="page-header">
   <h1>Your unboxing journey</h1>
-  <p id="subhead">open each gift in order — the path reveals as you go</p>
+  <p id="subhead">open each gift in order - the path reveals as you go!</p>
 </div>
 
 <div class="progress-section">
@@ -566,7 +566,7 @@
   <div id="stops"></div>
 </div>
 
-<div id="final-banner"><p>✦ open all the gifts to unlock the final message ✦</p></div>
+<div id="final-banner"><p>✨ open all the gifts to unlock the final message ✨</p></div>
 
 <!-- MODAL -->
 <div id="overlay">
@@ -591,12 +591,15 @@
 
 <script>
 const GIFTS = [
-  { id:1, label:'Stop one',   title:'The Letter',            type:'handwritten',     hint:'Something from the heart — read this one first.',          desc:'A letter written just for you. Sit with it before you open anything else.',                                                                note:'"I wrote this on impulse and I meant every single word. No take-backsies."' },
-  { id:2, label:'Stop two',   title:'The Postcard',          type:'collectible',     hint:'The last in the series.',                                  desc:'The final WWI postcard. This one completes the collection Ive been building over our last few gifts.',                                   note:'"Three or four postcards later — I genuinely lost count. We should frame them all one day."' },
-  { id:3, label:'Stop three', title:'The Plushie',           type:'✦ tradition ✦',   hint:'A little traveller, returning home.',                       desc:'This one has been living at mine for six months. Now its your turn. Look after them until Christmas.',                                   note:'"It has my name on it but by now I think it belongs to both of us. Rules of the tradition."' },
-  { id:4, label:'Stop four',  title:'The Stickers',          type:'for decorating',  hint:'Stick them somewhere unexpected.',                         desc:'A curated little collection picked entirely with you in mind. There is no wrong place to put them.',                                      note:'"I dare you to put at least one somewhere unexpected. Report back immediately."' },
-  { id:5, label:'Stop five',  title:'The Biscuits',          type:'edible',          hint:'Best eaten right now, on the call.',                       desc:'Something delicious. You are required to eat at least one while we are still talking. This is law.',                                      note:'"Biscuit on call. Non-negotiable. I will be watching."' },
-  { id:6, label:'Stop six',   title:'[ Placeholder gift ]',  type:'surprise',        hint:'Something else lovely — its in the box!',                 desc:'Something I picked especially for you — placeholder for now, the real description goes here when you know what it is!',                 note:'"Trust the process. And trust me. Always."' },
+  { id:1, label:'Stop one',     title:'Postcard 1',            type:'collectible',     hint:'The last in the series.',                                  desc:'The final WWI postcard. This one completes the collection Ive been building over our last few gifts.',                                   note:'"Three or four postcards later — I genuinely lost count. We should frame them all one day."' },
+  { id:1, label:'Stop two',     title:'The Letter',            type:'handwritten',     hint:'Something from the heart — read this one first.',          desc:'A letter written just for you. Sit with it before you open anything else.',                                                                note:'"I wrote this on impulse and I meant every single word. No take-backsies."' },
+  { id:2, label:'Stop three',   title:'Postcard 1',            type:'collectible',     hint:'The last in the series.',                                  desc:'The final WWI postcard. This one completes the collection Ive been building over our last few gifts.',                                   note:'"Three or four postcards later — I genuinely lost count. We should frame them all one day."' },
+  { id:3, label:'Stop four',    title:'The Plushie',           type:'✦ new tradition ✦',  hint:'A little traveller, to a new home.',                       desc:'This one has been living at mine for a long time now, and I thought it would be a cool new tradition to have the guy switch homes every 6 months. Now its your turn. Look after them until Christmas.',                                   note:'"It has my name on it but by now I think it belongs to both of us."' },
+  { id:2, label:'Stop five',    title:'Postcard 1',            type:'collectible',     hint:'The last in the series.',                                  desc:'The final WWI postcard. This one completes the collection Ive been building over our last few gifts.',                                   note:'"Three or four postcards later — I genuinely lost count. We should frame them all one day."' },
+  { id:4, label:'Stop six',     title:'The Stickers',          type:'for decorating',  hint:'Stick them somewhere unexpected.',                         desc:'A curated little collection picked entirely with you in mind. There is no wrong place to put them.',                                      note:'"I dare you to put at least one somewhere unexpected. Report back immediately."' },
+  { id:2, label:'Stop seven',   title:'Postcard 1',            type:'collectible',     hint:'The last in the series.',                                  desc:'The final WWI postcard. This one completes the collection Ive been building over our last few gifts.',                                   note:'"Three or four postcards later — I genuinely lost count. We should frame them all one day."' },
+  { id:5, label:'Stop eight',   title:'The Biscuits',          type:'edible',          hint:'Best eaten right now, on the call.',                       desc:'Something delicious. You are required to eat at least one while we are still talking. This is law.',                                      note:'"Biscuit on call. Non-negotiable. I will be watching."' },
+  { id:2, label:'Stop nine',    title:'Postcard 1',            type:'collectible',     hint:'The last in the series.',                                  desc:'The final WWI postcard. This one completes the collection Ive been building over our last few gifts.',                                   note:'"Three or four postcards later — I genuinely lost count. We should frame them all one day."' },   { id:6, label:'Stop six',   title:'[ Placeholder gift ]',  type:'surprise',        hint:'Something else lovely — its in the box!',                 desc:'Something I picked especially for you — placeholder for now, the real description goes here when you know what it is!',                 note:'"Trust the process. And trust me. Always."' },
 ];
 
 const STORAGE_KEY = 'ann_birthday_opened_v1';
