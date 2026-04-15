@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biscuit Tier List — For Ann ♡</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--cream:#faf4e8;--warm:#f0ddb8;--tan:#d4b483;--brown:#7a5230;--deep:#3a2010;--rose:#b86858;--gold:#c8943a;--sage:#7a9870;--paper:#fffdf5;--ink:#2a1a08}
+html{scroll-behavior:smooth}
+body{background:var(--cream);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.6}
+nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--tan);background:var(--paper);position:sticky;top:0;z-index:500}
+.nav-brand{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--rose);font-weight:700;text-decoration:none}
+.nav-links{display:flex;gap:1.2rem;flex-wrap:wrap}
+.nav-a{font-family:'Caveat',cursive;font-size:1rem;color:var(--brown);text-decoration:none;padding:0.3rem 0.7rem;border-radius:2px;transition:color 0.2s,background 0.2s}
+.nav-a:hover{color:var(--deep);background:var(--warm)}
+.nav-a.current{color:var(--deep);font-weight:700;border-bottom:2px solid var(--gold)}
+.page-header{text-align:center;padding:3rem 2rem 0.5rem}
+.page-header h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:400;font-style:italic;color:var(--deep)}
+.page-header p{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--brown);margin-top:0.4rem;letter-spacing:0.5px}
+.page-header .instructions{font-size:0.95rem;line-height:1.7;color:var(--brown);font-style:italic;max-width:480px;margin:1rem auto 0}
+/* TIER LIST */
+.tierlist-wrap{max-width:680px;margin:2rem auto 5rem;padding:0 1.5rem}
+.tier{display:flex;align-items:stretch;margin-bottom:0.5rem;min-height:80px;background:var(--paper);border:1px solid var(--tan)}
+.tier-label{width:72px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--cream);padding:0.5rem}
+.tier-s .tier-label{background:#b86858}
+.tier-a .tier-label{background:#c8943a}
+.tier-b .tier-label{background:#7a9870}
+.tier-c .tier-label{background:#7a5230}
+.tier-d .tier-label{background:#3a2010;font-size:1.3rem}
+.tier-drop{flex:1;display:flex;flex-wrap:wrap;gap:0.5rem;padding:0.7rem;min-height:70px;border-left:2px solid var(--warm);transition:background 0.2s}
+.tier-drop.drag-over{background:rgba(200,148,58,0.12);border-left-color:var(--gold)}
+/* BISCUIT CARDS */
+.biscuit-pool{margin-top:1.5rem;padding:1.2rem;background:var(--warm);border:1px solid var(--tan)}
+.pool-title{font-family:'Caveat',cursive;font-size:0.85rem;letter-spacing:3px;text-transform:uppercase;color:var(--brown);margin-bottom:0.8rem}
+.pool-inner{display:flex;flex-wrap:wrap;gap:0.7rem;min-height:80px}
+.pool-inner.drag-over{background:rgba(200,148,58,0.15)}
+.biscuit-card{background:var(--paper);border:2px solid var(--tan);padding:0.6rem 1rem;cursor:grab;user-select:none;display:flex;align-items:center;gap:0.6rem;transition:transform 0.15s,box-shadow 0.15s;touch-action:none}
+.biscuit-card:hover{transform:translate(-2px,-3px);box-shadow:4px 4px 0 var(--tan)}
+.biscuit-card:active{cursor:grabbing;transform:scale(1.06) rotate(2deg);box-shadow:6px 6px 0 var(--brown);z-index:100}
+.biscuit-card.dragging{opacity:0.4}
+.biscuit-emoji{font-size:1.6rem;line-height:1}
+.biscuit-info{}
+.biscuit-name{font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;color:var(--deep);line-height:1.2}
+.biscuit-sub{font-family:'Caveat',cursive;font-size:0.75rem;color:var(--brown);letter-spacing:0.5px}
+/* RESULT */
+.result-section{margin-top:1.5rem;display:none}
+.result-section.show{display:block;animation:fadeUp 0.5s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.result-box{background:var(--deep);color:var(--cream);padding:1.5rem 2rem;text-align:center}
+.result-box h3{font-family:'Playfair Display',serif;font-size:1.4rem;font-style:italic;margin-bottom:0.5rem}
+.result-text{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--tan);letter-spacing:0.5px;line-height:1.7}
+.btn-reset{margin-top:1rem;background:var(--rose);color:var(--cream);border:none;padding:0.5rem 1.5rem;font-family:'Caveat',cursive;font-size:1rem;cursor:pointer;box-shadow:3px 3px 0 #8a4838;letter-spacing:0.5px;transition:all 0.15s}
+.btn-reset:hover{background:#c8605a;transform:translate(-2px,-2px);box-shadow:5px 5px 0 #8a4838}
+.share-btn{margin-top:1rem;display:inline-block;background:var(--gold);color:var(--deep);border:none;padding:0.5rem 1.5rem;font-family:'Caveat',cursive;font-size:1rem;cursor:pointer;box-shadow:3px 3px 0 var(--brown);letter-spacing:0.5px;transition:all 0.15s;margin-left:0.5rem}
+.share-btn:hover{background:#e0a840;transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown)}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-brand">For Ann ♡</a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-a">Home</a>
+    <a href="gifts.html" class="nav-a">Gifts</a>
+    <a href="final.html" class="nav-a">The End</a>
+    <a href="timeline.html" class="nav-a">Our Story</a>
+    <span class="nav-a current">Tier List</span>
+  </div>
+</nav>
+<div class="page-header">
+  <h1>The Official Biscuit Tier List</h1>
+  <p>drag each biscuit to its rightful place ♡</p>
+  <p class="instructions">Open them first. Eat at least one of each. Then rank them with the authority of someone who has experienced them. This is science.</p>
+</div>
+
+<div class="tierlist-wrap">
+  <div class="tier tier-s">
+    <div class="tier-label">S</div>
+    <div class="tier-drop" id="tier-S" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'S')"></div>
+  </div>
+  <div class="tier tier-a">
+    <div class="tier-label">A</div>
+    <div class="tier-drop" id="tier-A" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'A')"></div>
+  </div>
+  <div class="tier tier-b">
+    <div class="tier-label">B</div>
+    <div class="tier-drop" id="tier-B" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'B')"></div>
+  </div>
+  <div class="tier tier-c">
+    <div class="tier-label">C</div>
+    <div class="tier-drop" id="tier-C" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'C')"></div>
+  </div>
+  <div class="tier tier-d">
+    <div class="tier-label">Rude</div>
+    <div class="tier-drop" id="tier-D" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'D')"></div>
+  </div>
+
+  <div class="biscuit-pool">
+    <div class="pool-title">✦ Drag from here ✦</div>
+    <div class="pool-inner" id="pool" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'pool')"></div>
+  </div>
+
+  <div class="result-section" id="result-section">
+    <div class="result-box">
+      <h3 id="result-title">Your verdict is in.</h3>
+      <p class="result-text" id="result-text"></p>
+      <div>
+        <button class="btn-reset" onclick="resetTierlist()">Reset</button>
+        <button class="share-btn" onclick="copyResult()">Copy result</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const BISCUITS = [
+  {id:'custard-coconut', name:'Custard Cream', sub:'Coconut flavour', emoji:'🥥'},
+  {id:'custard-strawberry', name:'Custard Cream', sub:'Strawberry flavour', emoji:'🍓'},
+  {id:'custard-digestive', name:'Custard Cream', sub:'Digestive flavour', emoji:'🍪'},
+  {id:'custard-lemon', name:'Custard Cream', sub:'Lemon flavour', emoji:'🍋'},
+  {id:'malted-milk', name:'Malted Milk', sub:'Classic British', emoji:'🐄'},
+  {id:'nice', name:'Nice Biscuit', sub:'The original nice', emoji:'✨'},
+];
+
+const COMMENTARY = {
+  S: ['An absolute triumph.','Peak biscuit. No notes.','This is correct. This is right.','Unimpeachable taste. I respect it.'],
+  A: ['Solid. Respectable. Well-deserved.','Good decisions were made here.','A very reasonable ranking from a very good person.','Yes. This checks out.'],
+  B: ['Room for improvement but fair enough.','A B-tier biscuit deserves a B-tier placement.','Acceptable. I have no complaints.','Middle ground, but at least it\'s honest.'],
+  C: ['Questionable. We can discuss this.','Tristan raises an eyebrow.','This is fine but also not fine.','We can revisit this next year.'],
+  D: ['Excuse me?!','This is legally wrong.','I\'m telling the biscuit.','We need to talk about this.'],
+};
+
+let draggingId = null;
+const placement = {}; // id -> tier
+
+function buildPool() {
+  const pool = document.getElementById('pool');
+  pool.innerHTML = '';
+  BISCUITS.forEach(b => {
+    const el = makeCard(b);
+    pool.appendChild(el);
+  });
+}
+
+function makeCard(b) {
+  const el = document.createElement('div');
+  el.className = 'biscuit-card';
+  el.draggable = true;
+  el.id = 'card-'+b.id;
+  el.dataset.id = b.id;
+  el.innerHTML = `<span class="biscuit-emoji">${b.emoji}</span><div class="biscuit-info"><div class="biscuit-name">${b.name}</div><div class="biscuit-sub">${b.sub}</div></div>`;
+  el.addEventListener('dragstart', e => {
+    draggingId = b.id;
+    el.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  el.addEventListener('dragend', () => {
+    el.classList.remove('dragging');
+    draggingId = null;
+    checkAllPlaced();
+  });
+  // Touch support
+  let touchStartX, touchStartY;
+  el.addEventListener('touchstart', e => {
+    const t = e.touches[0];
+    touchStartX = t.clientX; touchStartY = t.clientY;
+    draggingId = b.id;
+  }, {passive:true});
+  el.addEventListener('touchend', e => {
+    const t = e.changedTouches[0];
+    const target = document.elementFromPoint(t.clientX, t.clientY);
+    const drop = target?.closest('[id^="tier-"], #pool');
+    if (drop) {
+      const tier = drop.id === 'pool' ? 'pool' : drop.id.replace('tier-','');
+      moveCard(b.id, tier);
+    }
+    draggingId = null;
+    checkAllPlaced();
+  });
+  return el;
+}
+
+function onDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+function onDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+function onDrop(e, tier) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (draggingId) moveCard(draggingId, tier);
+}
+
+function moveCard(id, tier) {
+  const card = document.getElementById('card-'+id);
+  if (!card) return;
+  const target = tier === 'pool' ? document.getElementById('pool') : document.getElementById('tier-'+tier);
+  if (!target) return;
+  target.appendChild(card);
+  placement[id] = tier;
+}
+
+function checkAllPlaced() {
+  const allPlaced = BISCUITS.every(b => placement[b.id] && placement[b.id] !== 'pool');
+  const resSection = document.getElementById('result-section');
+  if (allPlaced) {
+    generateResult();
+    resSection.classList.add('show');
+    resSection.scrollIntoView({behavior:'smooth',block:'center'});
+  } else {
+    resSection.classList.remove('show');
+  }
+}
+
+function generateResult() {
+  const tierNames = {S:'S tier (elite)',A:'A tier (great)',B:'B tier (decent)',C:'C tier (hmm)',D:'the Rude tier'};
+  const lines = Object.entries(placement)
+    .filter(([,v])=>v!=='pool')
+    .sort((a,b)=>['S','A','B','C','D'].indexOf(a[1])-['S','A','B','C','D'].indexOf(b[1]))
+    .map(([id,tier])=>{
+      const b = BISCUITS.find(x=>x.id===id);
+      return `${b.emoji} ${b.name} (${b.sub}) → ${tierNames[tier]}`;
+    });
+  const topTier = Object.entries(placement).find(([,v])=>v==='S');
+  const bottomTier = Object.entries(placement).find(([,v])=>v==='D');
+  let title = 'Your verdict is in.';
+  if (topTier) {
+    const top = BISCUITS.find(b=>b.id===topTier[0]);
+    title = `${top.emoji} ${top.name} wins.`;
+  }
+  const comment = COMMENTARY[bottomTier ? 'D' : topTier ? 'S' : 'B'];
+  const remark = comment[Math.floor(Math.random()*comment.length)];
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-text').textContent = lines.join('\n') + '\n\n' + remark;
+}
+
+function copyResult() {
+  const text = document.getElementById('result-text').textContent;
+  navigator.clipboard?.writeText('My Official Biscuit Tier List (For Ann):\n\n'+text).then(()=>alert('Copied to clipboard!'));
+}
+
+function resetTierlist() {
+  Object.keys(placement).forEach(k=>delete placement[k]);
+  buildPool();
+  document.querySelectorAll('.tier-drop').forEach(d=>d.innerHTML='');
+  document.getElementById('result-section').classList.remove('show');
+}
+
+buildPool();
+</script>
+</body>
+</html>

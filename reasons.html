@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reasons — For Ann ♡</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--cream:#faf4e8;--warm:#f0ddb8;--tan:#d4b483;--brown:#7a5230;--deep:#3a2010;--rose:#b86858;--gold:#c8943a;--sage:#7a9870;--paper:#fffdf5;--ink:#2a1a08}
+body{background:var(--deep);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.5}
+.stars{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.star{position:absolute;background:var(--gold);border-radius:50%;opacity:0;animation:starTwinkle var(--sd) ease-in-out var(--sdelay) infinite}
+@keyframes starTwinkle{0%,100%{opacity:0;transform:scale(0.5)}50%{opacity:var(--sop);transform:scale(1)}}
+nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);position:relative;z-index:10}
+.nav-brand{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--rose);font-weight:700;text-decoration:none}
+.nav-links{display:flex;gap:1.2rem;flex-wrap:wrap}
+.nav-a{font-family:'Caveat',cursive;font-size:1rem;color:rgba(250,244,232,0.5);text-decoration:none;padding:0.3rem 0.7rem;border-radius:2px;transition:color 0.2s,background 0.2s;letter-spacing:0.5px}
+.nav-a:hover{color:var(--cream);background:rgba(255,255,255,0.07)}
+.nav-a.current{color:var(--gold)}
+.page-header{text-align:center;padding:3.5rem 2rem 1rem;position:relative;z-index:1}
+.page-header h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:400;font-style:italic;color:var(--cream)}
+.page-header p{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--tan);margin-top:0.4rem;letter-spacing:0.5px}
+/* REASONS LIST */
+.reasons-wrap{max-width:560px;margin:2rem auto 5rem;padding:0 1.5rem;position:relative;z-index:1}
+.reason-item{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.2rem;opacity:0;transform:translateY(20px);transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1)}
+.reason-item.visible{opacity:1;transform:translateY(0)}
+.reason-num{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--gold);min-width:2rem;line-height:1.2;flex-shrink:0}
+.reason-card{background:rgba(255,253,245,0.06);border:1px solid rgba(255,255,255,0.1);padding:0.9rem 1.1rem;flex:1;position:relative;cursor:pointer;transition:background 0.2s,border-color 0.2s}
+.reason-card:hover{background:rgba(255,253,245,0.1);border-color:rgba(200,148,58,0.3)}
+.reason-card.revealed{background:var(--paper);border-color:var(--tan);cursor:default}
+.reason-card.revealed:hover{transform:none}
+.reason-hidden{font-family:'Caveat',cursive;font-size:0.9rem;color:rgba(255,255,255,0.25);letter-spacing:2px;text-align:center;padding:0.3rem 0}
+.reason-text{font-size:1.02rem;line-height:1.8;color:var(--deep);display:none}
+.reason-card.revealed .reason-hidden{display:none}
+.reason-card.revealed .reason-text{display:block;animation:textReveal 0.4s ease}
+@keyframes textReveal{from{opacity:0;transform:scale(0.97)}to{opacity:1;transform:scale(1)}}
+/* reveal all button */
+.reveal-all-wrap{text-align:center;margin:1.5rem 0}
+.btn-reveal-all{background:var(--gold);color:var(--deep);border:none;padding:0.8rem 2rem;font-family:'Caveat',cursive;font-size:1.1rem;cursor:pointer;box-shadow:4px 4px 0 var(--brown);letter-spacing:0.5px;transition:all 0.15s}
+.btn-reveal-all:hover{background:#e0a840;transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--brown)}
+.ending-note{background:rgba(255,253,245,0.06);border:1px solid rgba(255,255,255,0.08);padding:1.5rem 2rem;text-align:center;margin-top:2rem;display:none}
+.ending-note.show{display:block;animation:textReveal 0.6s ease}
+.ending-note p{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--tan);line-height:1.7;letter-spacing:0.5px}
+.ending-note .sig{font-family:'Playfair Display',serif;font-size:1.5rem;font-style:italic;color:var(--rose);display:block;margin-top:0.8rem}
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<nav>
+  <a href="index.html" class="nav-brand">For Ann ♡</a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-a">Home</a>
+    <a href="gifts.html" class="nav-a">Gifts</a>
+    <a href="final.html" class="nav-a">The End</a>
+    <a href="timeline.html" class="nav-a">Our Story</a>
+    <span class="nav-a current">Reasons</span>
+  </div>
+</nav>
+<div class="page-header">
+  <h1>Reasons you're my favourite person</h1>
+  <p>tap each one to reveal it ♡</p>
+</div>
+
+<div class="reasons-wrap">
+  <div id="reasons-list"></div>
+  <div class="reveal-all-wrap">
+    <button class="btn-reveal-all" id="btn-reveal-all" onclick="revealAll()">Reveal all at once →</button>
+  </div>
+  <div class="ending-note" id="ending-note">
+    <p>There are so many more. This list could go on for pages.<br>But you get the idea. You are, genuinely, one of my favourite people on this earth — and I am so glad you exist.</p>
+    <span class="sig">Bestie Tristan xo</span>
+  </div>
+</div>
+
+<script>
+const REASONS = [
+  {text:"You always, always answer. Even on bad days when you've got your own stuff going on, you show up. That's rare."},
+  {text:"You laugh at the same things I do, in the same way I do, at exactly the right moments."},
+  {text:"You take care of the people you love so deliberately and so quietly. You don't make a big deal of it. You just do it."},
+  {text:"You've never made me feel stupid for caring about things. Not once."},
+  {text:"The way you get excited about things — really genuinely excited — is one of the best things about you."},
+  {text:"You are kind without being soft. You will call someone out when they deserve it and still be the warmest person in the room."},
+  {text:"You have never once made me feel like a burden. When I'm struggling, you make space without making it a thing."},
+  {text:"You remember things. The small things I've said in passing, things I've mentioned once — and then you bring them back up later. It makes me feel very seen."},
+  {text:"You are so funny without trying to be. The best kind of funny."},
+  {text:"You are genuinely curious about the world. You ask real questions and you actually listen to the answers."},
+  {text:"You've crossed the North Sea with me in spirit more times than I can count."},
+  {text:"You gave me the kind of friendship where we can not talk for a few days and pick up exactly where we left off, no weirdness. That's everything."},
+  {text:"You have good taste. In everything. It's impressive."},
+  {text:"The way you talk about the things and people you love — with that much warmth — makes me feel lucky to be one of them."},
+  {text:"You make ordinary Tuesday evenings feel like an event."},
+];
+
+const STORAGE_KEY = 'ann_reasons_revealed_2025';
+let revealed = new Set();
+try {
+  const p = JSON.parse(localStorage.getItem(STORAGE_KEY));
+  revealed = new Set(Array.isArray(p) ? p : []);
+} catch(e) {}
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify([...revealed])); }
+
+function buildList() {
+  const list = document.getElementById('reasons-list');
+  list.innerHTML = '';
+  REASONS.forEach((r, i) => {
+    const item = document.createElement('div');
+    item.className = 'reason-item';
+    item.style.transitionDelay = (i * 0.05) + 's';
+    const isRev = revealed.has(i);
+    item.innerHTML = `
+      <div class="reason-num">${String(i+1).padStart(2,'0')}</div>
+      <div class="reason-card ${isRev?'revealed':''}" onclick="revealOne(${i}, this)">
+        <div class="reason-hidden">✦ tap to reveal ✦</div>
+        <div class="reason-text">${r.text}</div>
+      </div>
+    `;
+    list.appendChild(item);
+    setTimeout(() => item.classList.add('visible'), 50 + i * 50);
+  });
+  checkAllRevealed();
+}
+
+function revealOne(idx, card) {
+  if (revealed.has(idx)) return;
+  card.classList.add('revealed');
+  revealed.add(idx);
+  save();
+  checkAllRevealed();
+}
+
+function revealAll() {
+  document.querySelectorAll('.reason-card:not(.revealed)').forEach((card, i) => {
+    setTimeout(() => card.classList.add('revealed'), i * 80);
+  });
+  REASONS.forEach((_,i) => revealed.add(i));
+  save();
+  setTimeout(checkAllRevealed, REASONS.length * 80 + 200);
+}
+
+function checkAllRevealed() {
+  if (revealed.size >= REASONS.length) {
+    document.getElementById('btn-reveal-all').style.display = 'none';
+    setTimeout(() => document.getElementById('ending-note').classList.add('show'), 300);
+  }
+}
+
+// stars
+const starsEl = document.getElementById('stars');
+for (let i = 0; i < 60; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  const sz = 1 + Math.random() * 2.5;
+  s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--sd:${2+Math.random()*4}s;--sdelay:${Math.random()*5}s;--sop:${0.2+Math.random()*0.6}`;
+  starsEl.appendChild(s);
+}
+
+buildList();
+</script>
+</body>
+</html>

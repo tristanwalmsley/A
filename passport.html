@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plushie Passport — For Ann ♡</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--cream:#faf4e8;--warm:#f0ddb8;--tan:#d4b483;--brown:#7a5230;--deep:#3a2010;--rose:#b86858;--gold:#c8943a;--sage:#7a9870;--paper:#fffdf5;--ink:#2a1a08;--passport:#1a4a2a;--passport-light:#2a6a3a;--passport-gold:#d4a830}
+html{scroll-behavior:smooth}
+body{background:var(--cream);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.6}
+nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--tan);background:var(--paper);position:sticky;top:0;z-index:500}
+.nav-brand{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--rose);font-weight:700;text-decoration:none}
+.nav-links{display:flex;gap:1.2rem;flex-wrap:wrap}
+.nav-a{font-family:'Caveat',cursive;font-size:1rem;color:var(--brown);text-decoration:none;padding:0.3rem 0.7rem;border-radius:2px;transition:color 0.2s,background 0.2s;letter-spacing:0.5px}
+.nav-a:hover{color:var(--deep);background:var(--warm)}
+.nav-a.current{color:var(--deep);font-weight:700;border-bottom:2px solid var(--gold)}
+.page-header{text-align:center;padding:3rem 2rem 1rem;animation:headerIn 0.7s ease both}
+@keyframes headerIn{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+.page-header h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:400;font-style:italic;color:var(--deep)}
+.page-header p{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--brown);margin-top:0.4rem;letter-spacing:0.5px}
+/* PASSPORT BOOK */
+.passport-wrap{max-width:680px;margin:2rem auto 5rem;padding:0 1.5rem;display:flex;flex-direction:column;align-items:center;gap:2.5rem}
+.passport-book{width:100%;max-width:500px;background:var(--passport);box-shadow:6px 8px 40px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,0.08);position:relative;animation:bookIn 0.9s cubic-bezier(0.22,1,0.36,1) 0.2s both}
+@keyframes bookIn{from{opacity:0;transform:translateY(30px) rotate(-1deg)}to{opacity:1;transform:translateY(0) rotate(0deg)}}
+.passport-cover{padding:2.5rem 2rem;text-align:center;border-bottom:2px solid rgba(212,168,48,0.3);position:relative}
+.passport-cover::before{content:'';position:absolute;inset:10px;border:1px solid rgba(212,168,48,0.2);pointer-events:none}
+.passport-emblem{font-size:3.5rem;margin-bottom:0.5rem;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.3))}
+.passport-country{font-family:'Playfair Display',serif;font-size:0.85rem;letter-spacing:4px;text-transform:uppercase;color:var(--passport-gold);margin-bottom:0.2rem}
+.passport-title{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:rgba(255,255,255,0.9);line-height:1.1}
+.passport-subtitle{font-family:'Caveat',cursive;font-size:0.85rem;color:rgba(255,255,255,0.4);margin-top:0.3rem;letter-spacing:1px}
+.holder-section{padding:1.5rem 2rem;background:rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.08)}
+.holder-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem}
+.holder-field label{font-family:'Caveat',cursive;font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.35);display:block;margin-bottom:0.15rem}
+.holder-field span{font-family:'Caveat',cursive;font-size:1.05rem;color:rgba(255,255,255,0.85)}
+.holder-photo{width:70px;height:84px;border:2px solid rgba(212,168,48,0.4);display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:rgba(0,0,0,0.2);flex-shrink:0}
+.holder-row{display:flex;gap:1rem;align-items:flex-start}
+.holder-info{flex:1}
+/* STAMPS SECTION */
+.stamps-section{padding:1.5rem 2rem}
+.stamps-title{font-family:'Caveat',cursive;font-size:0.8rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:1.2rem;padding-bottom:0.5rem;border-bottom:1px dashed rgba(255,255,255,0.1)}
+.stamp-entry{margin-bottom:1.4rem;padding:1rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);position:relative}
+.stamp-entry.departure .stamp-circle{border-color:var(--rose);color:var(--rose)}
+.stamp-entry.arrival .stamp-circle{border-color:var(--sage);color:var(--sage)}
+.stamp-header{display:flex;align-items:center;gap:0.8rem;margin-bottom:0.6rem}
+.stamp-circle{width:52px;height:52px;border:2.5px solid;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.55rem;letter-spacing:1.5px;text-transform:uppercase;font-family:'Caveat',cursive;flex-shrink:0;position:relative}
+.stamp-circle-inner{text-align:center;line-height:1.2}
+.stamp-type{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:rgba(255,255,255,0.85)}
+.stamp-meta{font-family:'Caveat',cursive;font-size:0.85rem;color:rgba(255,255,255,0.45);display:flex;gap:0.7rem;flex-wrap:wrap;margin-top:0.1rem}
+.stamp-meta span{display:flex;align-items:center;gap:0.25rem}
+.stamp-note{font-size:0.88rem;line-height:1.6;color:rgba(255,255,255,0.55);font-style:italic;padding-top:0.5rem;border-top:1px solid rgba(255,255,255,0.06)}
+.stamp-number{position:absolute;top:0.6rem;right:0.8rem;font-family:'Caveat',cursive;font-size:0.7rem;color:rgba(255,255,255,0.2);letter-spacing:2px}
+/* future stamps */
+.stamp-entry.future{opacity:0.4;border-style:dashed}
+.stamp-entry.future .stamp-type{font-style:italic;color:rgba(255,255,255,0.5)}
+.future-label{font-family:'Caveat',cursive;font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin:0.5rem 0;text-align:center}
+/* MRZ strip */
+.mrz{padding:1rem 2rem;background:rgba(0,0,0,0.2);font-family:'Courier New',monospace;font-size:0.65rem;color:rgba(255,255,255,0.2);letter-spacing:0.5px;overflow:hidden;word-break:break-all;line-height:1.7;border-top:1px solid rgba(255,255,255,0.05)}
+/* ABOUT SECTION */
+.about-section{max-width:500px;width:100%;background:var(--paper);border:1px solid var(--tan);padding:1.8rem 2rem;box-shadow:5px 5px 0 var(--warm);animation:bookIn 0.9s cubic-bezier(0.22,1,0.36,1) 0.4s both}
+.about-section h2{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--deep);margin-bottom:0.6rem}
+.about-section p{font-size:0.95rem;line-height:1.8;color:var(--brown)}
+.about-section p+p{margin-top:0.6rem}
+.trip-counter{display:flex;gap:1.5rem;margin-top:1rem;padding-top:1rem;border-top:1px dashed var(--warm)}
+.counter-item{text-align:center;flex:1}
+.counter-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--gold);line-height:1}
+.counter-label{font-family:'Caveat',cursive;font-size:0.8rem;color:var(--brown);letter-spacing:1px}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-brand">For Ann ♡</a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-a">Home</a>
+    <a href="gifts.html" class="nav-a">Gifts</a>
+    <a href="final.html" class="nav-a">The End</a>
+    <a href="timeline.html" class="nav-a">Our Story</a>
+    <a href="postcards.html" class="nav-a">Postcards</a>
+    <span class="nav-a current">Passport</span>
+  </div>
+</nav>
+<div class="page-header">
+  <h1>The Plushie Passport</h1>
+  <p>an official travel document for our little ambassador</p>
+</div>
+
+<div class="passport-wrap">
+  <div class="passport-book">
+    <div class="passport-cover">
+      <span class="passport-emblem">🧸</span>
+      <div class="passport-country">The Friendship Republic</div>
+      <div class="passport-title">TRAVEL DOCUMENT</div>
+      <div class="passport-subtitle">Plushie Ambassador · First Class</div>
+    </div>
+
+    <div class="holder-section">
+      <div class="holder-row">
+        <div class="holder-photo">🧸</div>
+        <div class="holder-info">
+          <div class="holder-grid">
+            <div class="holder-field">
+              <label>Surname</label>
+              <span>Little Guy</span>
+            </div>
+            <div class="holder-field">
+              <label>Given name</label>
+              <span>The Plushie</span>
+            </div>
+            <div class="holder-field">
+              <label>Nationality</label>
+              <span>Anglo-Dutch</span>
+            </div>
+            <div class="holder-field">
+              <label>Issued</label>
+              <span>5 Aug 2025</span>
+            </div>
+            <div class="holder-field">
+              <label>Status</label>
+              <span>Ambassador</span>
+            </div>
+            <div class="holder-field">
+              <label>Passport No.</label>
+              <span>BFF-001</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stamps-section">
+      <div class="stamps-title">Entry / Exit Stamps</div>
+
+      <div class="stamp-entry departure">
+        <div class="stamp-number">STAMP 001</div>
+        <div class="stamp-header">
+          <div class="stamp-circle">
+            <div class="stamp-circle-inner">Dept<br>✈</div>
+          </div>
+          <div>
+            <div class="stamp-type">DEPARTURE</div>
+            <div class="stamp-meta">
+              <span>📍 Portsmouth, UK</span>
+              <span>📅 Aug 2025</span>
+            </div>
+          </div>
+        </div>
+        <div class="stamp-note">First ever departure. The plushie begins its inaugural journey — packed carefully inside a Heinz Beans can, which is exactly as funny as it sounds.</div>
+      </div>
+
+      <div class="stamp-entry arrival">
+        <div class="stamp-number">STAMP 002</div>
+        <div class="stamp-header">
+          <div class="stamp-circle">
+            <div class="stamp-circle-inner">Arrv<br>🏠</div>
+          </div>
+          <div>
+            <div class="stamp-type">ARRIVAL</div>
+            <div class="stamp-meta">
+              <span>📍 The Netherlands</span>
+              <span>📅 Aug 2025</span>
+            </div>
+          </div>
+        </div>
+        <div class="stamp-note">First landing at Ann's. Welcome home, little traveller. You will be looked after very well here.</div>
+      </div>
+
+      <div class="future-label">— future journeys —</div>
+
+      <div class="stamp-entry departure future">
+        <div class="stamp-number">STAMP 003</div>
+        <div class="stamp-header">
+          <div class="stamp-circle">
+            <div class="stamp-circle-inner">Dept<br>✈</div>
+          </div>
+          <div>
+            <div class="stamp-type">DEPARTURE</div>
+            <div class="stamp-meta">
+              <span>📍 The Netherlands</span>
+              <span>📅 Christmas 2025</span>
+            </div>
+          </div>
+        </div>
+        <div class="stamp-note">First return journey — heading back to Tristan for Christmas. Stamp to be filled in.</div>
+      </div>
+
+      <div class="stamp-entry arrival future">
+        <div class="stamp-number">STAMP 004</div>
+        <div class="stamp-header">
+          <div class="stamp-circle">
+            <div class="stamp-circle-inner">Arrv<br>🏠</div>
+          </div>
+          <div>
+            <div class="stamp-type">ARRIVAL</div>
+            <div class="stamp-meta">
+              <span>📍 Portsmouth, UK</span>
+              <span>📅 Christmas 2025</span>
+            </div>
+          </div>
+        </div>
+        <div class="stamp-note">Home for Christmas. First full round trip complete.</div>
+      </div>
+
+      <div class="stamp-entry departure future">
+        <div class="stamp-number">STAMP 005</div>
+        <div class="stamp-header">
+          <div class="stamp-circle">
+            <div class="stamp-circle-inner">Dept<br>✈</div>
+          </div>
+          <div>
+            <div class="stamp-type">DEPARTURE</div>
+            <div class="stamp-meta">
+              <span>📍 Portsmouth, UK</span>
+              <span>📅 Birthday 2026</span>
+            </div>
+          </div>
+        </div>
+        <div class="stamp-note">Second journey to Ann's. The tradition deepens.</div>
+      </div>
+
+      <div class="stamp-entry arrival future">
+        <div class="stamp-number">STAMP 006</div>
+        <div class="stamp-header">
+          <div class="stamp-circle">
+            <div class="stamp-circle-inner">Arrv<br>🏠</div>
+          </div>
+          <div>
+            <div class="stamp-type">ARRIVAL</div>
+            <div class="stamp-meta">
+              <span>📍 The Netherlands</span>
+              <span>📅 Birthday 2026</span>
+            </div>
+          </div>
+        </div>
+        <div class="stamp-note">Back to Ann's for summer. The little traveller knows the route by now.</div>
+      </div>
+    </div>
+
+    <div class="mrz">
+      P&lt;FRP&lt;LITTLE&lt;GUY&lt;&lt;THE&lt;PLUSHIE&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<br>
+      BFF0012025ANN&lt;&lt;&lt;TRI2025085&lt;M3000101&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;NORTHSEA6
+    </div>
+  </div>
+
+  <div class="about-section">
+    <h2>About the Plushie Tradition</h2>
+    <p>This little plushie is the start of something that I hope will go on for a very long time. It lives at your place for six months, then comes home to me for six months — back and forth, crossing the North Sea twice a year, accumulating stamps in this passport.</p>
+    <p>Every journey it makes is a tiny physical reminder that we're still very much in each other's lives, even when we're hundreds of miles apart.</p>
+    <div class="trip-counter">
+      <div class="counter-item">
+        <div class="counter-num">1</div>
+        <div class="counter-label">trips taken</div>
+      </div>
+      <div class="counter-item">
+        <div class="counter-num">2</div>
+        <div class="counter-label">homes visited</div>
+      </div>
+      <div class="counter-item">
+        <div class="counter-num">∞</div>
+        <div class="counter-label">more to go</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

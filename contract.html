@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Official Bestie Contract — For Ann ♡</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--cream:#faf4e8;--warm:#f0ddb8;--tan:#d4b483;--brown:#7a5230;--deep:#3a2010;--rose:#b86858;--gold:#c8943a;--sage:#7a9870;--paper:#fffdf5;--ink:#2a1a08}
+body{background:var(--deep);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;position:relative;overflow:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.5}
+.bg-pattern{position:fixed;inset:0;opacity:0.04;background-image:repeating-linear-gradient(0deg,var(--tan) 0px,transparent 1px,transparent 28px),repeating-linear-gradient(90deg,var(--tan) 0px,transparent 1px,transparent 28px);pointer-events:none}
+.doc-outer{max-width:640px;width:100%;animation:docDrop 1s cubic-bezier(0.22,1,0.36,1) 0.2s both}
+@keyframes docDrop{from{opacity:0;transform:translateY(-60px) rotate(-2deg)}to{opacity:1;transform:translateY(0) rotate(-0.5deg)}}
+.doc-paper{background:var(--paper);position:relative;padding:0;box-shadow:0 0 0 3px var(--tan),0 0 0 6px var(--cream),8px 12px 40px rgba(0,0,0,0.5)}
+.doc-paper::before{content:'';position:absolute;inset:10px;border:1px solid var(--warm);pointer-events:none;z-index:2}
+.doc-header{background:var(--deep);color:var(--cream);padding:1.8rem 2.5rem 1.4rem;text-align:center;border-bottom:3px double var(--gold);position:relative}
+.doc-header::after{content:'★ ✦ ★';position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);background:var(--deep);padding:0 1rem;color:var(--gold);font-size:0.8rem;letter-spacing:4px;white-space:nowrap}
+.doc-eyebrow{font-family:'Caveat',cursive;font-size:0.8rem;letter-spacing:4px;text-transform:uppercase;color:var(--tan);margin-bottom:0.5rem}
+.doc-title{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.1;color:var(--cream)}
+.doc-title em{color:var(--rose);font-style:italic}
+.doc-subtitle{font-family:'Caveat',cursive;font-size:1rem;color:var(--tan);margin-top:0.4rem;letter-spacing:1px}
+.doc-ref{font-family:'Caveat',cursive;font-size:0.75rem;color:rgba(255,255,255,0.3);margin-top:0.8rem;letter-spacing:2px}
+.doc-body{padding:2.2rem 2.5rem;position:relative}
+.doc-preamble{font-size:1.05rem;line-height:1.85;color:var(--brown);font-style:italic;margin-bottom:1.5rem;padding-bottom:1.2rem;border-bottom:1px dashed var(--warm);text-align:center}
+.clause{margin-bottom:0.9rem;display:flex;gap:0.7rem;align-items:flex-start}
+.clause-num{font-family:'Playfair Display',serif;font-weight:700;color:var(--gold);font-size:1.1rem;min-width:1.6rem;padding-top:0.05rem}
+.clause-text{font-size:0.97rem;line-height:1.75;color:var(--deep)}
+.clause-text strong{color:var(--rose);font-family:'Playfair Display',serif;font-style:italic}
+.clause-text em{color:var(--brown)}
+.doc-divider{margin:1.4rem 0;text-align:center;color:var(--tan);letter-spacing:6px;font-size:0.85rem}
+.obligations{background:var(--cream);border:1.5px solid var(--warm);padding:1rem 1.3rem;margin:1.2rem 0}
+.obligations h3{font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;color:var(--deep);margin-bottom:0.6rem;letter-spacing:0.5px}
+.obligations ul{list-style:none;padding:0}
+.obligations li{font-size:0.9rem;line-height:1.7;color:var(--brown);padding-left:1.2rem;position:relative}
+.obligations li::before{content:'✦';position:absolute;left:0;color:var(--gold);font-size:0.65rem;top:0.3rem}
+.sig-section{margin-top:1.8rem;padding-top:1.4rem;border-top:1px dashed var(--warm)}
+.sig-row{display:flex;gap:2rem;align-items:flex-end;margin-bottom:1.2rem}
+.sig-block{flex:1}
+.sig-label{font-family:'Caveat',cursive;font-size:0.8rem;letter-spacing:2px;text-transform:uppercase;color:var(--brown);margin-bottom:0.3rem}
+.sig-line{border-bottom:1.5px solid var(--tan);height:2.2rem;position:relative}
+.sig-pre{position:absolute;bottom:0.3rem;left:0;font-family:'Caveat',cursive;font-size:1.5rem;font-weight:700;color:var(--rose)}
+.sig-date{font-family:'Caveat',cursive;font-size:0.85rem;color:var(--brown);margin-top:0.2rem}
+.wax-seal{width:62px;height:62px;background:var(--rose);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:0 3px 12px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.2);flex-shrink:0;position:relative;margin-bottom:0.4rem}
+.wax-seal::before{content:'';position:absolute;inset:4px;border:1px dashed rgba(255,255,255,0.3);border-radius:50%}
+.fine-print{font-size:0.72rem;color:var(--tan);font-style:italic;line-height:1.6;margin-top:1rem;padding:0.8rem;background:var(--warm);border-left:3px solid var(--gold)}
+.doc-footer{background:var(--cream);border-top:1px solid var(--warm);padding:1.5rem 2.5rem;text-align:center}
+.footer-text{font-family:'Caveat',cursive;font-size:0.95rem;color:var(--brown);margin-bottom:1rem;letter-spacing:0.5px}
+.btn-sign{display:inline-block;background:var(--rose);color:var(--cream);border:none;padding:1rem 3rem;font-family:'Caveat',cursive;font-size:1.4rem;cursor:pointer;letter-spacing:1px;box-shadow:5px 5px 0 #8a4838;transition:all 0.15s;position:relative;overflow:hidden}
+.btn-sign::after{content:'';position:absolute;inset:0;border:1px solid rgba(255,255,255,0.15)}
+.btn-sign:hover{background:#c8605a;transform:translate(-3px,-3px);box-shadow:8px 8px 0 #8a4838}
+.btn-sign:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #8a4838}
+.btn-view{background:transparent;color:var(--brown);border:1px solid var(--tan);padding:0.5rem 1.4rem;font-family:'Caveat',cursive;font-size:1rem;cursor:pointer;margin-top:0.7rem;display:inline-block;transition:background 0.2s;text-decoration:none}
+.btn-view:hover{background:var(--warm)}
+/* SIGNED STATE */
+.signed-overlay{display:none;position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center;pointer-events:none}
+.signed-overlay.show{display:flex;pointer-events:auto}
+.signed-stamp{font-family:'Playfair Display',serif;font-size:clamp(3rem,10vw,6rem);font-weight:700;color:var(--sage);border:6px solid var(--sage);padding:0.3rem 1rem;transform:rotate(-18deg) scale(0);opacity:0;transition:transform 0.4s cubic-bezier(0.34,1.6,0.64,1),opacity 0.2s;letter-spacing:4px;text-transform:uppercase;text-shadow:0 0 30px rgba(122,152,112,0.4)}
+.signed-overlay.show .signed-stamp{transform:rotate(-18deg) scale(1);opacity:1}
+.proceed-wrap{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);opacity:0;transition:opacity 0.5s ease 0.8s;pointer-events:none}
+.proceed-wrap.show{opacity:1;pointer-events:auto}
+.btn-proceed{background:var(--gold);color:var(--deep);border:none;padding:1rem 2.5rem;font-family:'Caveat',cursive;font-size:1.35rem;cursor:pointer;box-shadow:5px 5px 0 var(--brown);letter-spacing:1px;transition:all 0.15s}
+.btn-proceed:hover{background:#e0a840;transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--brown)}
+/* view-only mode */
+.view-banner{display:none;background:var(--gold);color:var(--deep);text-align:center;padding:0.7rem 2rem;font-family:'Caveat',cursive;font-size:1rem;letter-spacing:0.5px}
+.view-banner.show{display:block}
+.view-banner a{color:var(--deep);font-weight:700}
+</style>
+</head>
+<body>
+<div class="bg-pattern"></div>
+<div class="view-banner" id="view-banner">
+  You're viewing your signed contract ♡ — <a href="gifts.html">back to gifts →</a>
+</div>
+
+<div class="doc-outer">
+  <div class="doc-paper">
+    <div class="doc-header">
+      <div class="doc-eyebrow">Official Document · Ref. BFF-2025-III</div>
+      <div class="doc-title">The <em>Bestie Contract</em></div>
+      <div class="doc-subtitle">Third Annual Renewal — Birthday Edition</div>
+      <div class="doc-ref">Binding Across: England · The Netherlands · The North Sea</div>
+    </div>
+
+    <div class="doc-body">
+      <p class="doc-preamble">
+        This agreement, entered into voluntarily and enthusiastically, between one <strong style="font-style:normal;color:var(--rose)">Tristan</strong> (hereinafter "the Giver of Thoughtful Parcels") and one <strong style="font-style:normal;color:var(--rose)">Ann</strong> (hereinafter "the Bestie"), constitutes a binding, renewable, and entirely sincere declaration of best friendship.
+      </p>
+
+      <div class="clause">
+        <span class="clause-num">I.</span>
+        <span class="clause-text">Both parties acknowledge that this friendship is <strong>exceptionally rare</strong> and should be treated as such. Most people go their whole lives without finding this. We found it. That's enormous.</span>
+      </div>
+      <div class="clause">
+        <span class="clause-num">II.</span>
+        <span class="clause-text">The Bestie agrees to <strong>open all gifts in order</strong> as directed by this site, without skipping ahead, peeking at the bottom, or going rogue. The Giver has arranged things very deliberately.</span>
+      </div>
+      <div class="clause">
+        <span class="clause-num">III.</span>
+        <span class="clause-text">Both parties are bound by the <strong>Plushie Accord</strong> (see Gift #8): the little plushie shall make the journey between our homes twice yearly, indefinitely, and be treated with the care befitting a small ambassador of our friendship.</span>
+      </div>
+      <div class="clause">
+        <span class="clause-num">IV.</span>
+        <span class="clause-text">The Bestie is legally obligated to <strong>eat at least one biscuit on this call</strong>, in front of the Giver. No exceptions. No deferrals. No "I'll have it later."</span>
+      </div>
+      <div class="clause">
+        <span class="clause-num">V.</span>
+        <span class="clause-text">Both parties agree that <em>nothing productive</em> shall be achieved on this call. This is not a criticism. This is the highest compliment.</span>
+      </div>
+      <div class="clause">
+        <span class="clause-num">VI.</span>
+        <span class="clause-text">The Giver reserves the right to feel very smug about the decorated box, this website, and the Heinz Beans can. The Bestie agrees that this smugness is <strong>entirely warranted</strong>.</span>
+      </div>
+      <div class="clause">
+        <span class="clause-num">VII.</span>
+        <span class="clause-text">Both parties hereby renew all previous bestie obligations and introduce a new clause: <strong>the Dutch Language Clause</strong>. The Giver has been learning Dutch for four months. This is objectively adorable and the Bestie agrees to acknowledge this accordingly.</span>
+      </div>
+
+      <div class="doc-divider">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+      <div class="obligations">
+        <h3>Mutual Obligations — Ongoing</h3>
+        <ul>
+          <li>Continue making time for calls, even when life is very full</li>
+          <li>Remain the kind of friends who celebrate ordinary Tuesdays</li>
+          <li>Exchange parcels across the North Sea at every suitable occasion</li>
+          <li>Always pick up where we left off, without any weirdness</li>
+          <li>Never take for granted how genuinely good this is</li>
+        </ul>
+      </div>
+
+      <div class="sig-section">
+        <div class="sig-row">
+          <div class="sig-block">
+            <div class="sig-label">Signed by the Giver</div>
+            <div class="sig-line"><span class="sig-pre">Tristan xo</span></div>
+            <div class="sig-date">5 Aug 2025</div>
+          </div>
+          <div class="sig-block">
+            <div class="sig-label">Signed by the Bestie</div>
+            <div class="sig-line"><span class="sig-pre" id="ann-sig" style="opacity:0"></span></div>
+            <div class="sig-date" id="sig-date-display">awaiting signature…</div>
+          </div>
+          <div>
+            <div class="wax-seal">♡</div>
+            <div style="font-family:'Caveat',cursive;font-size:0.7rem;color:var(--brown);text-align:center;margin-top:0.1rem">official seal</div>
+          </div>
+        </div>
+        <p class="fine-print">This contract is renewed annually, automatically, unless explicitly cancelled in writing on a postcard (which would be very funny but also we know it's never going to happen). It supersedes all previous bestie agreements, incorporates all previous terms, and remains in effect for the foreseeable future and a bit beyond that. No cooling-off period. No take-backsies. Witnessed by the North Sea.</p>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <p class="footer-text">By signing, you confirm that you are the Bestie Ann, and that you accept all the above in the spirit in which it was written: with complete sincerity and quite a lot of love.</p>
+      <button class="btn-sign" id="btn-sign" onclick="signContract()">I, Ann, hereby sign this contract ♡</button>
+      <br>
+      <a href="javascript:void(0)" class="btn-view" id="btn-view-only" onclick="viewOnly()" style="display:none">view contract only</a>
+    </div>
+  </div>
+</div>
+
+<div class="signed-overlay" id="signed-overlay">
+  <div class="signed-stamp">SIGNED ♡</div>
+</div>
+<div class="proceed-wrap" id="proceed-wrap">
+  <button class="btn-proceed" onclick="location.href='gifts.html'">Open the box →</button>
+</div>
+
+<script>
+const SIGNED_KEY = 'ann_contract_signed_2025';
+const STORAGE_KEY = 'ann_bday_2025_v3';
+
+function isViewMode() {
+  return new URLSearchParams(window.location.search).get('view') === '1';
+}
+
+function signContract() {
+  localStorage.setItem(SIGNED_KEY, '1');
+  const sig = document.getElementById('ann-sig');
+  sig.textContent = 'Ann ♡';
+  sig.style.opacity = '1';
+  sig.style.transition = 'opacity 0.5s ease';
+  document.getElementById('sig-date-display').textContent = new Date().toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
+  document.getElementById('btn-sign').style.display = 'none';
+  const overlay = document.getElementById('signed-overlay');
+  overlay.classList.add('show');
+  setTimeout(() => {
+    document.getElementById('proceed-wrap').classList.add('show');
+  }, 200);
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (isViewMode()) {
+    document.getElementById('view-banner').classList.add('show');
+    // fill in sig if previously signed
+    if (localStorage.getItem(SIGNED_KEY)) {
+      document.getElementById('ann-sig').textContent = 'Ann ♡';
+      document.getElementById('ann-sig').style.opacity = '1';
+      document.getElementById('sig-date-display').textContent = 'Signed with love';
+    }
+    document.getElementById('btn-sign').style.display = 'none';
+    return;
+  }
+  // gate mode: if not signed, show normally; if signed, redirect
+  if (!localStorage.getItem(SIGNED_KEY)) {
+    document.getElementById('btn-view-only').style.display = 'none';
+  }
+});
+
+function viewOnly() {
+  window.location.href = 'gifts.html';
+}
+</script>
+</body>
+</html>

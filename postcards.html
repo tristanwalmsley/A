@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Postcard Gallery — For Ann ♡</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--cream:#faf4e8;--warm:#f0ddb8;--tan:#d4b483;--brown:#7a5230;--deep:#3a2010;--rose:#b86858;--gold:#c8943a;--sage:#7a9870;--paper:#fffdf5;--ink:#2a1a08}
+html{scroll-behavior:smooth}
+body{background:var(--cream);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.6}
+nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--tan);background:var(--paper);position:sticky;top:0;z-index:500}
+.nav-brand{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--rose);font-weight:700;text-decoration:none}
+.nav-links{display:flex;gap:1.2rem;flex-wrap:wrap}
+.nav-a{font-family:'Caveat',cursive;font-size:1rem;color:var(--brown);text-decoration:none;padding:0.3rem 0.7rem;border-radius:2px;transition:color 0.2s,background 0.2s;letter-spacing:0.5px}
+.nav-a:hover{color:var(--deep);background:var(--warm)}
+.nav-a.current{color:var(--deep);font-weight:700;border-bottom:2px solid var(--gold)}
+.page-header{text-align:center;padding:3rem 2rem 1.5rem;animation:headerIn 0.7s ease both}
+@keyframes headerIn{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+.page-header h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:400;font-style:italic;color:var(--deep)}
+.page-header p{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--brown);margin-top:0.4rem;letter-spacing:0.5px}
+/* FILTER TABS */
+.filter-wrap{max-width:900px;margin:0 auto;padding:0 1.5rem 1.5rem;display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center}
+.filter-btn{font-family:'Caveat',cursive;font-size:0.95rem;letter-spacing:0.5px;padding:0.35rem 1rem;border:1.5px solid var(--tan);background:transparent;color:var(--brown);cursor:pointer;transition:all 0.2s}
+.filter-btn:hover{background:var(--warm)}
+.filter-btn.active{background:var(--deep);color:var(--cream);border-color:var(--deep)}
+/* GALLERY GRID */
+.gallery-wrap{max-width:960px;margin:0 auto;padding:0 1.5rem 5rem}
+.gallery-section{margin-bottom:3rem}
+.gallery-section-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:400;font-style:italic;color:var(--brown);margin-bottom:1.2rem;padding-bottom:0.5rem;border-bottom:1px dashed var(--warm);display:flex;align-items:center;gap:0.8rem}
+.gallery-section-title span{font-family:'Caveat',cursive;font-size:0.8rem;color:var(--tan);letter-spacing:2px;text-transform:uppercase;font-style:normal}
+.postcard-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.5rem}
+/* POSTCARD CARD */
+.pc-card{position:relative;cursor:pointer;opacity:0;transform:translateY(20px) rotate(var(--rot));transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1);filter:drop-shadow(4px 6px 12px rgba(0,0,0,0.12))}
+.pc-card.visible{opacity:1;transform:translateY(0) rotate(var(--rot))}
+.pc-card:hover{transform:translateY(-6px) rotate(0deg) scale(1.04)!important;filter:drop-shadow(6px 12px 20px rgba(0,0,0,0.2));z-index:10}
+.pc-inner{background:var(--paper);border:1px solid var(--tan);overflow:hidden;position:relative}
+.pc-face{width:100%;aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;overflow:hidden}
+.pc-face-content{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.3rem}
+.pc-art-text{font-family:'Playfair Display',serif;font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;position:absolute;bottom:0.4rem;right:0.5rem;color:rgba(255,255,255,0.8)}
+.pc-bottom{padding:0.5rem 0.7rem;background:var(--paper);border-top:1px solid var(--warm)}
+.pc-label{font-family:'Caveat',cursive;font-size:0.8rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--brown);display:block}
+.pc-title{font-family:'Playfair Display',serif;font-size:0.85rem;color:var(--deep);line-height:1.3;margin-top:0.1rem}
+.pc-sent{font-family:'Caveat',cursive;font-size:0.72rem;color:var(--tan);margin-top:0.15rem}
+/* STAMP badge */
+.pc-stamp{position:absolute;top:0.5rem;right:0.5rem;width:28px;height:34px;background:var(--cream);border:1.5px solid var(--rose);display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:var(--rose);font-family:'Caveat',cursive}
+/* Lightbox */
+#lightbox{display:none;position:fixed;inset:0;z-index:2000;align-items:center;justify-content:center;padding:2rem}
+#lightbox.open{display:flex}
+.lb-backdrop{position:absolute;inset:0;background:rgba(20,8,2,0.85);cursor:pointer}
+.lb-card{position:relative;z-index:1;max-width:460px;width:100%;animation:lbIn 0.3s cubic-bezier(0.22,1,0.36,1)}
+@keyframes lbIn{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
+.lb-face{width:100%;aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;font-size:5rem}
+.lb-info{padding:1.2rem 1.5rem 1.5rem;background:var(--paper);border:1px solid var(--tan);border-top:none}
+.lb-title{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--deep);margin-bottom:0.3rem}
+.lb-desc{font-size:0.95rem;line-height:1.7;color:var(--brown);font-style:italic}
+.lb-close{position:absolute;top:-1rem;right:-1rem;width:36px;height:36px;background:var(--deep);color:var(--cream);border:none;border-radius:50%;cursor:pointer;font-family:'Caveat',cursive;font-size:1.1rem;display:flex;align-items:center;justify-content:center;box-shadow:2px 2px 8px rgba(0,0,0,0.3);transition:background 0.2s}
+.lb-close:hover{background:var(--brown)}
+/* colors per category */
+.ww1{background:linear-gradient(135deg,#8a6a4a,#b08050)}
+.funny{background:linear-gradient(135deg,#e0a840,#c87040)}
+.lancashire{background:linear-gradient(135deg,#4a6a8a,#7a9aaa)}
+.mogsweep{background:linear-gradient(135deg,#8a5870,#c88898)}
+.snailmail{background:linear-gradient(135deg,#5a7860,#8ab098)}
+.note-section{max-width:640px;margin:0 auto 4rem;padding:0 1.5rem}
+.note-box{background:var(--paper);border:1px solid var(--tan);padding:1.5rem 2rem;box-shadow:5px 5px 0 var(--warm)}
+.note-box p{font-size:1rem;line-height:1.8;color:var(--brown);font-style:italic}
+.note-box p+p{margin-top:0.8rem}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-brand">For Ann ♡</a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-a">Home</a>
+    <a href="gifts.html" class="nav-a">Gifts</a>
+    <a href="final.html" class="nav-a">The End</a>
+    <a href="timeline.html" class="nav-a">Our Story</a>
+    <span class="nav-a current">Postcards</span>
+    <a href="passport.html" class="nav-a">Passport</a>
+  </div>
+</nav>
+<div class="page-header">
+  <h1>Postcard Gallery</h1>
+  <p>every postcard that's made the journey — yours to keep forever ♡</p>
+</div>
+<div class="filter-wrap">
+  <button class="filter-btn active" onclick="filterCards('all',this)">All postcards</button>
+  <button class="filter-btn" onclick="filterCards('ww1',this)">WWI Series</button>
+  <button class="filter-btn" onclick="filterCards('lancashire',this)">Lancashire</button>
+  <button class="filter-btn" onclick="filterCards('funny',this)">Funny / Fruity</button>
+  <button class="filter-btn" onclick="filterCards('mogsweep',this)">MogSweep</button>
+</div>
+
+<div class="gallery-wrap" id="gallery">
+  <!-- injected by JS -->
+</div>
+
+<div class="note-section">
+  <div class="note-box">
+    <p>Every single one of these made a real journey — packed carefully, stamped, and sent across the North Sea from me to you. That's always been one of my favourite things about this friendship: actual physical things moving between our actual lives.</p>
+    <p>If you ever need cheering up, come back to this page and look at them all. They're yours.</p>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <div class="lb-backdrop" onclick="closeLightbox()"></div>
+  <div class="lb-card" id="lb-card">
+    <div class="lb-face" id="lb-face"></div>
+    <div class="lb-info">
+      <div class="lb-title" id="lb-title"></div>
+      <div class="lb-desc" id="lb-desc"></div>
+    </div>
+    <button class="lb-close" onclick="closeLightbox()">✕</button>
+  </div>
+</div>
+
+<script>
+const POSTCARDS = [
+  // WWI Series (4)
+  {id:'w1',cat:'ww1',colorClass:'ww1',emoji:'✉️',label:'WWI Postcard',title:'WWI Postcard No. 1',sent:'Aug 2025',desc:'A genuine piece of history — one of four WWI postcards, individually wrapped in an aeroplane sticker-decorated envelope. Each one unique, each one carefully picked.'},
+  {id:'w2',cat:'ww1',colorClass:'ww1',emoji:'📜',label:'WWI Postcard',title:'WWI Postcard No. 2',sent:'Aug 2025',desc:'The second in the series. These little cards have already lived a hundred years of history before landing in your hands.'},
+  {id:'w3',cat:'ww1',colorClass:'ww1',emoji:'🗺️',label:'WWI Postcard',title:'WWI Postcard No. 3',sent:'Aug 2025',desc:'Third of four. Part of a set that felt right for you — you appreciate the weight of things.'},
+  {id:'w4',cat:'ww1',colorClass:'ww1',emoji:'🪶',label:'WWI Postcard',title:'WWI Postcard No. 4',sent:'Aug 2025',desc:'The last of the four WWI postcards. The complete set is yours. Frame them one day?'},
+  // Lancashire series (3-4)
+  {id:'l1',cat:'lancashire',colorClass:'lancashire',emoji:'🏙️',label:'Lancashire',title:'Lancashire No. 1',sent:'Aug 2025',desc:'From a pack of twelve vintage-style Lancashire photograph postcards — one of three or four sent. A little corner of the north of England, for you.'},
+  {id:'l2',cat:'lancashire',colorClass:'lancashire',emoji:'🌉',label:'Lancashire',title:'Lancashire No. 2',sent:'Aug 2025',desc:'Vintage Lancashire — beautiful photography, beautiful landscape. Somewhere in England that deserves to be appreciated.'},
+  {id:'l3',cat:'lancashire',colorClass:'lancashire',emoji:'🏘️',label:'Lancashire',title:'Lancashire No. 3',sent:'Aug 2025',desc:'Third of the Lancashire series. I could look at these all day.'},
+  // Funny / Fruit motivation (2)
+  {id:'f1',cat:'funny',colorClass:'funny',emoji:'🍉',label:'Funny',title:'Fruity Motivation No. 1',sent:'Aug 2025',desc:'From a pack of twelve funny fruit motivation-themed postcards — this was too funny not to include. You\'ll understand the moment you see it.'},
+  {id:'f2',cat:'funny',colorClass:'funny',emoji:'🍋',label:'Funny',title:'Fruity Motivation No. 2',sent:'Aug 2025',desc:'Second of the fruity motivation series. I had to stop myself sending all twelve. Barely.'},
+  // MogSweep
+  {id:'m1',cat:'mogsweep',colorClass:'mogsweep',emoji:'🐦',label:'MogSweep · Etsy',title:'Pigeon Post',sent:'Aug 2025',desc:'Custom illustrated by MogSweep on Etsy — the most beautiful postcard delivery. Last year\'s MogSweep packaging was incredible (custom envelope, free postcard, handwritten letter), so naturally I went back. This one\'s the "pigeon post" design.'},
+  {id:'m2',cat:'mogsweep',colorClass:'snailmail',emoji:'🐌',label:'MogSweep · Etsy',title:'Snail Mail',sent:'Aug 2025',desc:'The companion to the pigeon post — a custom illustrated "snail mail" design. MogSweep also sent snail mail stickers and the pigeon post washi tape with the order. The packaging is an event in itself.'},
+];
+
+function filterCards(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const visible = cat === 'all' ? POSTCARDS : POSTCARDS.filter(p=>p.cat===cat);
+  buildGallery(visible);
+}
+
+function buildGallery(cards) {
+  const gallery = document.getElementById('gallery');
+  gallery.innerHTML = '';
+  // Group by category label
+  const groups = {};
+  const groupOrder = [];
+  cards.forEach(c => {
+    const label = c.label;
+    if (!groups[label]) { groups[label] = []; groupOrder.push(label); }
+    groups[label].push(c);
+  });
+  groupOrder.forEach((label, gi) => {
+    const sec = document.createElement('div');
+    sec.className = 'gallery-section';
+    sec.innerHTML = `<div class="gallery-section-title">${POSTCARDS.find(c=>c.label===label)?.colorClass?.toUpperCase()||label} <span>${groups[label].length} card${groups[label].length>1?'s':''}</span></div>`;
+    const grid = document.createElement('div');
+    grid.className = 'postcard-grid';
+    groups[label].forEach((card, i) => {
+      const rot = (Math.random()-0.5)*4;
+      const el = document.createElement('div');
+      el.className = 'pc-card';
+      el.style.setProperty('--rot', rot+'deg');
+      el.style.transitionDelay = (i*0.07 + gi*0.1)+'s';
+      el.innerHTML = `
+        <div class="pc-inner" onclick="openLightbox('${card.id}')">
+          <div class="pc-face ${card.colorClass}"><div class="pc-face-content"><span style="font-size:2.8rem">${card.emoji}</span></div><div class="pc-art-text">POSTCARD</div></div>
+          <div class="pc-bottom">
+            <span class="pc-label">${card.label}</span>
+            <div class="pc-title">${card.title}</div>
+            <div class="pc-sent">Sent ${card.sent}</div>
+          </div>
+          <div class="pc-stamp">♡</div>
+        </div>`;
+      grid.appendChild(el);
+      setTimeout(() => el.classList.add('visible'), 50 + i*70 + gi*100);
+    });
+    sec.appendChild(grid);
+    gallery.appendChild(sec);
+  });
+}
+
+function openLightbox(id) {
+  const card = POSTCARDS.find(c=>c.id===id);
+  if (!card) return;
+  document.getElementById('lb-face').className = 'lb-face '+card.colorClass;
+  document.getElementById('lb-face').innerHTML = `<span style="font-size:5rem">${card.emoji}</span>`;
+  document.getElementById('lb-title').textContent = card.title;
+  document.getElementById('lb-desc').textContent = card.desc;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+
+buildGallery(POSTCARDS);
+</script>
+</body>
+</html>

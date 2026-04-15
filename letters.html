@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Letters Archive — For Ann ♡</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--cream:#faf4e8;--warm:#f0ddb8;--tan:#d4b483;--brown:#7a5230;--deep:#3a2010;--rose:#b86858;--gold:#c8943a;--sage:#7a9870;--paper:#fffdf5;--ink:#2a1a08}
+body{background:var(--cream);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.6}
+nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--tan);background:var(--paper);position:sticky;top:0;z-index:500}
+.nav-brand{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--rose);font-weight:700;text-decoration:none}
+.nav-links{display:flex;gap:1.2rem;flex-wrap:wrap}
+.nav-a{font-family:'Caveat',cursive;font-size:1rem;color:var(--brown);text-decoration:none;padding:0.3rem 0.7rem;border-radius:2px;transition:color 0.2s,background 0.2s}
+.nav-a:hover{color:var(--deep);background:var(--warm)}
+.nav-a.current{color:var(--deep);font-weight:700;border-bottom:2px solid var(--gold)}
+.page-header{text-align:center;padding:3rem 2rem 1rem}
+.page-header h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:400;font-style:italic;color:var(--deep)}
+.page-header p{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--brown);margin-top:0.4rem;letter-spacing:0.5px}
+/* ARCHIVE LIST */
+.archive-wrap{max-width:680px;margin:2rem auto 5rem;padding:0 1.5rem}
+.archive-intro{background:var(--paper);border:1px solid var(--tan);padding:1.5rem 2rem;box-shadow:5px 5px 0 var(--warm);margin-bottom:2.5rem}
+.archive-intro p{font-size:1rem;line-height:1.8;color:var(--brown);font-style:italic}
+/* LETTER ENTRY */
+.letter-entry{margin-bottom:2rem;opacity:0;transform:translateY(20px);transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1)}
+.letter-entry.visible{opacity:1;transform:translateY(0)}
+.letter-envelope{background:var(--warm);border:1.5px solid var(--tan);padding:1.2rem 1.5rem;cursor:pointer;position:relative;transition:background 0.2s,box-shadow 0.2s,transform 0.2s;display:flex;align-items:center;gap:1rem}
+.letter-envelope:hover{background:var(--tan);box-shadow:4px 4px 0 var(--brown);transform:translate(-2px,-2px)}
+.envelope-icon{font-size:2rem;flex-shrink:0}
+.envelope-meta{}
+.letter-date{font-family:'Caveat',cursive;font-size:0.85rem;color:var(--brown);letter-spacing:1px;margin-bottom:0.15rem}
+.letter-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--deep)}
+.letter-peek{font-size:0.9rem;color:var(--brown);font-style:italic;margin-top:0.15rem}
+.envelope-stamp{position:absolute;top:0.8rem;right:1rem;width:38px;height:46px;background:var(--paper);border:1.5px solid var(--rose);display:flex;align-items:center;justify-content:center;font-size:0.85rem}
+.letter-body{display:none;background:var(--paper);border:1px solid var(--tan);border-top:none;padding:2.2rem 2.5rem 2rem;position:relative}
+.letter-body.open{display:block;animation:unfold 0.5s cubic-bezier(0.22,1,0.36,1)}
+@keyframes unfold{from{opacity:0;transform:scaleY(0.5);transform-origin:top}to{opacity:1;transform:scaleY(1)}}
+.letter-body::before{content:'';position:absolute;inset:8px;border:1px dashed var(--warm);pointer-events:none}
+.letter-body p{font-size:1.05rem;line-height:1.9;color:var(--deep);margin-bottom:1rem}
+.letter-body p:last-child{margin-bottom:0}
+.letter-sig{font-family:'Caveat',cursive;font-size:1.8rem;font-weight:700;color:var(--rose);margin-top:1rem;display:block}
+.letter-close{position:absolute;top:0.8rem;right:1rem;background:transparent;border:1px solid var(--tan);color:var(--brown);font-family:'Caveat',cursive;font-size:0.85rem;padding:0.2rem 0.7rem;cursor:pointer;transition:background 0.2s}
+.letter-close:hover{background:var(--warm)}
+/* PLACEHOLDER for future letters */
+.future-letters{margin-top:3rem;padding:1.5rem 2rem;background:var(--paper);border:1.5px dashed var(--tan);text-align:center}
+.future-letters h3{font-family:'Playfair Display',serif;font-style:italic;color:var(--deep);margin-bottom:0.5rem}
+.future-letters p{font-family:'Caveat',cursive;font-size:1rem;color:var(--brown);letter-spacing:0.5px}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-brand">For Ann ♡</a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-a">Home</a>
+    <a href="gifts.html" class="nav-a">Gifts</a>
+    <a href="final.html" class="nav-a">The End</a>
+    <a href="timeline.html" class="nav-a">Our Story</a>
+    <span class="nav-a current">Letters</span>
+  </div>
+</nav>
+<div class="page-header">
+  <h1>Letters Archive</h1>
+  <p>every letter — kept safe here, for always ♡</p>
+</div>
+
+<div class="archive-wrap">
+  <div class="archive-intro">
+    <p>This is where the letters live. Not the physical ones — those are yours, in your hands, in whatever drawer or box you keep your most precious things. This is the typed-up version: a private keepsake, so they exist somewhere permanent.</p>
+    <p>More will be added here over time, with every birthday and Christmas.</p>
+  </div>
+
+  <div class="letter-entry" id="l1">
+    <div class="letter-envelope" onclick="toggleLetter('l1')">
+      <div class="envelope-icon">✉️</div>
+      <div class="envelope-meta">
+        <div class="letter-date">August 2025 · Birthday</div>
+        <div class="letter-title">Birthday Letter, Year Three</div>
+        <div class="letter-peek">"I wrote this one on impulse..."</div>
+      </div>
+      <div class="envelope-stamp">♡</div>
+    </div>
+    <div class="letter-body" id="body-l1">
+      <button class="letter-close" onclick="closeLetter('l1')">close ✕</button>
+      <p>Dear Ann,</p>
+      <p>I've been trying to figure out how to start this letter for weeks. I kept writing things and crossing them out because they all sounded too grand or too small for what I actually want to say. So I'm just going to say it.</p>
+      <p>Three years ago I found a friend, and it turned out to be one of the best things that's ever happened to me. That's it. That's the letter. Except I have more to say, obviously, because I always do.</p>
+      <p>What I want you to know is this: you've made my life so much better just by being in it. The calls when we don't do anything. The bits that have been running so long neither of us can remember how they started. The way you respond to my rambling voice messages at two in the afternoon. The way I always feel better after talking to you, even when we didn't talk about the thing that was bothering me at all.</p>
+      <p>I wrapped the outside of this box. I made this website. I spent a lot of time on the envelope. And I did all of it because you deserve that level of effort, and more than that, because it's genuinely fun to do these things for you. You make it easy to want to put in the effort. That's a rarer quality than you might realise.</p>
+      <p>I've started learning Dutch. I know. I know. Four months in now. I'm not saying it's for you — it is a little bit for you. You don't have to say anything about that.</p>
+      <p>The plushie that's in that Heinz Beans can (you're welcome, by the way, for the hilarity of that) is the start of something I want to go on for a very long time. I want it to keep crossing the North Sea. I want to keep updating that passport. I want to send you boxes and you to send me things back and for us to keep making a whole thing of it, every six months, for years.</p>
+      <p>Happy birthday, Ann. I hope everything about today is exactly what it should be. I hope the call is long and mostly pointless and very funny. I hope the biscuits are good. I hope you know, really properly know, how much I think of you.</p>
+      <p>You are one of my favourite people on this earth. That's true every day, but today especially.</p>
+      <span class="letter-sig">Bestie Tristan xo</span>
+    </div>
+  </div>
+
+  <div class="future-letters">
+    <h3>More letters to come</h3>
+    <p>Christmas 2025 · Birthday 2026 · and beyond… ♡</p>
+  </div>
+</div>
+
+<script>
+function toggleLetter(id) {
+  const body = document.getElementById('body-'+id);
+  if (body.classList.contains('open')) { body.classList.remove('open'); }
+  else { body.classList.add('open'); }
+}
+function closeLetter(id) {
+  document.getElementById('body-'+id).classList.remove('open');
+}
+
+// scroll reveal
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.letter-entry').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
