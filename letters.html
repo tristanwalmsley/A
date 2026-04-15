@@ -50,15 +50,9 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 </style>
 </head>
 <body>
-<nav>
-  <a href="index.html" class="nav-brand">For Ann ♡</a>
-  <div class="nav-links">
-    <a href="index.html" class="nav-a">Home</a>
-    <a href="gifts.html" class="nav-a">Gifts</a>
-    <a href="final.html" class="nav-a">The End</a>
-    <a href="timeline.html" class="nav-a">Our Story</a>
-    <span class="nav-a current">Letters</span>
-  </div>
+<nav id="site-nav">
+  <a href="index.html" class="nav-brand">Besties ♡</a>
+  <div class="nav-links"></div>
 </nav>
 <div class="page-header">
   <h1>Letters Archive</h1>
@@ -67,15 +61,15 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 
 <div class="archive-wrap">
   <div class="archive-intro">
-    <p>This is where the letters live. Not the physical ones — those are yours, in your hands, in whatever drawer or box you keep your most precious things. These are the typed-up versions: a private keepsake, so they exist somewhere permanent.</p>
-    <p>I'm sure more will be added here over time, with every birthday and Christmas.</p>
+    <p>This is where the letters live. Not the physical ones — those are yours, in your hands, in whatever drawer or box you keep your most precious things. This is the typed-up version: a private keepsake, so they exist somewhere permanent.</p>
+    <p>More will be added here over time, with every birthday and Christmas.</p>
   </div>
 
   <div class="letter-entry" id="l1">
     <div class="letter-envelope" onclick="toggleLetter('l1')">
       <div class="envelope-icon">✉️</div>
       <div class="envelope-meta">
-        <div class="letter-date">August 2026 · Birthday</div>
+        <div class="letter-date">August 2025 · Birthday</div>
         <div class="letter-title">Birthday Letter, Year Three</div>
         <div class="letter-peek">"I wrote this one on impulse..."</div>
       </div>
@@ -98,7 +92,7 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 
   <div class="future-letters">
     <h3>More letters to come</h3>
-    <p>Christmas 2026 · Birthdays 2027 · and beyond… ♡</p>
+    <p>Christmas 2025 · Birthday 2026 · and beyond… ♡</p>
   </div>
 </div>
 
@@ -118,5 +112,7 @@ const observer = new IntersectionObserver(entries => {
 }, { threshold: 0.1 });
 document.querySelectorAll('.letter-entry').forEach(el => observer.observe(el));
 </script>
+<script src="nav.js"></script>
+<script>window.addEventListener('DOMContentLoaded',()=>buildNav('letters.html'));</script>
 </body>
 </html>
