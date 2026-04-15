@@ -6,324 +6,88 @@
 <title>Our Story — For Ann ♡</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --cream: #faf4e8; --warm: #f0ddb8; --tan: #d4b483; --brown: #7a5230;
-    --deep: #3a2010; --rose: #b86858; --gold: #c8943a; --sage: #7a9870;
-    --paper: #fffdf5; --ink: #2a1a08;
-  }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--cream:#faf4e8;--warm:#f0ddb8;--tan:#d4b483;--brown:#7a5230;--deep:#3a2010;--rose:#b86858;--gold:#c8943a;--sage:#7a9870;--paper:#fffdf5;--ink:#2a1a08}
+body{background:var(--cream);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.6}
+nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--tan);background:var(--paper);position:sticky;top:0;z-index:500}
+.nav-brand{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--rose);font-weight:700;text-decoration:none}
+.nav-links{display:flex;gap:1.2rem}
+.nav-a{font-family:'Caveat',cursive;font-size:1rem;color:var(--brown);text-decoration:none;padding:0.3rem 0.7rem;border-radius:2px;transition:color 0.2s,background 0.2s;letter-spacing:0.5px}
+.nav-a:hover{color:var(--deep);background:var(--warm)}
+.nav-a.current{color:var(--deep);font-weight:700;border-bottom:2px solid var(--gold)}
 
-  body {
-    background: var(--cream);
-    font-family: 'EB Garamond', Georgia, serif;
-    color: var(--ink);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+/* HEADER */
+.page-header{text-align:center;padding:4rem 2rem 1rem;animation:headerIn 0.7s ease both}
+@keyframes headerIn{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+.header-rule{display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:1.2rem}
+.rule-line{flex:1;max-width:80px;height:1px;background:var(--tan)}
+.rule-diamond{color:var(--gold);font-size:1rem}
+.page-header h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:400;font-style:italic;color:var(--deep);margin-bottom:0.5rem}
+.page-header p{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--brown);letter-spacing:1px}
 
-  body::after {
-    content: '';
-    position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-    pointer-events: none; z-index: 9999; opacity: 0.6;
-  }
+/* TIMELINE */
+.tl-wrap{max-width:700px;margin:3rem auto 6rem;padding:0 1.5rem;position:relative}
+.tl-spine{position:absolute;left:50%;transform:translateX(-1px);top:0;bottom:0;width:2px;background:var(--warm);z-index:0;overflow:hidden}
+.tl-spine-fill{position:absolute;top:0;left:0;right:0;height:0;background:var(--gold);transition:height 2.5s cubic-bezier(0.22,1,0.36,1)}
 
-  /* NAV */
-  nav {
-    padding: 1rem 2rem;
-    display: flex; align-items: center; justify-content: space-between;
-    border-bottom: 1px solid var(--tan);
-    background: var(--paper);
-    position: sticky; top: 0; z-index: 500;
-  }
-  .nav-brand { font-family:'Caveat',cursive; font-size:1.3rem; color:var(--rose); font-weight:700; text-decoration:none; }
-  .nav-links { display:flex; gap:1.2rem; }
-  .nav-a {
-    font-family:'Caveat',cursive; font-size:1rem; color:var(--brown);
-    text-decoration:none; padding:0.3rem 0.7rem; border-radius:2px;
-    transition:color 0.2s,background 0.2s; letter-spacing:0.5px;
-  }
-  .nav-a:hover { color:var(--deep); background:var(--warm); }
-  .nav-a.current { color:var(--deep); font-weight:700; border-bottom:2px solid var(--gold); }
+/* ERA DIVIDER */
+.era-divider{display:flex;align-items:center;justify-content:center;position:relative;z-index:2;margin:2.8rem 0 1.5rem;opacity:0;transform:scale(0.88);transition:opacity 0.5s,transform 0.6s cubic-bezier(0.34,1.3,0.64,1)}
+.era-divider.visible{opacity:1;transform:scale(1)}
+.era-pill{background:var(--deep);color:var(--cream);font-family:'Caveat',cursive;font-size:0.82rem;letter-spacing:3px;text-transform:uppercase;padding:0.35rem 1.2rem;position:relative;z-index:1;white-space:nowrap}
+.era-line{position:absolute;left:0;right:0;height:1px;background:var(--tan);z-index:0}
 
-  /* HEADER */
-  .page-header {
-    text-align: center;
-    padding: 4rem 2rem 1rem;
-    animation: headerIn 0.7s ease both;
-  }
-  @keyframes headerIn { from{opacity:0;transform:translateY(-14px)} to{opacity:1;transform:translateY(0)} }
+/* EVENT */
+.tl-event{display:flex;align-items:flex-start;margin-bottom:1.8rem;position:relative;z-index:1;opacity:0}
+.tl-event.from-left{flex-direction:row;transform:translateX(-50px);transition:opacity 0.55s ease,transform 0.55s cubic-bezier(0.22,1,0.36,1)}
+.tl-event.from-right{flex-direction:row-reverse;transform:translateX(50px);transition:opacity 0.55s ease,transform 0.55s cubic-bezier(0.22,1,0.36,1)}
+.tl-event.visible{opacity:1;transform:translateX(0)}
 
-  .header-rule {
-    display: flex; align-items: center; justify-content: center;
-    gap: 1rem; margin-bottom: 1.2rem;
-  }
-  .rule-line { flex: 1; max-width: 80px; height: 1px; background: var(--tan); }
-  .rule-diamond { color: var(--gold); font-size: 1rem; }
+/* SPECIAL EVENTS */
+.tl-event.special .tl-card{border-color:var(--gold);box-shadow:4px 4px 0 rgba(200,148,58,0.3)}
+.tl-event.special .tl-dot{border-color:var(--rose);background:var(--rose)}
+.tl-event.special.visible .tl-dot{background:var(--rose)}
 
-  .page-header h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    font-weight: 400;
-    font-style: italic;
-    color: var(--deep);
-    margin-bottom: 0.5rem;
-  }
-  .page-header p {
-    font-family: 'Caveat', cursive;
-    font-size: 1.1rem;
-    color: var(--brown);
-    letter-spacing: 1px;
-  }
+/* FUTURE EVENTS */
+.tl-event.future .tl-card{border-style:dashed;background:rgba(255,253,245,0.6)}
+.tl-event.future .tl-title{font-style:italic;color:var(--brown)}
+.tl-event.future .tl-dot{border-style:dashed;background:var(--cream)}
+.tl-event.future.visible .tl-dot{background:var(--warm)}
 
-  /* TIMELINE CONTAINER */
-  .tl-wrap {
-    max-width: 680px;
-    margin: 3rem auto 6rem;
-    padding: 0 1.5rem;
-    position: relative;
-  }
+/* CARD */
+.tl-card{width:calc(50% - 40px);background:var(--paper);border:1px solid var(--tan);padding:0.9rem 1.1rem;position:relative;box-shadow:4px 4px 0 var(--warm);transition:box-shadow 0.25s,transform 0.25s;cursor:default}
+.tl-card:hover{box-shadow:6px 6px 0 var(--tan);transform:translate(-2px,-2px)}
+.tl-event.from-right .tl-card:hover{transform:translate(2px,-2px)}
 
-  /* CENTRE SPINE */
-  .tl-spine {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-1px);
-    top: 0; bottom: 0;
-    width: 2px;
-    background: var(--warm);
-    z-index: 0;
-    overflow: hidden;
-  }
-  .tl-spine-fill {
-    position: absolute; top: 0; left: 0; right: 0;
-    height: 0;
-    background: var(--gold);
-    transition: height 2s cubic-bezier(0.22,1,0.36,1);
-  }
+/* Arrow notches */
+.tl-event.from-left .tl-card::after{content:'';position:absolute;right:-8px;top:16px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:8px solid var(--paper)}
+.tl-event.from-left .tl-card::before{content:'';position:absolute;right:-10px;top:15px;width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:9px solid var(--tan)}
+.tl-event.from-right .tl-card::after{content:'';position:absolute;left:-8px;top:16px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:8px solid var(--paper)}
+.tl-event.from-right .tl-card::before{content:'';position:absolute;left:-10px;top:15px;width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-right:9px solid var(--tan)}
 
-  /* ERA DIVIDER */
-  .era-divider {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    z-index: 2;
-    margin: 2.5rem 0 1.5rem;
-    opacity: 0;
-    transform: scale(0.9);
-    transition: opacity 0.5s, transform 0.5s;
-  }
-  .era-divider.visible { opacity: 1; transform: scale(1); }
-  .era-pill {
-    background: var(--deep);
-    color: var(--cream);
-    font-family: 'Caveat', cursive;
-    font-size: 0.85rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    padding: 0.35rem 1.2rem;
-    position: relative;
-    z-index: 1;
-  }
-  .era-line {
-    position: absolute; left: 0; right: 0; height: 1px;
-    background: var(--tan); z-index: 0;
-  }
+.tl-date{font-family:'Caveat',cursive;font-size:0.82rem;color:var(--rose);letter-spacing:1px;margin-bottom:0.2rem}
+.tl-title{font-family:'Playfair Display',serif;font-size:0.98rem;font-weight:700;color:var(--deep);margin-bottom:0.25rem;line-height:1.3}
+.tl-desc{font-size:0.87rem;color:var(--brown);line-height:1.55;font-style:italic}
+.tl-tag{display:inline-block;font-family:'Caveat',cursive;font-size:0.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--rose);border:1px solid var(--tan);padding:0.1rem 0.5rem;margin-bottom:0.35rem}
+.tl-event.future .tl-tag{color:var(--locked-text,#b0a898);border-color:var(--tan)}
 
-  /* EVENT ROW */
-  .tl-event {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 2rem;
-    position: relative;
-    z-index: 1;
-    opacity: 0;
-  }
+/* DOT */
+.tl-dot-wrap{width:80px;flex-shrink:0;display:flex;align-items:flex-start;justify-content:center;padding-top:12px;position:relative}
+.tl-dot{width:14px;height:14px;border-radius:50%;border:2.5px solid var(--gold);background:var(--cream);position:relative;z-index:2;transition:background 0.3s,transform 0.5s cubic-bezier(0.34,1.6,0.64,1),box-shadow 0.3s}
+.tl-event.visible .tl-dot{background:var(--warm);transform:scale(1.2);box-shadow:0 0 0 4px rgba(200,148,58,0.2)}
+.tl-event:hover .tl-dot{background:var(--gold);transform:scale(1.5);box-shadow:0 0 0 8px rgba(200,148,58,0.25)}
 
-  .tl-event.from-left {
-    flex-direction: row;
-    transform: translateX(-40px);
-    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22,1,0.36,1);
-  }
-  .tl-event.from-right {
-    flex-direction: row-reverse;
-    transform: translateX(40px);
-    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22,1,0.36,1);
-  }
-  .tl-event.visible {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  /* CONTENT CARD */
-  .tl-card {
-    width: calc(50% - 36px);
-    background: var(--paper);
-    border: 1px solid var(--tan);
-    padding: 1rem 1.2rem;
-    position: relative;
-    box-shadow: 4px 4px 0 var(--warm);
-    cursor: default;
-    transition: box-shadow 0.25s, transform 0.25s;
-  }
-  .tl-card:hover {
-    box-shadow: 6px 6px 0 var(--tan);
-    transform: translate(-2px, -2px);
-  }
-  .tl-event.from-right .tl-card:hover {
-    transform: translate(2px, -2px);
-  }
-
-  /* Arrow notch toward centre */
-  .tl-event.from-left .tl-card::after {
-    content: '';
-    position: absolute;
-    right: -8px; top: 18px;
-    width: 0; height: 0;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-    border-left: 8px solid var(--paper);
-  }
-  .tl-event.from-left .tl-card::before {
-    content: '';
-    position: absolute;
-    right: -10px; top: 17px;
-    width: 0; height: 0;
-    border-top: 9px solid transparent;
-    border-bottom: 9px solid transparent;
-    border-left: 9px solid var(--tan);
-  }
-  .tl-event.from-right .tl-card::after {
-    content: '';
-    position: absolute;
-    left: -8px; top: 18px;
-    width: 0; height: 0;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-    border-right: 8px solid var(--paper);
-  }
-  .tl-event.from-right .tl-card::before {
-    content: '';
-    position: absolute;
-    left: -10px; top: 17px;
-    width: 0; height: 0;
-    border-top: 9px solid transparent;
-    border-bottom: 9px solid transparent;
-    border-right: 9px solid var(--tan);
-  }
-
-  .tl-date {
-    font-family: 'Caveat', cursive;
-    font-size: 0.85rem;
-    color: var(--rose);
-    letter-spacing: 1px;
-    margin-bottom: 0.25rem;
-  }
-  .tl-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--deep);
-    margin-bottom: 0.3rem;
-    line-height: 1.3;
-  }
-  .tl-desc {
-    font-size: 0.9rem;
-    color: var(--brown);
-    line-height: 1.6;
-    font-style: italic;
-  }
-
-  /* CENTRE DOT */
-  .tl-dot-wrap {
-    width: 72px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding-top: 14px;
-    position: relative;
-  }
-  .tl-dot {
-    width: 16px; height: 16px;
-    border-radius: 50%;
-    border: 2.5px solid var(--gold);
-    background: var(--cream);
-    position: relative;
-    z-index: 2;
-    transition: background 0.3s, transform 0.4s cubic-bezier(0.34,1.6,0.64,1), box-shadow 0.3s;
-  }
-  .tl-event.visible .tl-dot {
-    background: var(--warm);
-    transform: scale(1.15);
-    box-shadow: 0 0 0 4px rgba(200,148,58,0.2);
-  }
-  .tl-event:hover .tl-dot {
-    background: var(--gold);
-    transform: scale(1.4);
-    box-shadow: 0 0 0 8px rgba(200,148,58,0.25);
-  }
-
-  /* FINAL STAMP at bottom */
-  .tl-end-stamp {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 3rem auto 0;
-    position: relative;
-    z-index: 2;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-  .tl-end-stamp.visible { opacity: 1; transform: translateY(0); }
-
-  .stamp-big {
-    width: 130px; height: 155px;
-    background: var(--paper);
-    border: 3px solid var(--rose);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    position: relative;
-    box-shadow: 5px 5px 0 var(--tan);
-  }
-  .stamp-big::before {
-    content: '';
-    position: absolute; inset: 6px;
-    border: 1px dashed var(--rose);
-    opacity: 0.4;
-  }
-  .stamp-big-val {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--rose);
-    line-height: 1;
-    margin-bottom: 0.3rem;
-  }
-  .stamp-big-label {
-    font-family: 'Caveat', cursive;
-    font-size: 0.75rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--rose);
-    text-align: center;
-    line-height: 1.5;
-  }
-  .stamp-caption {
-    font-family: 'Caveat', cursive;
-    font-size: 1.2rem;
-    color: var(--brown);
-    margin-top: 1.2rem;
-    letter-spacing: 1px;
-    text-align: center;
-  }
+/* END STAMP */
+.tl-end-stamp{display:flex;flex-direction:column;align-items:center;justify-content:center;margin:3.5rem auto 0;position:relative;z-index:2;opacity:0;transform:translateY(24px) scale(0.9);transition:opacity 0.8s ease,transform 0.8s cubic-bezier(0.34,1.3,0.64,1)}
+.tl-end-stamp.visible{opacity:1;transform:translateY(0) scale(1)}
+.stamp-big{width:130px;height:155px;background:var(--paper);border:3px solid var(--rose);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;box-shadow:5px 5px 0 var(--tan)}
+.stamp-big::before{content:'';position:absolute;inset:6px;border:1px dashed var(--rose);opacity:0.4}
+.stamp-big-val{font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:var(--rose);line-height:1;margin-bottom:0.3rem}
+.stamp-big-label{font-family:'Caveat',cursive;font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--rose);text-align:center;line-height:1.5}
+.stamp-caption{font-family:'Caveat',cursive;font-size:1.2rem;color:var(--brown);margin-top:1.2rem;letter-spacing:1px;text-align:center}
 </style>
 </head>
 <body>
-
 <nav>
   <a href="index.html" class="nav-brand">For Ann ♡</a>
   <div class="nav-links">
@@ -333,17 +97,11 @@
     <span class="nav-a current">Our Story</span>
   </div>
 </nav>
-
 <div class="page-header">
-  <div class="header-rule">
-    <div class="rule-line"></div>
-    <div class="rule-diamond">✦</div>
-    <div class="rule-line"></div>
-  </div>
+  <div class="header-rule"><div class="rule-line"></div><div class="rule-diamond">✦</div><div class="rule-line"></div></div>
   <h1>Our story so far</h1>
-  <p>three years and counting — and so many more to come</p>
+  <p>every moment — from the very beginning, to right now, and beyond</p>
 </div>
-
 <div class="tl-wrap">
   <div class="tl-spine"><div class="tl-spine-fill" id="spine-fill"></div></div>
   <div id="tl-content"></div>
@@ -358,19 +116,115 @@
 
 <script>
 const EVENTS = [
-  { era: 'how it began', side: 'left',  date: 'Early 2022',         title: 'We meet',                      desc: 'Somewhere on the internet, two people find each other — and immediately just click. That was us.' },
-  { era: null,           side: 'right', date: 'A few weeks in',      title: 'The first long call',          desc: 'That call that was supposed to be short and absolutely was not. Neither of us minded at all.' },
-  { era: null,           side: 'left',  date: 'Spring 2022',         title: 'We become besties, officially', desc: 'At some point it stops being "someone I talk to" and becomes something much more important than that.' },
+  /* ─── 2023: how it all started ─── */
+  { era: 'how it all started', future: false, special: false,
+    side: 'right', date: '15 Jan 2023', title: 'First hello and the date of our first DMing.',
+    desc: '' },
+  { era: null, future: false, special: false,
+    side: 'left', date: '28 Jan 2023', title: 'The very first of many calls.',
+    desc: '' },
+  { era: null, future: false, special: false,
+    side: 'right', date: '11 Mar 2023', title: 'First time we played bus sim.',
+    desc: '' },
 
-  { era: 'the tradition begins', side: 'right', date: 'First birthday',  title: 'First parcel sent',            desc: 'A package crosses the North Sea for the first time. A tradition is born without us quite realising it.' },
-  { era: null,                   side: 'left',  date: 'First Christmas', title: 'First Christmas exchange',     desc: 'We decide we\'re doing Christmas too. Obviously we are. We are besties.' },
+  /* ─── Summer 2023 ─── */
+  { era: 'summer 2023', future: false, special: true,
+    side: 'left', date: '27 Jun 2023', title: 'Tristan\'s birthday 🎂',
+    tag: 'birthday',
+    desc: 'Tristan\'s birthday! The first one we celebrate together as besties.' },
+  { era: null, future: false, special: false,
+    side: 'right', date: '3 Jul 2023', title: 'A moment that mattered',
+    desc: 'Early July — something happens that cements this friendship as something really real and important.' },
+  { era: null, future: false, special: true,
+    side: 'left', date: '5 Aug 2023', title: 'Ann\'s birthday 🎂',
+    tag: 'birthday',
+    desc: 'Ann\'s very first birthday as besties! The start of a tradition of making these days feel special.' },
+  { era: null, future: false, special: false,
+    side: 'right', date: '9 Aug 2023', title: 'Just after the birthday',
+    desc: 'A few days after — maybe a celebration continuation, maybe just a very good call. Either way, worth marking.' },
+  { era: null, future: false, special: false,
+    side: 'left', date: 'August 2023', title: 'A summer to remember',
+    desc: 'The rest of August — the friendship is really settled in now. This is just how things are. Happily.' },
 
-  { era: 'the postcard saga', side: 'right', date: 'Second birthday',  title: 'Postcard no. 1 arrives',       desc: 'The first WWI postcard enters the picture. Ann has no idea it\'s going to become a series.' },
-  { era: null,                side: 'left',  date: 'Second Christmas', title: 'Postcard no. 2',               desc: 'The series continues. A pattern is emerging.' },
-  { era: null,                side: 'right', date: 'Third birthday',   title: 'Postcard no. 3 (maybe 4?)',    desc: 'By now nobody can quite remember how many there have been. This is fine.' },
+  /* ─── Christmas 2023 ─── */
+  { era: 'christmas 2023', future: false, special: true,
+    side: 'right', date: 'Christmas 2023', title: 'First Christmas exchange 🎄',
+    tag: 'first gift',
+    desc: 'The very first parcel crosses the North Sea. A tradition is born, quietly, without either of us quite realising it yet.' },
 
-  { era: 'the plushie era', side: 'left',  date: 'This birthday',    title: 'The plushie tradition begins', desc: 'A little plushie starts its life as a trans-North-Sea traveller. It has two homes now.' },
-  { era: null,              side: 'right', date: 'August 2025',       title: 'This moment, right now',       desc: 'A decorated box, a website, a letter, and three years of one of the most important friendships in both our lives.' },
+  /* ─── 2024 ─── */
+  { era: 'into 2024', future: false, special: true,
+    side: 'left', date: '27 Jun 2024', title: 'Tristan\'s birthday 🎂',
+    tag: 'birthday',
+    desc: 'Year two of celebrating Tristan\'s birthday together. Getting better at this every time.' },
+  { era: null, future: false, special: true,
+    side: 'right', date: '5 Aug 2024', title: 'Ann\'s birthday 🎂',
+    tag: 'birthday',
+    desc: 'Ann\'s birthday, year two! With a proper gift and postcard, because of course.' },
+  { era: null, future: false, special: false,
+    side: 'left', date: 'Sep–Nov 2024', title: 'Autumn together',
+    desc: 'A whole season of being best friends. Long calls, ongoing bits, the usual brilliance.' },
+  { era: null, future: false, special: false,
+    side: 'right', date: 'Oct 2024', title: 'An October moment',
+    desc: 'Something happened in October worth remembering. Right here on this timeline.' },
+  { era: null, future: false, special: true,
+    side: 'left', date: 'Christmas 2024', title: 'Christmas exchange 2024 🎄',
+    tag: 'gift exchange',
+    desc: 'Second Christmas exchange. Another parcel crosses the North Sea. Another round of individually-wrapped gifts with little cards. The tradition deepens.' },
+
+  /* ─── 2025 ─── */
+  { era: '2025', future: false, special: false,
+    side: 'right', date: 'Early 2025', title: 'New year, same besties',
+    desc: 'Into 2025 and absolutely nothing has changed — except maybe we\'re even closer than before.' },
+  { era: null, future: false, special: false,
+    side: 'left', date: 'Feb 2025', title: 'A February to remember',
+    desc: 'February brought something worth marking. Something good, something meaningful, something very "us".' },
+  { era: null, future: false, special: false,
+    side: 'right', date: 'Apr 2025', title: 'Spring arrives',
+    desc: 'April — things are good. The calls are good. Everything is good.' },
+  { era: null, future: false, special: false,
+    side: 'left', date: 'Jun 2025', title: 'June and closing in',
+    desc: 'June arrives and birthday season is approaching — for both of us.' },
+  { era: null, future: false, special: true,
+    side: 'right', date: '27 Jun 2025', title: 'Tristan\'s birthday 🎂',
+    tag: 'birthday',
+    desc: 'Year three! Happy birthday, Tristan.' },
+  { era: null, future: false, special: true,
+    side: 'left', date: '5 Aug 2025', title: 'Ann\'s birthday 🎂 — today!',
+    tag: '✦ right now ✦',
+    desc: 'This is today. Right now. You are holding a decorated box with our whole story on it, reading this on a website Tristan made, on a call together. Three years of this. How lucky are we.' },
+  { era: null, future: false, special: false,
+    side: 'right', date: 'Sep 2025', title: 'After the birthday',
+    desc: 'Life continues, the friendship continues, the plushie begins its first stint at Ann\'s.' },
+  { era: null, future: false, special: false,
+    side: 'left', date: 'Oct 2025', title: 'An October to come',
+    desc: 'Something in October — TBD, but almost certainly wonderful.' },
+  { era: null, future: false, special: true,
+    side: 'right', date: 'Christmas 2025', title: 'Christmas exchange 2025 🎄',
+    tag: 'gift exchange',
+    desc: 'Third Christmas exchange — and the plushie makes its first return journey home to Tristan.' },
+
+  /* ─── 2026 and beyond ─── */
+  { era: '2026 and beyond ✦', future: true, special: false,
+    side: 'left', date: 'Early 2026', title: 'A new year begins',
+    desc: 'The fourth year of this friendship. Still going. Still brilliant. Obviously.' },
+  { era: null, future: true, special: false,
+    side: 'right', date: 'Feb–Mar 2026', title: 'Something in the new year',
+    desc: 'Something happens in early 2026 — a plan, a milestone, a very good call. To be written in.' },
+  { era: null, future: true, special: false,
+    side: 'left', date: 'Mar 2026', title: 'March 2026',
+    desc: 'Another marker on the timeline. Another moment that will matter.' },
+  { era: null, future: true, special: true,
+    side: 'right', date: '27 Jun 2026', title: 'Tristan\'s birthday 🎂',
+    tag: 'birthday',
+    desc: 'Year four! Still celebrating. Still sending presents across the North Sea.' },
+  { era: null, future: true, special: true,
+    side: 'left', date: '5 Aug 2026', title: 'Ann\'s birthday 🎂',
+    tag: 'birthday',
+    desc: 'Ann\'s birthday, year four. More gifts, more decorated boxes, more of this. For ever.' },
+  { era: null, future: true, special: false,
+    side: 'right', date: 'And beyond…', title: 'The rest of it',
+    desc: 'More birthdays. More Christmases. More calls. More postcards, more plushie journeys, more of being exactly this kind of friends. For a very long time.' },
 ];
 
 const container = document.getElementById('tl-content');
@@ -381,17 +235,20 @@ EVENTS.forEach((ev, i) => {
     currentEra = ev.era;
     const div = document.createElement('div');
     div.className = 'era-divider';
-    div.style.transitionDelay = (i * 0.06) + 's';
+    div.style.transitionDelay = '0s';
     div.innerHTML = `<div class="era-line"></div><div class="era-pill">${ev.era}</div>`;
     container.appendChild(div);
   }
 
   const row = document.createElement('div');
-  row.className = `tl-event from-${ev.side}`;
-  row.style.transitionDelay = (i * 0.07) + 's';
+  row.className = `tl-event from-${ev.side}${ev.special?' special':''}${ev.future?' future':''}`;
+  row.style.transitionDelay = '0s';
+
+  const tagHtml = ev.tag ? `<div class="tl-tag">${ev.tag}</div>` : '';
 
   row.innerHTML = `
     <div class="tl-card">
+      ${tagHtml}
       <div class="tl-date">${ev.date}</div>
       <div class="tl-title">${ev.title}</div>
       <div class="tl-desc">${ev.desc}</div>
@@ -401,21 +258,18 @@ EVENTS.forEach((ev, i) => {
   container.appendChild(row);
 });
 
-// Intersection Observer for scroll animations
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
     }
   });
-}, { threshold: 0.2, rootMargin: '0px 0px -40px 0px' });
+}, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
 
 document.querySelectorAll('.tl-event, .era-divider, #end-stamp').forEach(el => observer.observe(el));
 
-// Fill spine progressively
-setTimeout(() => {
-  document.getElementById('spine-fill').style.height = '100%';
-}, 300);
+setTimeout(() => { document.getElementById('spine-fill').style.height = '100%'; }, 400);
 </script>
 </body>
 </html>
