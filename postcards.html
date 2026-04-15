@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Postcard Gallery — For Ann ♡</title>
+<title>Besties ♡</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -71,16 +71,9 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 </style>
 </head>
 <body>
-<nav>
-  <a href="index.html" class="nav-brand">For Ann ♡</a>
-  <div class="nav-links">
-    <a href="index.html" class="nav-a">Home</a>
-    <a href="gifts.html" class="nav-a">Gifts</a>
-    <a href="final.html" class="nav-a">The End</a>
-    <a href="timeline.html" class="nav-a">Our Story</a>
-    <span class="nav-a current">Postcards</span>
-    <a href="passport.html" class="nav-a">Passport</a>
-  </div>
+<nav id="site-nav">
+  <a href="index.html" class="nav-brand">Besties ♡</a>
+  <div class="nav-links"></div>
 </nav>
 <div class="page-header">
   <h1>Postcard Gallery</h1>
@@ -198,5 +191,7 @@ function closeLightbox() { document.getElementById('lightbox').classList.remove(
 
 buildGallery(POSTCARDS);
 </script>
+<script src="nav.js"></script>
+<script>window.addEventListener('DOMContentLoaded',()=>buildNav('postcards.html'));</script>
 </body>
 </html>
