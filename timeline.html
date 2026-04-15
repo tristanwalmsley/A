@@ -10,12 +10,13 @@
 :root{--cream:#faf4e8;--warm:#f0ddb8;--tan:#d4b483;--brown:#7a5230;--deep:#3a2010;--rose:#b86858;--gold:#c8943a;--sage:#7a9870;--paper:#fffdf5;--ink:#2a1a08}
 body{background:var(--cream);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden}
 body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.6}
-nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--tan);background:var(--paper);position:sticky;top:0;z-index:500}
+nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--tan);background:var(--paper);position:sticky;top:0;z-index:500;flex-wrap:wrap;gap:0.5rem}
 .nav-brand{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--rose);font-weight:700;text-decoration:none}
-.nav-links{display:flex;gap:1.2rem}
-.nav-a{font-family:'Caveat',cursive;font-size:1rem;color:var(--brown);text-decoration:none;padding:0.3rem 0.7rem;border-radius:2px;transition:color 0.2s,background 0.2s;letter-spacing:0.5px}
+.nav-links{display:flex;gap:0.8rem;flex-wrap:wrap}
+.nav-a{font-family:'Caveat',cursive;font-size:0.9rem;color:var(--brown);text-decoration:none;padding:0.25rem 0.6rem;border-radius:2px;transition:color 0.2s,background 0.2s;letter-spacing:0.5px;white-space:nowrap}
 .nav-a:hover{color:var(--deep);background:var(--warm)}
 .nav-a.current{color:var(--deep);font-weight:700;border-bottom:2px solid var(--gold)}
+.nav-a.locked{color:rgba(58,32,16,0.25);cursor:not-allowed;pointer-events:none}
 
 /* HEADER */
 .page-header{text-align:center;padding:4rem 2rem 1rem;animation:headerIn 0.7s ease both}
@@ -88,14 +89,9 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 </style>
 </head>
 <body>
-<nav>
-  <a href="index.html" class="nav-brand">For Ann ♡</a>
-  <div class="nav-links">
-    <a href="index.html" class="nav-a">Home</a>
-    <a href="gifts.html" class="nav-a">Gifts</a>
-    <a href="final.html" class="nav-a">The End</a>
-    <span class="nav-a current">Our Story</span>
-  </div>
+<nav id="site-nav">
+  <a href="index.html" class="nav-brand">Besties ♡</a>
+  <div class="nav-links"></div>
 </nav>
 <div class="page-header">
   <div class="header-rule"><div class="rule-line"></div><div class="rule-diamond">✦</div><div class="rule-line"></div></div>
@@ -271,5 +267,7 @@ document.querySelectorAll('.tl-event, .era-divider, #end-stamp').forEach(el => o
 
 setTimeout(() => { document.getElementById('spine-fill').style.height = '100%'; }, 400);
 </script>
+<script src="nav.js"></script>
+<script>window.addEventListener('DOMContentLoaded',()=>buildNav('timeline.html'));</script>
 </body>
 </html>
