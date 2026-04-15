@@ -6,538 +6,121 @@
 <title>Your Gifts — For Ann ♡</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --cream: #faf4e8;
-    --warm: #f0ddb8;
-    --tan: #d4b483;
-    --brown: #7a5230;
-    --deep: #3a2010;
-    --rose: #b86858;
-    --gold: #c8943a;
-    --sage: #7a9870;
-    --paper: #fffdf5;
-    --ink: #2a1a08;
-    --locked-bg: #ede8de;
-    --locked-text: #b0a898;
-  }
-
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--cream);
-    font-family: 'EB Garamond', Georgia, serif;
-    color: var(--ink);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* GRAIN */
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0.6;
-  }
-
-  /* NAV */
-  nav {
-    padding: 1rem 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--tan);
-    background: var(--paper);
-    position: sticky;
-    top: 0;
-    z-index: 500;
-  }
-  .nav-brand { font-family: 'Caveat', cursive; font-size: 1.3rem; color: var(--rose); font-weight: 700; text-decoration: none; }
-  .nav-links { display: flex; gap: 1.2rem; }
-  .nav-a {
-    font-family: 'Caveat', cursive;
-    font-size: 1rem;
-    color: var(--brown);
-    text-decoration: none;
-    padding: 0.3rem 0.7rem;
-    border-radius: 2px;
-    transition: color 0.2s, background 0.2s;
-    letter-spacing: 0.5px;
-    border: none; background: none; cursor: pointer;
-  }
-  .nav-a:hover { color: var(--deep); background: var(--warm); }
-  .nav-a.current { color: var(--deep); font-weight: 700; border-bottom: 2px solid var(--gold); }
-  .nav-a.locked { color: var(--locked-text); cursor: not-allowed; pointer-events: none; }
-
-  /* PAGE HEADER */
-  .page-header {
-    text-align: center;
-    padding: 3rem 2rem 1.5rem;
-    animation: headerIn 0.7s ease both;
-  }
-  @keyframes headerIn {
-    from { opacity: 0; transform: translateY(-16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .page-header h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
-    font-weight: 400;
-    color: var(--deep);
-  }
-  .page-header p {
-    font-family: 'Caveat', cursive;
-    font-size: 1.1rem;
-    color: var(--brown);
-    margin-top: 0.4rem;
-    letter-spacing: 0.5px;
-  }
-
-  /* PROGRESS */
-  .progress-section {
-    max-width: 520px;
-    margin: 1rem auto 2.5rem;
-    padding: 0 2rem;
-    animation: headerIn 0.7s ease 0.1s both;
-  }
-  .progress-rail {
-    height: 5px;
-    background: var(--warm);
-    border-radius: 999px;
-    overflow: hidden;
-    margin-bottom: 0.5rem;
-  }
-  .progress-fill {
-    height: 100%;
-    background: var(--gold);
-    border-radius: 999px;
-    transition: width 1s cubic-bezier(0.34, 1.4, 0.64, 1);
-  }
-  .progress-label {
-    font-family: 'Caveat', cursive;
-    font-size: 1rem;
-    color: var(--brown);
-    text-align: center;
-  }
-
-  /* PATH CONTAINER */
-  .path-wrap {
-    max-width: 580px;
-    margin: 0 auto;
-    padding: 0 1.5rem 5rem;
-    position: relative;
-  }
-
-  /* DASHED SPINE */
-  .spine {
-    position: absolute;
-    left: calc(1.5rem + 27px);
-    top: 0; bottom: 0;
-    width: 2px;
-    z-index: 0;
-    overflow: hidden;
-  }
-  .spine-bg {
-    position: absolute; inset: 0;
-    border-left: 2.5px dashed var(--warm);
-  }
-  .spine-fill {
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 0;
-    background: linear-gradient(to bottom, var(--sage), var(--gold));
-    transition: height 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  /* STOP */
-  .stop {
-    display: flex;
-    align-items: flex-start;
-    gap: 1.2rem;
-    margin-bottom: 2rem;
-    position: relative;
-    z-index: 1;
-    opacity: 0;
-    transform: translateX(-30px);
-    animation: stopSlide 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  }
-  @keyframes stopSlide {
-    to { opacity: 1; transform: translateX(0); }
-  }
-
-  /* DOT */
-  .stop-dot {
-    flex-shrink: 0;
-    width: 56px; height: 56px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Caveat', cursive;
-    font-size: 1.4rem;
-    font-weight: 700;
-    position: relative;
-    transition: transform 0.4s cubic-bezier(0.34, 1.6, 0.64, 1), box-shadow 0.3s;
-  }
-
-  /* LOCKED DOT */
-  .stop.is-locked .stop-dot {
-    background: var(--locked-bg);
-    border: 2.5px dashed var(--locked-text);
-    color: var(--locked-text);
-  }
-
-  /* UNLOCKED DOT */
-  .stop.is-unlocked .stop-dot {
-    background: var(--warm);
-    border: 2.5px solid var(--gold);
-    color: var(--deep);
-    box-shadow: 0 0 0 4px rgba(200,148,58,0.15);
-    cursor: pointer;
-  }
-  .stop.is-unlocked .stop-dot:hover {
-    transform: scale(1.15) rotate(-5deg);
-    box-shadow: 0 0 0 8px rgba(200,148,58,0.2);
-  }
-
-  /* OPENED DOT */
-  .stop.is-opened .stop-dot {
-    background: var(--sage);
-    border: 2.5px solid var(--sage);
-    color: white;
-    box-shadow: 0 0 0 4px rgba(122,152,112,0.2);
-  }
-
-  /* PULSE RING on unlocked */
-  .stop.is-unlocked .stop-dot::after {
-    content: '';
-    position: absolute;
-    inset: -6px;
-    border-radius: 50%;
-    border: 2px solid var(--gold);
-    opacity: 0;
-    animation: pulseRing 2s ease-in-out infinite;
-  }
-  @keyframes pulseRing {
-    0% { opacity: 0.8; transform: scale(1); }
-    100% { opacity: 0; transform: scale(1.6); }
-  }
-
-  /* CARD */
-  .stop-card {
-    flex: 1;
-    background: var(--paper);
-    border: 1px solid var(--tan);
-    padding: 1.1rem 1.3rem 1.2rem;
-    position: relative;
-    overflow: hidden;
-    transition: box-shadow 0.25s, transform 0.25s;
-  }
-
-  /* Accent bar */
-  .stop-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 4px; height: 100%;
-    transition: background 0.4s, width 0.3s;
-    background: var(--warm);
-  }
-
-  .stop.is-locked .stop-card {
-    background: var(--locked-bg);
-    border-color: #d0c8ba;
-  }
-  .stop.is-locked .stop-card::before { background: #d0c8ba; }
-  .stop.is-unlocked .stop-card::before { background: var(--gold); }
-  .stop.is-opened .stop-card::before { background: var(--sage); }
-
-  .stop.is-unlocked:hover .stop-card {
-    box-shadow: 6px 6px 0 var(--tan);
-    transform: translate(-3px, -3px);
-  }
-
-  .stop-label {
-    font-family: 'Caveat', cursive;
-    font-size: 0.78rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--brown);
-    margin-bottom: 0.25rem;
-  }
-  .stop.is-locked .stop-label { color: var(--locked-text); }
-
-  .stop-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: var(--deep);
-    margin-bottom: 0.3rem;
-  }
-  .stop.is-locked .stop-title { color: var(--locked-text); filter: blur(4px); user-select: none; }
-
-  .stop-hint {
-    font-size: 0.9rem;
-    color: var(--brown);
-    font-style: italic;
-    line-height: 1.5;
-  }
-  .stop.is-locked .stop-hint { display: none; }
-
-  .stop-locked-msg {
-    font-family: 'Caveat', cursive;
-    font-size: 0.95rem;
-    color: var(--locked-text);
-    margin-top: 0.3rem;
-  }
-
-  .btn-open {
-    display: inline-block;
-    margin-top: 0.8rem;
-    background: var(--deep);
-    color: var(--cream);
-    border: none;
-    padding: 0.45rem 1.2rem;
-    font-family: 'Caveat', cursive;
-    font-size: 1rem;
-    cursor: pointer;
-    letter-spacing: 0.5px;
-    transition: background 0.2s, transform 0.15s, box-shadow 0.15s;
-    box-shadow: 3px 3px 0 var(--brown);
-    position: relative;
-  }
-  .btn-open:hover { background: var(--brown); transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #5a3820; }
-  .btn-open:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--brown); }
-
-  .btn-revisit {
-    display: inline-block;
-    margin-top: 0.8rem;
-    background: transparent;
-    color: var(--brown);
-    border: 1px solid var(--tan);
-    padding: 0.4rem 1rem;
-    font-family: 'Caveat', cursive;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .btn-revisit:hover { background: var(--warm); }
-
-  /* FINAL LOCKED BANNER */
-  #final-banner {
-    max-width: 460px;
-    margin: 0 auto 3rem;
-    padding: 1.5rem 2rem;
-    background: var(--locked-bg);
-    border: 1.5px dashed var(--locked-text);
-    text-align: center;
-    transition: opacity 0.5s;
-  }
-  #final-banner p {
-    font-family: 'Caveat', cursive;
-    font-size: 1.05rem;
-    color: var(--locked-text);
-    letter-spacing: 0.5px;
-  }
-
-  /* ══════════ GIFT MODAL ══════════ */
-  #overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 900;
-    background: rgba(30,15,5,0);
-    transition: background 0.4s;
-    align-items: center;
-    justify-content: center;
-    padding: 1.5rem;
-  }
-  #overlay.show {
-    display: flex;
-    background: rgba(30,15,5,0.65);
-  }
-
-  .modal {
-    max-width: 460px;
-    width: 100%;
-    position: relative;
-    transform-origin: center top;
-  }
-
-  /* ENVELOPE */
-  .env-wrap {
-    position: relative;
-    perspective: 800px;
-  }
-
-  .env-flap {
-    width: 100%;
-    height: 80px;
-    background: var(--warm);
-    clip-path: polygon(0 0, 100% 0, 50% 100%);
-    border-left: 1px solid var(--tan);
-    border-right: 1px solid var(--tan);
-    transform-origin: top;
-    transform: rotateX(0deg);
-    transition: transform 0.6s cubic-bezier(0.4,0,0.2,1), clip-path 0.6s ease;
-    position: relative;
-    z-index: 2;
-  }
-  .env-flap.open {
-    transform: rotateX(-180deg);
-    clip-path: polygon(0 0, 100% 0, 50% 100%);
-  }
-
-  .env-body {
-    background: var(--paper);
-    border: 1px solid var(--tan);
-    border-top: none;
-    box-shadow: 8px 8px 0 var(--tan), 16px 16px 0 rgba(0,0,0,0.08);
-    position: relative;
-    overflow: hidden;
-  }
-
-  /* inner letter sliding out */
-  .env-letter {
-    padding: 2rem 2.2rem 2.5rem;
-    transform: translateY(30px);
-    opacity: 0;
-    transition: transform 0.7s cubic-bezier(0.22,1,0.36,1) 0.3s, opacity 0.5s ease 0.3s;
-  }
-  .env-letter.revealed {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  .modal-num {
-    font-family: 'Playfair Display', serif;
-    font-size: 5rem;
-    font-weight: 700;
-    color: var(--warm);
-    line-height: 1;
-    margin-bottom: 0.2rem;
-    transition: color 0.5s 0.4s, text-shadow 0.5s 0.4s;
-  }
-  .modal-num.lit {
-    color: var(--gold);
-    text-shadow: 0 0 40px rgba(200,148,58,0.4);
-  }
-
-  .modal-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--deep);
-    margin-bottom: 0.6rem;
-    line-height: 1.2;
-  }
-
-  .modal-badge {
-    display: inline-block;
-    border: 1.5px solid var(--tan);
-    padding: 0.2rem 0.9rem;
-    font-family: 'Caveat', cursive;
-    font-size: 0.8rem;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    color: var(--rose);
-    margin-bottom: 1.2rem;
-  }
-
-  .modal-desc {
-    font-size: 1rem;
-    line-height: 1.8;
-    color: var(--brown);
-    font-style: italic;
-    margin-bottom: 1.2rem;
-  }
-
-  .modal-note {
-    background: var(--cream);
-    border-left: 4px solid var(--gold);
-    padding: 1rem 1.2rem;
-    font-size: 1rem;
-    line-height: 1.8;
-    color: var(--deep);
-    position: relative;
-    overflow: hidden;
-  }
-  /* shimmering reveal */
-  .modal-note::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--cream);
-    transform: translateX(0%);
-    transition: transform 0.8s cubic-bezier(0.22,1,0.36,1) 0.7s;
-  }
-  .modal-note.revealed::before { transform: translateX(101%); }
-
-  .modal-footer {
-    display: flex;
-    gap: 0.7rem;
-    margin-top: 1.5rem;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-  .btn-modal-close {
-    background: transparent;
-    border: 1px solid var(--tan);
-    color: var(--brown);
-    padding: 0.5rem 1.1rem;
-    font-family: 'Caveat', cursive;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .btn-modal-close:hover { background: var(--warm); }
-
-  .btn-modal-mark {
-    background: var(--sage);
-    border: none;
-    color: white;
-    padding: 0.5rem 1.3rem;
-    font-family: 'Caveat', cursive;
-    font-size: 1rem;
-    cursor: pointer;
-    box-shadow: 3px 3px 0 #5a7850;
-    transition: all 0.15s;
-  }
-  .btn-modal-mark:hover { background: #6a8860; transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #5a7850; }
-  .btn-modal-mark:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 #5a7850; }
-
-  .btn-modal-next {
-    background: var(--deep);
-    border: none;
-    color: var(--cream);
-    padding: 0.5rem 1.3rem;
-    font-family: 'Caveat', cursive;
-    font-size: 1rem;
-    cursor: pointer;
-    box-shadow: 3px 3px 0 var(--brown);
-    transition: all 0.15s;
-    text-decoration: none;
-    display: inline-block;
-  }
-  .btn-modal-next:hover { background: var(--brown); transform: translate(-2px,-2px); box-shadow: 5px 5px 0 #5a3820; }
-
-  /* ══════════ CONFETTI ══════════ */
-  .confetti { position: fixed; pointer-events: none; z-index: 9998; top: 0; left: 0; width: 100%; height: 100%; }
-  .bit {
-    position: absolute;
-    opacity: 0;
-    animation: bitFall var(--bd) ease-out var(--bdelay) forwards;
-  }
-  @keyframes bitFall {
-    0% { opacity: 1; transform: translateY(-20px) translateX(0) rotate(0deg) scale(1); }
-    100% { opacity: 0; transform: translateY(calc(100vh + 40px)) translateX(var(--bx)) rotate(var(--br)) scale(0.4); }
-  }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#faf4e8;--warm:#f0ddb8;--tan:#d4b483;--brown:#7a5230;
+  --deep:#3a2010;--rose:#b86858;--gold:#c8943a;--sage:#7a9870;
+  --paper:#fffdf5;--ink:#2a1a08;--locked-bg:#eee8dc;--locked-text:#b0a898;
+}
+html{scroll-behavior:smooth}
+body{background:var(--cream);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.6}
+nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--tan);background:var(--paper);position:sticky;top:0;z-index:500;flex-wrap:wrap;gap:0.5rem}
+.nav-brand{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--rose);font-weight:700;text-decoration:none}
+.nav-links{display:flex;gap:1rem;flex-wrap:wrap}
+.nav-a{font-family:'Caveat',cursive;font-size:0.95rem;color:var(--brown);text-decoration:none;padding:0.3rem 0.6rem;border-radius:2px;transition:color 0.2s,background 0.2s;letter-spacing:0.5px;border:none;background:none;cursor:pointer}
+.nav-a:hover{color:var(--deep);background:var(--warm)}
+.nav-a.current{color:var(--deep);font-weight:700;border-bottom:2px solid var(--gold)}
+.nav-a.locked{color:var(--locked-text);cursor:not-allowed;pointer-events:none}
+.page-header{text-align:center;padding:3rem 2rem 1.5rem;animation:headerIn 0.7s ease both}
+@keyframes headerIn{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+.page-header h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:400;color:var(--deep)}
+.page-header p{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--brown);margin-top:0.4rem;letter-spacing:0.5px}
+.progress-section{max-width:520px;margin:1rem auto 2.5rem;padding:0 2rem;animation:headerIn 0.7s ease 0.1s both}
+.progress-rail{height:5px;background:var(--warm);border-radius:999px;overflow:hidden;margin-bottom:0.5rem}
+.progress-fill{height:100%;background:var(--gold);border-radius:999px;transition:width 1s cubic-bezier(0.34,1.4,0.64,1)}
+.progress-label{font-family:'Caveat',cursive;font-size:1rem;color:var(--brown);text-align:center}
+.path-wrap{max-width:580px;margin:0 auto;padding:0 1.5rem 5rem;position:relative}
+.spine{position:absolute;left:calc(1.5rem + 27px);top:0;bottom:0;width:2px;z-index:0;overflow:hidden}
+.spine-bg{position:absolute;inset:0;border-left:2.5px dashed var(--warm)}
+.spine-fill{position:absolute;top:0;left:0;right:0;height:0;background:linear-gradient(to bottom,var(--sage),var(--gold));transition:height 0.8s cubic-bezier(0.22,1,0.36,1)}
+/* STOP */
+.stop{display:flex;align-items:flex-start;gap:1.2rem;margin-bottom:2rem;position:relative;z-index:1;opacity:0;transform:translateX(-30px);animation:stopSlide 0.6s cubic-bezier(0.22,1,0.36,1) forwards}
+@keyframes stopSlide{to{opacity:1;transform:translateX(0)}}
+/* DOT — now an icon */
+.stop-dot{flex-shrink:0;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;position:relative;transition:transform 0.4s cubic-bezier(0.34,1.6,0.64,1),box-shadow 0.3s}
+.stop.is-locked .stop-dot{background:var(--locked-bg);border:2.5px dashed var(--locked-text);font-size:0.9rem}
+.stop.is-unlocked .stop-dot{background:var(--warm);border:2.5px solid var(--gold);box-shadow:0 0 0 4px rgba(200,148,58,0.15);cursor:pointer}
+.stop.is-unlocked .stop-dot:hover{transform:scale(1.18) rotate(-6deg);box-shadow:0 0 0 10px rgba(200,148,58,0.2)}
+.stop.is-opened .stop-dot{background:var(--sage);border:2.5px solid var(--sage);box-shadow:0 0 0 4px rgba(122,152,112,0.2)}
+.stop.is-unlocked .stop-dot::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--gold);opacity:0;animation:pulseRing 2s ease-in-out infinite}
+@keyframes pulseRing{0%{opacity:0.8;transform:scale(1)}100%{opacity:0;transform:scale(1.7)}}
+/* CARD */
+.stop-card{flex:1;background:var(--paper);border:1px solid var(--tan);padding:1.1rem 1.3rem 1.2rem;position:relative;overflow:hidden;transition:box-shadow 0.25s,transform 0.25s}
+.stop-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;transition:background 0.4s;background:var(--warm)}
+.stop.is-locked .stop-card{background:var(--locked-bg);border-color:#d0c8ba}
+.stop.is-locked .stop-card::before{background:#d0c8ba}
+.stop.is-unlocked .stop-card::before{background:var(--gold)}
+.stop.is-opened .stop-card::before{background:var(--sage)}
+.stop.is-unlocked:hover .stop-card{box-shadow:6px 6px 0 var(--tan);transform:translate(-3px,-3px)}
+.stop-label{font-family:'Caveat',cursive;font-size:0.78rem;letter-spacing:3px;text-transform:uppercase;color:var(--brown);margin-bottom:0.25rem}
+.stop.is-locked .stop-label{color:var(--locked-text)}
+.stop-title{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--deep);margin-bottom:0.3rem}
+.stop.is-locked .stop-title{color:var(--locked-text);filter:blur(5px);user-select:none}
+.stop-hint{font-size:0.9rem;color:var(--brown);font-style:italic;line-height:1.5}
+.stop.is-locked .stop-hint{display:none}
+.stop-locked-msg{font-family:'Caveat',cursive;font-size:0.95rem;color:var(--locked-text);margin-top:0.3rem}
+.btn-open{display:inline-block;margin-top:0.8rem;background:var(--deep);color:var(--cream);border:none;padding:0.45rem 1.2rem;font-family:'Caveat',cursive;font-size:1rem;cursor:pointer;letter-spacing:0.5px;transition:background 0.2s,transform 0.15s,box-shadow 0.15s;box-shadow:3px 3px 0 var(--brown)}
+.btn-open:hover{background:var(--brown);transform:translate(-2px,-2px);box-shadow:5px 5px 0 #5a3820}
+.btn-open:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--brown)}
+.btn-revisit{display:inline-block;margin-top:0.8rem;background:transparent;color:var(--brown);border:1px solid var(--tan);padding:0.4rem 1rem;font-family:'Caveat',cursive;font-size:0.95rem;cursor:pointer;transition:background 0.2s}
+.btn-revisit:hover{background:var(--warm)}
+#final-banner{max-width:460px;margin:0 auto 3rem;padding:1.5rem 2rem;background:var(--locked-bg);border:1.5px dashed var(--locked-text);text-align:center}
+#final-banner p{font-family:'Caveat',cursive;font-size:1.05rem;color:var(--locked-text);letter-spacing:0.5px}
+/* MODAL */
+#overlay{display:none;position:fixed;inset:0;z-index:900;align-items:center;justify-content:center;padding:1.5rem}
+#overlay.show{display:flex}
+.backdrop{position:absolute;inset:0;background:rgba(30,15,5,0);transition:background 0.4s ease}
+#overlay.show .backdrop{background:rgba(30,15,5,0.72)}
+.modal-wrap{position:relative;z-index:1;max-width:460px;width:100%;perspective:1000px}
+.gift-box-scene{position:relative;display:flex;justify-content:center;align-items:center;height:260px;margin-bottom:-20px}
+.gift-box{width:160px;height:130px;position:relative;transform-style:preserve-3d;cursor:default}
+.box-body{position:absolute;bottom:0;left:0;right:0;height:100px;background:var(--warm);border:2px solid var(--tan);border-radius:2px;overflow:hidden}
+.box-body::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:20px;height:100%;background:rgba(200,148,58,0.3)}
+.box-lid{position:absolute;top:0;left:-8px;right:-8px;height:36px;background:var(--rose);border:2px solid #8a4838;border-radius:2px;transform-origin:left center;z-index:2}
+.box-lid::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:100%;background:rgba(255,255,255,0.15)}
+.bow{position:absolute;top:-12px;left:50%;transform:translateX(-50%)}
+.bow-left,.bow-right{position:absolute;width:22px;height:16px;border:3px solid var(--gold);border-radius:50%;top:0}
+.bow-left{left:-22px;transform:rotate(-20deg)}
+.bow-right{right:-22px;transform:rotate(20deg) scaleX(-1)}
+.bow-knot{position:absolute;width:10px;height:10px;background:var(--gold);border-radius:50%;top:3px;left:50%;transform:translateX(-50%)}
+.box-shine{position:absolute;top:10px;left:15px;width:3px;height:70px;background:rgba(255,255,255,0.2);border-radius:2px}
+@keyframes lidFlyOff{0%{transform:translateY(0) rotate(0deg);opacity:1}30%{transform:translateY(-80px) rotate(-25deg) translateX(30px)}60%{transform:translateY(-200px) rotate(-60deg) translateX(80px);opacity:1}100%{transform:translateY(-400px) rotate(-120deg) translateX(160px);opacity:0}}
+.box-lid.fly-off{animation:lidFlyOff 0.7s cubic-bezier(0.4,0,0.6,1) forwards}
+@keyframes giftBurst{0%{opacity:0;transform:translateY(60px) scale(0.4)}50%{transform:translateY(-20px) scale(1.08)}75%{transform:translateY(8px) scale(0.97)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.gift-card{background:var(--paper);border:1px solid var(--tan);box-shadow:8px 8px 0 var(--tan),16px 16px 0 rgba(0,0,0,0.06);opacity:0;position:relative;overflow:hidden;transform:translateY(30px) scale(0.85);transition:none}
+.gift-card.burst{animation:giftBurst 0.65s cubic-bezier(0.22,1,0.36,1) forwards}
+.card-ribbon{height:6px;background:var(--rose);position:relative}
+.card-ribbon::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:30px;height:16px;background:var(--rose);top:-5px;border-radius:0 0 4px 4px}
+.card-body{padding:1.8rem 2rem 2rem}
+.modal-num{font-family:'Playfair Display',serif;font-size:5rem;font-weight:700;line-height:1;margin-bottom:0.2rem;color:var(--warm);transition:color 0.4s,text-shadow 0.4s}
+.modal-num.lit{color:var(--gold);text-shadow:0 0 30px rgba(200,148,58,0.5)}
+@keyframes numPop{0%{transform:scale(0.3) rotate(-15deg)}60%{transform:scale(1.15) rotate(3deg)}80%{transform:scale(0.95) rotate(-1deg)}100%{transform:scale(1) rotate(0deg)}}
+.modal-num.lit{animation:numPop 0.6s cubic-bezier(0.34,1.6,0.64,1) forwards}
+.modal-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--deep);margin-bottom:0.5rem;line-height:1.2}
+.modal-badge{display:inline-block;border:1.5px solid var(--tan);padding:0.2rem 0.9rem;font-family:'Caveat',cursive;font-size:0.8rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--rose);margin-bottom:1.1rem}
+.modal-desc{font-size:1rem;line-height:1.8;color:var(--brown);font-style:italic;margin-bottom:1.1rem}
+.modal-note{background:var(--cream);border-left:4px solid var(--gold);padding:0.9rem 1.1rem;font-size:1rem;line-height:1.8;color:var(--deep);position:relative;overflow:hidden}
+.modal-note-curtain{position:absolute;inset:0;background:var(--cream);transform:translateX(0);transition:transform 0.9s cubic-bezier(0.77,0,0.18,1) 0.1s}
+.modal-note-curtain.gone{transform:translateX(102%)}
+.modal-footer{display:flex;gap:0.7rem;margin-top:1.4rem;flex-wrap:wrap;align-items:center}
+.btn-modal-close{background:transparent;border:1px solid var(--tan);color:var(--brown);padding:0.5rem 1.1rem;font-family:'Caveat',cursive;font-size:1rem;cursor:pointer;transition:background 0.2s}
+.btn-modal-close:hover{background:var(--warm)}
+.btn-modal-mark{background:var(--sage);border:none;color:white;padding:0.5rem 1.3rem;font-family:'Caveat',cursive;font-size:1rem;cursor:pointer;box-shadow:3px 3px 0 #5a7850;transition:all 0.15s}
+.btn-modal-mark:hover{background:#6a8860;transform:translate(-2px,-2px);box-shadow:5px 5px 0 #5a7850}
+.btn-modal-mark:active{transform:translate(1px,1px);box-shadow:1px 1px 0 #5a7850}
+.btn-modal-next{background:var(--deep);border:none;color:var(--cream);padding:0.5rem 1.3rem;font-family:'Caveat',cursive;font-size:1rem;cursor:pointer;box-shadow:3px 3px 0 var(--brown);transition:all 0.15s;text-decoration:none;display:inline-block}
+.btn-modal-next:hover{background:var(--brown);transform:translate(-2px,-2px);box-shadow:5px 5px 0 #5a3820}
+#confetti-layer{position:fixed;inset:0;pointer-events:none;z-index:9998;overflow:hidden}
+.confetti-bit{position:absolute;opacity:0;animation:confettiFall var(--cd) ease-out var(--cdelay) forwards}
+@keyframes confettiFall{0%{opacity:1;transform:translateY(-20px) translateX(0) rotate(0deg) scale(1)}15%{opacity:1}100%{opacity:0;transform:translateY(105vh) translateX(var(--cx)) rotate(var(--cr)) scale(0.3)}}
+.sparkle{position:fixed;pointer-events:none;z-index:9997;width:6px;height:6px;border-radius:50%;opacity:0;animation:sparkleOut var(--sd) ease-out var(--sdelay) forwards}
+@keyframes sparkleOut{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--sx),var(--sy)) scale(0)}}
+#reset-btn{position:fixed;bottom:1.2rem;left:1.2rem;background:rgba(58,32,16,0.2);color:rgba(58,32,16,0.25);border:1px solid rgba(58,32,16,0.1);padding:0.25rem 0.6rem;font-family:'Caveat',cursive;font-size:0.7rem;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;z-index:100}
+#reset-btn:hover{background:var(--warm);color:var(--brown);border-color:var(--tan)}
 </style>
 </head>
 <body>
-
 <nav>
   <a href="index.html" class="nav-brand">For Ann ♡</a>
   <div class="nav-links">
@@ -545,275 +128,326 @@
     <span class="nav-a current">Gifts</span>
     <span class="nav-a locked" id="nav-final">The End</span>
     <span class="nav-a locked" id="nav-timeline">Our Story</span>
+    <a href="postcards.html" class="nav-a">Postcards</a>
+    <a href="passport.html" class="nav-a">Passport</a>
+    <a href="tierlist.html" class="nav-a">Tier List</a>
   </div>
 </nav>
-
 <div class="page-header">
   <h1>Your unboxing journey</h1>
-  <p id="subhead">open each gift in order - the path reveals as you go!</p>
+  <p id="subhead">open each gift in order — the path reveals as you go</p>
 </div>
-
 <div class="progress-section">
   <div class="progress-rail"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
-  <div class="progress-label" id="prog-label">0 of 6 opened</div>
+  <div class="progress-label" id="prog-label">0 of 18 opened</div>
 </div>
-
 <div class="path-wrap">
-  <div class="spine">
-    <div class="spine-bg"></div>
-    <div class="spine-fill" id="spine-fill"></div>
-  </div>
+  <div class="spine"><div class="spine-bg"></div><div class="spine-fill" id="spine-fill"></div></div>
   <div id="stops"></div>
 </div>
-
-<div id="final-banner"><p>✨ open all the gifts to unlock the final message ✨</p></div>
-
-<!-- MODAL -->
+<div id="final-banner"><p>✦ open all the gifts to unlock the final message ✦</p></div>
 <div id="overlay">
-  <div class="modal" id="modal">
-    <div class="env-wrap">
-      <div class="env-flap" id="env-flap"></div>
-      <div class="env-body">
-        <div class="env-letter" id="env-letter">
-          <div class="modal-num" id="modal-num">1</div>
-          <div class="modal-title" id="modal-title"></div>
-          <div class="modal-badge" id="modal-badge"></div>
-          <div class="modal-desc" id="modal-desc"></div>
-          <div class="modal-note" id="modal-note"></div>
-          <div class="modal-footer" id="modal-footer"></div>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="modal-wrap">
+    <div class="gift-box-scene" id="box-scene">
+      <div class="gift-box" id="gift-box">
+        <div class="box-lid" id="box-lid"><div class="bow"><div class="bow-left"></div><div class="bow-right"></div><div class="bow-knot"></div></div></div>
+        <div class="box-body"><div class="box-shine"></div></div>
+      </div>
+    </div>
+    <div class="gift-card" id="gift-card">
+      <div class="card-ribbon"></div>
+      <div class="card-body">
+        <div class="modal-num" id="modal-num">1</div>
+        <div class="modal-title" id="modal-title"></div>
+        <div class="modal-badge" id="modal-badge"></div>
+        <div class="modal-desc" id="modal-desc"></div>
+        <div class="modal-note" id="modal-note">
+          <div class="modal-note-curtain" id="note-curtain"></div>
+          <span id="note-text"></span>
         </div>
+        <div class="modal-footer" id="modal-footer"></div>
       </div>
     </div>
   </div>
 </div>
-
-<div class="confetti" id="confetti"></div>
+<div id="confetti-layer"></div>
+<button id="reset-btn" onclick="if(confirm('Reset all gift progress?')){localStorage.removeItem(STORAGE_KEY);location.reload()}">reset</button>
 
 <script>
 const GIFTS = [
-  { id:1, label:'Stop one',     title:'Postcard 1',            type:'collectible',     hint:'The last in the series.',                                  desc:'The final WWI postcard. This one completes the collection Ive been building over our last few gifts.',                                   note:'"Three or four postcards later — I genuinely lost count. We should frame them all one day."' },
-  { id:1, label:'Stop two',     title:'The Letter',            type:'handwritten',     hint:'Something from the heart — read this one first.',          desc:'A letter written just for you. Sit with it before you open anything else.',                                                                note:'"I wrote this on impulse and I meant every single word. No take-backsies."' },
-  { id:2, label:'Stop three',   title:'Postcard 2',            type:'collectible',     hint:'The last in the series.',                                  desc:'The final WWI postcard. This one completes the collection Ive been building over our last few gifts.',                                   note:'"Three or four postcards later — I genuinely lost count. We should frame them all one day."' },
-  { id:3, label:'Stop four',    title:'The Plushie',           type:'✦ new tradition ✦',  hint:'A little traveller, to a new home.',                       desc:'This one has been living at mine for a long time now, and I thought it would be a cool new tradition to have the guy switch homes every 6 months. Now its your turn. Look after them until Christmas.',                                   note:'"It has my name on it but now I think it belongs to both of us."' },
-  { id:2, label:'Stop five',    title:'Postcard 3',            type:'collectible',     hint:'The last in the series.',                                  desc:'The final WWI postcard. This one completes the collection Ive been building over our last few gifts.',                                   note:'"Three or four postcards later — I genuinely lost count. We should frame them all one day."' },
-  { id:4, label:'Stop six',     title:'The Stickers',          type:'for decorating',  hint:'Stick them somewhere unexpected.',                         desc:'A curated little collection picked entirely with you in mind. There is no wrong place to put them.',                                      note:'"I dare you to put at least one somewhere unexpected. Report back immediately."' },
-  { id:2, label:'Stop seven',   title:'Postcard 4',            type:'collectible',     hint:'The last in the series.',                                  desc:'The final WWI postcard. This one completes the collection Ive been building over our last few gifts.',                                   note:'"Three or four postcards later — I genuinely lost count. We should frame them all one day."' },
-  { id:5, label:'Stop eight',   title:'The Biscuits',          type:'edible',          hint:'Best eaten right now, on the call.',                       desc:'Something delicious. You are required to eat at least one while we are still talking. This is law.',                                      note:'"Biscuit on call. Non-negotiable. I will be watching."' },
-  { id:2, label:'Stop nine',    title:'Postcard 5',            type:'collectible',     hint:'The last in the series.',                                  desc:'The final WWI postcard. This one completes the collection Ive been building over our last few gifts.',                                   note:'"Three or four postcards later — I genuinely lost count. We should frame them all one day."' },   { id:6, label:'Stop six',   title:'[ Placeholder gift ]',  type:'surprise',        hint:'Something else lovely — its in the box!',                 desc:'Something I picked especially for you — placeholder for now, the real description goes here when you know what it is!',                 note:'"Trust the process. And trust me. Always."' },
+  {id:1, icon:'🎂', label:'Stop one', title:'Birthday Card',
+   type:'birthday card', hint:'Start here — the classic opener.',
+   desc:'A proper birthday card to kick things off. Happy birthday, Ann!',
+   note:'"Some things are classics for a reason. Happy birthday, bestie."'},
+  {id:2, icon:'✉️', label:'Stop two', title:'The Letter',
+   type:'handwritten letter', hint:'The letter — written for you. Sit with it.',
+   desc:'A letter written just for you, with a bit of a throwback: the envelope has been decorated and addressed mimicking the way you wrote your envelope last year, because it was funny and beautiful.',
+   note:'"I wrote this one on impulse and I meant every single word. No take-backsies. Ever."'},
+  {id:3, icon:'🗓️', label:'Stop three', title:'WWI Postcard No. 1',
+   type:'WWI postcard', hint:'The first of four — each individually wrapped.',
+   desc:'The first WWI postcard, individually wrapped in an aeroplane sticker-decorated envelope. A little piece of history, crossing the North Sea to you.',
+   note:'"I love that these little pieces of history travel from me to you. It feels right."'},
+  {id:4, icon:'🎉', label:'Stop four', title:'Sticker Set — Home Bargains, Round 1',
+   type:'stickers', hint:'The first of eight mini sticker packs — in red tissue paper.',
+   desc:'Mini sticker packs from Home Bargains — I sent some last year, and they had loads more to collect. Here are some more, wrapped together in red tissue paper. You know what to do with them.',
+   note:'"Stick one somewhere immediately. You know this. I know you know this."'},
+  {id:5, icon:'📬', label:'Stop five', title:'WWI Postcard No. 2',
+   type:'WWI postcard', hint:'The second one — each is different.',
+   desc:'The second WWI postcard, wrapped in its own decorated envelope. Each one is unique, each one picked with care.',
+   note:'"History crossing the North Sea in an envelope. What a thing."'},
+  {id:6, icon:'🐄', label:'Stop six', title:'Biscuits — Custard Cream: Coconut',
+   type:'edible ♡', hint:'First biscuit stop. Open immediately. Eat one now.',
+   desc:'Custard creams — you loved the classic ones last year, so this time they come in flavours. First up: coconut. You are required to eat at least one on this call.',
+   note:'"Biscuit on call. Non-negotiable. I will be watching your face."'},
+  {id:7, icon:'📜', label:'Stop seven', title:'WWI Postcard No. 3',
+   type:'WWI postcard', hint:'Third in the series.',
+   desc:'The third WWI postcard. Three down, one to go.',
+   note:'"Three postcards in. The collection is nearly yours."'},
+  {id:8, icon:'🏷️', label:'Stop eight', title:'Sticker Set — Home Bargains, Round 2',
+   type:'stickers', hint:'More from the set — still in the red tissue packages.',
+   desc:'More mini sticker packs from Home Bargains, still wrapped in the red tissue paper. There are eight packs in total across the three tissue paper parcels.',
+   note:'"I may have gone slightly overboard with stickers. I regret nothing."'},
+  {id:9, icon:'🍓', label:'Stop nine', title:'Biscuits — Custard Cream: Strawberry',
+   type:'edible ♡', hint:'Second biscuit stop. A different custard cream.',
+   desc:'Custard cream: strawberry flavour. The second of four custard cream variations.',
+   note:'"Two flavours down. Still more to go. This is not excessive. This is love."'},
+  {id:10, icon:'✉️', label:'Stop ten', title:'WWI Postcard No. 4',
+   type:'WWI postcard', hint:'The last one — the full set is yours.',
+   desc:'The fourth and final WWI postcard. The complete set is yours now. All four, individually wrapped, all the way from me to you.',
+   note:'"Four little windows into history, all for you. Frame them one day?"'},
+  {id:11, icon:'🐦', label:'Stop eleven', title:'MogSweep Postcards + Snail Mail Stickers',
+   type:'custom illustrated ✦', hint:'Custom illustrated. MogSweep on Etsy.',
+   desc:'Last year\'s MogSweep parcel was the best thing — custom illustrated envelope, a letter, free postcard, free stickers. So I went back. This year: the pigeon post washi tape (custom illustrated) and snail mail stickers, plus a postcard.',
+   note:'"MogSweep\'s packaging deserves its own gift stop. Genuinely one of the best things I\'ve ever ordered from Etsy."'},
+  {id:12, icon:'🐌', label:'Stop twelve', title:'Lancashire Postcards',
+   type:'postcards', hint:'Three or four vintage-style Lancashire photographs.',
+   desc:'From a pack of twelve vintage-style Lancashire photograph postcards — beautiful, nostalgic, very English. I\'m sending three or four of them.',
+   note:'"A little corner of the north of England, just for you."'},
+  {id:13, icon:'🍋', label:'Stop thirteen', title:'Biscuits — Custard Cream: Lemon',
+   type:'edible ♡', hint:'Third custard cream flavour.',
+   desc:'Custard cream: lemon flavour. Three flavours in. One more to go.',
+   note:'"These are getting more delicious with each one. I have good taste in biscuits and I will not be told otherwise."'},
+  {id:14, icon:'😄', label:'Stop fourteen', title:'Funny Postcards — Fruity Motivation',
+   type:'postcards', hint:'Two funny fruit motivation-themed postcards.',
+   desc:'From a pack of twelve funny, fruit motivation-themed postcards. I\'m sending two of them. You\'ll understand immediately.',
+   note:'"I had to stop myself sending all twelve. Barely. You\'re welcome for my restraint."'},
+  {id:15, icon:'🏷️', label:'Stop fifteen', title:'Sticker Set — Home Bargains, Round 3',
+   type:'stickers', hint:'The final tissue paper parcel.',
+   desc:'The last of the three red tissue paper parcels of Home Bargains mini sticker packs. Also in this general area: a pack of 100 animal stickers.',
+   note:'"Right. Now go and stick something, somewhere brilliant."'},
+  {id:16, icon:'🍪', label:'Stop sixteen', title:'Biscuits — Custard Cream: Digestive & Two Classics',
+   type:'edible ♡', hint:'Final biscuits — custard cream digestive, malted milk, nice.',
+   desc:'The final biscuit stop: custard cream in digestive flavour, plus two British classics — malted milk biscuits and nice biscuits. The full biscuit range.',
+   note:'"Happy birthday, Ann. I hope your mouth is absolutely full of biscuit right now."'},
+  {id:17, icon:'🧸', label:'Stop seventeen', title:'The Plushie (in a Heinz Beans Can)',
+   type:'✦ new tradition ✦', hint:'A little traveller. Starting its very first journey.',
+   desc:'This is the start of a brand new tradition. This little plushie is going to live at yours for six months, then come back to me at Christmas — and keep making that trip forever. It arrives in a Heinz Beans can. For reasons. (The beans meanz heinz reason.)',
+   note:'"It has my name on it but I think it officially belongs to both of us now. That\'s the deal. Look after them."'},
+  {id:18, icon:'🇳🇱', label:'Stop eighteen', title:'I\'ve been learning Dutch',
+   type:'the best gift ♡', hint:'Four months of Dutch, just for you (mostly).',
+   desc:'This one doesn\'t fit in a box, but it\'s maybe your favourite gift of all: by the time you open this, Tristan will have been learning Dutch for four months. For no particular reason. Definitely not for you. (A little bit for you.)',
+   note:'"Hallo. Hoe gaat het? Ik ben een beste vriend. That one took a while to learn but I was very motivated."'},
 ];
 
-const STORAGE_KEY = 'ann_birthday_opened_v1';
-
-/* ✅ FIX 1: safe localStorage parsing */
+const STORAGE_KEY = 'ann_bday_2025_v3';
 let opened;
-
 try {
-  const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY));
+  const p = JSON.parse(localStorage.getItem(STORAGE_KEY));
+  opened = new Set(Array.isArray(p) ? p : []);
+} catch(e) { opened = new Set(); }
 
-  if (Array.isArray(parsed)) {
-    opened = new Set(parsed);
-  } else {
-    opened = new Set();
-  }
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify([...opened])); }
 
-} catch (e) {
-  console.warn('Broken localStorage, resetting...');
-  opened = new Set();
-}
-
-function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify([...opened]));
-}
+let currentId = null;
+let modalOpen = false;
 
 function renderAll() {
   const container = document.getElementById('stops');
   container.innerHTML = '';
-
   const count = opened.size;
   const total = GIFTS.length;
-
-  document.getElementById('prog-fill').style.width = (count / total * 100) + '%';
-  document.getElementById('prog-label').textContent = count + ' of ' + total + ' opened';
-  document.getElementById('spine-fill').style.height = (count / total * 100) + '%';
-
+  document.getElementById('prog-fill').style.width = (count/total*100)+'%';
+  document.getElementById('prog-label').textContent = count+' of '+total+' opened';
+  document.getElementById('spine-fill').style.height = (count/total*100)+'%';
   const allDone = count === total;
   document.getElementById('final-banner').style.display = allDone ? 'none' : 'block';
-
-  const navFinal = document.getElementById('nav-final');
-  const navTl = document.getElementById('nav-timeline');
-
-  // unlock nav when done
+  const nf = document.getElementById('nav-final');
+  const nt = document.getElementById('nav-timeline');
   if (allDone) {
-    navFinal.classList.remove('locked');
-    navFinal.style.pointerEvents = 'auto';
-    navFinal.onclick = () => window.location.href = 'final.html';
-
-    navTl.classList.remove('locked');
-    navTl.style.pointerEvents = 'auto';
-    navTl.onclick = () => window.location.href = 'timeline.html';
+    nf.classList.remove('locked'); nf.onclick = ()=>location.href='final.html'; nf.style.pointerEvents='auto';
+    nt.classList.remove('locked'); nt.onclick = ()=>location.href='timeline.html'; nt.style.pointerEvents='auto';
+    launchSeasonalConfetti();
   }
-
-  GIFTS.forEach((g, i) => {
-    const prevDone = i === 0 || opened.has(GIFTS[i - 1].id);
+  GIFTS.forEach((g,i) => {
+    const prevDone = i===0 || opened.has(GIFTS[i-1].id);
     const isOpen = opened.has(g.id);
     const unlocked = prevDone;
-
     const el = document.createElement('div');
-    const state = isOpen ? 'is-opened' : unlocked ? 'is-unlocked' : 'is-locked';
-    el.className = 'stop ' + state;
-    el.style.animationDelay = (i * 0.08) + 's';
-
-    const dotContent = isOpen
-      ? '<span style="font-size:1.2rem">✓</span>'
-      : (unlocked ? g.id : '✦');
-
-    // clean HTML (NO inline onclick anymore)
-    el.innerHTML = `
-      <div class="stop-dot">${dotContent}</div>
+    el.className = 'stop '+(isOpen?'is-opened':unlocked?'is-unlocked':'is-locked');
+    el.style.animationDelay = (i*0.07)+'s';
+    const dotContent = isOpen ? '✓' : (unlocked ? g.icon : '✦');
+    el.innerHTML = `<div class="stop-dot">${dotContent}</div>
       <div class="stop-card">
         <div class="stop-label">${g.label}</div>
         <div class="stop-title">${g.title}</div>
         ${unlocked
-          ? `<div class="stop-hint">${g.hint}</div>
-             ${isOpen
-               ? `<button class="btn-revisit">Read again →</button>`
-               : `<button class="btn-open">Open this one →</button>`}`
+          ? `<div class="stop-hint">${g.hint}</div>${isOpen
+              ? `<button class="btn-revisit">Revisit →</button>`
+              : `<button class="btn-open">Open this one →</button>`}`
           : `<div class="stop-locked-msg">✦ open the one before this first</div>`}
-      </div>
-    `;
-
-    // ✅ attach events safely
-    const dot = el.querySelector('.stop-dot');
-    const btn = el.querySelector('.btn-open, .btn-revisit');
-
-    if (unlocked && !isOpen && dot) {
-      dot.onclick = () => openGift(g.id);
+      </div>`;
+    if (unlocked) {
+      const dot = el.querySelector('.stop-dot');
+      const btn = el.querySelector('.btn-open, .btn-revisit');
+      if (!isOpen && dot) dot.onclick = () => openGift(g.id);
+      if (btn) btn.onclick = () => openGift(g.id);
     }
-
-    if (btn) {
-      btn.onclick = () => openGift(g.id);
-    }
-
     container.appendChild(el);
   });
 }
 
 function openGift(id) {
+  if (modalOpen) return;
+  modalOpen = true;
   const g = GIFTS.find(x => x.id === id);
   currentId = id;
-
-  const numEl = document.getElementById('modal-num');
-  const noteEl = document.getElementById('modal-note');
-  const letterEl = document.getElementById('env-letter');
-  const flapEl = document.getElementById('env-flap');
-  const footer = document.getElementById('modal-footer');
-
   document.getElementById('modal-title').textContent = g.title;
   document.getElementById('modal-badge').textContent = g.type;
   document.getElementById('modal-desc').textContent = g.desc;
-  noteEl.textContent = g.note;
-  numEl.textContent = g.id;
-
-  numEl.className = 'modal-num';
-  noteEl.className = 'modal-note';
-  flapEl.className = 'env-flap';
-  letterEl.className = 'env-letter';
-
+  document.getElementById('note-text').textContent = g.note;
+  document.getElementById('modal-num').textContent = g.id;
+  document.getElementById('modal-num').className = 'modal-num';
+  document.getElementById('note-curtain').className = 'modal-note-curtain';
+  const footer = document.getElementById('modal-footer');
   footer.innerHTML = '';
-
   const closeBtn = document.createElement('button');
-  closeBtn.className = 'btn-modal-close';
-  closeBtn.textContent = 'Close';
-  closeBtn.onclick = closeModal;
+  closeBtn.className = 'btn-modal-close'; closeBtn.textContent = 'Close'; closeBtn.onclick = closeModal;
   footer.appendChild(closeBtn);
-
   if (!opened.has(id)) {
     const markBtn = document.createElement('button');
-    markBtn.className = 'btn-modal-mark';
-    markBtn.textContent = 'Opened it! ✓';
+    markBtn.className = 'btn-modal-mark'; markBtn.textContent = 'Opened it! ✓';
     markBtn.onclick = () => { markOpen(id); markBtn.remove(); buildNextBtn(footer, id); };
     footer.appendChild(markBtn);
-  } else {
-    buildNextBtn(footer, id);
-  }
-
+  } else { buildNextBtn(footer, id); }
+  const boxScene = document.getElementById('box-scene');
+  const card = document.getElementById('gift-card');
+  const lid = document.getElementById('box-lid');
+  boxScene.style.display = 'flex';
+  boxScene.style.opacity = '1';
+  card.className = 'gift-card';
+  card.style.display = 'block';
+  lid.className = 'box-lid';
   const overlay = document.getElementById('overlay');
-
-  /* ✅ FIX 3: use class instead of inline styles */
   overlay.classList.add('show');
-
-  requestAnimationFrame(() => {
-    setTimeout(() => { flapEl.classList.add('open'); }, 150);
-    setTimeout(() => {
-      letterEl.classList.add('revealed');
-      numEl.classList.add('lit');
-    }, 400);
-    setTimeout(() => { noteEl.classList.add('revealed'); }, 700);
-  });
+  const box = document.getElementById('gift-box');
+  box.style.animation = 'none';
+  setTimeout(() => { box.style.animation = 'boxShake 0.5s ease'; }, 200);
+  setTimeout(() => { lid.classList.add('fly-off'); spawnSparkles(); }, 700);
+  setTimeout(() => {
+    boxScene.style.transition = 'opacity 0.3s ease';
+    boxScene.style.opacity = '0';
+    setTimeout(() => { boxScene.style.display = 'none'; }, 300);
+    card.classList.add('burst');
+  }, 1100);
+  setTimeout(() => { document.getElementById('modal-num').classList.add('lit'); }, 1550);
+  setTimeout(() => { document.getElementById('note-curtain').classList.add('gone'); }, 1900);
 }
 
-function closeModal() {
+function spawnSparkles() {
   const overlay = document.getElementById('overlay');
-  overlay.classList.remove('show');
-}
-
-document.getElementById('overlay').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
-
-function markOpen(id) {
-  opened.add(id);
-  save();
-  burst(id);
-  setTimeout(renderAll, 500);
+  const rect = overlay.getBoundingClientRect();
+  const cx = rect.width / 2, cy = rect.height * 0.35;
+  const cols = ['#c8943a','#b86858','#d4b483','#7a9870','#f0ddb8'];
+  for (let i = 0; i < 24; i++) {
+    const s = document.createElement('div');
+    s.className = 'sparkle';
+    const angle = (Math.PI * 2 / 24) * i;
+    const dist = 80 + Math.random() * 120;
+    s.style.cssText = `left:${cx}px;top:${cy}px;background:${cols[i%cols.length]};--sx:${Math.cos(angle)*dist}px;--sy:${Math.sin(angle)*dist}px;--sd:${0.5+Math.random()*0.4}s;--sdelay:${Math.random()*0.15}s;width:${4+Math.random()*6}px;height:${4+Math.random()*6}px`;
+    overlay.appendChild(s);
+    setTimeout(() => s.remove(), 900);
+  }
 }
 
 function buildNextBtn(footer, id) {
   const idx = GIFTS.findIndex(g => g.id === id);
   const isLast = idx === GIFTS.length - 1;
-
   if (!isLast) {
     const nb = document.createElement('button');
-    nb.className = 'btn-modal-next';
-    nb.textContent = 'Next gift →';
-    nb.onclick = () => { closeModal(); setTimeout(() => openGift(GIFTS[idx + 1].id), 320); };
+    nb.className = 'btn-modal-next'; nb.textContent = 'Next gift →';
+    nb.onclick = () => { closeModal(); setTimeout(() => openGift(GIFTS[idx+1].id), 350); };
     footer.appendChild(nb);
   } else if (opened.size === GIFTS.length) {
     const nb = document.createElement('a');
-    nb.href = 'final.html';
-    nb.className = 'btn-modal-next';
-    nb.textContent = 'See the final message →';
+    nb.href = 'final.html'; nb.className = 'btn-modal-next'; nb.textContent = 'See the final message →';
     footer.appendChild(nb);
   }
 }
 
-function burst(id) {
-  const colors = ['#c8943a','#b86858','#d4b483','#7a9870','#f0ddb8','#3a2010'];
-  const shapes = ['50%','2px','0'];
-  const cf = document.getElementById('confetti');
+function closeModal() {
+  document.getElementById('overlay').classList.remove('show');
+  modalOpen = false;
+}
 
-  for (let i = 0; i < 60; i++) {
+document.getElementById('backdrop').addEventListener('click', closeModal);
+
+function markOpen(id) {
+  opened.add(id); save(); bigBurst(); setTimeout(renderAll, 500);
+}
+
+function bigBurst() {
+  const layer = document.getElementById('confetti-layer');
+  const month = new Date().getMonth();
+  let cols;
+  if (month === 7) cols = ['#c8943a','#b86858','#d4b483','#7a9870','#f0ddb8','#3a2010','#e8c4a0'];
+  else if (month === 11) cols = ['#c8943a','#2d6e30','#b86858','#fffdf5','#d4b483','#ffffff'];
+  else cols = ['#c8943a','#b86858','#d4b483','#7a9870','#f0ddb8','#3a2010','#e8c4a0'];
+  const shapes = ['50%','2px','4px','0'];
+  for (let i = 0; i < 90; i++) {
     const b = document.createElement('div');
-    b.className = 'bit';
-    const size = 6 + Math.random() * 10;
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    const br = shapes[Math.floor(Math.random() * shapes.length)];
-
-    b.style.cssText = `
-      left:${20 + Math.random()*60}%;
-      top:${10 + Math.random()*30}%;
-      width:${size}px;height:${size}px;
-      background:${color};
-      border-radius:${br};
-      --bd:${1 + Math.random()*1.5}s;
-      --bdelay:${Math.random()*0.4}s;
-      --bx:${(Math.random()-0.5)*300}px;
-      --br:${(Math.random()-0.5)*720}deg;
-    `;
-
-    cf.appendChild(b);
-    setTimeout(() => b.remove(), 2500);
+    b.className = 'confetti-bit';
+    const size = 6+Math.random()*12;
+    b.style.cssText = `left:${5+Math.random()*90}%;top:-10px;width:${size}px;height:${size}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${shapes[Math.floor(Math.random()*shapes.length)]};--cd:${1.2+Math.random()*1.8}s;--cdelay:${Math.random()*0.5}s;--cx:${(Math.random()-0.5)*400}px;--cr:${(Math.random()-0.5)*900}deg`;
+    layer.appendChild(b);
+    setTimeout(() => b.remove(), 3000);
   }
+}
+
+function launchSeasonalConfetti() {
+  const month = new Date().getMonth();
+  let cols;
+  if (month === 7) cols = ['#c8943a','#b86858','#faf4e8','#d4b483'];
+  else if (month === 11) cols = ['#c8943a','#2d6e30','#b86858','#d4b483'];
+  else cols = ['#c8943a','#b86858','#d4b483','#7a9870'];
+  const layer = document.getElementById('confetti-layer');
+  const shapes = ['50%','2px','4px','0'];
+  for (let i = 0; i < 120; i++) {
+    const b = document.createElement('div');
+    b.className = 'confetti-bit';
+    const size = 5+Math.random()*10;
+    b.style.cssText = `left:${Math.random()*100}%;top:-10px;width:${size}px;height:${size}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${shapes[Math.floor(Math.random()*shapes.length)]};--cd:${2+Math.random()*2.5}s;--cdelay:${Math.random()*1}s;--cx:${(Math.random()-0.5)*400}px;--cr:${(Math.random()-0.5)*900}deg`;
+    layer.appendChild(b);
+    setTimeout(() => b.remove(), 4000);
+  }
+}
+
+// inject box shake keyframe
+const styleEl = document.createElement('style');
+styleEl.textContent = `@keyframes boxShake{0%,100%{transform:translateX(0) rotate(0)}15%{transform:translateX(-8px) rotate(-4deg)}30%{transform:translateX(10px) rotate(5deg)}45%{transform:translateX(-8px) rotate(-3deg)}60%{transform:translateX(8px) rotate(3deg)}75%{transform:translateX(-4px) rotate(-2deg)}90%{transform:translateX(4px) rotate(1deg)}}`;
+document.head.appendChild(styleEl);
+
+// contract gate check
+const CONTRACT_KEY = 'ann_contract_signed_2025';
+if (!localStorage.getItem(CONTRACT_KEY)) {
+  // Redirect to contract if they haven't signed
+  window.location.href = 'contract.html';
+}
+
+// check if arriving from contract
+const params = new URLSearchParams(window.location.search);
+if (params.get('signed') === '1') {
+  launchSeasonalConfetti();
 }
 
 window.addEventListener('DOMContentLoaded', renderAll);
