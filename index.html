@@ -7,57 +7,67 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --cream:#faf4e8;--warm:#f0ddb8;--tan:#d4b483;--brown:#7a5230;
-  --deep:#3a2010;--rose:#b86858;--gold:#c8943a;--sage:#7a9870;
-  --paper:#fffdf5;--ink:#2a1a08;
-}
+:root{--cream:#faf4e8;--warm:#f0ddb8;--tan:#d4b483;--brown:#7a5230;--deep:#3a2010;--rose:#b86858;--gold:#c8943a;--sage:#7a9870;--paper:#fffdf5;--ink:#2a1a08}
 html{scroll-behavior:smooth}
-body{background:var(--cream);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden;cursor:default}
+body{background:var(--cream);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden}
 body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.6}
 
-/* ═══════════ LOADING SCREEN ═══════════ */
-#loading-screen{position:fixed;inset:0;background:var(--deep);z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1.5rem;transition:opacity 0.8s ease,transform 0.8s ease}
+/* NAV */
+nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--tan);background:var(--paper);position:sticky;top:0;z-index:500;flex-wrap:wrap;gap:0.5rem}
+.nav-brand{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--rose);font-weight:700;text-decoration:none}
+.nav-links{display:flex;gap:0.8rem;flex-wrap:wrap}
+.nav-a{font-family:'Caveat',cursive;font-size:0.9rem;color:var(--brown);text-decoration:none;padding:0.25rem 0.6rem;border-radius:2px;transition:color 0.2s,background 0.2s;letter-spacing:0.5px;white-space:nowrap}
+.nav-a:hover{color:var(--deep);background:var(--warm)}
+.nav-a.current{color:var(--deep);font-weight:700;border-bottom:2px solid var(--gold)}
+.nav-a.locked{color:rgba(58,32,16,0.25);cursor:not-allowed;pointer-events:none;position:relative}
+.nav-a.locked::after{content:'✦';font-size:0.5rem;position:absolute;top:-2px;right:-2px;color:var(--tan)}
+
+/* LOADING SCREEN */
+#loading-screen{position:fixed;inset:0;background:var(--deep);z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1.5rem;transition:opacity 0.8s ease}
 #loading-screen.hide{opacity:0;pointer-events:none}
 .env-wrap{position:relative;width:140px;height:100px}
-.env-body{width:140px;height:100px;background:var(--warm);border:2.5px solid var(--tan);border-radius:2px;position:absolute;bottom:0;left:0;overflow:hidden}
-.env-body::after{content:'';position:absolute;bottom:0;left:0;right:0;top:0;background:linear-gradient(135deg,transparent 49%,var(--cream) 49%)}
-.env-flap{width:144px;height:72px;background:var(--rose);border:2.5px solid #8a4838;position:absolute;top:-2px;left:-2px;transform-origin:top center;border-radius:2px 2px 0 0;clip-path:polygon(0 0,100% 0,50% 100%);animation:flapOpen 0.8s cubic-bezier(0.22,1,0.36,1) 0.6s forwards}
-@keyframes flapOpen{0%{transform:rotateX(0deg);z-index:2}50%{transform:rotateX(-160deg);z-index:0}100%{transform:rotateX(-180deg);z-index:0}}
-.env-letter-out{width:110px;height:70px;background:var(--paper);border:1px solid var(--tan);position:absolute;bottom:10px;left:50%;transform:translateX(-50%) translateY(0);animation:letterPop 0.6s cubic-bezier(0.22,1,0.36,1) 1.3s forwards}
-@keyframes letterPop{0%{transform:translateX(-50%) translateY(0)}100%{transform:translateX(-50%) translateY(-50px)}}
-.env-letter-out::before{content:'♡';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--rose);line-height:1;padding-top:0.5rem}
-.loading-text{font-family:'Caveat',cursive;font-size:1.2rem;color:var(--tan);letter-spacing:2px;animation:pulse 1.5s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:0.5}50%{opacity:1}}
+.env-body{width:140px;height:100px;background:var(--warm);border:2.5px solid var(--tan);border-radius:2px;position:absolute;bottom:0;left:0}
+.env-body::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 49%,var(--cream) 49%)}
+.env-flap{width:144px;height:72px;background:var(--rose);border:2.5px solid #8a4838;position:absolute;top:-2px;left:-2px;transform-origin:top center;clip-path:polygon(0 0,100% 0,50% 100%);animation:flapOpen 0.8s cubic-bezier(0.22,1,0.36,1) 0.6s forwards}
+@keyframes flapOpen{0%{transform:rotateX(0deg)}100%{transform:rotateX(-180deg)}}
+.env-letter-out{width:110px;height:70px;background:var(--paper);border:1px solid var(--tan);position:absolute;bottom:10px;left:50%;transform:translateX(-50%);animation:letterPop 0.6s cubic-bezier(0.22,1,0.36,1) 1.3s forwards;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--rose)}
+@keyframes letterPop{to{transform:translateX(-50%) translateY(-50px)}}
+.loading-text{font-family:'Caveat',cursive;font-size:1.2rem;color:var(--tan);letter-spacing:2px;animation:ldpulse 1.5s ease-in-out infinite}
+@keyframes ldpulse{0%,100%{opacity:0.5}50%{opacity:1}}
 
-/* ═══════════ FLOATING STAMPS ═══════════ */
+/* FLOATING STAMPS */
 .stamps-bg{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
 .float-stamp{position:absolute;opacity:0;animation:stampFloat var(--dur) ease-in-out var(--delay) infinite}
-@keyframes stampFloat{0%{opacity:0;transform:translateY(105vh) translateX(0) rotate(var(--rot-start)) scale(0.8)}10%{opacity:var(--op)}88%{opacity:var(--op)}100%{opacity:0;transform:translateY(-12vh) translateX(var(--drift)) rotate(var(--rot-end)) scale(1)}}
-.float-stamp-inner{width:44px;height:52px;background:var(--paper);border:2px solid var(--rose);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:2px 2px 6px rgba(0,0,0,0.1)}
-.float-stamp-inner::before{content:'';position:absolute;inset:3px;border:1px dashed rgba(184,104,88,0.4)}
+@keyframes stampFloat{0%{opacity:0;transform:translateY(105vh) rotate(var(--rot-start)) scale(0.8)}10%{opacity:var(--op)}88%{opacity:var(--op)}100%{opacity:0;transform:translateY(-12vh) translateX(var(--drift)) rotate(var(--rot-end)) scale(1)}}
+.float-stamp-inner{width:44px;height:52px;background:var(--paper);border:2px solid var(--rose);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;box-shadow:2px 2px 5px rgba(0,0,0,0.08)}
+.float-stamp-inner::before{content:'';position:absolute;inset:4px;border:1px dashed rgba(184,104,88,0.3)}
 .float-stamp-inner .sv{font-family:'Playfair Display',serif;font-weight:700;color:var(--rose);font-size:1rem;line-height:1}
-.float-stamp-inner .sl{font-family:'Caveat',cursive;font-size:0.45rem;color:var(--rose);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+.float-stamp-inner .sl{font-family:'Caveat',cursive;font-size:0.42rem;color:var(--rose);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
 
-/* ═══════════ MAIN CONTENT ═══════════ */
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem 2rem;position:relative;text-align:center;z-index:2}
+/* CONFETTI */
+#confetti-layer{position:fixed;inset:0;pointer-events:none;z-index:9998;overflow:hidden}
+.confetti-bit{position:absolute;opacity:0;animation:confettiFall var(--cd) ease-out var(--cdelay) forwards}
+@keyframes confettiFall{0%{opacity:1;transform:translateY(-10px) translateX(0) rotate(0deg)}15%{opacity:1}100%{opacity:0;transform:translateY(105vh) translateX(var(--cx)) rotate(var(--cr))}}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem 2rem 5rem;position:relative;text-align:center;z-index:2}
 .stamp-wrap{position:relative;margin-bottom:3rem;opacity:0;animation:stampDrop 0.9s cubic-bezier(0.34,1.6,0.64,1) 0.3s forwards}
 @keyframes stampDrop{0%{opacity:0;transform:translateY(-80px) rotate(-12deg) scale(0.6)}55%{transform:translateY(8px) rotate(3deg) scale(1.08)}75%{transform:translateY(-3px) rotate(-1deg) scale(0.98)}100%{opacity:1;transform:translateY(0) rotate(-2deg) scale(1)}}
 .stamp{width:110px;height:130px;background:var(--paper);border:3px solid var(--rose);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;box-shadow:3px 3px 0 var(--tan),6px 6px 0 rgba(0,0,0,0.1);cursor:pointer;transition:transform 0.2s}
 .stamp:hover{transform:rotate(-2deg) scale(1.05)}
 .stamp::before{content:'';position:absolute;inset:5px;border:1px dashed var(--rose);opacity:0.5}
 .stamp-value{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--rose);line-height:1;margin-bottom:0.2rem}
-.stamp-inner{font-family:'Caveat',cursive;color:var(--rose);font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;line-height:1.5;text-align:center;position:relative;z-index:1}
+.stamp-inner{font-family:'Caveat',cursive;color:var(--rose);font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;line-height:1.5;text-align:center}
 .postmark{position:absolute;top:-20px;right:-30px;width:80px;height:80px;border:2px solid var(--brown);border-radius:50%;display:flex;align-items:center;justify-content:center;transform:rotate(18deg);background:transparent;opacity:0;animation:postmarkIn 0.5s ease 1.1s forwards;cursor:pointer;transition:opacity 0.3s}
 @keyframes postmarkIn{to{opacity:0.7}}
 .postmark:hover{opacity:1!important}
-.postmark-text{font-family:'Caveat',cursive;font-size:0.65rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--brown);text-align:center;line-height:1.3;pointer-events:none}
-/* EASTER EGG flash */
-.pm-flash{position:absolute;inset:0;border-radius:50%;border:3px solid var(--gold);opacity:0;transform:scale(1);transition:none}
+.postmark-text{font-family:'Caveat',cursive;font-size:0.62rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--brown);text-align:center;line-height:1.3;pointer-events:none}
+.pm-flash{position:absolute;inset:0;border-radius:50%;border:3px solid var(--gold);opacity:0}
 .postmark.clicked .pm-flash{animation:pmBurst 0.5s ease forwards}
 @keyframes pmBurst{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(2.5)}}
-.postmark-count{position:absolute;top:-6px;right:-6px;background:var(--gold);color:var(--deep);width:18px;height:18px;border-radius:50%;font-family:'Caveat',cursive;font-size:0.7rem;display:none;align-items:center;justify-content:center;font-weight:700}
-.postmark-count.show{display:flex}
+.pm-count{position:absolute;top:-5px;right:-5px;background:var(--gold);color:var(--deep);width:18px;height:18px;border-radius:50%;font-family:'Caveat',cursive;font-size:0.7rem;display:none;align-items:center;justify-content:center;font-weight:700}
+.pm-count.show{display:flex}
+
 .headline{font-family:'Playfair Display',serif;font-size:clamp(3rem,8vw,6rem);font-weight:400;color:var(--deep);line-height:1.05;margin-bottom:0.5rem;overflow:hidden}
 .headline-line{display:block;opacity:0;transform:translateY(110%);animation:lineReveal 0.75s cubic-bezier(0.22,1,0.36,1) forwards}
 .headline-line:nth-child(1){animation-delay:0.6s}
@@ -65,6 +75,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 @keyframes lineReveal{to{opacity:1;transform:translateY(0)}}
 .sub-line{font-family:'Caveat',cursive;font-size:1.4rem;color:var(--brown);opacity:0;animation:fadeUp 0.7s ease 1.1s forwards;margin-bottom:3rem;letter-spacing:1px}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
 .letter{max-width:480px;width:100%;background:var(--paper);border:1px solid var(--tan);padding:2.5rem 2.5rem 2rem;position:relative;opacity:0;animation:letterUnfold 1s cubic-bezier(0.22,1,0.36,1) 1.3s forwards;transform-origin:top center;margin-bottom:3rem;box-shadow:5px 5px 0 var(--warm)}
 @keyframes letterUnfold{0%{opacity:0;transform:scaleY(0.2) translateY(-30px)}55%{opacity:1;transform:scaleY(1.04) translateY(3px)}75%{transform:scaleY(0.98) translateY(-1px)}100%{opacity:1;transform:scaleY(1) translateY(0)}}
 .letter::before{content:'';position:absolute;inset:-6px;border:1px dashed var(--warm);pointer-events:none}
@@ -73,25 +84,17 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .letter-sig{font-family:'Caveat',cursive;font-size:2rem;font-weight:700;color:var(--rose);margin-top:1.2rem;display:block}
 .letter-corner{position:absolute;bottom:1.2rem;right:1.5rem;width:48px;height:62px;border:2px solid var(--warm);outline:1px dashed var(--tan);outline-offset:-5px;display:flex;align-items:center;justify-content:center}
 .letter-corner span{font-family:'Caveat',cursive;font-size:0.6rem;color:var(--rose);letter-spacing:1px;text-transform:uppercase;text-align:center;line-height:1.4}
+
 .cta-wrap{opacity:0;animation:fadeUp 0.7s ease 2.1s forwards;display:flex;flex-direction:column;align-items:center;gap:0.7rem}
-.btn-cta{display:inline-block;background:var(--deep);color:var(--cream);border:none;padding:1.1rem 3rem;font-family:'Caveat',cursive;font-size:1.4rem;letter-spacing:1.5px;cursor:pointer;position:relative;text-decoration:none;transition:transform 0.15s,box-shadow 0.15s;box-shadow:5px 5px 0 var(--brown)}
+.btn-cta{display:inline-block;background:var(--deep);color:var(--cream);border:none;padding:1.1rem 3rem;font-family:'Caveat',cursive;font-size:1.4rem;letter-spacing:1.5px;cursor:pointer;text-decoration:none;transition:transform 0.15s,box-shadow 0.15s;box-shadow:5px 5px 0 var(--brown);position:relative}
 .btn-cta::after{content:'';position:absolute;inset:0;border:1px solid rgba(255,255,255,0.1)}
 .btn-cta:hover{transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--brown)}
 .btn-cta:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--brown)}
-/* PRESS PLAY (post-opening) */
 .btn-play{display:none;background:var(--gold);color:var(--deep);border:none;padding:0.7rem 2rem;font-family:'Caveat',cursive;font-size:1.1rem;cursor:pointer;box-shadow:3px 3px 0 var(--brown);letter-spacing:0.5px;transition:all 0.15s}
 .btn-play:hover{background:#e0a840;transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown)}
 .btn-play.show{display:inline-block}
-.ornament{position:fixed;width:80px;height:80px;opacity:0.12;pointer-events:none}
-.ornament-tl{top:20px;left:20px;border-top:2px solid var(--brown);border-left:2px solid var(--brown)}
-.ornament-br{bottom:20px;right:20px;border-bottom:2px solid var(--brown);border-right:2px solid var(--brown)}
 
-/* ═══════════ SEASONAL CONFETTI ═══════════ */
-#confetti-layer{position:fixed;inset:0;pointer-events:none;z-index:9998;overflow:hidden}
-.confetti-bit{position:absolute;opacity:0;animation:confettiFall var(--cd) ease-out var(--cdelay) forwards}
-@keyframes confettiFall{0%{opacity:1;transform:translateY(-20px) translateX(0) rotate(0deg) scale(1)}15%{opacity:1}100%{opacity:0;transform:translateY(105vh) translateX(var(--cx)) rotate(var(--cr)) scale(0.3)}}
-
-/* ═══════════ EASTER EGG MODAL ═══════════ */
+/* EASTER EGG MODAL */
 #egg-modal{display:none;position:fixed;inset:0;z-index:5000;align-items:center;justify-content:center;padding:1.5rem}
 #egg-modal.show{display:flex}
 .egg-backdrop{position:absolute;inset:0;background:rgba(20,8,2,0.8)}
@@ -101,73 +104,50 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .egg-title{font-family:'Playfair Display',serif;font-size:1.4rem;font-style:italic;color:var(--rose);margin-bottom:0.8rem}
 .egg-text{font-size:1rem;line-height:1.8;color:var(--brown)}
 .egg-sig{font-family:'Caveat',cursive;font-size:1.6rem;font-weight:700;color:var(--rose);margin-top:1rem;display:block}
-.egg-close{position:absolute;top:-1rem;right:-1rem;background:var(--deep);color:var(--cream);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-family:'Caveat',cursive;font-size:1rem;display:flex;align-items:center;justify-content:center}
+.egg-close{position:absolute;top:-1rem;right:-1rem;background:var(--deep);color:var(--cream);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-family:'Caveat',cursive;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background 0.2s}
+.egg-close:hover{background:var(--brown)}
 
-/* ═══════════ SECTIONS BELOW HERO ═══════════ */
-section.info-section{max-width:580px;margin:0 auto;padding:0 1.5rem;position:relative;z-index:2}
-section.info-section+section.info-section{margin-top:4rem}
-.section-rule{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
-.rule-line{flex:1;height:1px;background:var(--tan)}
-.rule-diamond{color:var(--gold);font-size:1rem}
-.section-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:400;font-style:italic;color:var(--deep)}
+/* ORNAMENTS */
+.ornament{position:fixed;width:80px;height:80px;opacity:0.1;pointer-events:none}
+.ornament-tl{top:20px;left:20px;border-top:2px solid var(--brown);border-left:2px solid var(--brown)}
+.ornament-br{bottom:20px;right:20px;border-bottom:2px solid var(--brown);border-right:2px solid var(--brown)}
 
-/* FUN FACTS */
-.facts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
-.fact-card{background:var(--paper);border:1px solid var(--tan);padding:1.2rem 1.3rem;box-shadow:4px 4px 0 var(--warm);opacity:0;transform:translateY(16px);transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1)}
-.fact-card.visible{opacity:1;transform:translateY(0)}
-.fact-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--gold);line-height:1}
-.fact-label{font-family:'Caveat',cursive;font-size:0.95rem;color:var(--brown);margin-top:0.15rem;letter-spacing:0.5px}
-
-/* PREDICTIONS */
-.predictions-list{display:flex;flex-direction:column;gap:0.7rem}
-.prediction-item{display:flex;align-items:flex-start;gap:0.8rem;background:var(--paper);border:1px solid var(--tan);padding:0.9rem 1.1rem;box-shadow:3px 3px 0 var(--warm);opacity:0;transform:translateX(-20px);transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1)}
-.prediction-item.visible{opacity:1;transform:translateX(0)}
-.pred-checkbox{width:22px;height:22px;border:2px solid var(--gold);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 0.2s;margin-top:1px}
-.pred-checkbox:hover{background:var(--warm)}
-.pred-checkbox.checked{background:var(--sage);border-color:var(--sage);color:white;font-family:'Caveat',cursive;font-size:0.9rem}
-.pred-text{font-size:0.97rem;line-height:1.65;color:var(--deep)}
-.pred-text.checked-text{text-decoration:line-through;color:var(--brown);font-style:italic}
-.pred-note{font-family:'Caveat',cursive;font-size:0.85rem;color:var(--rose);margin-top:0.2rem;letter-spacing:0.3px}
-.predictions-note{font-family:'Caveat',cursive;font-size:0.9rem;color:var(--brown);margin-top:1rem;font-style:italic;text-align:center;letter-spacing:0.5px}
-
-/* NAV LINKS BELOW */
-.nav-links-section{max-width:580px;margin:4rem auto 6rem;padding:0 1.5rem;position:relative;z-index:2}
-.nav-grid{display:flex;flex-wrap:wrap;gap:0.8rem;justify-content:center}
-.nav-link-card{background:var(--paper);border:1.5px solid var(--tan);padding:0.7rem 1.4rem;font-family:'Caveat',cursive;font-size:1rem;color:var(--brown);text-decoration:none;letter-spacing:0.5px;transition:all 0.15s;display:inline-block}
-.nav-link-card:hover{background:var(--warm);border-color:var(--gold);color:var(--deep);transform:translate(-2px,-2px);box-shadow:3px 3px 0 var(--tan)}
-
-/* RESET button (hidden) */
-#reset-btn{position:fixed;bottom:1.2rem;left:1.2rem;background:rgba(58,32,16,0.3);color:rgba(250,244,232,0.3);border:1px solid rgba(250,244,232,0.1);padding:0.3rem 0.8rem;font-family:'Caveat',cursive;font-size:0.75rem;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;z-index:100}
-#reset-btn:hover{background:var(--deep);color:var(--cream);border-color:var(--brown)}
+/* RESET */
+#reset-btn{position:fixed;bottom:1rem;left:1rem;background:rgba(58,32,16,0.08);color:rgba(58,32,16,0.2);border:1px solid rgba(58,32,16,0.08);padding:0.2rem 0.55rem;font-family:'Caveat',cursive;font-size:0.65rem;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;z-index:100}
+#reset-btn:hover{background:var(--warm);color:var(--brown);border-color:var(--tan)}
 </style>
 </head>
 <body>
 <div class="ornament ornament-tl"></div>
 <div class="ornament ornament-br"></div>
 
-<!-- LOADING SCREEN -->
 <div id="loading-screen">
   <div class="env-wrap">
     <div class="env-body"></div>
     <div class="env-flap"></div>
-    <div class="env-letter-out"></div>
+    <div class="env-letter-out">♡</div>
   </div>
   <div class="loading-text">opening…</div>
 </div>
 
+<nav id="site-nav">
+  <a href="index.html" class="nav-brand">Besties ♡</a>
+  <div class="nav-links"></div>
+</nav>
+
 <div class="stamps-bg" id="stamps-bg"></div>
 <div id="confetti-layer"></div>
 
-<main class="hero" id="main-hero">
+<main class="hero">
   <div class="stamp-wrap">
-    <div class="stamp" onclick="handleStampClick()">
+    <div class="stamp">
       <div class="stamp-value">♡</div>
       <div class="stamp-inner">First Class<br>Friend</div>
     </div>
     <div class="postmark" id="postmark">
       <div class="pm-flash"></div>
       <div class="postmark-text">From<br>the UK<br>with love</div>
-      <div class="postmark-count" id="pm-count"></div>
+      <div class="pm-count" id="pm-count"></div>
     </div>
   </div>
   <h1 class="headline">
@@ -178,227 +158,95 @@ section.info-section+section.info-section{margin-top:4rem}
   <div class="letter">
     <p>Hello, Bestie Ann.</p>
     <p>Somewhere in the world right now, you're holding a box with our whole story drawn on the outside of it. Inside is a journey I put together just for you.</p>
-    <p>This little site is your guide to going through the box. Open each gift in order — there's a note associated with every single one right here on this site. I'll be right here on the call the whole time to guide you too :)</p>
+    <p>This little site is your guide to going through the box. Open each gift in order — there's a note for every single one right here. I'll be on the call the whole time too.</p>
     <p>I can't believe it's been over three years. You are one of my favourite people on this entire earth.</p>
     <span class="letter-sig">Bestie Tristan</span>
     <div class="letter-corner"><span>First<br>class<br>friend</span></div>
   </div>
   <div class="cta-wrap">
     <a href="contract.html" class="btn-cta">Open the box →</a>
-    <button class="btn-play" id="btn-play" onclick="startCinematicTour()">▶ Press Play — cinematic tour</button>
+    <button class="btn-play" id="btn-play" onclick="startCinematicTour()">▶ Cinematic tour</button>
   </div>
 </main>
 
-<!-- FUN FACTS -->
-<section class="info-section" id="facts-section">
-  <div class="section-rule"><div class="rule-line"></div><div class="rule-diamond">✦</div><div class="rule-line"></div></div>
-  <div class="section-title">Fun facts about us</div>
-  <p style="font-family:'Caveat',cursive;font-size:0.95rem;color:var(--brown);margin:0.5rem 0 1.2rem;letter-spacing:0.5px">three years of friendship, in numbers</p>
-  <div class="facts-grid" id="facts-grid"></div>
-</section>
-
-<!-- PREDICTIONS -->
-<section class="info-section" id="pred-section">
-  <div class="section-rule"><div class="rule-line"></div><div class="rule-diamond">✦</div><div class="rule-line"></div></div>
-  <div class="section-title">Predictions for next year</div>
-  <p style="font-family:'Caveat',cursive;font-size:0.95rem;color:var(--brown);margin:0.5rem 0 1.2rem;letter-spacing:0.5px">things Tristan predicts will happen before your next birthday — check them off as they do ♡</p>
-  <div class="predictions-list" id="pred-list"></div>
-  <p class="predictions-note">check these off as they happen — Ann's job ♡</p>
-</section>
-
-<!-- EXPLORE MORE -->
-<div class="nav-links-section">
-  <div class="section-rule" style="margin-bottom:1.2rem"><div class="rule-line"></div><div class="rule-diamond">✦</div><div class="rule-line"></div></div>
-  <p style="font-family:'Caveat',cursive;font-size:1rem;color:var(--brown);text-align:center;margin-bottom:1rem;letter-spacing:0.5px">explore the rest of the site ♡</p>
-  <div class="nav-grid">
-    <a href="gifts.html" class="nav-link-card">Gifts</a>
-    <a href="timeline.html" class="nav-link-card">Our Story</a>
-    <a href="final.html" class="nav-link-card">The End</a>
-    <a href="postcards.html" class="nav-link-card">Postcards</a>
-    <a href="passport.html" class="nav-link-card">Plushie Passport</a>
-    <a href="letters.html" class="nav-link-card">Letters</a>
-    <a href="quiz.html" class="nav-link-card">Bestie Quiz</a>
-    <a href="reasons.html" class="nav-link-card">Reasons ♡</a>
-    <a href="tierlist.html" class="nav-link-card">Biscuit Tier List</a>
-    <a href="contract.html?view=1" class="nav-link-card">The Contract</a>
-  </div>
-</div>
-
-<!-- EASTER EGG MODAL -->
+<!-- EASTER EGG -->
 <div id="egg-modal">
   <div class="egg-backdrop" onclick="document.getElementById('egg-modal').classList.remove('show')"></div>
   <div class="egg-card">
     <button class="egg-close" onclick="document.getElementById('egg-modal').classList.remove('show')">✕</button>
     <div class="egg-title">You found the secret ♡</div>
-    <p class="egg-text">You clicked the postmark five times. Of course you did. Of course. I made a whole website for you and you found the easter egg. I'm proud and not remotely surprised.<br><br>Here's the hidden message: I think you're really, really brilliant, and I'm so glad you're my best friend.<br><br>That's it. That's the secret. It's just more feelings. You're welcome.</p>
+    <p class="egg-text">You clicked the postmark five times. Of course you did. I made a whole website for you and you found the easter egg immediately. I'm proud and entirely unsurprised.<br><br>Here's the hidden message: I think you're really, really brilliant, and I'm so glad you're my best friend. That's it. It's just more feelings.<br><br>You're welcome.</p>
     <span class="egg-sig">Bestie Tristan xo</span>
   </div>
 </div>
 
-<!-- HIDDEN RESET BUTTON -->
-<button id="reset-btn" onclick="if(confirm('Reset all progress? This cannot be undone.')){localStorage.clear();location.reload()}">reset progress</button>
+<button id="reset-btn" onclick="if(confirm('Reset ALL progress? This clears everything.')){localStorage.clear();location.reload()}">reset</button>
 
+<script src="nav.js"></script>
 <script>
-// ═══ LOADING SCREEN ═══
+// LOADING SCREEN
 window.addEventListener('DOMContentLoaded', () => {
+  buildNav('index.html');
   setTimeout(() => {
     document.getElementById('loading-screen').classList.add('hide');
-    setTimeout(() => {
-      document.getElementById('loading-screen').style.display = 'none';
-      launchSeasonalConfetti();
-    }, 800);
+    setTimeout(() => { document.getElementById('loading-screen').style.display='none'; launchConfetti(); }, 800);
   }, 2200);
   checkPressPlay();
-  buildFacts();
-  buildPredictions();
 });
 
-// ═══ FLOATING STAMPS ═══
-const stampValues = ['♡','✉','★','✦','♡','✉'];
-const stampLabels = ['First Class','Air Mail','Friend','Special','Love','Bestie'];
-const bg = document.getElementById('stamps-bg');
-for (let i = 0; i < 18; i++) {
-  const sw = document.createElement('div');
-  sw.className = 'float-stamp';
-  const rot1 = (Math.random()-0.5)*30;
-  const rot2 = rot1 + (Math.random()-0.5)*20;
-  const vi = Math.floor(Math.random()*stampValues.length);
-  sw.style.cssText = `left:${Math.random()*100}%;--dur:${14+Math.random()*20}s;--delay:${Math.random()*20}s;--drift:${(Math.random()-0.5)*120}px;--rot-start:${rot1}deg;--rot-end:${rot2}deg;--op:${0.08+Math.random()*0.14}`;
-  sw.innerHTML = `<div class="float-stamp-inner"><div class="sv">${stampValues[vi]}</div><div class="sl">${stampLabels[vi]}</div></div>`;
-  bg.appendChild(sw);
+// FLOATING STAMPS
+const stampsBg = document.getElementById('stamps-bg');
+const stampVals = ['♡','✉','★','✦','♡','✉'];
+const stampLbls = ['First Class','Air Mail','Friend','Special','Love','Bestie'];
+for (let i=0;i<16;i++){
+  const sw=document.createElement('div'); sw.className='float-stamp';
+  const ri=Math.floor(Math.random()*stampVals.length);
+  const rot1=(Math.random()-0.5)*30, rot2=rot1+(Math.random()-0.5)*20;
+  sw.style.cssText=`left:${Math.random()*100}%;--dur:${16+Math.random()*18}s;--delay:${Math.random()*22}s;--drift:${(Math.random()-0.5)*100}px;--rot-start:${rot1}deg;--rot-end:${rot2}deg;--op:${0.07+Math.random()*0.12}`;
+  sw.innerHTML=`<div class="float-stamp-inner"><div class="sv">${stampVals[ri]}</div><div class="sl">${stampLbls[ri]}</div></div>`;
+  stampsBg.appendChild(sw);
 }
 
-// ═══ SEASONAL CONFETTI ═══
-function launchSeasonalConfetti() {
-  const month = new Date().getMonth();
-  let cols;
-  // Aug = birthday (rose/gold), Dec = Christmas (green/red/gold), else neutral
-  if (month === 7) cols = ['#c8943a','#b86858','#faf4e8','#d4b483','#e8c4a0'];
-  else if (month === 11) cols = ['#c8943a','#2d6e30','#b86858','#fffdf5','#d4b483'];
-  else cols = ['#c8943a','#b86858','#d4b483','#7a9870','#f0ddb8'];
-  const layer = document.getElementById('confetti-layer');
-  for (let i = 0; i < 50; i++) {
-    const b = document.createElement('div');
-    b.className = 'confetti-bit';
-    const size = 5+Math.random()*10;
-    const shapes = ['50%','2px','4px','0'];
-    b.style.cssText = `left:${5+Math.random()*90}%;top:-10px;width:${size}px;height:${size}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${shapes[Math.floor(Math.random()*shapes.length)]};--cd:${1.5+Math.random()*2}s;--cdelay:${Math.random()*1.5}s;--cx:${(Math.random()-0.5)*300}px;--cr:${(Math.random()-0.5)*720}deg`;
+// SEASONAL CONFETTI
+function launchConfetti() {
+  const m=new Date().getMonth();
+  const cols = m===7  ? ['#c8943a','#b86858','#faf4e8','#d4b483','#e8c4a0']
+              : m===11 ? ['#c8943a','#2d6e30','#b86858','#ffffff','#d4b483']
+              :          ['#c8943a','#b86858','#d4b483','#7a9870','#f0ddb8'];
+  const layer=document.getElementById('confetti-layer');
+  const shapes=['50%','2px','4px','0'];
+  for(let i=0;i<55;i++){
+    const b=document.createElement('div'); b.className='confetti-bit';
+    const sz=5+Math.random()*9;
+    b.style.cssText=`left:${5+Math.random()*90}%;top:-10px;width:${sz}px;height:${sz}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${shapes[Math.floor(Math.random()*shapes.length)]};--cd:${1.5+Math.random()*2}s;--cdelay:${Math.random()*1.2}s;--cx:${(Math.random()-0.5)*280}px;--cr:${(Math.random()-0.5)*720}deg`;
     layer.appendChild(b);
-    setTimeout(() => b.remove(), 4000);
+    setTimeout(()=>b.remove(), 4000);
   }
 }
 
-// ═══ POSTMARK EASTER EGG ═══
-let pmClicks = 0;
-const PM_TARGET = 5;
-function handleStampClick() { /* stamp click just for fun */ }
-document.getElementById('postmark').addEventListener('click', function(e) {
+// POSTMARK EASTER EGG (click 5×)
+let pmClicks=0;
+document.getElementById('postmark').addEventListener('click', function(){
   pmClicks++;
-  const countEl = document.getElementById('pm-count');
-  countEl.textContent = pmClicks;
-  countEl.classList.add('show');
+  const c=document.getElementById('pm-count');
+  c.textContent=pmClicks; c.classList.add('show');
   this.classList.add('clicked');
-  setTimeout(() => this.classList.remove('clicked'), 500);
-  if (pmClicks >= PM_TARGET) {
-    countEl.classList.remove('show');
-    pmClicks = 0;
-    setTimeout(() => document.getElementById('egg-modal').classList.add('show'), 200);
+  setTimeout(()=>this.classList.remove('clicked'),500);
+  if(pmClicks>=5){
+    c.classList.remove('show'); pmClicks=0;
+    setTimeout(()=>document.getElementById('egg-modal').classList.add('show'),200);
   }
 });
 
-// ═══ PRESS PLAY ═══
-const GIFTS_KEY = 'ann_bday_2025_v3';
-function checkPressPlay() {
-  try {
-    const p = JSON.parse(localStorage.getItem(GIFTS_KEY));
-    if (Array.isArray(p) && p.length >= 13) {
-      document.getElementById('btn-play').classList.add('show');
-    }
-  } catch(e) {}
+// PRESS PLAY (shows after all gifts opened)
+function checkPressPlay(){
+  try{
+    const p=JSON.parse(localStorage.getItem('ann_bday_2025_v3'));
+    if(Array.isArray(p)&&p.length>=18) document.getElementById('btn-play').classList.add('show');
+  }catch(e){}
 }
-
-function startCinematicTour() {
-  const pages = ['gifts.html','timeline.html','final.html'];
-  alert('Cinematic tour: this will auto-scroll through the whole site.\n\nStarting on the gifts page — scroll will begin automatically.');
-  window.open('gifts.html?autoplay=1', '_self');
-}
-
-// ═══ FUN FACTS ═══
-const FACTS = [
-  {num:'3.6', label:'years of bestie friendship'},
-  {num:'~588', label:'hours on call together on Discord (estimate)'},
-  {num:'4', label:'birthdays celebrated together'},
-  {num:'3', label:'Christmases celebrated'},
-  {num:'7', label:'Gift exchanges'},
-  {num:'2', label:'official bestie contracts signed'},
-  {num:'12', label:'postcards sent to Ann across the Sea'},
-  {num:'19', label:'postcards sent to Tristan across the Sea'},
-  {num:'4', label:'months of Tristan learning Dutch'},
-  {num:'1', label:'plushie beginning its first journey'},
-  {num:'∞', label:'ordinary evenings made into uncontrollable laughter and the best times of our lives'},
-];
-function buildFacts() {
-  const grid = document.getElementById('facts-grid');
-  FACTS.forEach((f, i) => {
-    const card = document.createElement('div');
-    card.className = 'fact-card';
-    card.style.transitionDelay = i*0.07+'s';
-    card.innerHTML = `<div class="fact-num">${f.num}</div><div class="fact-label">${f.label}</div>`;
-    grid.appendChild(card);
-  });
-  // scroll reveal
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
-  }, {threshold:0.1});
-  document.querySelectorAll('.fact-card').forEach(el => obs.observe(el));
-}
-
-// ═══ PREDICTIONS ═══
-const PREDS_KEY = 'ann_predictions_2025';
-const PREDICTIONS = [
-  {text:'The plushie will make its first return journey at Christmas if Ann remembers', note:'mark this off when it arrives back!'},
-  {text:'We will have several calls that go on for 12+ hours unplanned'},
-  {text:'Ann will master something new and impressive (because she always slays)'},
-  {text:'The Dutch language learning will have progressed significantly by Ann\'s next birthday', note:'🇳🇱 evidence required'},
-  {text:'We will becomes even more insanely in-sync'},
-  {text:'We will start and maintain several new ongoing bits'},
-  {text:'Ann will use the biscuit tier list at least once more after today'},
-  {text:'The weekly schedule will live on another year... about'},
-  {text:'The friendship will be measurably better in year four than year three'},
-];
-function buildPredictions() {
-  const list = document.getElementById('pred-list');
-  let checked = [];
-  try { const p = JSON.parse(localStorage.getItem(PREDS_KEY)); checked = Array.isArray(p) ? p : []; } catch(e) {}
-  PREDICTIONS.forEach((p, i) => {
-    const item = document.createElement('div');
-    item.className = 'prediction-item';
-    item.style.transitionDelay = i*0.06+'s';
-    const isChecked = checked.includes(i);
-    item.innerHTML = `
-      <div class="pred-checkbox ${isChecked?'checked':''}" onclick="togglePred(${i},this)">${isChecked?'✓':''}</div>
-      <div>
-        <div class="pred-text ${isChecked?'checked-text':''}">${p.text}</div>
-        ${p.note?`<div class="pred-note">${p.note}</div>`:''}
-      </div>`;
-    list.appendChild(item);
-  });
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
-  }, {threshold:0.1});
-  document.querySelectorAll('.prediction-item').forEach(el => obs.observe(el));
-}
-function togglePred(idx, checkbox) {
-  let checked = [];
-  try { const p = JSON.parse(localStorage.getItem(PREDS_KEY)); checked = Array.isArray(p) ? p : []; } catch(e) {}
-  const wasChecked = checked.includes(idx);
-  if (wasChecked) { checked = checked.filter(i=>i!==idx); }
-  else { checked.push(idx); }
-  localStorage.setItem(PREDS_KEY, JSON.stringify(checked));
-  checkbox.classList.toggle('checked');
-  checkbox.textContent = !wasChecked ? '✓' : '';
-  const textEl = checkbox.nextElementSibling?.querySelector('.pred-text');
-  if (textEl) textEl.classList.toggle('checked-text');
+function startCinematicTour(){
+  location.href='gifts.html?autoplay=1';
 }
 </script>
 </body>
