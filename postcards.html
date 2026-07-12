@@ -25,6 +25,8 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 @keyframes headerIn{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
 .page-header h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:400;font-style:italic;color:var(--deep)}
 .page-header p{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--brown);margin-top:0.4rem;letter-spacing:0.5px}
+.add-postcards-link{display:inline-block;margin-top:1rem;font-family:'Caveat',cursive;font-size:0.95rem;letter-spacing:0.5px;color:var(--brown);text-decoration:none;padding:0.35rem 0.95rem;border:1.5px solid var(--tan);transition:all 0.2s}
+.add-postcards-link:hover{background:var(--warm);color:var(--deep);border-color:var(--gold)}
 
 /* DIRECTION TABS — top level */
 .dir-tabs{display:flex;max-width:900px;margin:0 auto 0;padding:0 1.5rem;gap:0;border-bottom:2px solid var(--tan)}
@@ -71,6 +73,18 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .mogsweep{background:linear-gradient(135deg,#8a5870,#c88898)}
 .snailmail{background:linear-gradient(135deg,#5a7860,#8ab098)}
 .from-ann{background:linear-gradient(135deg,#7a6a8a,#aaa0c0)}
+.rosegold{background:linear-gradient(135deg,#c98a8a,#e8b8b0)}
+.midnight{background:linear-gradient(135deg,#2a3454,#4a5a8a)}
+.terracotta{background:linear-gradient(135deg,#b85c3a,#d88860)}
+.moss{background:linear-gradient(135deg,#5a6a3a,#8aa060)}
+.coral{background:linear-gradient(135deg,#e8735a,#f0a080)}
+.lilac{background:linear-gradient(135deg,#9a80b0,#c8b0d8)}
+.mustard{background:linear-gradient(135deg,#c8a030,#e0c060)}
+.teal{background:linear-gradient(135deg,#2a7a78,#5aa8a0)}
+.berry{background:linear-gradient(135deg,#6a2040,#a04868)}
+.sky{background:linear-gradient(135deg,#6a9ac0,#a0c8e0)}
+.charcoal{background:linear-gradient(135deg,#3a3a3a,#606060)}
+.blush{background:linear-gradient(135deg,#d89aa0,#f0c8c8)}
 
 /* LIGHTBOX */
 #lightbox{display:none;position:fixed;inset:0;z-index:2000;align-items:center;justify-content:center;padding:2rem}
@@ -113,6 +127,7 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 <div class="page-header">
   <h1>Postcard Gallery</h1>
   <p>every postcard that's crossed the sea ♡</p>
+  <a href="enterpostcards.html" class="add-postcards-link">+ Add / Edit Postcards</a>
 </div>
 
 <!-- DIRECTION TABS -->
@@ -311,6 +326,19 @@ function filterCards(cat, dir, btn) {
   renderGallery(dir);
 }
 
+// card.faceDisplay: 'emoji' (default) | 'text' | 'both'
+// card.faceText: optional caption shown on the front of the card
+function faceContent(card, emojiSize) {
+  const mode = card.faceDisplay || 'emoji';
+  const emojiHTML = `<span style="font-size:${emojiSize}">${card.emoji}</span>`;
+  const textHTML = card.faceText
+    ? `<span style="font-family:'Caveat',cursive;font-weight:600;font-size:${emojiSize === '5rem' ? '1.5rem' : '1.05rem'};color:#fff;text-align:center;padding:0 0.6rem;text-shadow:0 1px 4px rgba(0,0,0,0.35);line-height:1.25">${card.faceText}</span>`
+    : '';
+  if (mode === 'text') return textHTML || emojiHTML;
+  if (mode === 'both') return emojiHTML + textHTML;
+  return emojiHTML;
+}
+
 function renderGallery(dir) {
   const all = dir === 'to-ann' ? POSTCARDS_TO_ANN : POSTCARDS_TO_TRI;
   const cat = activeFilters[dir];
@@ -346,7 +374,7 @@ function renderGallery(dir) {
       el.innerHTML = `
         <div class="pc-inner" onclick="openLightbox('${card.id}','${dir}')">
           <div class="pc-face ${card.colorClass}">
-            <div class="pc-face-content"><span style="font-size:2.6rem">${card.emoji}</span></div>
+            <div class="pc-face-content">${faceContent(card, '2.6rem')}</div>
             <div class="pc-art-text">POSTCARD</div>
           </div>
           <div class="pc-bottom">
@@ -370,7 +398,7 @@ function openLightbox(id, dir) {
   if (!card) return;
 
   document.getElementById('lb-face').className = 'lb-face ' + card.colorClass;
-  document.getElementById('lb-face').innerHTML = `<span style="font-size:5rem">${card.emoji}</span>`;
+  document.getElementById('lb-face').innerHTML = faceContent(card, '5rem');
   document.getElementById('lb-title').textContent = card.title;
   document.getElementById('lb-stamp-emoji').textContent = card.emoji;
 
