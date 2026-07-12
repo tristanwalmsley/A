@@ -137,8 +137,17 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 <div class="dir-panel" id="panel-to-tri">
   <div class="filter-wrap" id="filters-to-tri">
     <button class="filter-btn active" onclick="filterCards('all','to-tri',this)">All</button>
+    <button class="filter-btn" onclick="filterCards('originals','to-tri',this)">Originals</button>
+    <button class="filter-btn" onclick="filterCards('dutch sayings','to-tri',this)">Dutch Sayings</button>
   </div>
   <div class="gallery-wrap" id="gallery-to-tri"></div>
+</div>
+
+<div class="note-section">
+  <div class="note-box">
+    <p>Every single one of these made a real journey — packed carefully, stamped, sent across the sea. That's always been one of my favourite things about this friendship: actual physical things moving between our actual lives.</p>
+    <p>If you ever need cheering up, come back to this page and look at them all.</p>
+  </div>
 </div>
 
 <!-- LIGHTBOX -->
@@ -158,6 +167,7 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
             <div class="lb-address-line" id="lb-addr1"></div>
             <div class="lb-address-line" id="lb-addr2"></div>
             <div class="lb-address-line" id="lb-addr3"></div>
+            <div class="lb-address-line" id="lb-addr4"></div>
           </div>
         </div>
       </div>
@@ -236,19 +246,19 @@ const POSTCARDS_TO_ANN = [
 // Add more entries here as they arrive! Same format as above.
 const POSTCARDS_TO_TRI = [
   {id:'a1', cat:'originals', colorClass:'from-ann', emoji:'🕰️',
-    label:'From Ann', title:'To Be Continued..', sent:'Dec 2024',
+    label:'Originals', title:'To Be Continued..', sent:'Dec 2024',
     message: '',
-    addr: ['Tristan', 'Blackburn, UK', '🇬🇧'] },
+    addr: ['', '', '', ''] },
   {id:'a2', cat:'originals', colorClass:'from-ann', emoji:'🧸',
-    label:'From Ann', title:'Paddington In Peru', sent:'Dec 2024',
+    label:'Originals', title:'Paddington In Peru', sent:'Dec 2024',
     message: '',
-    addr: ['Tristan', 'Blackburn, UK', '🇬🇧'] },
+    addr: ['', '', '', ''] },
   {id:'a3', cat:'originals', colorClass:'from-ann', emoji:'👆',
-    label:'From Ann', title:'Fuck 2024', sent:'Dec 2024',
+    label:'Originals', title:'Fuck 2024', sent:'Dec 2024',
     message: '',
-    addr: [] },
+    addr: ['', '', '', ''] },
   {id:'a4', cat:'dutch sayings', colorClass:'from-ann', emoji:'😂',
-    label:'From Ann', title:'Laughing Closer Than Crying', sent:'May 2025',
+    label:'Dutch Sayings', title:'Laughing Closer Than Crying', sent:'May 2025',
     message: 'Hi! This one means "laughing is closer to me than crying", and I\'m writing this while watching a... the stream of yours where you got like 100 subs from some INSANE people... Congrats!! You deserve them. And this card\'s text seems fitting based on the happenings.',
     addr: ['To Tristan Walmsley', 'Flat 73 Whitendale Hall', 'Harrington Street, Preston', 'PR1 7BG, United Kingdom'] },
 ];
@@ -347,7 +357,7 @@ function openLightbox(id, dir) {
   }
 
   const addr = card.addr || [];
-  ['lb-addr1','lb-addr2','lb-addr3'].forEach((id, i) => {
+  ['lb-addr1','lb-addr2','lb-addr3','lb-addr4'].forEach((id, i) => {
     document.getElementById(id).textContent = addr[i] || '';
   });
 
