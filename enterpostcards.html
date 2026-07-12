@@ -74,8 +74,25 @@ h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;font-styl
 .added-emoji{font-size:1.3rem;flex-shrink:0}
 .added-name{color:var(--deep);font-weight:600}
 .added-meta{font-size:0.88rem;color:var(--tan)}
-.btn-remove{margin-left:auto;background:none;border:none;color:var(--tan);cursor:pointer;font-size:1rem;padding:0.2rem 0.4rem;transition:color 0.2s;font-family:'Caveat',cursive}
+.btn-remove{margin-left:0.2rem;background:none;border:none;color:var(--tan);cursor:pointer;font-size:1rem;padding:0.2rem 0.4rem;transition:color 0.2s;font-family:'Caveat',cursive}
 .btn-remove:hover{color:var(--rose)}
+.btn-edit{margin-left:auto;background:none;border:none;color:var(--tan);cursor:pointer;font-size:1rem;padding:0.2rem 0.4rem;transition:color 0.2s;font-family:'Caveat',cursive}
+.btn-edit:hover{color:var(--gold)}
+.added-item.editing{border-color:var(--gold);background:var(--warm)}
+
+/* BACK LINK / SECONDARY BUTTONS */
+.btn-back-link{display:inline-block;font-family:'Caveat',cursive;font-size:1rem;letter-spacing:0.5px;color:var(--brown);text-decoration:none;padding:0.6rem 1.4rem;border:1.5px solid var(--tan);transition:all 0.2s}
+.btn-back-link:hover{background:var(--warm);color:var(--deep);border-color:var(--gold)}
+.btn-modify{background:var(--brown);color:var(--cream);border:none;padding:1rem 2.2rem;font-family:'Caveat',cursive;font-size:1.2rem;letter-spacing:1px;cursor:pointer;box-shadow:5px 5px 0 var(--tan);transition:all 0.15s}
+.btn-modify:hover{background:#8a6440;transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--tan)}
+.btn-cancel-edit{background:none;border:1.5px solid var(--rose);color:var(--rose);padding:0.68rem 1.4rem;font-family:'Caveat',cursive;font-size:1.1rem;cursor:pointer;transition:all 0.15s;letter-spacing:0.5px}
+.btn-cancel-edit:hover{background:var(--rose);color:white}
+.start-actions{display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:center;margin-bottom:1.6rem}
+.start-back-row{margin-top:0.5rem}
+
+/* IMPORT SCREEN */
+#screen-import{display:none}
+#f-import-text{min-height:240px;font-family:'Courier New',monospace;font-size:0.8rem;line-height:1.6}
 
 /* OUTPUT */
 #screen-output{display:none}
@@ -100,7 +117,35 @@ h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;font-styl
 
   <!-- START -->
   <div id="screen-start">
-    <button class="btn-start" onclick="startEntry()">+ Enter Postcards</button>
+    <div class="start-actions">
+      <button class="btn-start" onclick="startEntry()">+ Enter Postcards</button>
+      <button class="btn-modify" onclick="startModify()">✎ Modify Existing</button>
+    </div>
+    <div class="start-back-row">
+      <a href="postcards.html" class="btn-back-link">← Back to Postcards Page</a>
+    </div>
+  </div>
+
+  <!-- IMPORT (modify existing) -->
+  <div id="screen-import">
+    <div class="form-card">
+      <h2>Paste existing postcard code</h2>
+      <p class="hint" style="margin-bottom:1rem;font-size:0.9rem">Paste the <code>POSTCARDS_TO_ANN</code> / <code>POSTCARDS_TO_TRI</code> section (or just one array) straight from postcards.html — every postcard in it will load below so you can edit or remove any of them.</p>
+      <div class="field">
+        <textarea id="f-import-text" placeholder="const POSTCARDS_TO_ANN = [ ... ];&#10;const POSTCARDS_TO_TRI = [ ... ];"></textarea>
+      </div>
+      <div class="field">
+        <label>If pasting a single array with no variable name, which direction is it?</label>
+        <select id="f-import-dir">
+          <option value="to-ann">Tristan → Ann</option>
+          <option value="to-tri">Ann → Tristan</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-generate" onclick="loadImport()">Load postcards →</button>
+      <button class="btn-back-link" onclick="backToStart()" style="cursor:pointer">← Back</button>
+    </div>
   </div>
 
   <!-- FORM -->
@@ -145,20 +190,29 @@ h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;font-styl
 
       <div class="field">
         <label>Colour theme</label>
-        <div class="color-grid">
-          <div class="color-opt color-ww1 selected" data-color="ww1" onclick="pickColor(this)" title="WWI (brown)"></div>
-          <div class="color-opt color-lancashire" data-color="lancashire" onclick="pickColor(this)" title="Lancashire (blue)"></div>
-          <div class="color-opt color-funny" data-color="funny" onclick="pickColor(this)" title="Fruity (orange)"></div>
-          <div class="color-opt color-mogsweep" data-color="mogsweep" onclick="pickColor(this)" title="MogSweep (pink)"></div>
-          <div class="color-opt color-snailmail" data-color="snailmail" onclick="pickColor(this)" title="Snail mail (green)"></div>
-          <div class="color-opt color-from-ann" data-color="from-ann" onclick="pickColor(this)" title="From Ann (purple)"></div>
-        </div>
+        <div class="color-grid" id="color-grid"></div>
+        <div class="hint">This becomes <code>colorClass</code> — must match a CSS class in postcards.html</div>
       </div>
 
       <div class="field">
         <label>Emoji</label>
         <div class="emoji-grid" id="emoji-grid"></div>
         <div class="hint" style="margin-top:0.5rem">or type your own: <input type="text" id="f-emoji-custom" style="width:4rem;padding:0.3rem 0.5rem;border:1.5px solid var(--tan);background:var(--cream);font-size:1rem;text-align:center" maxlength="2" placeholder="✉️"></div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Front of card shows</label>
+          <select id="f-facedisplay">
+            <option value="emoji">Emoji only</option>
+            <option value="text">Text only</option>
+            <option value="both">Emoji + Text</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Front text <span style="font-size:0.75rem;text-transform:none;letter-spacing:0">(if used)</span></label>
+          <input type="text" id="f-facetext" placeholder="e.g. Greetings from Preston">
+        </div>
       </div>
 
       <div class="field">
@@ -178,20 +232,24 @@ h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;font-styl
     </div>
 
     <div class="form-actions">
-      <button class="btn-add-another" onclick="addCard()">Add another postcard →</button>
+      <button class="btn-add-another" id="btn-primary-action" onclick="addCard()">Add another postcard →</button>
+      <button class="btn-cancel-edit" id="btn-cancel-edit" style="display:none" onclick="cancelEdit()">Cancel edit</button>
       <button class="btn-generate" onclick="generateCode()">Generate code ✦</button>
     </div>
   </div>
 
   <!-- OUTPUT -->
   <div id="screen-output">
-    <button class="btn-start" onclick="resetAll()" style="margin-bottom:2rem">+ Enter More Postcards</button>
+    <div class="start-actions" style="margin-bottom:2rem">
+      <button class="btn-start" onclick="resetAll()">+ Enter More Postcards</button>
+      <a href="postcards.html" class="btn-back-link">← Back to Postcards Page</a>
+    </div>
 
     <div id="output-to-ann" style="display:none">
-      <div class="which-array">Add to POSTCARDS_TO_ANN</div>
+      <div class="which-array" id="label-to-ann">Add to POSTCARDS_TO_ANN</div>
       <div class="copy-row">
         <button class="btn-copy" onclick="copyCode('code-to-ann', this)">Copy code</button>
-        <span style="font-family:'Caveat',cursive;font-size:0.9rem;color:var(--brown)">paste inside the POSTCARDS_TO_ANN array in postcards.html</span>
+        <span style="font-family:'Caveat',cursive;font-size:0.9rem;color:var(--brown)" id="hint-to-ann">paste inside the POSTCARDS_TO_ANN array in postcards.html</span>
       </div>
       <div class="output-wrap">
         <pre class="code-box" id="code-to-ann"></pre>
@@ -201,31 +259,70 @@ h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;font-styl
     <hr class="divider" id="output-divider" style="display:none">
 
     <div id="output-to-tri" style="display:none">
-      <div class="which-array">Add to POSTCARDS_TO_TRI</div>
+      <div class="which-array" id="label-to-tri">Add to POSTCARDS_TO_TRI</div>
       <div class="copy-row">
         <button class="btn-copy" onclick="copyCode('code-to-tri', this)">Copy code</button>
-        <span style="font-family:'Caveat',cursive;font-size:0.9rem;color:var(--brown)">paste inside the POSTCARDS_TO_TRI array in postcards.html</span>
+        <span style="font-family:'Caveat',cursive;font-size:0.9rem;color:var(--brown)" id="hint-to-tri">paste inside the POSTCARDS_TO_TRI array in postcards.html</span>
       </div>
       <div class="output-wrap">
         <pre class="code-box" id="code-to-tri"></pre>
       </div>
     </div>
 
-    <p class="output-note">♡ Paste each block at the end of the matching array (before the closing <code>]</code>) in postcards.html</p>
+    <p class="output-note" id="output-note">♡ Paste each block at the end of the matching array (before the closing <code>]</code>) in postcards.html</p>
   </div>
 </div>
 
 <script>
 const EMOJIS = ['✉️','📜','🗺️','🪶','🏙️','🌉','🏘️','🌄','🍉','🍋','🐦','🐌','🌷','🌙','🕰️','🧸','👆','😂','🎨','🌸','🏰','📮','🌹','🎭','🖼️','🌿','🦋','⭐','🎪','🧡'];
 
+const COLORS = [
+  {key:'ww1', label:'WWI (brown)', css:'linear-gradient(135deg,#8a6a4a,#b08050)'},
+  {key:'lancashire', label:'Lancashire (blue)', css:'linear-gradient(135deg,#4a6a8a,#7a9aaa)'},
+  {key:'funny', label:'Fruity (orange)', css:'linear-gradient(135deg,#e0a840,#c87040)'},
+  {key:'mogsweep', label:'MogSweep (pink)', css:'linear-gradient(135deg,#8a5870,#c88898)'},
+  {key:'snailmail', label:'Snail mail (green)', css:'linear-gradient(135deg,#5a7860,#8ab098)'},
+  {key:'from-ann', label:'From Ann (purple)', css:'linear-gradient(135deg,#7a6a8a,#aaa0c0)'},
+  {key:'rosegold', label:'Rose gold', css:'linear-gradient(135deg,#c98a8a,#e8b8b0)'},
+  {key:'midnight', label:'Midnight', css:'linear-gradient(135deg,#2a3454,#4a5a8a)'},
+  {key:'terracotta', label:'Terracotta', css:'linear-gradient(135deg,#b85c3a,#d88860)'},
+  {key:'moss', label:'Moss', css:'linear-gradient(135deg,#5a6a3a,#8aa060)'},
+  {key:'coral', label:'Coral', css:'linear-gradient(135deg,#e8735a,#f0a080)'},
+  {key:'lilac', label:'Lilac', css:'linear-gradient(135deg,#9a80b0,#c8b0d8)'},
+  {key:'mustard', label:'Mustard', css:'linear-gradient(135deg,#c8a030,#e0c060)'},
+  {key:'teal', label:'Teal', css:'linear-gradient(135deg,#2a7a78,#5aa8a0)'},
+  {key:'berry', label:'Berry', css:'linear-gradient(135deg,#6a2040,#a04868)'},
+  {key:'sky', label:'Sky', css:'linear-gradient(135deg,#6a9ac0,#a0c8e0)'},
+  {key:'charcoal', label:'Charcoal', css:'linear-gradient(135deg,#3a3a3a,#606060)'},
+  {key:'blush', label:'Blush', css:'linear-gradient(135deg,#d89aa0,#f0c8c8)'},
+];
+
 let cards = [];
 let selectedColor = 'ww1';
 let selectedEmoji = '✉️';
+let editingIndex = null;
+let importMode = false;
 
 function startEntry() {
+  importMode = false;
   document.getElementById('screen-start').style.display = 'none';
   document.getElementById('screen-form').style.display = 'block';
   buildEmojiGrid();
+  buildColorGrid();
+}
+
+function startModify() {
+  document.getElementById('screen-start').style.display = 'none';
+  document.getElementById('screen-import').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function backToStart() {
+  document.getElementById('screen-import').style.display = 'none';
+  document.getElementById('screen-form').style.display = 'none';
+  document.getElementById('screen-output').style.display = 'none';
+  document.getElementById('screen-start').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function buildEmojiGrid() {
@@ -240,10 +337,25 @@ function buildEmojiGrid() {
   });
 }
 
-function pickColor(el) {
+function buildColorGrid() {
+  const grid = document.getElementById('color-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  COLORS.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'color-opt' + (c.key === selectedColor ? ' selected' : '');
+    div.style.background = c.css;
+    div.dataset.color = c.key;
+    div.title = c.label;
+    div.onclick = () => pickColor(div, c.key);
+    grid.appendChild(div);
+  });
+}
+
+function pickColor(el, key) {
   document.querySelectorAll('.color-opt').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
-  selectedColor = el.dataset.color;
+  selectedColor = key;
 }
 
 function pickEmoji(el, emoji) {
@@ -251,6 +363,27 @@ function pickEmoji(el, emoji) {
   el.classList.add('selected');
   selectedEmoji = emoji;
   document.getElementById('f-emoji-custom').value = '';
+}
+
+function highlightColor(key) {
+  document.querySelectorAll('.color-opt').forEach(el => {
+    el.classList.toggle('selected', el.dataset.color === key);
+  });
+}
+
+function highlightEmoji(emoji) {
+  document.querySelectorAll('.emoji-opt').forEach(el => {
+    el.classList.toggle('selected', el.textContent === emoji);
+  });
+}
+
+// Adds a newly-used custom emoji to the bank so it shows up as a pickable option next time
+function maybeAddEmojiToBank(emoji) {
+  if (emoji && !EMOJIS.includes(emoji)) {
+    EMOJIS.unshift(emoji);
+    buildEmojiGrid();
+    highlightEmoji(emoji);
+  }
 }
 
 function getEmoji() {
@@ -261,7 +394,18 @@ function getEmoji() {
 function addCard() {
   const card = readForm();
   if (!card) return;
-  cards.push(card);
+  maybeAddEmojiToBank(card.emoji);
+
+  if (editingIndex !== null) {
+    card.id = cards[editingIndex].id;
+    cards[editingIndex] = card;
+    editingIndex = null;
+    document.getElementById('btn-primary-action').textContent = 'Add another postcard →';
+    document.getElementById('btn-cancel-edit').style.display = 'none';
+  } else {
+    cards.push(card);
+  }
+
   renderAddedList();
   resetForm();
   document.getElementById('card-counter').textContent = `Postcard #${cards.length + 1}`;
@@ -279,6 +423,8 @@ function readForm() {
   const label = document.getElementById('f-label').value.trim() || 'Postcard';
   const cat = document.getElementById('f-cat').value.trim().toLowerCase().replace(/\s+/g,'-') || 'general';
   const message = document.getElementById('f-message').value.trim();
+  const faceDisplay = document.getElementById('f-facedisplay').value;
+  const faceText = document.getElementById('f-facetext').value.trim();
   const addr = [
     document.getElementById('f-addr1').value.trim(),
     document.getElementById('f-addr2').value.trim(),
@@ -286,12 +432,12 @@ function readForm() {
     document.getElementById('f-addr4').value.trim(),
   ].filter(Boolean);
 
-  return { id, dir, title, label, cat, color: selectedColor, emoji: getEmoji(), sent, message, addr };
+  return { id, dir, title, label, cat, color: selectedColor, emoji: getEmoji(), sent, message, faceDisplay, faceText, addr };
 }
 
 function resetForm() {
-  // Only clear the per-card unique fields — keep direction, sent, label, cat, colour, emoji
-  ['f-title','f-message','f-addr1','f-addr2','f-addr3','f-addr4','f-emoji-custom'].forEach(id => {
+  // Only clear the per-card unique fields — keep direction, sent, label, cat, colour, emoji, front-display mode
+  ['f-title','f-message','f-addr1','f-addr2','f-addr3','f-addr4','f-emoji-custom','f-facetext'].forEach(id => {
     document.getElementById(id).value = '';
   });
 }
@@ -301,18 +447,65 @@ function renderAddedList() {
   list.innerHTML = '';
   cards.forEach((c, i) => {
     const item = document.createElement('div');
-    item.className = 'added-item';
+    item.className = 'added-item' + (i === editingIndex ? ' editing' : '');
     item.innerHTML = `<span class="added-emoji">${c.emoji}</span>
       <span><span class="added-name">${c.title}</span> <span class="added-meta">· ${c.dir === 'to-ann' ? 'T→A' : 'A→T'} · ${c.sent}</span></span>
+      <button class="btn-edit" onclick="editCard(${i})" title="Edit">✎</button>
       <button class="btn-remove" onclick="removeCard(${i})" title="Remove">✕</button>`;
     list.appendChild(item);
   });
 }
 
+function editCard(i) {
+  const c = cards[i];
+  editingIndex = i;
+
+  document.getElementById('f-dir').value = c.dir;
+  document.getElementById('f-sent').value = c.sent === '[date]' ? '' : c.sent;
+  document.getElementById('f-title').value = c.title;
+  document.getElementById('f-label').value = c.label;
+  document.getElementById('f-cat').value = c.cat;
+  document.getElementById('f-message').value = c.message || '';
+  document.getElementById('f-facedisplay').value = c.faceDisplay || 'emoji';
+  document.getElementById('f-facetext').value = c.faceText || '';
+  document.getElementById('f-addr1').value = c.addr[0] || '';
+  document.getElementById('f-addr2').value = c.addr[1] || '';
+  document.getElementById('f-addr3').value = c.addr[2] || '';
+  document.getElementById('f-addr4').value = c.addr[3] || '';
+
+  selectedColor = c.color;
+  selectedEmoji = c.emoji;
+  highlightColor(c.color);
+  highlightEmoji(c.emoji);
+
+  document.getElementById('card-counter').textContent = 'Editing postcard';
+  document.getElementById('form-title').textContent = `Editing: ${c.title}`;
+  document.getElementById('btn-primary-action').textContent = 'Save changes ✓';
+  document.getElementById('btn-cancel-edit').style.display = 'inline-block';
+
+  document.getElementById('screen-import').style.display = 'none';
+  document.getElementById('screen-output').style.display = 'none';
+  document.getElementById('screen-form').style.display = 'block';
+  renderAddedList();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function cancelEdit() {
+  editingIndex = null;
+  resetForm();
+  document.getElementById('card-counter').textContent = `Postcard #${cards.length + 1}`;
+  document.getElementById('form-title').textContent = 'Tell me about this postcard';
+  document.getElementById('btn-primary-action').textContent = 'Add another postcard →';
+  document.getElementById('btn-cancel-edit').style.display = 'none';
+  renderAddedList();
+}
+
 function removeCard(i) {
+  if (i === editingIndex) cancelEdit();
+  else if (editingIndex !== null && i < editingIndex) editingIndex--;
   cards.splice(i, 1);
   renderAddedList();
-  document.getElementById('card-counter').textContent = `Postcard #${cards.length + 1}`;
+  document.getElementById('card-counter').textContent = editingIndex !== null ? 'Editing postcard' : `Postcard #${cards.length + 1}`;
 }
 
 function escStr(s) {
@@ -324,7 +517,17 @@ function generateCode() {
   const currentTitle = document.getElementById('f-title').value.trim();
   if (currentTitle) {
     const card = readForm();
-    if (card) { cards.push(card); renderAddedList(); }
+    if (card) {
+      maybeAddEmojiToBank(card.emoji);
+      if (editingIndex !== null) {
+        card.id = cards[editingIndex].id;
+        cards[editingIndex] = card;
+        editingIndex = null;
+      } else {
+        cards.push(card);
+      }
+      renderAddedList();
+    }
   }
 
   if (cards.length === 0) { alert('No postcards to generate — fill in at least one!'); return; }
@@ -337,11 +540,19 @@ function generateCode() {
       ? "['"+c.addr.map(escStr).join("', '")+"']"
       : "[]";
     const msgStr = c.message ? `'${escStr(c.message)}'` : 'null';
-    return `  {id:'${c.id}', cat:'${c.cat}', colorClass:'${c.color}', emoji:'${c.emoji}',\n    label:'${escStr(c.label)}', title:'${escStr(c.title)}', sent:'${escStr(c.sent)}',\n    message: ${msgStr},\n    addr: ${addrStr} },`;
+    const faceDisplay = c.faceDisplay && c.faceDisplay !== 'emoji' ? c.faceDisplay : 'emoji';
+    const faceTextPart = c.faceText ? `, faceText:'${escStr(c.faceText)}'` : '';
+    const faceDisplayPart = faceDisplay !== 'emoji' || c.faceText ? `, faceDisplay:'${faceDisplay}'` : '';
+    return `  {id:'${c.id}', cat:'${c.cat}', colorClass:'${c.color}', emoji:'${c.emoji}'${faceDisplayPart}${faceTextPart},\n    label:'${escStr(c.label)}', title:'${escStr(c.title)}', sent:'${escStr(c.sent)}',\n    message: ${msgStr},\n    addr: ${addrStr} },`;
   }
 
-  const annCode = toAnn.map(cardToCode).join('\n');
-  const triCode = toTri.map(cardToCode).join('\n');
+  let annCode = toAnn.map(cardToCode).join('\n');
+  let triCode = toTri.map(cardToCode).join('\n');
+
+  if (importMode) {
+    if (toAnn.length > 0) annCode = `const POSTCARDS_TO_ANN = [\n${annCode}\n];`;
+    if (toTri.length > 0) triCode = `const POSTCARDS_TO_TRI = [\n${triCode}\n];`;
+  }
 
   const annOut = document.getElementById('output-to-ann');
   const triOut = document.getElementById('output-to-tri');
@@ -363,8 +574,95 @@ function generateCode() {
 
   divider.style.display = (toAnn.length > 0 && toTri.length > 0) ? 'block' : 'none';
 
+  if (importMode) {
+    document.getElementById('label-to-ann').textContent = 'Replace POSTCARDS_TO_ANN with';
+    document.getElementById('label-to-tri').textContent = 'Replace POSTCARDS_TO_TRI with';
+    document.getElementById('hint-to-ann').textContent = 'replace the whole POSTCARDS_TO_ANN array in postcards.html with this';
+    document.getElementById('hint-to-tri').textContent = 'replace the whole POSTCARDS_TO_TRI array in postcards.html with this';
+    document.getElementById('output-note').innerHTML = '♡ This is the full, updated array — replace the old <code>const POSTCARDS_TO_ANN = [ ... ];</code> / <code>POSTCARDS_TO_TRI</code> block entirely rather than appending.';
+  } else {
+    document.getElementById('label-to-ann').textContent = 'Add to POSTCARDS_TO_ANN';
+    document.getElementById('label-to-tri').textContent = 'Add to POSTCARDS_TO_TRI';
+    document.getElementById('hint-to-ann').textContent = 'paste inside the POSTCARDS_TO_ANN array in postcards.html';
+    document.getElementById('hint-to-tri').textContent = 'paste inside the POSTCARDS_TO_TRI array in postcards.html';
+    document.getElementById('output-note').innerHTML = '♡ Paste each block at the end of the matching array (before the closing <code>]</code>) in postcards.html';
+  }
+
   document.getElementById('screen-form').style.display = 'none';
   document.getElementById('screen-output').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function evalArrayLiteral(text) {
+  return Function('"use strict"; return (' + text + ');')();
+}
+
+function normalizeImportedCard(raw, dir) {
+  return {
+    id: raw.id || ('pc-' + Date.now() + Math.random().toString(36).slice(2, 7)),
+    dir,
+    cat: raw.cat || 'general',
+    color: raw.colorClass || 'ww1',
+    emoji: raw.emoji || '✉️',
+    label: raw.label || 'Postcard',
+    title: raw.title || '',
+    sent: raw.sent || '[date]',
+    message: raw.message || '',
+    faceDisplay: raw.faceDisplay || 'emoji',
+    faceText: raw.faceText || '',
+    addr: Array.isArray(raw.addr) ? raw.addr : [],
+  };
+}
+
+function parsePostcardsCode(text) {
+  const results = [];
+  const annMatch = text.match(/POSTCARDS_TO_ANN\s*=\s*(\[[\s\S]*?\n\s*\]);/);
+  const triMatch = text.match(/POSTCARDS_TO_TRI\s*=\s*(\[[\s\S]*?\n\s*\]);/);
+
+  if (annMatch) {
+    evalArrayLiteral(annMatch[1]).forEach(c => results.push(normalizeImportedCard(c, 'to-ann')));
+  }
+  if (triMatch) {
+    evalArrayLiteral(triMatch[1]).forEach(c => results.push(normalizeImportedCard(c, 'to-tri')));
+  }
+
+  if (!annMatch && !triMatch) {
+    const dir = document.getElementById('f-import-dir').value;
+    evalArrayLiteral(text).forEach(c => results.push(normalizeImportedCard(c, dir)));
+  }
+
+  return results;
+}
+
+function loadImport() {
+  const text = document.getElementById('f-import-text').value.trim();
+  if (!text) { alert('Paste some code first!'); return; }
+
+  let parsed;
+  try {
+    parsed = parsePostcardsCode(text);
+  } catch (e) {
+    alert("Couldn't read that code — make sure it's valid, copied straight from postcards.html.\n\n" + e.message);
+    return;
+  }
+
+  if (!parsed || parsed.length === 0) {
+    alert('No postcards found in that code — double check what you pasted.');
+    return;
+  }
+
+  cards = parsed;
+  editingIndex = null;
+  importMode = true;
+  parsed.forEach(c => { if (!EMOJIS.includes(c.emoji)) EMOJIS.unshift(c.emoji); });
+
+  document.getElementById('screen-import').style.display = 'none';
+  document.getElementById('screen-form').style.display = 'block';
+  buildEmojiGrid();
+  buildColorGrid();
+  renderAddedList();
+  document.getElementById('card-counter').textContent = `Postcard #${cards.length + 1}`;
+  document.getElementById('f-import-text').value = '';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -379,11 +677,17 @@ function copyCode(elId, btn) {
 
 function resetAll() {
   cards = [];
+  editingIndex = null;
+  importMode = false;
   document.getElementById('screen-output').style.display = 'none';
   document.getElementById('screen-form').style.display = 'block';
   document.getElementById('added-list').innerHTML = '';
   document.getElementById('card-counter').textContent = 'Postcard #1';
+  document.getElementById('form-title').textContent = 'Tell me about this postcard';
+  document.getElementById('btn-primary-action').textContent = 'Add another postcard →';
+  document.getElementById('btn-cancel-edit').style.display = 'none';
   resetForm();
+  buildColorGrid();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 </script>
