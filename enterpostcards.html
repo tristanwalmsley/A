@@ -290,7 +290,8 @@ function readForm() {
 }
 
 function resetForm() {
-  ['f-title','f-label','f-cat','f-sent','f-message','f-addr1','f-addr2','f-addr3','f-addr4','f-emoji-custom'].forEach(id => {
+  // Only clear the per-card unique fields — keep direction, sent, label, cat, colour, emoji
+  ['f-title','f-message','f-addr1','f-addr2','f-addr3','f-addr4','f-emoji-custom'].forEach(id => {
     document.getElementById(id).value = '';
   });
 }
