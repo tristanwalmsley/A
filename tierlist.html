@@ -21,6 +21,13 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .page-header h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:400;font-style:italic;color:var(--deep)}
 .page-header p{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--brown);margin-top:0.4rem;letter-spacing:0.5px}
 .page-header .instructions{font-size:0.95rem;line-height:1.7;color:var(--brown);font-style:italic;max-width:480px;margin:1rem auto 0}
+
+/* LIST TABS */
+.list-tabs{display:flex;max-width:680px;margin:1.6rem auto 0;padding:0 1.5rem;gap:0;border-bottom:2px solid var(--tan);flex-wrap:wrap;justify-content:center}
+.list-tab{font-family:'Caveat',cursive;font-size:1.05rem;letter-spacing:0.5px;padding:0.6rem 1.6rem;border:none;background:transparent;color:var(--brown);cursor:pointer;transition:color 0.2s,background 0.2s;border-bottom:3px solid transparent;margin-bottom:-2px}
+.list-tab:hover{color:var(--deep);background:var(--warm)}
+.list-tab.active{color:var(--deep);font-weight:700;border-bottom:3px solid var(--gold);background:var(--cream)}
+
 /* TIER LIST */
 .tierlist-wrap{max-width:680px;margin:2rem auto 5rem;padding:0 1.5rem}
 .tier{display:flex;align-items:stretch;margin-bottom:0.5rem;min-height:80px;background:var(--paper);border:1px solid var(--tan)}
@@ -51,11 +58,48 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .result-box{background:var(--deep);color:var(--cream);padding:1.5rem 2rem;text-align:center}
 .result-box h3{font-family:'Playfair Display',serif;font-size:1.4rem;font-style:italic;margin-bottom:0.5rem}
-.result-text{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--tan);letter-spacing:0.5px;line-height:1.7}
+.result-text{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--tan);letter-spacing:0.5px;line-height:1.7;white-space:pre-line}
 .btn-reset{margin-top:1rem;background:var(--rose);color:var(--cream);border:none;padding:0.5rem 1.5rem;font-family:'Caveat',cursive;font-size:1rem;cursor:pointer;box-shadow:3px 3px 0 #8a4838;letter-spacing:0.5px;transition:all 0.15s}
 .btn-reset:hover{background:#c8605a;transform:translate(-2px,-2px);box-shadow:5px 5px 0 #8a4838}
-.share-btn{margin-top:1rem;display:inline-block;background:var(--gold);color:var(--deep);border:none;padding:0.5rem 1.5rem;font-family:'Caveat',cursive;font-size:1rem;cursor:pointer;box-shadow:3px 3px 0 var(--brown);letter-spacing:0.5px;transition:all 0.15s;margin-left:0.5rem}
-.share-btn:hover{background:#e0a840;transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown)}
+.snapshot-btn{margin-top:1rem;display:inline-block;background:var(--gold);color:var(--deep);border:none;padding:0.5rem 1.5rem;font-family:'Caveat',cursive;font-size:1rem;cursor:pointer;box-shadow:3px 3px 0 var(--brown);letter-spacing:0.5px;transition:all 0.15s;margin-left:0.5rem}
+.snapshot-btn:hover{background:#e0a840;transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown)}
+
+/* CAMERA FLASH */
+.camera-flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:9997}
+.camera-flash.flash{opacity:0.95;transition:opacity 0.03s ease-in}
+.camera-flash.fading{opacity:0;transition:opacity 0.35s ease-out}
+
+/* SNAPSHOT MODAL */
+#snapshot-modal{display:none;position:fixed;inset:0;z-index:3000;align-items:center;justify-content:center;padding:2rem;background:rgba(20,8,2,0.88)}
+#snapshot-modal.open{display:flex}
+.snapshot-modal-inner{max-width:520px;width:100%;text-align:center;animation:fadeUp 0.4s ease;max-height:90vh;display:flex;flex-direction:column}
+.snapshot-caption{font-family:'Caveat',cursive;font-size:1.4rem;color:var(--cream);letter-spacing:1px;margin-bottom:1rem;flex-shrink:0}
+.snapshot-img-wrap{background:var(--paper);padding:0.6rem;box-shadow:0 10px 30px rgba(0,0,0,0.4);overflow-y:auto}
+.snapshot-img-wrap img{width:100%;display:block}
+.snapshot-modal-actions{display:flex;gap:0.8rem;justify-content:center;margin-top:1.2rem;flex-wrap:wrap;flex-shrink:0}
+.snapshot-modal-actions button{font-family:'Caveat',cursive;font-size:1rem;padding:0.55rem 1.4rem;border:none;cursor:pointer;letter-spacing:0.5px;transition:all 0.15s}
+.btn-snap-copy{background:var(--sage);color:white;box-shadow:3px 3px 0 #5a7850}
+.btn-snap-copy:hover{background:#6a8860;transform:translate(-2px,-2px);box-shadow:5px 5px 0 #5a7850}
+.btn-snap-save{background:var(--gold);color:var(--deep);box-shadow:3px 3px 0 var(--brown)}
+.btn-snap-save:hover{background:#e0a840;transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown)}
+.btn-snap-close{background:transparent;border:1.5px solid var(--tan)!important;color:var(--cream)}
+.btn-snap-close:hover{background:rgba(255,255,255,0.12)}
+.snapshot-loading{color:var(--cream);font-family:'Caveat',cursive;font-size:1.1rem;padding:2rem}
+
+/* OFFSCREEN SNAPSHOT RENDER TARGET */
+#snapshot-render{position:fixed;left:-9999px;top:0;width:520px;background:var(--paper);padding:1.6rem;font-family:'EB Garamond',Georgia,serif}
+.snap-header{text-align:center;margin-bottom:1.1rem}
+.snap-header h2{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:1.35rem;color:var(--deep)}
+.snap-header p{font-family:'Caveat',cursive;color:var(--brown);font-size:1rem;margin-top:0.25rem}
+.snap-tier-row{display:flex;align-items:stretch;margin-bottom:0.4rem;border:1px solid var(--tan)}
+.snap-tier-label{width:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;color:var(--cream)}
+.snap-tier-items{flex:1;display:flex;flex-wrap:wrap;gap:0.4rem;padding:0.5rem;align-items:center;background:var(--paper)}
+.snap-chip{background:var(--warm);border:1px solid var(--tan);padding:0.25rem 0.55rem;font-size:0.72rem;display:flex;align-items:center;gap:0.3rem}
+.snap-empty{font-family:'Caveat',cursive;font-size:0.85rem;color:var(--tan);font-style:italic}
+.snap-verdict{margin-top:1rem;padding:1rem 1.2rem;background:var(--deep);color:var(--cream)}
+.snap-verdict h3{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:1.05rem;margin-bottom:0.4rem}
+.snap-verdict p{font-family:'Caveat',cursive;color:var(--tan);font-size:0.9rem;white-space:pre-line;line-height:1.6}
+.snap-footer{text-align:center;margin-top:0.8rem;font-family:'Caveat',cursive;color:var(--tan);font-size:0.8rem;letter-spacing:1.5px;text-transform:uppercase}
 </style>
 </head>
 <body>
@@ -64,10 +108,12 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
   <div class="nav-links"></div>
 </nav>
 <div class="page-header">
-  <h1>The Official Biscuit Tier List</h1>
-  <p>drag each biscuit to its rightful place ♡</p>
-  <p class="instructions">Open them first. Eat at least one of each. Then rank them with the authority of someone who has experienced them. This is science.</p>
+  <h1 id="list-title">The Official Biscuit Tier List</h1>
+  <p id="list-subtitle">drag each biscuit to its rightful place ♡</p>
+  <p class="instructions" id="list-instructions">Open them first. Eat at least one of each. Then rank them with the authority of someone who has experienced them. This is science.</p>
 </div>
+
+<div class="list-tabs" id="list-tabs"></div>
 
 <div class="tierlist-wrap">
   <div class="tier tier-s">
@@ -92,7 +138,7 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
   </div>
 
   <div class="biscuit-pool">
-    <div class="pool-title">✦ Drag from here ✦</div>
+    <div class="pool-title" id="pool-title">✦ Drag from here ✦</div>
     <div class="pool-inner" id="pool" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'pool')"></div>
   </div>
 
@@ -102,40 +148,133 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
       <p class="result-text" id="result-text"></p>
       <div>
         <button class="btn-reset" onclick="resetTierlist()">Reset</button>
-        <button class="share-btn" onclick="copyResult()">Copy result</button>
+        <button class="snapshot-btn" onclick="takeSnapshot()">📸 Take Snapshot</button>
       </div>
     </div>
   </div>
 </div>
 
-<script>
-const BISCUITS = [
-  {id:'custard-coconut', name:'Custard Cream', sub:'Coconut flavour', emoji:'🥥'},
-  {id:'custard-strawberry', name:'Custard Cream', sub:'Strawberry flavour', emoji:'🍓'},
-  {id:'custard-digestive', name:'Custard Cream', sub:'Digestive flavour', emoji:'🍪'},
-  {id:'custard-lemon', name:'Custard Cream', sub:'Lemon flavour', emoji:'🍋'},
-  {id:'malted-milk', name:'Malted Milk', sub:'Classic British', emoji:'🐄'},
-  {id:'nice', name:'Nice Biscuit', sub:'The original nice', emoji:'✨'},
-];
+<div class="camera-flash" id="camera-flash"></div>
 
-const COMMENTARY = {
-  S: ['An absolute triumph.','Peak biscuit. No notes.','This is correct. This is right.','Unimpeachable taste. I respect it.'],
-  A: ['Solid. Respectable. Well-deserved.','Good decisions were made here.','A very reasonable ranking from a very good person.','Yes. This checks out.'],
-  B: ['Room for improvement but fair enough.','A B-tier biscuit deserves a B-tier placement.','Acceptable. I have no complaints.','Middle ground, but at least it\'s honest.'],
-  C: ['Questionable. We can discuss this.','Tristan raises an eyebrow.','This is fine but also not fine.','We can revisit this next year.'],
-  D: ['Excuse me?!','This is legally wrong.','I\'m telling the biscuit.','We need to talk about this.'],
+<div id="snapshot-modal">
+  <div class="snapshot-modal-inner">
+    <div class="snapshot-caption">✦ screenshot this ✦</div>
+    <div class="snapshot-img-wrap" id="snapshot-img-wrap">
+      <p class="snapshot-loading" id="snapshot-loading">developing photo…</p>
+      <img id="snapshot-img" alt="Tier list result" style="display:none">
+    </div>
+    <div class="snapshot-modal-actions">
+      <button class="btn-snap-copy" onclick="copyResultText()">Copy to text</button>
+      <button class="btn-snap-save" onclick="saveSnapshotImage()">Save image</button>
+      <button class="btn-snap-close" onclick="closeSnapshotModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="snapshot-render"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+// ══════════════════════════════════════
+// TIER LIST DATA — add a new key here to get a new tab
+// ══════════════════════════════════════
+const TIERLISTS = {
+  biscuits: {
+    label: '🍪 Biscuits',
+    title: 'The Official Biscuit Tier List',
+    subtitle: 'drag each biscuit to its rightful place ♡',
+    instructions: 'Open them first. Eat at least one of each. Then rank them with the authority of someone who has experienced them. This is science.',
+    poolLabel: '✦ Drag from here ✦',
+    items: [
+      {id:'custard-coconut', name:'Custard Cream', sub:'Coconut flavour', emoji:'🥥'},
+      {id:'custard-strawberry', name:'Custard Cream', sub:'Strawberry flavour', emoji:'🍓'},
+      {id:'custard-digestive', name:'Custard Cream', sub:'Digestive flavour', emoji:'🍪'},
+      {id:'custard-lemon', name:'Custard Cream', sub:'Lemon flavour', emoji:'🍋'},
+      {id:'malted-milk', name:'Malted Milk', sub:'Classic British', emoji:'🐄'},
+      {id:'nice', name:'Nice Biscuit', sub:'The original nice', emoji:'✨'},
+    ],
+    commentary: {
+      S: ['An absolute triumph.','Peak biscuit. No notes.','This is correct. This is right.','Unimpeachable taste. I respect it.'],
+      A: ['Solid. Respectable. Well-deserved.','Good decisions were made here.','A very reasonable ranking from a very good person.','Yes. This checks out.'],
+      B: ['Room for improvement but fair enough.','A B-tier biscuit deserves a B-tier placement.','Acceptable. I have no complaints.','Middle ground, but at least it\'s honest.'],
+      C: ['Questionable. We can discuss this.','Tristan raises an eyebrow.','This is fine but also not fine.','We can revisit this next year.'],
+      D: ['Excuse me?!','This is legally wrong.','I\'m telling the biscuit.','We need to talk about this.'],
+    },
+  },
+  tea: {
+    label: '🫖 Tea',
+    title: 'The Official Tea Tier List',
+    subtitle: 'steep it, sip it, judge it ♡',
+    instructions: 'Same rules as always — try it properly (milk, no milk, whatever heresy you prefer) before ranking.',
+    poolLabel: '✦ Drag from here ✦',
+    items: [
+      {id:'yorkshire', name:'Yorkshire Tea', sub:'The reliable one', emoji:'🍂'},
+      {id:'earl-grey', name:'Earl Grey', sub:'Bergamot business', emoji:'🌸'},
+      {id:'green', name:'Green Tea', sub:'For the health arc', emoji:'🍵'},
+      {id:'chamomile', name:'Chamomile', sub:'Bedtime tea', emoji:'🌼'},
+      {id:'chai', name:'Chai', sub:'Spiced and proud', emoji:'🌶️'},
+    ],
+    commentary: {
+      S: ['A cup worth defending.','Correct in every way.','This is the one true tea.','No further questions.'],
+      A: ['Very respectable brewing choices.','Good tea, good vibes.','This checks out.','Solidly ranked.'],
+      B: ['It\'s tea. It\'s fine.','A perfectly acceptable middle placement.','No strong feelings, which is fine.','Reasonable.'],
+      C: ['Hm. We should talk about this.','A questionable steep.','I have concerns.','This needs revisiting.'],
+      D: ['This is an insult to the kettle.','Excuse me?!','We need to talk.','I\'m telling the teapot.'],
+    },
+  },
 };
 
-let draggingId = null;
-const placement = {}; // id -> tier
+let activeList = 'biscuits';
+const state = {};
+Object.keys(TIERLISTS).forEach(k => state[k] = { placement: {} });
 
-function buildPool() {
-  const pool = document.getElementById('pool');
-  pool.innerHTML = '';
-  BISCUITS.forEach(b => {
-    const el = makeCard(b);
-    pool.appendChild(el);
+// ══════════════════════════════════════
+// TABS + HEADER
+// ══════════════════════════════════════
+function buildTabs() {
+  const wrap = document.getElementById('list-tabs');
+  wrap.innerHTML = '';
+  Object.entries(TIERLISTS).forEach(([key, def]) => {
+    const btn = document.createElement('button');
+    btn.className = 'list-tab' + (key === activeList ? ' active' : '');
+    btn.textContent = def.label;
+    btn.onclick = () => switchList(key);
+    wrap.appendChild(btn);
   });
+}
+
+function switchList(key) {
+  if (key === activeList) return;
+  activeList = key;
+  buildTabs();
+  applyHeader();
+  rebuildBoard();
+  checkAllPlaced();
+}
+
+function applyHeader() {
+  const def = TIERLISTS[activeList];
+  document.getElementById('list-title').textContent = def.title;
+  document.getElementById('list-subtitle').textContent = def.subtitle;
+  document.getElementById('list-instructions').textContent = def.instructions;
+  document.getElementById('pool-title').textContent = def.poolLabel;
+}
+
+// ══════════════════════════════════════
+// BOARD BUILDING
+// ══════════════════════════════════════
+function rebuildBoard() {
+  document.querySelectorAll('.tier-drop').forEach(d => d.innerHTML = '');
+  document.getElementById('pool').innerHTML = '';
+  const def = TIERLISTS[activeList];
+  const placement = state[activeList].placement;
+  def.items.forEach(item => {
+    const el = makeCard(item);
+    const tier = placement[item.id];
+    const target = tier ? document.getElementById('tier-' + tier) : document.getElementById('pool');
+    target.appendChild(el);
+  });
+  document.getElementById('result-section').classList.remove('show');
 }
 
 function makeCard(b) {
@@ -156,10 +295,7 @@ function makeCard(b) {
     checkAllPlaced();
   });
   // Touch support
-  let touchStartX, touchStartY;
-  el.addEventListener('touchstart', e => {
-    const t = e.touches[0];
-    touchStartX = t.clientX; touchStartY = t.clientY;
+  el.addEventListener('touchstart', () => {
     draggingId = b.id;
   }, {passive:true});
   el.addEventListener('touchend', e => {
@@ -176,6 +312,8 @@ function makeCard(b) {
   return el;
 }
 
+let draggingId = null;
+
 function onDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
 function onDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
 function onDrop(e, tier) {
@@ -190,11 +328,17 @@ function moveCard(id, tier) {
   const target = tier === 'pool' ? document.getElementById('pool') : document.getElementById('tier-'+tier);
   if (!target) return;
   target.appendChild(card);
-  placement[id] = tier;
+  if (tier === 'pool') delete state[activeList].placement[id];
+  else state[activeList].placement[id] = tier;
 }
 
+// ══════════════════════════════════════
+// RESULT
+// ══════════════════════════════════════
 function checkAllPlaced() {
-  const allPlaced = BISCUITS.every(b => placement[b.id] && placement[b.id] !== 'pool');
+  const def = TIERLISTS[activeList];
+  const placement = state[activeList].placement;
+  const allPlaced = def.items.every(b => !!placement[b.id]);
   const resSection = document.getElementById('result-section');
   if (allPlaced) {
     generateResult();
@@ -206,40 +350,123 @@ function checkAllPlaced() {
 }
 
 function generateResult() {
+  const def = TIERLISTS[activeList];
+  const placement = state[activeList].placement;
   const tierNames = {S:'S tier (elite)',A:'A tier (great)',B:'B tier (decent)',C:'C tier (hmm)',D:'the Rude tier'};
+  const order = ['S','A','B','C','D'];
   const lines = Object.entries(placement)
-    .filter(([,v])=>v!=='pool')
-    .sort((a,b)=>['S','A','B','C','D'].indexOf(a[1])-['S','A','B','C','D'].indexOf(b[1]))
+    .sort((a,b)=>order.indexOf(a[1])-order.indexOf(b[1]))
     .map(([id,tier])=>{
-      const b = BISCUITS.find(x=>x.id===id);
+      const b = def.items.find(x=>x.id===id);
       return `${b.emoji} ${b.name} (${b.sub}) → ${tierNames[tier]}`;
     });
   const topTier = Object.entries(placement).find(([,v])=>v==='S');
   const bottomTier = Object.entries(placement).find(([,v])=>v==='D');
   let title = 'Your verdict is in.';
   if (topTier) {
-    const top = BISCUITS.find(b=>b.id===topTier[0]);
+    const top = def.items.find(b=>b.id===topTier[0]);
     title = `${top.emoji} ${top.name} wins.`;
   }
-  const comment = COMMENTARY[bottomTier ? 'D' : topTier ? 'S' : 'B'];
+  const comment = def.commentary[bottomTier ? 'D' : topTier ? 'S' : 'B'];
   const remark = comment[Math.floor(Math.random()*comment.length)];
   document.getElementById('result-title').textContent = title;
   document.getElementById('result-text').textContent = lines.join('\n') + '\n\n' + remark;
 }
 
-function copyResult() {
-  const text = document.getElementById('result-text').textContent;
-  navigator.clipboard?.writeText('My Official Biscuit Tier List (For Ann):\n\n'+text).then(()=>alert('Copied to clipboard!'));
-}
-
 function resetTierlist() {
-  Object.keys(placement).forEach(k=>delete placement[k]);
-  buildPool();
-  document.querySelectorAll('.tier-drop').forEach(d=>d.innerHTML='');
-  document.getElementById('result-section').classList.remove('show');
+  Object.keys(state[activeList].placement).forEach(k => delete state[activeList].placement[k]);
+  rebuildBoard();
 }
 
-buildPool();
+// ══════════════════════════════════════
+// SNAPSHOT (camera flash + shareable image + copy-to-text)
+// ══════════════════════════════════════
+function flashCamera() {
+  const flash = document.getElementById('camera-flash');
+  flash.classList.remove('fading');
+  flash.classList.add('flash');
+  setTimeout(() => {
+    flash.classList.remove('flash');
+    flash.classList.add('fading');
+  }, 100);
+}
+
+function buildSnapshotMarkup() {
+  const def = TIERLISTS[activeList];
+  const placement = state[activeList].placement;
+  const order = ['S','A','B','C','D'];
+  const tierLabelText = {S:'S',A:'A',B:'B',C:'C',D:'Rude'};
+  const tierColor = {S:'#b86858',A:'#c8943a',B:'#7a9870',C:'#7a5230',D:'#3a2010'};
+
+  let rowsHTML = '';
+  order.forEach(t => {
+    const items = def.items.filter(b => placement[b.id] === t);
+    const chips = items.map(b => `<div class="snap-chip"><span>${b.emoji}</span><span>${b.name}</span></div>`).join('');
+    rowsHTML += `<div class="snap-tier-row"><div class="snap-tier-label" style="background:${tierColor[t]}">${tierLabelText[t]}</div><div class="snap-tier-items">${chips || '<span class="snap-empty">empty</span>'}</div></div>`;
+  });
+
+  const resultTitle = document.getElementById('result-title').textContent;
+  const resultText = document.getElementById('result-text').textContent;
+
+  return `
+    <div class="snap-header"><h2>${def.title}</h2><p>${def.subtitle}</p></div>
+    ${rowsHTML}
+    <div class="snap-verdict"><h3>${resultTitle}</h3><p>${resultText}</p></div>
+    <div class="snap-footer">besties ♡ tier list</div>
+  `;
+}
+
+async function takeSnapshot() {
+  flashCamera();
+
+  const modal = document.getElementById('snapshot-modal');
+  const img = document.getElementById('snapshot-img');
+  const loading = document.getElementById('snapshot-loading');
+  img.style.display = 'none';
+  loading.style.display = 'block';
+  modal.classList.add('open');
+
+  const renderTarget = document.getElementById('snapshot-render');
+  renderTarget.innerHTML = buildSnapshotMarkup();
+
+  // let the flash read before the (slightly heavier) canvas render kicks in
+  await new Promise(r => setTimeout(r, 180));
+
+  try {
+    const canvas = await html2canvas(renderTarget, { backgroundColor: '#fffdf5', scale: 2 });
+    img.src = canvas.toDataURL('image/png');
+    loading.style.display = 'none';
+    img.style.display = 'block';
+  } catch (e) {
+    loading.textContent = "Couldn't generate the image — try Copy to text instead.";
+  }
+}
+
+function closeSnapshotModal() {
+  document.getElementById('snapshot-modal').classList.remove('open');
+}
+
+function saveSnapshotImage() {
+  const img = document.getElementById('snapshot-img');
+  if (!img.src) return;
+  const a = document.createElement('a');
+  a.href = img.src;
+  a.download = `${activeList}-tierlist.png`;
+  a.click();
+}
+
+function copyResultText() {
+  const def = TIERLISTS[activeList];
+  const text = document.getElementById('result-text').textContent;
+  navigator.clipboard?.writeText(`My Official ${def.title} (For Ann):\n\n`+text).then(()=>alert('Copied to clipboard!'));
+}
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+buildTabs();
+applyHeader();
+rebuildBoard();
 </script>
 <script src="nav.js"></script>
 <script>window.addEventListener('DOMContentLoaded',()=>buildNav('tierlist.html'));</script>
