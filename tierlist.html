@@ -176,14 +176,14 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 // ══════════════════════════════════════
-// TIER LIST DATA — add a new key here to get a new tab
+// TIER LIST DATA - add a new key here to get a new tab
 // ══════════════════════════════════════
 const TIERLISTS = {
   biscuits: {
     label: '🍪 Biscuits',
     title: 'The Official Biscuit Tier List',
     subtitle: 'drag each biscuit to its rightful place ♡',
-    instructions: 'Open them first. Eat at least one of each. Then rank them with the authority of someone who has experienced them. This is science.',
+    instructions: 'Open them first. Eat at least one of each. Then rank them with true expertise.',
     poolLabel: '✦ Drag from here ✦',
     items: [
       {id:'custard-coconut', name:'Custard Cream', sub:'Coconut flavour', emoji:'🥥'},
@@ -204,15 +204,26 @@ const TIERLISTS = {
   tea: {
     label: '🫖 Tea',
     title: 'The Official Tea Tier List',
-    subtitle: 'steep it, sip it, judge it ♡',
-    instructions: 'Same rules as always — try it properly (milk, no milk, whatever heresy you prefer) before ranking.',
+    subtitle: 'sip it and judge it ♡',
+    instructions: 'Same rules as always - try it properly (milk, no milk, whatever heresy you prefer) before ranking.',
     poolLabel: '✦ Drag from here ✦',
     items: [
-      {id:'yorkshire', name:'Yorkshire Tea', sub:'The reliable one', emoji:'🍂'},
-      {id:'earl-grey', name:'Earl Grey', sub:'Bergamot business', emoji:'🌸'},
-      {id:'green', name:'Green Tea', sub:'For the health arc', emoji:'🍵'},
-      {id:'chamomile', name:'Chamomile', sub:'Bedtime tea', emoji:'🌼'},
-      {id:'chai', name:'Chai', sub:'Spiced and proud', emoji:'🌶️'},
+      {id:'yorkshire', name:'British Tea', sub:'Yorkshire', emoji:'🍂'},
+      {id:'dutch-fruit-', name:'Dutch Tea', sub:'Lipton', emoji:'🍂'},
+      {id:'dutch-fruit-', name:'Dutch Fruit Tea', sub:'Strawberry flavour', emoji:'🌸'},
+      {id:'dutch-fruit-', name:'Dutch Fruit Tea', sub:'Raspberry flavour', emoji:'🌸'},
+      {id:'dutch-fruit-', name:'Dutch Fruit Tea', sub:'Tropical flavour', emoji:'🌸'},
+      {id:'dutch-fruit-', name:'Dutch Fruit Tea', sub:'Blackcurrant flavour', emoji:'🌸'},
+      {id:'dutch-fruit-', name:'Dutch Fruit Tea', sub:'Cherry flavour', emoji:'🌸'},
+      {id:'dutch-fruit-', name:'Dutch Fruit Tea', sub:'Orange flavour', emoji:'🌸'},
+      {id:'dutch-fruit-', name:'Dutch Fruit Tea', sub:'Mango flavour', emoji:'🌸'},
+      {id:'dutch-fruit-', name:'Dutch Fruit Tea', sub:'Peach flavour', emoji:'🌸'},
+      {id:'dutch-fruit-', name:'Dutch Fruit Tea', sub:'Mango Orange flavour', emoji:'🌸'},
+      {id:'dutch-fruit-', name:'Dutch Fruit Tea', sub:'Apple flavour', emoji:'🌸'},
+      {id:'dutch-fruit-', name:'Dutch Fruit Tea', sub:'Peach Mango flavour', emoji:'🌸'},
+      {id:'dutch-fruit-', name:'Dutch Fruit Tea', sub:'Melon flavour', emoji:'🌸'},
+      {id:'dutch-fruit-', name:'Dutch Fruit Tea', sub:'Lemon flavour', emoji:'🌸'},
+      {id:'dutch-fruit-', name:'Dutch Fruit Green Tea', sub:'Lemon flavour', emoji:'🌸'},
     ],
     commentary: {
       S: ['A cup worth defending.','Correct in every way.','This is the one true tea.','No further questions.'],
@@ -438,7 +449,7 @@ async function takeSnapshot() {
     loading.style.display = 'none';
     img.style.display = 'block';
   } catch (e) {
-    loading.textContent = "Couldn't generate the image — try Copy to text instead.";
+    loading.textContent = "Couldn't generate the image - try Copy to text instead.";
   }
 }
 
