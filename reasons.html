@@ -53,8 +53,8 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
   <div class="nav-links"></div>
 </nav>
 <div class="page-header">
-  <h1>Reasons you're my favourite person</h1>
-  <p>tap each one to reveal it ♡</p>
+  <h1>For when you're feeling down</h1>
+  <p>reasons you're my favourite person — open one, or a few, whenever you need them ♡</p>
 </div>
 
 <div class="reasons-wrap">
@@ -63,7 +63,7 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
     <button class="btn-reveal-all" id="btn-reveal-all" onclick="revealAll()">Reveal all at once →</button>
   </div>
   <div class="ending-note" id="ending-note">
-    <p>There are so many more. This list could go on for pages.<br>But you get the idea. You are, genuinely, one of my favourite people on this earth — and I am so glad you exist.</p>
+    <p>There are so many more. This list could go on for pages.<br>Whenever you need reminding, come back and they'll all be waiting, shuffled and closed again — as many times as you need.</p>
     <span class="sig">Bestie Tristan xo</span>
   </div>
 </div>
@@ -87,25 +87,31 @@ const REASONS = [
   {text:"You make ordinary Tuesday evenings feel like an event."},
 ];
 
-const STORAGE_KEY = 'ann_reasons_revealed_2025';
 let revealed = new Set();
-try {
-  const p = JSON.parse(localStorage.getItem(STORAGE_KEY));
-  revealed = new Set(Array.isArray(p) ? p : []);
-} catch(e) {}
-function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify([...revealed])); }
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// Re-shuffled on every page load — nothing is remembered between visits
+const order = shuffle(REASONS.map((_, i) => i));
 
 function buildList() {
   const list = document.getElementById('reasons-list');
   list.innerHTML = '';
-  REASONS.forEach((r, i) => {
+  order.forEach((reasonIdx, i) => {
+    const r = REASONS[reasonIdx];
     const item = document.createElement('div');
     item.className = 'reason-item';
     item.style.transitionDelay = (i * 0.05) + 's';
-    const isRev = revealed.has(i);
     item.innerHTML = `
       <div class="reason-num">${String(i+1).padStart(2,'0')}</div>
-      <div class="reason-card ${isRev?'revealed':''}" onclick="revealOne(${i}, this)">
+      <div class="reason-card" onclick="revealOne(${reasonIdx}, this)">
         <div class="reason-hidden">✦ tap to reveal ✦</div>
         <div class="reason-text">${r.text}</div>
       </div>
@@ -120,7 +126,6 @@ function revealOne(idx, card) {
   if (revealed.has(idx)) return;
   card.classList.add('revealed');
   revealed.add(idx);
-  save();
   checkAllRevealed();
 }
 
@@ -129,7 +134,6 @@ function revealAll() {
     setTimeout(() => card.classList.add('revealed'), i * 80);
   });
   REASONS.forEach((_,i) => revealed.add(i));
-  save();
   setTimeout(checkAllRevealed, REASONS.length * 80 + 200);
 }
 
