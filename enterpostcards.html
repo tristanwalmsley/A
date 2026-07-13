@@ -11,7 +11,18 @@
 body{background:var(--cream);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;padding:3rem 1.5rem 5rem}
 body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.6}
 
-.wrap{max-width:560px;margin:0 auto}
+.wrap{max-width:940px;margin:0 auto}
+#screen-start,#screen-import,#screen-output{max-width:560px;margin:0 auto}
+
+.form-layout{display:flex;gap:2rem;align-items:flex-start}
+.form-main{flex:1;min-width:0;max-width:620px}
+.added-sidebar{width:250px;flex-shrink:0;position:sticky;top:1.5rem;max-height:88vh;overflow-y:auto;padding-right:0.2rem}
+.sidebar-title{font-family:'Caveat',cursive;font-size:0.85rem;letter-spacing:2px;text-transform:uppercase;color:var(--rose);margin-bottom:0.7rem}
+.sidebar-empty{font-family:'Caveat',cursive;font-size:0.9rem;color:var(--tan);font-style:italic}
+@media (max-width:860px){
+  .form-layout{flex-direction:column}
+  .added-sidebar{width:100%;position:static;max-height:none}
+}
 
 h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;font-style:italic;color:var(--deep);margin-bottom:0.3rem;text-align:center}
 .subtitle{font-family:'Caveat',cursive;font-size:1.05rem;color:var(--brown);text-align:center;margin-bottom:2.5rem;letter-spacing:0.5px}
@@ -93,6 +104,14 @@ h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;font-styl
 /* IMPORT SCREEN */
 #screen-import{display:none}
 #f-import-text{min-height:240px;font-family:'Courier New',monospace;font-size:0.8rem;line-height:1.6}
+.dir-mini-tabs{display:flex;gap:0.5rem;margin-bottom:0.2rem}
+.picker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:0.8rem;margin-top:1rem}
+.picker-card{cursor:pointer;border:1px solid var(--tan);background:var(--cream);overflow:hidden;transition:transform 0.15s,box-shadow 0.15s}
+.picker-card:hover{transform:translateY(-3px);box-shadow:3px 5px 10px rgba(0,0,0,0.15)}
+.picker-face{aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;font-size:1.7rem;overflow:hidden}
+.picker-bottom{padding:0.35rem 0.5rem;background:var(--paper);border-top:1px solid var(--warm)}
+.picker-title{font-family:'Playfair Display',serif;font-size:0.7rem;color:var(--deep);line-height:1.25}
+.picker-sent{font-family:'Caveat',cursive;font-size:0.68rem;color:var(--tan)}
 
 /* OUTPUT */
 #screen-output{display:none}
@@ -128,29 +147,52 @@ h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;font-styl
 
   <!-- IMPORT (modify existing) -->
   <div id="screen-import">
-    <div class="form-card">
-      <h2>Paste existing postcard code</h2>
-      <p class="hint" style="margin-bottom:1rem;font-size:0.9rem">Paste the <code>POSTCARDS_TO_ANN</code> / <code>POSTCARDS_TO_TRI</code> section (or just one array) straight from postcards.html — every postcard in it will load below so you can edit or remove any of them.</p>
-      <div class="field">
-        <textarea id="f-import-text" placeholder="const POSTCARDS_TO_ANN = [ ... ];&#10;const POSTCARDS_TO_TRI = [ ... ];"></textarea>
+    <div id="import-loading" class="form-card" style="text-align:center">
+      <p class="hint" style="font-size:1rem">Loading your existing postcards…</p>
+    </div>
+
+    <div id="import-picker" style="display:none">
+      <div class="form-card">
+        <h2>Pick a postcard to edit</h2>
+        <p class="hint" style="margin-bottom:1rem;font-size:0.9rem">Click any postcard below to load it into the form — everything else stays exactly as it is until you generate code.</p>
+        <div class="dir-mini-tabs">
+          <button class="filter-btn active" id="pickertab-to-ann" onclick="showImportDir('to-ann', this)">Tristan → Ann</button>
+          <button class="filter-btn" id="pickertab-to-tri" onclick="showImportDir('to-tri', this)">Ann → Tristan</button>
+        </div>
+        <div class="picker-grid" id="picker-grid"></div>
       </div>
-      <div class="field">
-        <label>If pasting a single array with no variable name, which direction is it?</label>
-        <select id="f-import-dir">
-          <option value="to-ann">Tristan → Ann</option>
-          <option value="to-tri">Ann → Tristan</option>
-        </select>
+      <div class="form-actions">
+        <button class="btn-add-another" onclick="addBlankToImport()">+ Add a brand-new postcard</button>
+        <button class="btn-back-link" onclick="backToStart()" style="cursor:pointer">← Back</button>
       </div>
     </div>
-    <div class="form-actions">
-      <button class="btn-generate" onclick="loadImport()">Load postcards →</button>
-      <button class="btn-back-link" onclick="backToStart()" style="cursor:pointer">← Back</button>
+
+    <div id="import-fallback" style="display:none">
+      <div class="form-card">
+        <h2>Paste existing postcard code</h2>
+        <p class="hint" style="margin-bottom:1rem;font-size:0.9rem">Couldn't load postcards.html automatically — this usually happens when opening this file directly instead of through a server. Paste the <code>POSTCARDS_TO_ANN</code> / <code>POSTCARDS_TO_TRI</code> section below instead.</p>
+        <div class="field">
+          <textarea id="f-import-text" placeholder="const POSTCARDS_TO_ANN = [ ... ];&#10;const POSTCARDS_TO_TRI = [ ... ];"></textarea>
+        </div>
+        <div class="field">
+          <label>If pasting a single array with no variable name, which direction is it?</label>
+          <select id="f-import-dir">
+            <option value="to-ann">Tristan → Ann</option>
+            <option value="to-tri">Ann → Tristan</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-generate" onclick="loadImport()">Load postcards →</button>
+        <button class="btn-back-link" onclick="backToStart()" style="cursor:pointer">← Back</button>
+      </div>
     </div>
   </div>
 
   <!-- FORM -->
   <div id="screen-form">
-    <div class="added-list" id="added-list"></div>
+   <div class="form-layout">
+    <div class="form-main">
 
     <div class="form-card">
       <div class="card-counter" id="card-counter">Postcard #1</div>
@@ -236,6 +278,13 @@ h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;font-styl
       <button class="btn-cancel-edit" id="btn-cancel-edit" style="display:none" onclick="cancelEdit()">Cancel edit</button>
       <button class="btn-generate" onclick="generateCode()">Generate code ✦</button>
     </div>
+
+    </div>
+    <aside class="added-sidebar">
+      <div class="sidebar-title">Added so far</div>
+      <div class="added-list" id="added-list"></div>
+    </aside>
+   </div>
   </div>
 
   <!-- OUTPUT -->
@@ -309,15 +358,98 @@ function startEntry() {
   document.getElementById('screen-form').style.display = 'block';
   buildEmojiGrid();
   buildColorGrid();
+  renderAddedList();
 }
 
 function startModify() {
   document.getElementById('screen-start').style.display = 'none';
   document.getElementById('screen-import').style.display = 'block';
+  resetImportSubScreens();
+  document.getElementById('import-loading').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  fetchExistingPostcards();
+}
+
+function resetImportSubScreens() {
+  document.getElementById('import-loading').style.display = 'none';
+  document.getElementById('import-picker').style.display = 'none';
+  document.getElementById('import-fallback').style.display = 'none';
+}
+
+async function fetchExistingPostcards() {
+  try {
+    const res = await fetch('postcards.html');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const text = await res.text();
+    const parsed = parsePostcardsCode(text);
+    if (!parsed || parsed.length === 0) throw new Error('no postcards found in postcards.html');
+
+    cards = parsed;
+    editingIndex = null;
+    importMode = true;
+    parsed.forEach(c => { if (!EMOJIS.includes(c.emoji)) EMOJIS.unshift(c.emoji); });
+    buildEmojiGrid();
+    buildColorGrid();
+    renderPickerGrid();
+
+    document.getElementById('import-loading').style.display = 'none';
+    document.getElementById('import-picker').style.display = 'block';
+  } catch (e) {
+    document.getElementById('import-loading').style.display = 'none';
+    document.getElementById('import-fallback').style.display = 'block';
+  }
+}
+
+let importDirFilter = 'to-ann';
+
+function showImportDir(dir, btn) {
+  importDirFilter = dir;
+  document.querySelectorAll('#import-picker .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPickerGrid();
+}
+
+function pickerFaceHTML(c) {
+  if ((c.faceDisplay === 'text' || c.faceDisplay === 'both') && c.faceText) {
+    const emojiPart = c.faceDisplay === 'both' ? `<span>${c.emoji}</span>` : '';
+    return `${emojiPart}<span style="font-family:'Caveat',cursive;font-weight:600;font-size:0.72rem;color:#fff;text-align:center;padding:0 0.3rem;text-shadow:0 1px 3px rgba(0,0,0,0.3)">${c.faceText}</span>`;
+  }
+  return c.emoji;
+}
+
+function renderPickerGrid() {
+  const grid = document.getElementById('picker-grid');
+  grid.innerHTML = '';
+  const list = cards.filter(c => c.dir === importDirFilter);
+
+  if (list.length === 0) {
+    grid.innerHTML = '<p class="sidebar-empty">No postcards in this direction yet.</p>';
+    return;
+  }
+
+  list.forEach(c => {
+    const idx = cards.indexOf(c);
+    const colorDef = COLORS.find(col => col.key === c.color);
+    const bg = colorDef ? colorDef.css : 'linear-gradient(135deg,#999,#bbb)';
+    const div = document.createElement('div');
+    div.className = 'picker-card';
+    div.onclick = () => editCard(idx);
+    div.innerHTML = `<div class="picker-face" style="background:${bg}">${pickerFaceHTML(c)}</div>
+      <div class="picker-bottom"><div class="picker-title">${c.title}</div><div class="picker-sent">${c.label} · ${c.sent}</div></div>`;
+    grid.appendChild(div);
+  });
+}
+
+function addBlankToImport() {
+  cancelEdit();
+  document.getElementById('screen-import').style.display = 'none';
+  document.getElementById('screen-form').style.display = 'block';
+  renderAddedList();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function backToStart() {
+  resetImportSubScreens();
   document.getElementById('screen-import').style.display = 'none';
   document.getElementById('screen-form').style.display = 'none';
   document.getElementById('screen-output').style.display = 'none';
@@ -445,6 +577,10 @@ function resetForm() {
 function renderAddedList() {
   const list = document.getElementById('added-list');
   list.innerHTML = '';
+  if (cards.length === 0) {
+    list.innerHTML = '<p class="sidebar-empty">Nothing added yet — fill in the form and hit "add another" ♡</p>';
+    return;
+  }
   cards.forEach((c, i) => {
     const item = document.createElement('div');
     item.className = 'added-item' + (i === editingIndex ? ' editing' : '');
