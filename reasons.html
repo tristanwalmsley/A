@@ -54,7 +54,7 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 </nav>
 <div class="page-header">
   <h1>For when you're feeling down</h1>
-  <p>reasons you're my favourite person — open one, or a few, whenever you need them ♡</p>
+  <p>reasons you're my favourite person - open one, or a few, whenever you need them ♡</p>
 </div>
 
 <div class="reasons-wrap">
@@ -63,28 +63,27 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
     <button class="btn-reveal-all" id="btn-reveal-all" onclick="revealAll()">Reveal all at once →</button>
   </div>
   <div class="ending-note" id="ending-note">
-    <p>There are so many more. This list could go on for pages.<br>Whenever you need reminding, come back and they'll all be waiting, shuffled and closed again — as many times as you need.</p>
+    <p>There are so many more. This list could go on for pages.<br>Whenever you need reminding, come back and they'll all be waiting as many times as you need.</p>
     <span class="sig">Bestie Tristan xo</span>
   </div>
 </div>
 
 <script>
 const REASONS = [
-  {text:"You always, always answer. Even on bad days when you've got your own stuff going on, you show up. That's rare."},
-  {text:"You laugh at the same things I do, in the same way I do, at exactly the right moments."},
-  {text:"You take care of the people you love so deliberately and so quietly. You don't make a big deal of it. You just do it."},
+  {text:"We always, always answer. Even on bad days when we've got our own stuff going on, we show up for each other."},
+  {text:"You laugh at the same things I do, in the same way I do, exactly in-sync."},
+  {text:"You take care of the people you love."},
   {text:"You've never made me feel stupid for caring about things. Not once."},
-  {text:"The way you get excited about things — really genuinely excited — is one of the best things about you."},
-  {text:"You are kind without being soft. You will call someone out when they deserve it and still be the warmest person in the room."},
-  {text:"You have never once made me feel like a burden. When I'm struggling, you make space without making it a thing."},
-  {text:"You remember things. The small things I've said in passing, things I've mentioned once — and then you bring them back up later. It makes me feel very seen."},
+  {text:"The way we get excited about things and we can then spend hours talking about it."},
+  {text:"You are kind without being soft. You will call someone out when they deserve it and still be so kind."},
+  {text:"You have never once made me feel like a burden. When I'm struggling, you make space"},
+  {text:"You remember things. The small things I've said in passing, things I've mentioned once, and then you bring them back up later even when i've forgotten them."},
   {text:"You are so funny without trying to be. The best kind of funny."},
-  {text:"You are genuinely curious about the world. You ask real questions and you actually listen to the answers."},
-  {text:"You've crossed the North Sea with me in spirit more times than I can count."},
-  {text:"You gave me the kind of friendship where we can not talk for a few days and pick up exactly where we left off, no weirdness. That's everything."},
-  {text:"You have good taste. In everything. It's impressive."},
-  {text:"The way you talk about the things and people you love — with that much warmth — makes me feel lucky to be one of them."},
-  {text:"You make ordinary Tuesday evenings feel like an event."},
+  {text:"You are genuinely curious about the world. You ask real questions and you actually listen."},
+  {text:"You've crossed the Sea with me in spirit more times than I can count."},
+  {text:"You gave me the kind of friendship where we can not talk for a few days, weeks, or even months and pick up exactly where we left off."},
+  {text:"You have good taste in everything! Well, men exist..."},
+  {text:"You make ordinary (phas) Monday evenings feel like something to look forward to."},
 ];
 
 let revealed = new Set();
@@ -98,7 +97,7 @@ function shuffle(arr) {
   return a;
 }
 
-// Re-shuffled on every page load — nothing is remembered between visits
+// Re-shuffled on every page load - nothing is remembered between visits
 const order = shuffle(REASONS.map((_, i) => i));
 
 function buildList() {
