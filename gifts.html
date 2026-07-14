@@ -34,6 +34,9 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .spine{position:absolute;left:calc(1.5rem + 27px);top:0;bottom:0;width:2px;z-index:0;overflow:hidden}
 .spine-bg{position:absolute;inset:0;border-left:2.5px dashed var(--warm)}
 .spine-fill{position:absolute;top:0;left:0;right:0;height:0;background:linear-gradient(to bottom,var(--sage),var(--gold));transition:height 0.8s cubic-bezier(0.22,1,0.36,1)}
+.spine-fill::after{content:'';position:absolute;left:50%;bottom:-3px;width:9px;height:9px;border-radius:50%;background:var(--gold);transform:translateX(-50%);box-shadow:0 0 10px 3px rgba(200,148,58,0.6);opacity:0;transition:opacity 0.4s}
+.spine-fill.has-progress::after{opacity:1;animation:spineGlowPulse 1.8s ease-in-out infinite}
+@keyframes spineGlowPulse{0%,100%{transform:translateX(-50%) scale(1);box-shadow:0 0 10px 3px rgba(200,148,58,0.6)}50%{transform:translateX(-50%) scale(1.35);box-shadow:0 0 16px 6px rgba(200,148,58,0.8)}}
 /* STOP */
 .stop{display:flex;align-items:flex-start;gap:1.2rem;margin-bottom:2rem;position:relative;z-index:1;opacity:0;transform:translateX(-30px);animation:stopSlide 0.6s cubic-bezier(0.22,1,0.36,1) forwards}
 @keyframes stopSlide{to{opacity:1;transform:translateX(0)}}
@@ -53,6 +56,8 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .stop.is-unlocked .stop-card::before{background:var(--gold)}
 .stop.is-opened .stop-card::before{background:var(--sage)}
 .stop.is-unlocked:hover .stop-card{box-shadow:6px 6px 0 var(--tan);transform:translate(-3px,-3px)}
+.stop.just-opened .stop-card{animation:justOpenedGlow 1.4s ease}
+@keyframes justOpenedGlow{0%{box-shadow:0 0 0 0 rgba(122,152,112,0.7)}60%{box-shadow:0 0 0 14px rgba(122,152,112,0)}100%{box-shadow:0 0 0 0 rgba(122,152,112,0)}}
 .stop-label{font-family:'Caveat',cursive;font-size:0.78rem;letter-spacing:3px;text-transform:uppercase;color:var(--brown);margin-bottom:0.25rem}
 .stop.is-locked .stop-label{color:var(--locked-text)}
 .stop-title{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--deep);margin-bottom:0.3rem}
@@ -99,6 +104,20 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .modal-num.lit{animation:numPop 0.6s cubic-bezier(0.34,1.6,0.64,1) forwards}
 .modal-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--deep);margin-bottom:0.5rem;line-height:1.2}
 .modal-badge{display:inline-block;border:1.5px solid var(--tan);padding:0.2rem 0.9rem;font-family:'Caveat',cursive;font-size:0.8rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--rose);margin-bottom:1.1rem}
+/* GIFT PHOTO (polaroid) */
+.gift-photo-wrap{display:none;justify-content:center;margin-bottom:1.3rem}
+.gift-photo{background:#fff;padding:9px 9px 30px;box-shadow:0 6px 16px rgba(0,0,0,0.22);cursor:zoom-in;transition:transform 0.25s ease,box-shadow 0.25s ease;transform:rotate(var(--tilt,-2deg));opacity:0}
+.gift-photo.show{animation:photoDropIn 0.6s cubic-bezier(0.22,1,0.36,1) forwards}
+.gift-photo:hover{transform:rotate(0deg) scale(1.04);box-shadow:0 10px 26px rgba(0,0,0,0.28)}
+.gift-photo img{display:block;width:170px;height:170px;object-fit:cover;background:var(--warm)}
+.gift-photo-caption{font-family:'Caveat',cursive;font-size:0.8rem;color:var(--brown);text-align:center;margin-top:0.4rem;letter-spacing:0.3px;opacity:0.8}
+@keyframes photoDropIn{0%{opacity:0;transform:translateY(-36px) rotate(var(--tilt,-2deg)) scale(0.8)}60%{opacity:1;transform:translateY(5px) rotate(var(--tilt,-2deg)) scale(1.04)}100%{opacity:1;transform:translateY(0) rotate(var(--tilt,-2deg)) scale(1)}}
+#photo-lightbox{display:none;position:fixed;inset:0;z-index:1200;align-items:center;justify-content:center;padding:2rem;background:rgba(20,10,4,0.92);cursor:zoom-out}
+#photo-lightbox.show{display:flex}
+#photo-lightbox img{max-width:92vw;max-height:88vh;box-shadow:0 20px 60px rgba(0,0,0,0.5);border:6px solid #fff;opacity:0;transform:scale(0.92);transition:opacity 0.25s ease,transform 0.25s ease}
+#photo-lightbox.show img{opacity:1;transform:scale(1)}
+.lb-close{position:absolute;top:1.2rem;right:1.5rem;color:#fff;font-family:'Caveat',cursive;font-size:1.1rem;background:none;border:1px solid rgba(255,255,255,0.4);padding:0.4rem 1rem;cursor:pointer;transition:background 0.2s}
+.lb-close:hover{background:rgba(255,255,255,0.15)}
 .modal-desc{font-size:1rem;line-height:1.8;color:var(--brown);font-style:italic;margin-bottom:1.1rem}
 .modal-note{background:var(--cream);border-left:4px solid var(--gold);padding:0.9rem 1.1rem;font-size:1rem;line-height:1.8;color:var(--deep);position:relative;overflow:hidden}
 .modal-note-curtain{position:absolute;inset:0;background:var(--cream);transform:translateX(0);transition:transform 0.9s cubic-bezier(0.77,0,0.18,1) 0.1s}
@@ -153,6 +172,14 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
         <div class="modal-num" id="modal-num">1</div>
         <div class="modal-title" id="modal-title"></div>
         <div class="modal-badge" id="modal-badge"></div>
+        <div class="gift-photo-wrap" id="gift-photo-wrap">
+          <div>
+            <div class="gift-photo" id="gift-photo" onclick="openPhotoLightbox()">
+              <img id="gift-photo-img" src="" alt="Ann's photo of this gift">
+            </div>
+            <div class="gift-photo-caption">tap to enlarge ✦</div>
+          </div>
+        </div>
         <div class="modal-desc" id="modal-desc"></div>
         <div class="modal-note" id="modal-note">
           <div class="modal-note-curtain" id="note-curtain"></div>
@@ -164,6 +191,10 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
   </div>
 </div>
 <div id="confetti-layer"></div>
+<div id="photo-lightbox" onclick="closePhotoLightbox()">
+  <button class="lb-close" onclick="event.stopPropagation();closePhotoLightbox()">✕ close</button>
+  <img id="photo-lightbox-img" src="" alt="">
+</div>
 <button id="reset-btn" onclick="if(confirm('Reset all gift progress?')){localStorage.removeItem(STORAGE_KEY);location.reload()}">reset</button>
 
 <script>
@@ -253,6 +284,7 @@ function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify([...opened]))
 
 let currentId = null;
 let modalOpen = false;
+let justOpenedId = null;
 
 function renderAll() {
   const container = document.getElementById('stops');
@@ -262,6 +294,7 @@ function renderAll() {
   document.getElementById('prog-fill').style.width = (count/total*100)+'%';
   document.getElementById('prog-label').textContent = count+' of '+total+' opened';
   document.getElementById('spine-fill').style.height = (count/total*100)+'%';
+  document.getElementById('spine-fill').classList.toggle('has-progress', count > 0 && count < total);
   const allDone = count === total;
   document.getElementById('final-banner').style.display = allDone ? 'none' : 'block';
   const nf = document.getElementById('nav-final');
@@ -276,7 +309,7 @@ function renderAll() {
     const isOpen = opened.has(g.id);
     const unlocked = prevDone;
     const el = document.createElement('div');
-    el.className = 'stop '+(isOpen?'is-opened':unlocked?'is-unlocked':'is-locked');
+    el.className = 'stop '+(isOpen?'is-opened':unlocked?'is-unlocked':'is-locked')+(g.id===justOpenedId?' just-opened':'');
     el.style.animationDelay = (i*0.07)+'s';
     const dotContent = isOpen ? '✓' : (unlocked ? g.icon : '✦');
     el.innerHTML = `<div class="stop-dot">${dotContent}</div>
@@ -297,6 +330,7 @@ function renderAll() {
     }
     container.appendChild(el);
   });
+  justOpenedId = null;
 }
 
 function openGift(id) {
@@ -308,6 +342,21 @@ function openGift(id) {
   document.getElementById('modal-badge').textContent = g.type;
   document.getElementById('modal-desc').textContent = g.desc;
   document.getElementById('note-text').textContent = g.note;
+
+  // Polaroid photo of Ann holding this gift — gracefully hides if the photo isn't uploaded yet
+  const photoWrap = document.getElementById('gift-photo-wrap');
+  const photoImg = document.getElementById('gift-photo-img');
+  const photoEl = document.getElementById('gift-photo');
+  photoEl.classList.remove('show');
+  photoWrap.style.display = 'none';
+  photoImg.onload = () => {
+    const tilt = ((g.id * 37) % 9) - 4;
+    photoEl.style.setProperty('--tilt', tilt + 'deg');
+    photoWrap.style.display = 'flex';
+    requestAnimationFrame(() => photoEl.classList.add('show'));
+  };
+  photoImg.onerror = () => { photoWrap.style.display = 'none'; };
+  photoImg.src = `gift_images/gift${String(g.id).padStart(2,'0')}.jpg`;
   document.getElementById('modal-num').textContent = g.id;
   document.getElementById('modal-num').className = 'modal-num';
   document.getElementById('note-curtain').className = 'modal-note-curtain';
@@ -384,8 +433,27 @@ function closeModal() {
 
 document.getElementById('backdrop').addEventListener('click', closeModal);
 
+function openPhotoLightbox() {
+  const src = document.getElementById('gift-photo-img').src;
+  if (!src) return;
+  document.getElementById('photo-lightbox-img').src = src;
+  document.getElementById('photo-lightbox').classList.add('show');
+}
+
+function closePhotoLightbox() {
+  document.getElementById('photo-lightbox').classList.remove('show');
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape') return;
+  if (document.getElementById('photo-lightbox').classList.contains('show')) closePhotoLightbox();
+  else if (modalOpen) closeModal();
+});
+
 function markOpen(id) {
-  opened.add(id); save(); bigBurst(); setTimeout(renderAll, 500);
+  opened.add(id); save(); justOpenedId = id; bigBurst();
+  if (opened.size === GIFTS.length) launchSeasonalConfetti();
+  setTimeout(renderAll, 500);
 }
 
 function bigBurst() {
