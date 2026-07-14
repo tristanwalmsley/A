@@ -267,8 +267,8 @@ function renderAll() {
   const nf = document.getElementById('nav-final');
   const nt = document.getElementById('nav-timeline');
   if (allDone) {
-    nf.classList.remove('locked'); nf.onclick = ()=>location.href='final.html'; nf.style.pointerEvents='auto';
-    nt.classList.remove('locked'); nt.onclick = ()=>location.href='timeline.html'; nt.style.pointerEvents='auto';
+    if (nf) { nf.classList.remove('locked'); nf.onclick = ()=>location.href='final.html'; nf.style.pointerEvents='auto'; }
+    if (nt) { nt.classList.remove('locked'); nt.onclick = ()=>location.href='timeline.html'; nt.style.pointerEvents='auto'; }
     launchSeasonalConfetti();
   }
   GIFTS.forEach((g,i) => {
