@@ -115,11 +115,27 @@ nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-be
 /* RESET */
 #reset-btn{position:fixed;bottom:1rem;left:1rem;background:rgba(58,32,16,0.08);color:rgba(58,32,16,0.2);border:1px solid rgba(58,32,16,0.08);padding:0.2rem 0.55rem;font-family:'Caveat',cursive;font-size:0.65rem;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;z-index:100}
 #reset-btn:hover{background:var(--warm);color:var(--brown);border-color:var(--tan)}
+
+/* SECRETS BADGE */
+#secrets-badge{position:fixed;top:1rem;right:1rem;background:rgba(58,32,16,0.08);color:rgba(58,32,16,0.35);border:1px solid rgba(58,32,16,0.08);padding:0.2rem 0.65rem;font-family:'Caveat',cursive;font-size:0.75rem;letter-spacing:1px;z-index:100;transition:all 0.4s ease;border-radius:2px;cursor:default}
+#secrets-badge.all-found{background:var(--gold);color:var(--deep);border-color:var(--gold)}
+
+/* IDLE EASTER EGG - drifting envelope */
+.drifter{position:fixed;font-size:1.5rem;z-index:600;cursor:pointer;color:var(--rose);animation:driftAcross 9s linear forwards;filter:drop-shadow(0 0 5px rgba(200,148,58,0.5))}
+@keyframes driftAcross{0%{transform:translate(-10vw,0) rotate(-8deg);opacity:0}8%{opacity:0.85}92%{opacity:0.85}100%{transform:translate(110vw,-6vh) rotate(6deg);opacity:0}}
+
+/* HEART BURST ON EGG UNLOCK */
+.heart-burst{position:absolute;top:50%;color:var(--rose);pointer-events:none;animation:heartPop var(--hd) ease-out forwards}
+@keyframes heartPop{0%{opacity:0;transform:translate(0,0) scale(0.5)}15%{opacity:1}100%{opacity:0;transform:translate(var(--hx),-160px) scale(1.2)}}
+
+.letter-sig{cursor:pointer;transition:opacity 0.2s}
+.letter-sig:hover{opacity:0.75}
 </style>
 </head>
 <body>
 <div class="ornament ornament-tl"></div>
 <div class="ornament ornament-br"></div>
+<div id="secrets-badge" title="there are secrets scattered through this page... happy hunting ♡">✦ 0/6 secrets found</div>
 
 <div id="loading-screen">
   <div class="env-wrap">
@@ -171,12 +187,12 @@ nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-be
 
 <!-- EASTER EGG -->
 <div id="egg-modal">
-  <div class="egg-backdrop" onclick="document.getElementById('egg-modal').classList.remove('show')"></div>
+  <div class="egg-backdrop" onclick="closeEgg()"></div>
   <div class="egg-card">
-    <button class="egg-close" onclick="document.getElementById('egg-modal').classList.remove('show')">✕</button>
-    <div class="egg-title">You found the secret ♡</div>
-    <p class="egg-text">You clicked the postmark five times. Of course you did. I made a whole website for you and you found the easter egg immediately. I'm proud and entirely unsurprised.<br><br>Here's the hidden message: I think you're really, really brilliant, and I'm so glad you're my best friend. That's it. It's just more feelings.<br><br>You're welcome.</p>
-    <span class="egg-sig">Bestie Tristan xo</span>
+    <button class="egg-close" onclick="closeEgg()">✕</button>
+    <div class="egg-title" id="egg-title">You found the secret ♡</div>
+    <p class="egg-text" id="egg-text">You clicked the postmark five times. Of course you did. I made a whole website for you and you found the easter egg immediately. I'm proud and entirely unsurprised.<br><br>Here's the hidden message: I think you're really, really brilliant, and I'm so glad you're my best friend. That's it. It's just more feelings.<br><br>You're welcome.</p>
+    <span class="egg-sig" id="egg-sig">Bestie Tristan xo</span>
   </div>
 </div>
 
@@ -234,9 +250,133 @@ document.getElementById('postmark').addEventListener('click', function(){
   setTimeout(()=>this.classList.remove('clicked'),500);
   if(pmClicks>=5){
     c.classList.remove('show'); pmClicks=0;
-    setTimeout(()=>document.getElementById('egg-modal').classList.add('show'),200);
+    setTimeout(()=>unlockEgg('postmark'),200);
   }
 });
+
+// ---------- SECRETS SYSTEM ----------
+const EGGS = {
+  postmark: {
+    title: "You found the secret ♡",
+    text: "You clicked the postmark five times. Of course you did. I made a whole website for you and you found the easter egg immediately. I'm proud and entirely unsurprised.<br><br>Here's the hidden message: I think you're really, really brilliant, and I'm so glad you're my best friend. That's it. It's just more feelings.<br><br>You're welcome.",
+    sig: "Bestie Tristan xo"
+  },
+  nav: {
+    title: "Snooping at the letterhead?",
+    text: "Seven clicks on my little logo. I see you testing every corner of this thing for cracks in the wallpaper.<br><br>Since you're here: thank you for being exactly the kind of person who pokes at things until they reveal themselves. It's one of my favourite things about you.",
+    sig: "Bestie Tristan"
+  },
+  konami: {
+    title: "The secret code",
+    text: "Up, up, down, down... you actually typed the code. I didn't think anyone would try it, honestly - I just couldn't resist hiding it in here.<br><br>Consider this your cheat: infinite hugs, unlimited lives, and a permanent +10 to how loved you are.",
+    sig: "Bestie Tristan"
+  },
+  name: {
+    title: "Someone said your name",
+    text: "You typed your own name into a birthday website. I love that for you.<br><br>Somewhere out there a tiny bell just rang because Bestie Ann exists, and the world is a slightly better place for it.",
+    sig: "Bestie Tristan"
+  },
+  signature: {
+    title: "Double-checking my signature?",
+    text: "You double-clicked my name at the bottom of the letter. Making sure it's really me, I bet.<br><br>It's really me. It'll always be me. Happy birthday, you brilliant, nosy, wonderful person.",
+    sig: "Bestie Tristan"
+  },
+  idle: {
+    title: "Patience, rewarded",
+    text: "You just sat here, still, long enough for something to wander across the screen and find you. That takes a rare kind of patience - the same kind you've always had with me.<br><br>Thank you for that. Thank you for all of it.",
+    sig: "Bestie Tristan"
+  }
+};
+const EGG_KEYS = Object.keys(EGGS);
+let eggsFound = [];
+try { eggsFound = JSON.parse(localStorage.getItem('ann_eggs_found')) || []; } catch(e) { eggsFound = []; }
+
+function unlockEgg(key){
+  if(!eggsFound.includes(key)){
+    eggsFound.push(key);
+    localStorage.setItem('ann_eggs_found', JSON.stringify(eggsFound));
+  }
+  document.getElementById('egg-title').textContent = EGGS[key].title;
+  document.getElementById('egg-text').innerHTML = EGGS[key].text;
+  document.getElementById('egg-sig').textContent = EGGS[key].sig;
+  document.getElementById('egg-modal').classList.add('show');
+  launchHeartBurst();
+  updateSecretsBadge();
+}
+function closeEgg(){ document.getElementById('egg-modal').classList.remove('show'); }
+
+function updateSecretsBadge(){
+  const b = document.getElementById('secrets-badge');
+  b.textContent = `✦ ${eggsFound.length}/${EGG_KEYS.length} secrets found`;
+  if(eggsFound.length >= EGG_KEYS.length) b.classList.add('all-found');
+}
+
+function launchHeartBurst(){
+  const layer = document.getElementById('confetti-layer');
+  for(let i=0;i<16;i++){
+    const h = document.createElement('div');
+    h.className = 'heart-burst';
+    h.textContent = '♡';
+    h.style.left = (38 + Math.random()*24) + '%';
+    h.style.fontSize = (14 + Math.random()*16) + 'px';
+    h.style.setProperty('--hd', (1.1 + Math.random()*0.8) + 's');
+    h.style.setProperty('--hx', ((Math.random()-0.5)*200) + 'px');
+    layer.appendChild(h);
+    setTimeout(()=>h.remove(), 2200);
+  }
+}
+
+// KONAMI CODE
+const konamiSeq = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+let konamiPos = 0;
+window.addEventListener('keydown', e => {
+  const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+  konamiPos = (key === konamiSeq[konamiPos]) ? konamiPos + 1 : (key === konamiSeq[0] ? 1 : 0);
+  if(konamiPos === konamiSeq.length){ konamiPos = 0; unlockEgg('konami'); }
+});
+
+// TYPE HER NAME
+let nameBuffer = '';
+window.addEventListener('keydown', e => {
+  if(e.key.length === 1){
+    nameBuffer = (nameBuffer + e.key.toLowerCase()).slice(-6);
+    if(nameBuffer.endsWith('ann')){ nameBuffer = ''; unlockEgg('name'); }
+  }
+});
+
+// DOUBLE-CLICK THE SIGNATURE
+document.querySelector('.letter-sig').addEventListener('dblclick', () => unlockEgg('signature'));
+
+// CLICK THE NAV LOGO 7×
+let navClicks = 0;
+document.querySelector('.nav-brand').addEventListener('click', function(e){
+  e.preventDefault();
+  navClicks++;
+  if(navClicks >= 7){ navClicks = 0; unlockEgg('nav'); }
+});
+
+// IDLE DRIFTER (leave the page alone and something wanders across)
+let idleTimer;
+function spawnDrifter(){
+  const d = document.createElement('div');
+  d.className = 'drifter';
+  d.textContent = '✉';
+  d.style.top = (12 + Math.random()*60) + 'vh';
+  d.onclick = () => { unlockEgg('idle'); d.remove(); };
+  document.body.appendChild(d);
+  setTimeout(() => d.remove(), 9000);
+}
+function resetIdleTimer(){
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(spawnDrifter, 35000);
+}
+['mousemove','keydown','scroll','click','touchstart'].forEach(ev => window.addEventListener(ev, resetIdleTimer, {passive:true}));
+resetIdleTimer();
+updateSecretsBadge();
+
+// a little something for anyone curious enough to open the console
+console.log('%c✉ psst.', 'font-size:20px;color:#b86858;font-family:cursive;');
+console.log('If you\'re reading this, you\'re exactly the kind of curious person this whole site was made for. There are 6 secrets hidden around this page - happy hunting.');
 
 // PRESS PLAY (shows after all gifts opened)
 function checkPressPlay(){
