@@ -116,26 +116,52 @@ nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-be
 #reset-btn{position:fixed;bottom:1rem;left:1rem;background:rgba(58,32,16,0.08);color:rgba(58,32,16,0.2);border:1px solid rgba(58,32,16,0.08);padding:0.2rem 0.55rem;font-family:'Caveat',cursive;font-size:0.65rem;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;z-index:100}
 #reset-btn:hover{background:var(--warm);color:var(--brown);border-color:var(--tan)}
 
-/* SECRETS BADGE */
-#secrets-badge{position:fixed;top:1rem;right:1rem;background:rgba(58,32,16,0.08);color:rgba(58,32,16,0.35);border:1px solid rgba(58,32,16,0.08);padding:0.2rem 0.65rem;font-family:'Caveat',cursive;font-size:0.75rem;letter-spacing:1px;z-index:100;transition:all 0.4s ease;border-radius:2px;cursor:default}
-#secrets-badge.all-found{background:var(--gold);color:var(--deep);border-color:var(--gold)}
+/* SECRETS BADGE (top set dynamically via JS, just below the nav) */
+#secrets-badge{position:fixed;right:1rem;top:5rem;background:rgba(58,32,16,0.07);color:rgba(58,32,16,0.42);border:1px solid rgba(58,32,16,0.08);padding:0.2rem 0.65rem;font-family:'Caveat',cursive;font-size:0.82rem;letter-spacing:1px;z-index:600;transition:top 0.2s ease;border-radius:2px;cursor:default;white-space:nowrap}
 
-/* IDLE EASTER EGG - drifting envelope */
-.drifter{position:fixed;font-size:1.5rem;z-index:600;cursor:pointer;color:var(--rose);animation:driftAcross 9s linear forwards;filter:drop-shadow(0 0 5px rgba(200,148,58,0.5))}
-@keyframes driftAcross{0%{transform:translate(-10vw,0) rotate(-8deg);opacity:0}8%{opacity:0.85}92%{opacity:0.85}100%{transform:translate(110vw,-6vh) rotate(6deg);opacity:0}}
+/* COMPLETION BADGE (appears once all secrets are found) */
+#completion-badge{position:fixed;right:1rem;top:8rem;background:var(--gold);color:var(--deep);padding:0.3rem 0.8rem;font-family:'Caveat',cursive;font-size:0.9rem;font-weight:700;letter-spacing:0.5px;border-radius:2px;box-shadow:2px 2px 0 var(--brown);z-index:600;opacity:0;transform:scale(0.4);transition:opacity 0.3s ease,transform 0.3s ease;pointer-events:none;white-space:nowrap}
+#completion-badge.show{opacity:1;transform:scale(1)}
+#completion-badge.celebrate{animation:badgeCelebrate 1.4s cubic-bezier(0.34,1.6,0.64,1)}
+@keyframes badgeCelebrate{0%{transform:scale(0.3) rotate(-15deg);opacity:0}40%{transform:scale(1.35) rotate(6deg);opacity:1}60%{transform:scale(0.9) rotate(-3deg)}80%{transform:scale(1.08) rotate(2deg)}100%{transform:scale(1) rotate(0deg)}}
+
+/* GRAND CELEBRATION STAMP (plays once, when the last secret is found) */
+.grand-stamp{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:7000;font-family:'Playfair Display',serif;font-weight:700;font-size:clamp(1.1rem,4vw,1.8rem);color:var(--rose);background:var(--paper);border:4px solid var(--rose);padding:1.3rem 2.2rem;box-shadow:6px 6px 0 var(--brown);opacity:0;text-align:center;pointer-events:none;animation:grandStampIn 2.2s cubic-bezier(0.22,1,0.36,1) forwards}
+@keyframes grandStampIn{0%{opacity:0;transform:translate(-50%,-50%) scale(2.4) rotate(-14deg)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.08) rotate(4deg)}28%{transform:translate(-50%,-50%) scale(0.96) rotate(-2deg)}35%{transform:translate(-50%,-50%) scale(1) rotate(0deg)}85%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1) rotate(0deg)}}
+
+/* DRIFTING ENVELOPE - bigger, easier to catch, appears every 25s */
+.drifter{position:fixed;width:68px;height:68px;display:flex;align-items:center;justify-content:center;font-size:2.1rem;z-index:800;cursor:pointer;color:var(--rose);background:rgba(255,253,245,0.92);border:2.5px solid var(--rose);border-radius:50%;box-shadow:3px 3px 10px rgba(0,0,0,0.18);animation:driftAcross 12s linear forwards;transition:transform 0.15s}
+.drifter:hover{transform:scale(1.15)}
+@keyframes driftAcross{0%{transform:translate(-15vw,0) rotate(-8deg);opacity:0}8%{opacity:1}92%{opacity:1}100%{transform:translate(115vw,-8vh) rotate(6deg);opacity:0}}
+
+/* CHASE-THE-HEART EGG - flees the cursor, caught by herding it into the corner */
+.chase-heart{position:fixed;font-size:1.8rem;color:var(--rose);z-index:700;pointer-events:none;filter:drop-shadow(0 0 4px rgba(184,104,88,0.4));transform:translate(-50%,-50%)}
 
 /* HEART BURST ON EGG UNLOCK */
 .heart-burst{position:absolute;top:50%;color:var(--rose);pointer-events:none;animation:heartPop var(--hd) ease-out forwards}
 @keyframes heartPop{0%{opacity:0;transform:translate(0,0) scale(0.5)}15%{opacity:1}100%{opacity:0;transform:translate(var(--hx),-160px) scale(1.2)}}
 
+/* EGG-HATCH FLOURISH (plays before the message box appears) */
+.egg-hatch{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:4.5rem;z-index:5500;pointer-events:none;animation:eggWiggle 0.6s ease-in-out}
+.egg-hatch.crack{animation:eggCrack 0.35s ease forwards}
+@keyframes eggWiggle{0%,100%{transform:translate(-50%,-50%) rotate(0deg) scale(1)}20%{transform:translate(-50%,-50%) rotate(-10deg) scale(1.05)}40%{transform:translate(-50%,-50%) rotate(10deg) scale(1.05)}60%{transform:translate(-50%,-50%) rotate(-7deg) scale(1.1)}80%{transform:translate(-50%,-50%) rotate(7deg) scale(1.1)}}
+@keyframes eggCrack{0%{transform:translate(-50%,-50%) scale(1.1);opacity:1}100%{transform:translate(-50%,-50%) scale(1.8);opacity:0}}
+.egg-sparkle{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:2.2rem;z-index:5500;pointer-events:none;opacity:0;animation:sparklePop 0.5s ease forwards}
+@keyframes sparklePop{0%{opacity:0;transform:translate(-50%,-50%) scale(0.3)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.5)}100%{opacity:0;transform:translate(-50%,-50%) scale(2)}}
+
 .letter-sig{cursor:pointer;transition:opacity 0.2s}
 .letter-sig:hover{opacity:0.75}
+
+/* DRAG-THE-STAMP EGG (stick it onto the postmark) */
+.stamp{touch-action:none;cursor:grab}
+.stamp.stamp-dragging{cursor:grabbing;box-shadow:6px 10px 22px rgba(0,0,0,0.28);z-index:50}
 </style>
 </head>
 <body>
 <div class="ornament ornament-tl"></div>
 <div class="ornament ornament-br"></div>
-<div id="secrets-badge" title="there are secrets scattered through this page... happy hunting ♡">✦ 0/6 secrets found</div>
+<div id="secrets-badge" title="there are secrets scattered through this page... happy hunting ♡">✦ 0/9 secrets found</div>
+<div id="completion-badge">★ all secrets found ♡</div>
 
 <div id="loading-screen">
   <div class="env-wrap">
@@ -281,9 +307,24 @@ const EGGS = {
     text: "You double-clicked my name at the bottom of the letter. Making sure it's really me, I bet.<br><br>It's really me. It'll always be me. Happy birthday, you brilliant, nosy, wonderful person.",
     sig: "Bestie Tristan"
   },
+  tristan: {
+    title: "Oh - hi, it's me",
+    text: "You typed my name into my own website about you. Bold move. I respect it.<br><br>For the record: I built every last bit of this - the stamps, the postmark, all these silly hidden things - because you're worth the extra hours. Happy birthday, Bestie Ann.",
+    sig: "Bestie Tristan"
+  },
   idle: {
-    title: "Patience, rewarded",
-    text: "You just sat here, still, long enough for something to wander across the screen and find you. That takes a rare kind of patience - the same kind you've always had with me.<br><br>Thank you for that. Thank you for all of it.",
+    title: "Special delivery, mid-air",
+    text: "You caught the little envelope before it drifted off screen. I like to imagine it's been circling this page since you opened it, just waiting for someone quick enough.<br><br>That's very on brand for you, by the way - quick, and a little bit magic.",
+    sig: "Bestie Tristan"
+  },
+  mail: {
+    title: "Special delivery",
+    text: "You peeled the stamp off and stuck it right onto the postmark, like you were sending this whole thing back to me. Message received, by the way.<br><br>Whatever you were trying to say - I already know, and I feel the same.",
+    sig: "Bestie Tristan"
+  },
+  chase: {
+    title: "You caught it",
+    text: "That little heart didn't want to be caught - it's shy, same as I can be sometimes. But you cornered it anyway, patiently, until it had nowhere left to go but toward you.<br><br>That's a pretty good description of our friendship, honestly.",
     sig: "Bestie Tristan"
   }
 };
@@ -292,23 +333,82 @@ let eggsFound = [];
 try { eggsFound = JSON.parse(localStorage.getItem('ann_eggs_found')) || []; } catch(e) { eggsFound = []; }
 
 function unlockEgg(key){
+  const wasComplete = eggsFound.length >= EGG_KEYS.length;
   if(!eggsFound.includes(key)){
     eggsFound.push(key);
     localStorage.setItem('ann_eggs_found', JSON.stringify(eggsFound));
   }
-  document.getElementById('egg-title').textContent = EGGS[key].title;
-  document.getElementById('egg-text').innerHTML = EGGS[key].text;
-  document.getElementById('egg-sig').textContent = EGGS[key].sig;
-  document.getElementById('egg-modal').classList.add('show');
-  launchHeartBurst();
-  updateSecretsBadge();
+  const nowComplete = eggsFound.length >= EGG_KEYS.length;
+  playEggHatch(() => {
+    document.getElementById('egg-title').textContent = EGGS[key].title;
+    document.getElementById('egg-text').innerHTML = EGGS[key].text;
+    document.getElementById('egg-sig').textContent = EGGS[key].sig;
+    document.getElementById('egg-modal').classList.add('show');
+    launchHeartBurst();
+  });
+  updateSecretsBadge(nowComplete && !wasComplete);
 }
 function closeEgg(){ document.getElementById('egg-modal').classList.remove('show'); }
 
-function updateSecretsBadge(){
-  const b = document.getElementById('secrets-badge');
-  b.textContent = `✦ ${eggsFound.length}/${EGG_KEYS.length} secrets found`;
-  if(eggsFound.length >= EGG_KEYS.length) b.classList.add('all-found');
+// little egg-cracking flourish that plays BEFORE the message box appears
+function playEggHatch(callback){
+  const egg = document.createElement('div');
+  egg.className = 'egg-hatch';
+  egg.textContent = '🥚';
+  document.body.appendChild(egg);
+  setTimeout(() => {
+    egg.classList.add('crack');
+    const sp = document.createElement('div');
+    sp.className = 'egg-sparkle';
+    sp.textContent = '✨';
+    document.body.appendChild(sp);
+    setTimeout(() => sp.remove(), 500);
+  }, 600);
+  setTimeout(() => { egg.remove(); callback(); }, 950);
+}
+
+// keeps the counter pinned just below the nav bar (fixes it sitting hidden behind it)
+function positionSecretsBadges(){
+  const navEl = document.getElementById('site-nav');
+  const badge = document.getElementById('secrets-badge');
+  const comp = document.getElementById('completion-badge');
+  if(!navEl || !badge) return;
+  const navBottom = navEl.getBoundingClientRect().bottom;
+  badge.style.top = (navBottom + 10) + 'px';
+  if(comp){
+    const badgeBottom = badge.getBoundingClientRect().bottom;
+    comp.style.top = (badgeBottom + 8) + 'px';
+  }
+}
+window.addEventListener('resize', positionSecretsBadges);
+if('ResizeObserver' in window){
+  new ResizeObserver(positionSecretsBadges).observe(document.getElementById('site-nav'));
+}
+
+function updateSecretsBadge(justCompleted){
+  const badge = document.getElementById('secrets-badge');
+  badge.textContent = `✦ ${eggsFound.length}/${EGG_KEYS.length} secrets found`;
+  const comp = document.getElementById('completion-badge');
+  if(eggsFound.length >= EGG_KEYS.length){
+    comp.classList.add('show');
+    if(justCompleted){
+      comp.classList.add('celebrate');
+      launchAllFoundCelebration();
+      setTimeout(() => comp.classList.remove('celebrate'), 1500);
+    }
+  }
+  positionSecretsBadges();
+}
+
+function launchAllFoundCelebration(){
+  launchConfetti();
+  setTimeout(launchHeartBurst, 200);
+  setTimeout(launchHeartBurst, 550);
+  const s = document.createElement('div');
+  s.className = 'grand-stamp';
+  s.innerHTML = 'All secrets found ♡';
+  document.body.appendChild(s);
+  setTimeout(() => s.remove(), 2300);
 }
 
 function launchHeartBurst(){
@@ -335,12 +435,13 @@ window.addEventListener('keydown', e => {
   if(konamiPos === konamiSeq.length){ konamiPos = 0; unlockEgg('konami'); }
 });
 
-// TYPE HER NAME
-let nameBuffer = '';
+// TYPE "ann" OR "tristan" ANYWHERE ON THE PAGE
+let typedBuffer = '';
 window.addEventListener('keydown', e => {
   if(e.key.length === 1){
-    nameBuffer = (nameBuffer + e.key.toLowerCase()).slice(-6);
-    if(nameBuffer.endsWith('ann')){ nameBuffer = ''; unlockEgg('name'); }
+    typedBuffer = (typedBuffer + e.key.toLowerCase()).slice(-10);
+    if(typedBuffer.endsWith('tristan')){ typedBuffer = ''; unlockEgg('tristan'); }
+    else if(typedBuffer.endsWith('ann')){ typedBuffer = ''; unlockEgg('name'); }
   }
 });
 
@@ -355,28 +456,109 @@ document.querySelector('.nav-brand').addEventListener('click', function(e){
   if(navClicks >= 7){ navClicks = 0; unlockEgg('nav'); }
 });
 
-// IDLE DRIFTER (leave the page alone and something wanders across)
-let idleTimer;
+// DRIFTING ENVELOPE - bigger, easier to catch, shows up every 25 seconds
 function spawnDrifter(){
   const d = document.createElement('div');
   d.className = 'drifter';
   d.textContent = '✉';
-  d.style.top = (12 + Math.random()*60) + 'vh';
+  d.style.top = (10 + Math.random()*65) + 'vh';
   d.onclick = () => { unlockEgg('idle'); d.remove(); };
   document.body.appendChild(d);
-  setTimeout(() => d.remove(), 9000);
+  setTimeout(() => d.remove(), 12000);
 }
-function resetIdleTimer(){
-  clearTimeout(idleTimer);
-  idleTimer = setTimeout(spawnDrifter, 35000);
+setTimeout(spawnDrifter, 6000);
+setInterval(spawnDrifter, 25000);
+
+// DRAG THE STAMP ONTO THE POSTMARK ("mail it")
+(function(){
+  const stamp = document.querySelector('.stamp');
+  const postmark = document.getElementById('postmark');
+  if(!stamp || !postmark) return;
+  let dragging = false, startX = 0, startY = 0;
+  stamp.addEventListener('pointerdown', e => {
+    dragging = true;
+    startX = e.clientX; startY = e.clientY;
+    stamp.setPointerCapture(e.pointerId);
+    stamp.classList.add('stamp-dragging');
+  });
+  stamp.addEventListener('pointermove', e => {
+    if(!dragging) return;
+    const dx = e.clientX - startX, dy = e.clientY - startY;
+    stamp.style.transform = `translate(${dx}px,${dy}px)`;
+  });
+  stamp.addEventListener('pointerup', e => {
+    if(!dragging) return;
+    dragging = false;
+    stamp.classList.remove('stamp-dragging');
+    const dx = e.clientX - startX, dy = e.clientY - startY;
+    const moved = Math.hypot(dx, dy);
+    const pmRect = postmark.getBoundingClientRect();
+    const stRect = stamp.getBoundingClientRect();
+    const dist = Math.hypot(
+      (pmRect.left + pmRect.width/2) - (stRect.left + stRect.width/2),
+      (pmRect.top + pmRect.height/2) - (stRect.top + stRect.height/2)
+    );
+    stamp.style.transition = 'transform 0.5s cubic-bezier(0.34,1.6,0.64,1)';
+    stamp.style.transform = 'translate(0,0)';
+    setTimeout(() => { stamp.style.transition = ''; }, 520);
+    if(moved > 40 && dist < 70) unlockEgg('mail');
+  });
+})();
+
+// CHASE THE SHY HEART - it flees the cursor, caught by herding it into the top-right corner
+function spawnChaseHeart(){
+  if(document.getElementById('chase-heart')) return;
+  const h = document.createElement('div');
+  h.id = 'chase-heart';
+  h.className = 'chase-heart';
+  h.textContent = '♡';
+  let x = window.innerWidth * 0.5, y = window.innerHeight * 0.55;
+  let vx = 0, vy = 0;
+  h.style.left = x + 'px'; h.style.top = y + 'px';
+  document.body.appendChild(h);
+  const startTime = Date.now();
+  function onMove(e){
+    const dx = x - e.clientX, dy = y - e.clientY;
+    const dist = Math.hypot(dx, dy);
+    if(dist < 150 && dist > 0){
+      vx += (dx/dist) * 1.3;
+      vy += (dy/dist) * 1.3;
+    }
+  }
+  window.addEventListener('mousemove', onMove);
+  function loop(){
+    if(!document.body.contains(h)){ window.removeEventListener('mousemove', onMove); return; }
+    if(Date.now() - startTime > 90000){
+      window.removeEventListener('mousemove', onMove);
+      h.remove();
+      setTimeout(spawnChaseHeart, 45000);
+      return;
+    }
+    vx += (Math.random()-0.5) * 0.5;
+    vy += (Math.random()-0.5) * 0.5;
+    vx = Math.max(-3.5, Math.min(3.5, vx)) * 0.96;
+    vy = Math.max(-3.5, Math.min(3.5, vy)) * 0.96;
+    x = Math.max(24, Math.min(window.innerWidth - 24, x + vx));
+    y = Math.max(24, Math.min(window.innerHeight - 24, y + vy));
+    h.style.left = x + 'px'; h.style.top = y + 'px';
+    if(x > window.innerWidth - 140 && y < 150){
+      window.removeEventListener('mousemove', onMove);
+      unlockEgg('chase');
+      h.remove();
+      return;
+    }
+    requestAnimationFrame(loop);
+  }
+  loop();
 }
-['mousemove','keydown','scroll','click','touchstart'].forEach(ev => window.addEventListener(ev, resetIdleTimer, {passive:true}));
-resetIdleTimer();
-updateSecretsBadge();
+setTimeout(spawnChaseHeart, 15000);
+
+positionSecretsBadges();
+updateSecretsBadge(false);
 
 // a little something for anyone curious enough to open the console
 console.log('%c✉ psst.', 'font-size:20px;color:#b86858;font-family:cursive;');
-console.log('If you\'re reading this, you\'re exactly the kind of curious person this whole site was made for. There are 6 secrets hidden around this page - happy hunting.');
+console.log('If you\'re reading this, you\'re exactly the kind of curious person this whole site was made for. There are 9 secrets hidden around this page - happy hunting.');
 
 // PRESS PLAY (shows after all gifts opened)
 function checkPressPlay(){
