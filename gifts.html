@@ -26,6 +26,9 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 @keyframes headerIn{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
 .page-header h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:400;color:var(--deep)}
 .page-header p{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--brown);margin-top:0.4rem;letter-spacing:0.5px}
+.tutorial-pill-wrap{text-align:center;margin-top:0.7rem}
+.tutorial-pill{background:none;border:1.5px solid var(--tan);color:var(--brown);font-family:'Caveat',cursive;font-size:0.9rem;padding:0.3rem 0.9rem;cursor:pointer;transition:all 0.2s;letter-spacing:0.3px}
+.tutorial-pill:hover{background:var(--warm);border-color:var(--gold);color:var(--deep)}
 .progress-section{max-width:520px;margin:1rem auto 2.5rem;padding:0 2rem;animation:headerIn 0.7s ease 0.1s both}
 .progress-rail{height:5px;background:var(--warm);border-radius:999px;overflow:hidden;margin-bottom:0.5rem}
 .progress-fill{height:100%;background:var(--gold);border-radius:999px;transition:width 1s cubic-bezier(0.34,1.4,0.64,1)}
@@ -48,6 +51,7 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .stop.is-opened .stop-dot{background:var(--sage);border:2.5px solid var(--sage);box-shadow:0 0 0 4px rgba(122,152,112,0.2)}
 .stop.is-unlocked .stop-dot::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--gold);opacity:0;animation:pulseRing 2s ease-in-out infinite}
 @keyframes pulseRing{0%{opacity:0.8;transform:scale(1)}100%{opacity:0;transform:scale(1.7)}}
+.stop.kind-unlock.is-unlocked .stop-dot{border-style:double;border-width:4px}
 /* CARD */
 .stop-card{flex:1;background:var(--paper);border:1px solid var(--tan);padding:1.1rem 1.3rem 1.2rem;position:relative;overflow:hidden;transition:box-shadow 0.25s,transform 0.25s}
 .stop-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;transition:background 0.4s;background:var(--warm)}
@@ -62,7 +66,9 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .stop.is-locked .stop-label{color:var(--locked-text)}
 .stop-title{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--deep);margin-bottom:0.3rem}
 .stop.is-locked .stop-title{color:var(--locked-text);filter:blur(5px);user-select:none}
+.stop-title-teaser{font-style:italic;color:var(--rose);font-weight:400}
 .stop-hint{font-size:0.9rem;color:var(--brown);font-style:italic;line-height:1.5}
+.stop-hint-group{font-size:0.8rem;color:var(--tan);margin-top:0.3rem}
 .stop.is-locked .stop-hint{display:none}
 .stop-locked-msg{font-family:'Caveat',cursive;font-size:0.95rem;color:var(--locked-text);margin-top:0.3rem}
 .btn-open{display:inline-block;margin-top:0.8rem;background:var(--deep);color:var(--cream);border:none;padding:0.45rem 1.2rem;font-family:'Caveat',cursive;font-size:1rem;cursor:pointer;letter-spacing:0.5px;transition:background 0.2s,transform 0.15s,box-shadow 0.15s;box-shadow:3px 3px 0 var(--brown)}
@@ -98,6 +104,19 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .card-ribbon{height:6px;background:var(--rose);position:relative}
 .card-ribbon::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:30px;height:16px;background:var(--rose);top:-5px;border-radius:0 0 4px 4px}
 .card-body{padding:1.8rem 2rem 2rem}
+/* MYSTERY (hunt) STAGE */
+.gift-mystery{text-align:center;padding:0.6rem 0.4rem 1.4rem}
+.mystery-icon{font-size:3rem;margin-bottom:0.7rem;animation:mysteryFloat 2.4s ease-in-out infinite}
+@keyframes mysteryFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-8px) rotate(2deg)}}
+.mystery-eyebrow{font-family:'Caveat',cursive;font-size:0.85rem;letter-spacing:3px;text-transform:uppercase;color:var(--rose);margin-bottom:0.7rem}
+.mystery-hint{font-size:1.05rem;line-height:1.75;color:var(--deep);font-style:italic;margin-bottom:1.4rem;padding:0 0.3rem}
+.btn-reveal{background:var(--gold);color:var(--deep);border:none;padding:0.7rem 1.6rem;font-family:'Caveat',cursive;font-size:1.1rem;cursor:pointer;box-shadow:3px 3px 0 var(--brown);transition:all 0.15s;letter-spacing:0.4px}
+.btn-reveal:hover{background:#e0a840;transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown)}
+.btn-reveal:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--brown)}
+/* REVEALED STAGE */
+.gift-revealed{opacity:0}
+.gift-revealed.pop{animation:revealPop 0.5s cubic-bezier(0.22,1,0.36,1) forwards}
+@keyframes revealPop{0%{opacity:0;transform:scale(0.9) translateY(10px)}100%{opacity:1;transform:scale(1) translateY(0)}}
 .modal-num{font-family:'Playfair Display',serif;font-size:5rem;font-weight:700;line-height:1;margin-bottom:0.2rem;color:var(--warm);transition:color 0.4s,text-shadow 0.4s}
 .modal-num.lit{color:var(--gold);text-shadow:0 0 30px rgba(200,148,58,0.5)}
 @keyframes numPop{0%{transform:scale(0.3) rotate(-15deg)}60%{transform:scale(1.15) rotate(3deg)}80%{transform:scale(0.95) rotate(-1deg)}100%{transform:scale(1) rotate(0deg)}}
@@ -125,9 +144,6 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .modal-footer{display:flex;gap:0.7rem;margin-top:1.4rem;flex-wrap:wrap;align-items:center}
 .btn-modal-close{background:transparent;border:1px solid var(--tan);color:var(--brown);padding:0.5rem 1.1rem;font-family:'Caveat',cursive;font-size:1rem;cursor:pointer;transition:background 0.2s}
 .btn-modal-close:hover{background:var(--warm)}
-.btn-modal-mark{background:var(--sage);border:none;color:white;padding:0.5rem 1.3rem;font-family:'Caveat',cursive;font-size:1rem;cursor:pointer;box-shadow:3px 3px 0 #5a7850;transition:all 0.15s}
-.btn-modal-mark:hover{background:#6a8860;transform:translate(-2px,-2px);box-shadow:5px 5px 0 #5a7850}
-.btn-modal-mark:active{transform:translate(1px,1px);box-shadow:1px 1px 0 #5a7850}
 .btn-modal-next{background:var(--deep);border:none;color:var(--cream);padding:0.5rem 1.3rem;font-family:'Caveat',cursive;font-size:1rem;cursor:pointer;box-shadow:3px 3px 0 var(--brown);transition:all 0.15s;text-decoration:none;display:inline-block}
 .btn-modal-next:hover{background:var(--brown);transform:translate(-2px,-2px);box-shadow:5px 5px 0 #5a3820}
 #confetti-layer{position:fixed;inset:0;pointer-events:none;z-index:9998;overflow:hidden}
@@ -135,6 +151,15 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 @keyframes confettiFall{0%{opacity:1;transform:translateY(-20px) translateX(0) rotate(0deg) scale(1)}15%{opacity:1}100%{opacity:0;transform:translateY(105vh) translateX(var(--cx)) rotate(var(--cr)) scale(0.3)}}
 .sparkle{position:fixed;pointer-events:none;z-index:9997;width:6px;height:6px;border-radius:50%;opacity:0;animation:sparkleOut var(--sd) ease-out var(--sdelay) forwards}
 @keyframes sparkleOut{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--sx),var(--sy)) scale(0)}}
+/* TUTORIAL */
+#tutorial-overlay{display:none;position:fixed;inset:0;z-index:1300;align-items:center;justify-content:center;padding:1.5rem;background:rgba(30,15,5,0.72)}
+#tutorial-overlay.show{display:flex}
+.tutorial-card{background:var(--paper);border:1px solid var(--tan);box-shadow:8px 8px 0 var(--tan);max-width:420px;width:100%;padding:1.8rem 2rem;animation:giftBurst 0.5s cubic-bezier(0.22,1,0.36,1) forwards}
+.tutorial-card h2{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:400;font-style:italic;color:var(--deep);margin-bottom:1rem;text-align:center}
+.tutorial-card ol{padding-left:1.3rem;margin-bottom:1.4rem}
+.tutorial-card li{font-size:0.96rem;line-height:1.7;color:var(--brown);margin-bottom:0.6rem}
+.btn-tutorial-close{display:block;margin:0 auto;background:var(--gold);color:var(--deep);border:none;padding:0.7rem 1.8rem;font-family:'Caveat',cursive;font-size:1.1rem;cursor:pointer;box-shadow:3px 3px 0 var(--brown);transition:all 0.15s}
+.btn-tutorial-close:hover{background:#e0a840;transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown)}
 #reset-btn{position:fixed;bottom:1.2rem;left:1.2rem;background:rgba(58,32,16,0.2);color:rgba(58,32,16,0.25);border:1px solid rgba(58,32,16,0.1);padding:0.25rem 0.6rem;font-family:'Caveat',cursive;font-size:0.7rem;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;z-index:100}
 #reset-btn:hover{background:var(--warm);color:var(--brown);border-color:var(--tan)}
 </style>
@@ -146,17 +171,18 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 </nav>
 <div class="page-header">
   <h1>Your unboxing journey</h1>
-  <p id="subhead">open each gift in order — the path reveals as you go</p>
+  <p id="subhead">read the clue, go find it for real, then tap it once it's in your hands</p>
+  <div class="tutorial-pill-wrap"><button class="tutorial-pill" onclick="showTutorial()">❓ how this works</button></div>
 </div>
 <div class="progress-section">
   <div class="progress-rail"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
-  <div class="progress-label" id="prog-label">0 of 18 opened</div>
+  <div class="progress-label" id="prog-label">0 of 37 opened</div>
 </div>
 <div class="path-wrap">
   <div class="spine"><div class="spine-bg"></div><div class="spine-fill" id="spine-fill"></div></div>
   <div id="stops"></div>
 </div>
-<div id="final-banner"><p>✦ open all the gifts to unlock the final message ✦</p></div>
+<div id="final-banner"><p>✦ open everything to unlock the final message ✦</p></div>
 <div id="overlay">
   <div class="backdrop" id="backdrop"></div>
   <div class="modal-wrap">
@@ -169,21 +195,29 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
     <div class="gift-card" id="gift-card">
       <div class="card-ribbon"></div>
       <div class="card-body">
-        <div class="modal-num" id="modal-num">1</div>
-        <div class="modal-title" id="modal-title"></div>
-        <div class="modal-badge" id="modal-badge"></div>
-        <div class="gift-photo-wrap" id="gift-photo-wrap">
-          <div>
-            <div class="gift-photo" id="gift-photo" onclick="openPhotoLightbox()">
-              <img id="gift-photo-img" src="" alt="Ann's photo of this gift">
-            </div>
-            <div class="gift-photo-caption">tap to enlarge ✦</div>
-          </div>
+        <div id="gift-mystery" class="gift-mystery">
+          <div class="mystery-icon">🎁</div>
+          <p class="mystery-eyebrow">go find it...</p>
+          <p class="mystery-hint" id="mystery-hint"></p>
+          <button class="btn-reveal" id="btn-reveal" onclick="revealGift()">I've got it — show me →</button>
         </div>
-        <div class="modal-desc" id="modal-desc"></div>
-        <div class="modal-note" id="modal-note">
-          <div class="modal-note-curtain" id="note-curtain"></div>
-          <span id="note-text"></span>
+        <div id="gift-revealed" class="gift-revealed">
+          <div class="modal-num" id="modal-num">1</div>
+          <div class="modal-title" id="modal-title"></div>
+          <div class="modal-badge" id="modal-badge"></div>
+          <div class="gift-photo-wrap" id="gift-photo-wrap">
+            <div>
+              <div class="gift-photo" id="gift-photo" onclick="openPhotoLightbox()">
+                <img id="gift-photo-img" src="" alt="Ann's photo of this gift">
+              </div>
+              <div class="gift-photo-caption">tap to enlarge ✦</div>
+            </div>
+          </div>
+          <div class="modal-desc" id="modal-desc"></div>
+          <div class="modal-note" id="modal-note">
+            <div class="modal-note-curtain" id="note-curtain"></div>
+            <span id="note-text"></span>
+          </div>
         </div>
         <div class="modal-footer" id="modal-footer"></div>
       </div>
@@ -195,85 +229,212 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
   <button class="lb-close" onclick="event.stopPropagation();closePhotoLightbox()">✕ close</button>
   <img id="photo-lightbox-img" src="" alt="">
 </div>
+<div id="tutorial-overlay" onclick="closeTutorial()">
+  <div class="tutorial-card" onclick="event.stopPropagation()">
+    <h2>How this works ✦</h2>
+    <ol>
+      <li>Each stop gives you a clue about where to find the actual gift — not what it is.</li>
+      <li>Go hunt for it for real, based on the clue.</li>
+      <li>Once you're holding it, tap "I've got it — show me" to reveal what it was.</li>
+      <li>Some stops unlock a new page on the site instead of a gift — same idea, just tap to open it.</li>
+      <li>A few gifts come as a bundle and unlock all together, so you're not waiting between them.</li>
+    </ol>
+    <button class="btn-tutorial-close" onclick="closeTutorial()">Let's go →</button>
+  </div>
+</div>
 <button id="reset-btn" onclick="if(confirm('Reset all gift progress?')){localStorage.removeItem(STORAGE_KEY);location.reload()}">reset</button>
 
 <script>
-const GIFTS = [
-  {id:1, icon:'🎂', label:'Stop one', title:'Birthday Card',
-   type:'birthday card', hint:'Start here!',
-   desc:'I\'ve tried to make sure I packed the box so that it\'s in order and you don\'t have to go digging. Whether it stayed like that across the sea we shall see xD',
-   note:'Figured the birthday card should kick things off. Happy birthday Ann!'},
-  // {id:2, icon:'✉️', label:'Stop two', title:'The Letter',
-  //  type:'handwritten letter', hint:'The letter — written for you. Sit with it.',
-  //  desc:'A letter written just for you, with a bit of a throwback: the envelope has been decorated and addressed mimicking the way you wrote your envelope last year, because it was funny and beautiful.',
-  //  note:'"I wrote this one on impulse and I meant every single word. No take-backsies. Ever."'},
-  {id:2, icon:'🛩️', label:'Stop two', title:'WWI Postcard No. 1',
-   type:'WWI postcard', hint:'The first of this set of four.',
-   desc:'The first WWI postcard! I individually wrapped them in an aeroplane sticker-decorated envelopes, not risking any bent postcards this time!',
-   note:'Written 14.07.2026'},
-  {id:4, icon:'🎉', label:'Stop four', title:'Sticker Set — Home Bargains, Round 1',
-   type:'stickers', hint:'The first of eight mini sticker packs — in red tissue paper.',
-   desc:'Mini sticker packs from Home Bargains — I sent some last year, and they had loads more to collect. Here are some more, wrapped together in red tissue paper. You know what to do with them.',
+const raf = (typeof requestAnimationFrame === 'function') ? requestAnimationFrame : (cb => setTimeout(cb, 16));
+
+const STOPS = [
+  {id:1, kind:'gift', icon:'🎂', title:'Birthday Card', type:'birthday card',
+   hint:'[add a clue for this one]',
+   desc:'A proper birthday card to kick things off. Happy birthday, Ann!',
+   note:'"Some things are classics for a reason. Happy birthday, bestie."'},
+
+  {id:2, kind:'unlock', icon:'📖', title:'Our Story', type:'page unlock ✦',
+   page:'ourstory.html', pageLabel:'Our Story', direct:true,
+   desc:'A new part of the site has just unlocked: Our Story. Have a look whenever you fancy.',
+   note:'"This part felt too big for just one gift stop, so it gets a page of its own."'},
+
+  {id:3, kind:'gift', icon:'📜', title:'WWI Postcard No. 1', type:'WWI postcard',
+   hint:'Wrapped in an envelope with a little gingerbread man on it.',
+   desc:'The first WWI postcard, tucked into its own decorated envelope. A little piece of history, crossing the North Sea to you.',
+   note:'"I love that these little pieces of history travel from me to you. It feels right."'},
+
+  {id:4, kind:'gift', icon:'🏷️', title:'Home Bargains Sticker Pack No. 1', type:'stickers',
+   hint:'All three sticker packs are wrapped in red tissue paper, bundled together in black ribbon — just look for the first of the three.',
+   desc:'Mini sticker packs from Home Bargains — I sent some last year, and they had loads more to collect. Here\'s the first of three parcels.',
    note:'"Stick one somewhere immediately. You know this. I know you know this."'},
-  {id:5, icon:'📬', label:'Stop five', title:'WWI Postcard No. 2',
-   type:'WWI postcard', hint:'The second one — each is different.',
+
+  {id:5, kind:'gift', icon:'🥥', title:'Biscuits — Custard Cream: Coconut', type:'edible ♡',
+   hint:'[add a clue for this one]',
+   desc:'[write a description]',
+   note:'"[write your note here]"'},
+
+  {id:6, kind:'gift', icon:'🇳🇱', title:'I\'ve Been Learning Dutch', type:'the best gift ♡',
+   hint:'Obviously no packaging for this one xD',
+   desc:'This one doesn\'t fit in a box, but it might be your favourite gift of all: by the time you open this, Tristan will have been learning Dutch for months. For no particular reason. Definitely not for you. (A little bit for you.)',
+   note:'"Hallo. Hoe gaat het? Ik ben een beste vriend. That one took a while to learn but I was very motivated."'},
+
+  {id:7, kind:'unlock', icon:'🏆', title:'Tier List', type:'page unlock ✦',
+   page:'tierlist.html', pageLabel:'Tier List', direct:true,
+   desc:'A new page just unlocked: the Tier List. Once you\'ve tried all the biscuits, come back here and rank them properly.',
+   note:'"Every biscuit deserves its rightful place. No pressure."'},
+
+  {id:8, kind:'gift', icon:'😄', title:'Funny Food Sayings Postcard No. 1', type:'postcards',
+   hint:'[add a clue for this one]',
+   desc:'[write a description]',
+   note:'"[write your note here]"'},
+
+  {id:9, kind:'gift', icon:'🍋', title:'Biscuits — Custard Cream: Lemon', type:'edible ♡',
+   hint:'[add a clue for this one]',
+   desc:'[write a description]',
+   note:'"[write your note here]"'},
+
+  {id:10, kind:'gift', icon:'✉️', title:'WWI Postcard No. 2', type:'WWI postcard',
+   hint:'In another envelope.',
    desc:'The second WWI postcard, wrapped in its own decorated envelope. Each one is unique, each one picked with care.',
    note:'"History crossing the North Sea in an envelope. What a thing."'},
-  {id:6, icon:'🐄', label:'Stop six', title:'Biscuits — Custard Cream: Coconut',
-   type:'edible ♡', hint:'First biscuit stop. Open immediately. Eat one now.',
-   desc:'Custard creams — you loved the classic ones last year, so this time they come in flavours. First up: coconut. You are required to eat at least one on this call.',
-   note:'"Biscuit on call. Non-negotiable. I will be watching your face."'},
-  {id:7, icon:'📜', label:'Stop seven', title:'WWI Postcard No. 3',
-   type:'WWI postcard', hint:'Third in the series.',
+
+  {id:11, kind:'gift', icon:'🏷️', title:'Home Bargains Sticker Pack No. 2', type:'stickers',
+   hint:'Should already be unbundled from before — just look for the second one.',
+   desc:'More mini sticker packs from Home Bargains. The second of the three parcels.',
+   note:'"I may have gone slightly overboard with stickers. I regret nothing."'},
+
+  {id:12, kind:'unlock', icon:'🫂', title:'Us', type:'page unlock ✦',
+   page:'us.html', pageLabel:'Us', direct:true,
+   desc:'A new page just unlocked: Us.',
+   note:'"Just a little corner of the site about the two of us."'},
+
+  {id:13, kind:'gift', icon:'🐌', title:'Lancashire Postcard No. 1', type:'postcards', group:'lancashire',
+   hint:'All four of these are in a plastic wallet, with a yellow card inside giving you the details.',
+   desc:'From a pack of vintage-style Lancashire photograph postcards — beautiful, nostalgic, very English.',
+   note:'"A little corner of the north of England, just for you."'},
+
+  {id:14, kind:'gift', icon:'🐌', title:'Lancashire Postcard No. 2', type:'postcards', group:'lancashire',
+   hint:'In the same place as the first.',
+   desc:'The second of the four Lancashire postcards.',
+   note:'"Two down, two to go — read them together."'},
+
+  {id:15, kind:'gift', icon:'🐌', title:'Lancashire Postcard No. 3', type:'postcards', group:'lancashire',
+   hint:'In the same place as the others.',
+   desc:'The third of the four Lancashire postcards.',
+   note:'"Nearly the full set."'},
+
+  {id:16, kind:'gift', icon:'🐌', title:'Lancashire Postcard No. 4', type:'postcards', group:'lancashire',
+   hint:'In the same place as the others.',
+   desc:'The fourth and final Lancashire postcard.',
+   note:'"All four are yours now. A whole little corner of Lancashire."'},
+
+  {id:17, kind:'gift', icon:'🍓', title:'Biscuits — Custard Cream: Strawberry', type:'edible ♡',
+   hint:'[add a clue for this one]',
+   desc:'[write a description]',
+   note:'"[write your note here]"'},
+
+  {id:18, kind:'gift', icon:'🏷️', title:'Home Bargains Sticker Pack No. 3', type:'stickers',
+   hint:'[add a clue for this one]',
+   desc:'The last of the three red tissue paper parcels of Home Bargains mini sticker packs.',
+   note:'"Right. Now go and stick something, somewhere brilliant."'},
+
+  {id:19, kind:'gift', icon:'🐦', title:'MogSweep Package', type:'custom illustrated ✦',
+   hint:'Find the box that looks very fancy, covered in postcards, addressed to me — the packaging was so good I was scared to unbox it. This one\'s in a separate box to most of the above.',
+   desc:'Last year\'s MogSweep parcel was the best thing — custom illustrated envelope, a letter, a free postcard, free stickers. So I went back for more. This is that parcel.',
+   note:'"MogSweep\'s packaging deserves its own gift stop. Genuinely one of the best things I\'ve ever ordered from Etsy."'},
+
+  {id:20, kind:'gift', icon:'🐌', title:'Snail Mail Sticker Pack', type:'stickers',
+   hint:'One of two things inside the MogSweep box. Look for the stickers. I haven\'t even looked inside myself, so I hope it\'s actually in there!',
+   desc:'Snail-mail-themed stickers from MogSweep on Etsy.',
+   note:'"Fingers crossed they\'re as good as I\'m imagining."'},
+
+  {id:21, kind:'gift', icon:'🕊️', title:'Pigeon Post Washi Tape', type:'stationery ✦',
+   hint:'The other of the two things inside the MogSweep box. Look for the tape.',
+   desc:'Custom illustrated pigeon post washi tape, also from MogSweep.',
+   note:'"Perfect for wrapping the next thing you send me."'},
+
+  {id:22, kind:'unlock', icon:'💛', title:'Reasons', type:'page unlock ✦',
+   page:'reasons.html', pageLabel:'Reasons', direct:true,
+   desc:'A new page just unlocked: Reasons. For whenever you need reminding.',
+   note:'"Come back to this one any time you need it, not just today."'},
+
+  {id:23, kind:'gift', icon:'📜', title:'WWI Postcard No. 3', type:'WWI postcard',
+   hint:'In another envelope.',
    desc:'The third WWI postcard. Three down, one to go.',
    note:'"Three postcards in. The collection is nearly yours."'},
-  {id:8, icon:'🏷️', label:'Stop eight', title:'Sticker Set — Home Bargains, Round 2',
-   type:'stickers', hint:'More from the set — still in the red tissue packages.',
-   desc:'More mini sticker packs from Home Bargains, still wrapped in the red tissue paper. There are eight packs in total across the three tissue paper parcels.',
-   note:'"I may have gone slightly overboard with stickers. I regret nothing."'},
-  {id:9, icon:'🍓', label:'Stop nine', title:'Biscuits — Custard Cream: Strawberry',
-   type:'edible ♡', hint:'Second biscuit stop. A different custard cream.',
-   desc:'Custard cream: strawberry flavour. The second of four custard cream variations.',
-   note:'"Two flavours down. Still more to go. This is not excessive. This is love."'},
-  {id:10, icon:'✉️', label:'Stop ten', title:'WWI Postcard No. 4',
-   type:'WWI postcard', hint:'The last one — the full set is yours.',
+
+  {id:24, kind:'gift', icon:'🍪', title:'Biscuits — Custard Cream: Digestive', type:'edible ♡',
+   hint:'[add a clue for this one]',
+   desc:'[write a description]',
+   note:'"[write your note here]"'},
+
+  {id:25, kind:'gift', icon:'🐱', title:'Cat Sticker Pack', type:'stickers',
+   hint:'Not wrapped — probably at the side of the package. Should be obvious, it has cat stickers on it. Or at least what\'s left of them...',
+   desc:'A pack of cat stickers.',
+   note:'"No comment on the state of the packet."'},
+
+  {id:26, kind:'gift', icon:'🧸', title:'Plushie In Beans Tin', type:'✦ new tradition ✦',
+   hint:'You\'ve probably already noticed the beans tin. You can have a proper look now.',
+   desc:'This is the start of a brand new tradition. This little plushie is going to live at yours for six months, then come back to me at Christmas — and keep making that trip forever. It arrives in a Heinz Beans can. For reasons. (The beans meanz Heinz reason.)',
+   note:'"It has my name on it but I think it officially belongs to both of us now. That\'s the deal. Look after them."'},
+
+  {id:27, kind:'unlock', icon:'🛂', title:'Passport', type:'page unlock ✦',
+   page:'passport.html', pageLabel:'Passport', direct:true,
+   desc:'A new page just unlocked: Passport.',
+   note:'"Every good traveller needs one of these."'},
+
+  {id:28, kind:'gift', icon:'✉️', title:'WWI Postcard No. 4', type:'WWI postcard',
+   hint:'In another envelope — and the very final WWI postcard!',
    desc:'The fourth and final WWI postcard. The complete set is yours now. All four, individually wrapped, all the way from me to you.',
    note:'"Four little windows into history, all for you. Frame them one day?"'},
-  {id:11, icon:'🐦', label:'Stop eleven', title:'MogSweep Postcards + Snail Mail Stickers',
-   type:'custom illustrated ✦', hint:'Custom illustrated. MogSweep on Etsy.',
-   desc:'Last year\'s MogSweep parcel was the best thing — custom illustrated envelope, a letter, free postcard, free stickers. So I went back. This year: the pigeon post washi tape (custom illustrated) and snail mail stickers, plus a postcard.',
-   note:'"MogSweep\'s packaging deserves its own gift stop. Genuinely one of the best things I\'ve ever ordered from Etsy."'},
-  {id:12, icon:'🐌', label:'Stop twelve', title:'Lancashire Postcards',
-   type:'postcards', hint:'Three or four vintage-style Lancashire photographs.',
-   desc:'From a pack of twelve vintage-style Lancashire photograph postcards — beautiful, nostalgic, very English. I\'m sending three or four of them.',
-   note:'"A little corner of the north of England, just for you."'},
-  {id:13, icon:'🍋', label:'Stop thirteen', title:'Biscuits — Custard Cream: Lemon',
-   type:'edible ♡', hint:'Third custard cream flavour.',
-   desc:'Custard cream: lemon flavour. Three flavours in. One more to go.',
-   note:'"These are getting more delicious with each one. I have good taste in biscuits and I will not be told otherwise."'},
-  {id:14, icon:'😄', label:'Stop fourteen', title:'Funny Postcards — Fruity Motivation',
-   type:'postcards', hint:'Two funny fruit motivation-themed postcards.',
-   desc:'From a pack of twelve funny, fruit motivation-themed postcards. I\'m sending two of them. You\'ll understand immediately.',
-   note:'"I had to stop myself sending all twelve. Barely. You\'re welcome for my restraint."'},
-  {id:15, icon:'🏷️', label:'Stop fifteen', title:'Sticker Set — Home Bargains, Round 3',
-   type:'stickers', hint:'The final tissue paper parcel.',
-   desc:'The last of the three red tissue paper parcels of Home Bargains mini sticker packs. Also in this general area: a pack of 100 animal stickers.',
-   note:'"Right. Now go and stick something, somewhere brilliant."'},
-  {id:16, icon:'🍪', label:'Stop sixteen', title:'Biscuits — Custard Cream: Digestive & Two Classics',
-   type:'edible ♡', hint:'Final biscuits — custard cream digestive, malted milk, nice.',
-   desc:'The final biscuit stop: custard cream in digestive flavour, plus two British classics — malted milk biscuits and nice biscuits. The full biscuit range.',
-   note:'"Happy birthday, Ann. I hope your mouth is absolutely full of biscuit right now."'},
-  {id:17, icon:'🧸', label:'Stop seventeen', title:'The Plushie (in a Heinz Beans Can)',
-   type:'✦ new tradition ✦', hint:'A little traveller. Starting its very first journey.',
-   desc:'This is the start of a brand new tradition. This little plushie is going to live at yours for six months, then come back to me at Christmas — and keep making that trip forever. It arrives in a Heinz Beans can. For reasons. (The beans meanz heinz reason.)',
-   note:'"It has my name on it but I think it officially belongs to both of us now. That\'s the deal. Look after them."'},
-  {id:18, icon:'🇳🇱', label:'Stop eighteen', title:'I\'ve been learning Dutch',
-   type:'the best gift ♡', hint:'Four months of Dutch, just for you (mostly).',
-   desc:'This one doesn\'t fit in a box, but it\'s maybe your favourite gift of all: by the time you open this, Tristan will have been learning Dutch for four months. For no particular reason. Definitely not for you. (A little bit for you.)',
-   note:'"Hallo. Hoe gaat het? Ik ben een beste vriend. That one took a while to learn but I was very motivated."'},
+
+  {id:29, kind:'gift', icon:'🍪', title:'Biscuits — NICE', type:'edible ♡',
+   hint:'[add a clue for this one]',
+   desc:'[write a description]',
+   note:'"[write your note here]"'},
+
+  {id:30, kind:'gift', icon:'😄', title:'Funny Food Sayings Postcard No. 2', type:'postcards',
+   hint:'[add a clue for this one — last of these two for now]',
+   desc:'[write a description]',
+   note:'"[write your note here]"'},
+
+  {id:31, kind:'gift', icon:'🐾', title:'Animals Sticker Pack', type:'stickers',
+   hint:'[add a clue for this one — final sticker pack]',
+   desc:'[write a description]',
+   note:'"[write your note here]"'},
+
+  {id:32, kind:'gift', icon:'🦤', title:'Lesbian Birthday Ostrich Postcard', type:'postcards',
+   hint:'[add a clue for this one — last postcard]',
+   desc:'[write a description]',
+   note:'"[write your note here]"'},
+
+  {id:33, kind:'unlock', icon:'💌', title:'POSTCARDS', type:'page unlock ✦',
+   page:'postcards.html', pageLabel:'Postcards', direct:false,
+   desc:'A new page just unlocked: the Postcards gallery — every one you\'ve been sent, all in one place.',
+   note:'"I\'ll let you find your way there yourself, whenever you\'re ready."'},
+
+  {id:34, kind:'gift', icon:'🍪', title:'Biscuits — Malted Milk', type:'edible ♡',
+   hint:'[add a clue for this one — last biscuit pack, remember the Tier List page once you\'ve tried them all]',
+   desc:'[write a description]',
+   note:'"[write your note here]"'},
+
+  {id:35, kind:'gift', icon:'✉️', title:'Letter', type:'handwritten letter',
+   hint:'In an envelope at the very bottom of everything — you might find the envelope design familiar...',
+   desc:'A letter written just for you, with a bit of a throwback: the envelope has been decorated and addressed mimicking the way you wrote your envelope last year, because it was funny and beautiful.',
+   note:'"I wrote this one on impulse and I meant every single word. No take-backsies. Ever."'},
+
+  {id:36, kind:'unlock', icon:'📩', title:'Letters', type:'page unlock ✦',
+   page:'letters.html', pageLabel:'Letters', direct:false,
+   desc:'A new page just unlocked: Letters.',
+   note:'"I\'ll let you find this one yourself too."'},
+
+  {id:37, kind:'unlock', icon:'❓', title:'Quiz', type:'page unlock ✦',
+   page:'quiz.html', pageLabel:'Quiz', direct:false,
+   desc:'A new page just unlocked: the Quiz. And that\'s everything!',
+   note:'"Go see the final message first — the quiz and everything else will still be here after."'},
 ];
 
-const STORAGE_KEY = 'ann_bday_2025_v3';
+const STORAGE_KEY = 'ann_bday_2025_v4';
 let opened;
 try {
   const p = JSON.parse(localStorage.getItem(STORAGE_KEY));
@@ -286,11 +447,44 @@ let currentId = null;
 let modalOpen = false;
 let justOpenedId = null;
 
+// A stop unlocks once whatever comes before it (respecting bundles) is fully opened.
+function isUnlocked(i) {
+  const g = STOPS[i];
+  if (g.group) {
+    const groupIds = STOPS.filter(s => s.group === g.group).map(s => s.id);
+    const firstIdx = STOPS.findIndex(s => s.id === groupIds[0]);
+    return firstIdx === 0 || opened.has(STOPS[firstIdx - 1].id);
+  }
+  if (i === 0) return true;
+  const prev = STOPS[i - 1];
+  if (prev.group) {
+    const groupIds = STOPS.filter(s => s.group === prev.group).map(s => s.id);
+    return groupIds.every(id => opened.has(id));
+  }
+  return opened.has(prev.id);
+}
+
+function groupInfo(g) {
+  if (!g.group) return null;
+  const members = STOPS.filter(s => s.group === g.group);
+  return { pos: members.findIndex(s => s.id === g.id) + 1, total: members.length };
+}
+
+// Photo filenames only apply to physical gifts, numbered sequentially among gift-kind stops only
+function giftPhotoNumber(id) {
+  let n = 0;
+  for (const s of STOPS) {
+    if (s.kind === 'gift') n++;
+    if (s.id === id) break;
+  }
+  return n;
+}
+
 function renderAll() {
   const container = document.getElementById('stops');
   container.innerHTML = '';
   const count = opened.size;
-  const total = GIFTS.length;
+  const total = STOPS.length;
   document.getElementById('prog-fill').style.width = (count/total*100)+'%';
   document.getElementById('prog-label').textContent = count+' of '+total+' opened';
   document.getElementById('spine-fill').style.height = (count/total*100)+'%';
@@ -304,24 +498,34 @@ function renderAll() {
     if (nt) { nt.classList.remove('locked'); nt.onclick = ()=>location.href='timeline.html'; nt.style.pointerEvents='auto'; }
     launchSeasonalConfetti();
   }
-  GIFTS.forEach((g,i) => {
-    const prevDone = i===0 || opened.has(GIFTS[i-1].id);
+
+  STOPS.forEach((g,i) => {
+    const unlocked = isUnlocked(i);
     const isOpen = opened.has(g.id);
-    const unlocked = prevDone;
     const el = document.createElement('div');
-    el.className = 'stop '+(isOpen?'is-opened':unlocked?'is-unlocked':'is-locked')+(g.id===justOpenedId?' just-opened':'');
+    el.className = 'stop kind-'+g.kind+' '+(isOpen?'is-opened':unlocked?'is-unlocked':'is-locked')+(g.id===justOpenedId?' just-opened':'');
     el.style.animationDelay = (i*0.07)+'s';
     const dotContent = isOpen ? '✓' : (unlocked ? g.icon : '✦');
-    el.innerHTML = `<div class="stop-dot">${dotContent}</div>
-      <div class="stop-card">
-        <div class="stop-label">${g.label}</div>
-        <div class="stop-title">${g.title}</div>
-        ${unlocked
-          ? `<div class="stop-hint">${g.hint}</div>${isOpen
-              ? `<button class="btn-revisit">Revisit →</button>`
-              : `<button class="btn-open">Open this one →</button>`}`
-          : `<div class="stop-locked-msg">✦ open the one before this first</div>`}
-      </div>`;
+
+    let inner;
+    if (!unlocked) {
+      inner = `<div class="stop-title">${g.title}</div><div class="stop-locked-msg">✦ open the one before this first</div>`;
+    } else if (isOpen) {
+      inner = `<div class="stop-title">${g.title}</div><div class="stop-hint">${g.type}</div><button class="btn-revisit">Revisit →</button>`;
+    } else {
+      const teaser = g.kind === 'unlock' ? '✦ Something new has unlocked ✦' : '✦ A wrapped surprise ✦';
+      let clue = '';
+      if (g.kind === 'gift') {
+        clue = `<div class="stop-hint">${g.hint}</div>`;
+        const gi = groupInfo(g);
+        if (gi) clue += `<div class="stop-hint-group">✦ part of a bundle of ${gi.total} — all unlock together</div>`;
+      }
+      const btnLabel = g.kind === 'unlock' ? 'Unlock →' : 'Find it →';
+      inner = `<div class="stop-title stop-title-teaser">${teaser}</div>${clue}<button class="btn-open">${btnLabel}</button>`;
+    }
+
+    el.innerHTML = `<div class="stop-dot">${dotContent}</div><div class="stop-card"><div class="stop-label">Stop ${i+1}${g.kind==='unlock'?' · Page Unlock':''}</div>${inner}</div>`;
+
     if (unlocked) {
       const dot = el.querySelector('.stop-dot');
       const btn = el.querySelector('.btn-open, .btn-revisit');
@@ -333,44 +537,100 @@ function renderAll() {
   justOpenedId = null;
 }
 
-function openGift(id) {
-  if (modalOpen) return;
-  modalOpen = true;
-  const g = GIFTS.find(x => x.id === id);
-  currentId = id;
-  document.getElementById('modal-title').textContent = g.title;
-  document.getElementById('modal-badge').textContent = g.type;
-  document.getElementById('modal-desc').textContent = g.desc;
-  document.getElementById('note-text').textContent = g.note;
+function populateRevealed(s) {
+  document.getElementById('modal-title').textContent = s.title;
+  document.getElementById('modal-badge').textContent = s.type;
+  document.getElementById('modal-desc').textContent = s.desc;
+  document.getElementById('note-text').textContent = s.note;
+  document.getElementById('modal-num').textContent = s.id;
+  document.getElementById('modal-num').className = 'modal-num';
+  document.getElementById('note-curtain').className = 'modal-note-curtain';
 
-  // Polaroid photo of Ann holding this gift — gracefully hides if the photo isn't uploaded yet
   const photoWrap = document.getElementById('gift-photo-wrap');
   const photoImg = document.getElementById('gift-photo-img');
   const photoEl = document.getElementById('gift-photo');
   photoEl.classList.remove('show');
   photoWrap.style.display = 'none';
-  photoImg.onload = () => {
-    const tilt = ((g.id * 37) % 9) - 4;
-    photoEl.style.setProperty('--tilt', tilt + 'deg');
-    photoWrap.style.display = 'flex';
-    requestAnimationFrame(() => photoEl.classList.add('show'));
-  };
-  photoImg.onerror = () => { photoWrap.style.display = 'none'; };
-  photoImg.src = `gift_images/gift${String(g.id).padStart(2,'0')}.jpg`;
-  document.getElementById('modal-num').textContent = g.id;
-  document.getElementById('modal-num').className = 'modal-num';
-  document.getElementById('note-curtain').className = 'modal-note-curtain';
+
+  if (s.kind === 'gift') {
+    const num = giftPhotoNumber(s.id);
+    photoImg.onload = () => {
+      const tilt = ((s.id * 37) % 9) - 4;
+      photoEl.style.setProperty('--tilt', tilt + 'deg');
+      photoWrap.style.display = 'flex';
+      raf(() => photoEl.classList.add('show'));
+    };
+    photoImg.onerror = () => { photoWrap.style.display = 'none'; };
+    photoImg.src = `gift_images/gift${String(num).padStart(2,'0')}.jpg`;
+  } else {
+    photoImg.removeAttribute('src');
+  }
+}
+
+function buildFooterForStop(s) {
   const footer = document.getElementById('modal-footer');
   footer.innerHTML = '';
   const closeBtn = document.createElement('button');
   closeBtn.className = 'btn-modal-close'; closeBtn.textContent = 'Close'; closeBtn.onclick = closeModal;
   footer.appendChild(closeBtn);
-  if (!opened.has(id)) {
-    const markBtn = document.createElement('button');
-    markBtn.className = 'btn-modal-mark'; markBtn.textContent = 'Opened it! ✓';
-    markBtn.onclick = () => { markOpen(id); markBtn.remove(); buildNextBtn(footer, id); };
-    footer.appendChild(markBtn);
-  } else { buildNextBtn(footer, id); }
+
+  const idx = STOPS.findIndex(x => x.id === s.id);
+  const isLastStop = idx === STOPS.length - 1;
+  const allDone = opened.size === STOPS.length;
+
+  if (isLastStop && allDone) {
+    const nb = document.createElement('a');
+    nb.href = 'final.html'; nb.className = 'btn-modal-next'; nb.textContent = 'See the final message →';
+    footer.appendChild(nb);
+    return;
+  }
+
+  if (s.kind === 'unlock' && s.direct && s.page) {
+    const gp = document.createElement('a');
+    gp.href = s.page; gp.className = 'btn-modal-next'; gp.textContent = `Go to ${s.pageLabel} →`;
+    footer.appendChild(gp);
+    return;
+  }
+
+  if (!isLastStop) {
+    const nb = document.createElement('button');
+    nb.className = 'btn-modal-next';
+    nb.textContent = s.kind === 'unlock' ? 'Continue →' : 'Next gift →';
+    nb.onclick = closeModal;
+    footer.appendChild(nb);
+  }
+}
+
+function openGift(id) {
+  if (modalOpen) return;
+  modalOpen = true;
+  currentId = id;
+  const s = STOPS.find(x => x.id === id);
+  const alreadyOpen = opened.has(id);
+  const needsHunt = s.kind === 'gift' && !alreadyOpen;
+
+  const mystery = document.getElementById('gift-mystery');
+  const revealed = document.getElementById('gift-revealed');
+  revealed.classList.remove('pop');
+
+  if (needsHunt) {
+    mystery.style.display = 'block';
+    revealed.style.display = 'none';
+    document.getElementById('mystery-hint').textContent = s.hint;
+    const footer = document.getElementById('modal-footer');
+    footer.innerHTML = '';
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'btn-modal-close'; closeBtn.textContent = 'Close'; closeBtn.onclick = closeModal;
+    footer.appendChild(closeBtn);
+  } else {
+    mystery.style.display = 'none';
+    revealed.style.display = 'block';
+    revealed.classList.add('pop');
+    populateRevealed(s);
+    if (!alreadyOpen) markOpen(id);
+    buildFooterForStop(s);
+  }
+
   const boxScene = document.getElementById('box-scene');
   const card = document.getElementById('gift-card');
   const lid = document.getElementById('box-lid');
@@ -391,8 +651,24 @@ function openGift(id) {
     setTimeout(() => { boxScene.style.display = 'none'; }, 300);
     card.classList.add('burst');
   }, 1100);
-  setTimeout(() => { document.getElementById('modal-num').classList.add('lit'); }, 1550);
-  setTimeout(() => { document.getElementById('note-curtain').classList.add('gone'); }, 1900);
+  if (!needsHunt) {
+    setTimeout(() => { document.getElementById('modal-num').classList.add('lit'); }, 1550);
+    setTimeout(() => { document.getElementById('note-curtain').classList.add('gone'); }, 1900);
+  }
+}
+
+function revealGift() {
+  const s = STOPS.find(x => x.id === currentId);
+  populateRevealed(s);
+  document.getElementById('gift-mystery').style.display = 'none';
+  const revealed = document.getElementById('gift-revealed');
+  revealed.style.display = 'block';
+  revealed.classList.remove('pop');
+  raf(() => revealed.classList.add('pop'));
+  markOpen(currentId);
+  buildFooterForStop(s);
+  setTimeout(() => { document.getElementById('modal-num').classList.add('lit'); }, 300);
+  setTimeout(() => { document.getElementById('note-curtain').classList.add('gone'); }, 650);
 }
 
 function spawnSparkles() {
@@ -408,21 +684,6 @@ function spawnSparkles() {
     s.style.cssText = `left:${cx}px;top:${cy}px;background:${cols[i%cols.length]};--sx:${Math.cos(angle)*dist}px;--sy:${Math.sin(angle)*dist}px;--sd:${0.5+Math.random()*0.4}s;--sdelay:${Math.random()*0.15}s;width:${4+Math.random()*6}px;height:${4+Math.random()*6}px`;
     overlay.appendChild(s);
     setTimeout(() => s.remove(), 900);
-  }
-}
-
-function buildNextBtn(footer, id) {
-  const idx = GIFTS.findIndex(g => g.id === id);
-  const isLast = idx === GIFTS.length - 1;
-  if (!isLast) {
-    const nb = document.createElement('button');
-    nb.className = 'btn-modal-next'; nb.textContent = 'Next gift →';
-    nb.onclick = () => { closeModal(); setTimeout(() => openGift(GIFTS[idx+1].id), 350); };
-    footer.appendChild(nb);
-  } else if (opened.size === GIFTS.length) {
-    const nb = document.createElement('a');
-    nb.href = 'final.html'; nb.className = 'btn-modal-next'; nb.textContent = 'See the final message →';
-    footer.appendChild(nb);
   }
 }
 
@@ -444,15 +705,23 @@ function closePhotoLightbox() {
   document.getElementById('photo-lightbox').classList.remove('show');
 }
 
+const TUTORIAL_KEY = 'ann_bday_tutorial_seen_v1';
+function showTutorial() { document.getElementById('tutorial-overlay').classList.add('show'); }
+function closeTutorial() {
+  document.getElementById('tutorial-overlay').classList.remove('show');
+  localStorage.setItem(TUTORIAL_KEY, '1');
+}
+
 document.addEventListener('keydown', (e) => {
   if (e.key !== 'Escape') return;
-  if (document.getElementById('photo-lightbox').classList.contains('show')) closePhotoLightbox();
+  if (document.getElementById('tutorial-overlay').classList.contains('show')) closeTutorial();
+  else if (document.getElementById('photo-lightbox').classList.contains('show')) closePhotoLightbox();
   else if (modalOpen) closeModal();
 });
 
 function markOpen(id) {
   opened.add(id); save(); justOpenedId = id; bigBurst();
-  if (opened.size === GIFTS.length) launchSeasonalConfetti();
+  if (opened.size === STOPS.length) launchSeasonalConfetti();
   setTimeout(renderAll, 500);
 }
 
@@ -510,7 +779,11 @@ if (params.get('signed') === '1') {
   launchSeasonalConfetti();
 }
 
-window.addEventListener('DOMContentLoaded', () => { buildNav('gifts.html'); renderAll(); });
+window.addEventListener('DOMContentLoaded', () => {
+  buildNav('gifts.html');
+  renderAll();
+  if (!localStorage.getItem(TUTORIAL_KEY)) showTutorial();
+});
 </script>
 <script src="nav.js"></script>
 </body>
