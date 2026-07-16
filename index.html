@@ -206,7 +206,7 @@ nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-be
     <div class="letter-corner"><span>First<br>class<br>friend</span></div>
   </div>
   <div class="cta-wrap">
-    <a href="contract.html" class="btn-cta">Open the box →</a>
+    <a href="membership.html" class="btn-cta">Open the box →</a>
     <button class="btn-play" id="btn-play" onclick="startCinematicTour()">▶ Cinematic tour</button>
   </div>
 </main>
@@ -563,8 +563,8 @@ console.log('If you\'re reading this, you\'re exactly the kind of curious person
 // PRESS PLAY (shows after all gifts opened)
 function checkPressPlay(){
   try{
-    const p=JSON.parse(localStorage.getItem('ann_bday_2025_v4'));
-    if(Array.isArray(p)&&p.length>=38) document.getElementById('btn-play').classList.add('show');
+    const p=JSON.parse(localStorage.getItem('ann_bday_2025_v3'));
+    if(Array.isArray(p)&&p.length>=18) document.getElementById('btn-play').classList.add('show');
   }catch(e){}
 }
 function startCinematicTour(){
