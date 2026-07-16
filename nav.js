@@ -1,27 +1,27 @@
 // ═══════════════════════════════════════════
-// SHARED NAV STATE — ann_site
+// SHARED NAV STATE - ann_site
 // ═══════════════════════════════════════════
 
 const NAV_KEYS = {
   contract: 'ann_contract_signed_2025',
-  gifts: 'ann_bday_2025_v3',
+  gifts: 'ann_bday_2025_v4',
 };
 
-// Which gift IDs unlock which pages
-// (gifts are opened sequentially; id = gift number)
+// Which stop IDs unlock which pages, matching the STOPS array in gifts.html
+// (stops are opened sequentially; id = stop number, including the "page unlock" stops themselves)
 const PAGE_UNLOCKS = {
-  'letters.html':   2,   // letter gift
-  'timeline.html':  6,   // mid-box
-  'postcards.html': 10,  // after all postcards
-  'passport.html':  17,  // plushie gift
-  'final.html':     18,  // all done
-  'quiz.html':      18,
-  'tierlist.html':  16,  // after all biscuits
-  'reasons.html':   18,
-  'extras.html':    18,
+  'timeline.html':  2,   // Our Story
+  'tierlist.html':  7,   // Tier List
+  'extras.html':    13,  // Us
+  'reasons.html':   23,  // Reasons
+  'passport.html':  28,  // Passport
+  'postcards.html': 34,  // Postcards
+  'letters.html':   37,  // Letters
+  'quiz.html':      38,  // Quiz
+  'final.html':     38,  // all done
 };
 
-const TOTAL_GIFTS = 18;
+const TOTAL_GIFTS = 38;
 
 function getOpenedGifts() {
   try {
