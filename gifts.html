@@ -176,7 +176,7 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 </div>
 <div class="progress-section">
   <div class="progress-rail"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
-  <div class="progress-label" id="prog-label">0 of 37 opened</div>
+  <div class="progress-label" id="prog-label">0 of 38 opened</div>
 </div>
 <div class="path-wrap">
   <div class="spine"><div class="spine-bg"></div><div class="spine-fill" id="spine-fill"></div></div>
@@ -254,7 +254,7 @@ const STOPS = [
    note:'"Some things are classics for a reason. Happy birthday, bestie."'},
 
   {id:2, kind:'unlock', icon:'📖', title:'Our Story', type:'page unlock ✦',
-   page:'ourstory.html', pageLabel:'Our Story', direct:true,
+   page:'timeline.html', pageLabel:'Our Story', direct:true,
    desc:'A new part of the site has just unlocked: Our Story. Have a look whenever you fancy.',
    note:'"This part felt too big for just one gift stop, so it gets a page of its own."'},
 
@@ -303,133 +303,138 @@ const STOPS = [
    desc:'More mini sticker packs from Home Bargains. The second of the three parcels.',
    note:'"I may have gone slightly overboard with stickers. I regret nothing."'},
 
-  {id:12, kind:'unlock', icon:'🫂', title:'Us', type:'page unlock ✦',
-   page:'us.html', pageLabel:'Us', direct:true,
+  {id:12, kind:'gift', icon:'🧵', title:'Friendship Bracelet', type:'handmade ♡',
+   hint:'[add a clue for this one]',
+   desc:'[write a description]',
+   note:'"[write your note here]"'},
+
+  {id:13, kind:'unlock', icon:'🫂', title:'Us', type:'page unlock ✦',
+   page:'extras.html', pageLabel:'Us', direct:true,
    desc:'A new page just unlocked: Us.',
    note:'"Just a little corner of the site about the two of us."'},
 
-  {id:13, kind:'gift', icon:'🐌', title:'Lancashire Postcard No. 1', type:'postcards', group:'lancashire',
+  {id:14, kind:'gift', icon:'🐌', title:'Lancashire Postcard No. 1', type:'postcards', group:'lancashire',
    hint:'All four of these are in a plastic wallet, with a yellow card inside giving you the details.',
    desc:'From a pack of vintage-style Lancashire photograph postcards — beautiful, nostalgic, very English.',
    note:'"A little corner of the north of England, just for you."'},
 
-  {id:14, kind:'gift', icon:'🐌', title:'Lancashire Postcard No. 2', type:'postcards', group:'lancashire',
+  {id:15, kind:'gift', icon:'🐌', title:'Lancashire Postcard No. 2', type:'postcards', group:'lancashire',
    hint:'In the same place as the first.',
    desc:'The second of the four Lancashire postcards.',
    note:'"Two down, two to go — read them together."'},
 
-  {id:15, kind:'gift', icon:'🐌', title:'Lancashire Postcard No. 3', type:'postcards', group:'lancashire',
+  {id:16, kind:'gift', icon:'🐌', title:'Lancashire Postcard No. 3', type:'postcards', group:'lancashire',
    hint:'In the same place as the others.',
    desc:'The third of the four Lancashire postcards.',
    note:'"Nearly the full set."'},
 
-  {id:16, kind:'gift', icon:'🐌', title:'Lancashire Postcard No. 4', type:'postcards', group:'lancashire',
+  {id:17, kind:'gift', icon:'🐌', title:'Lancashire Postcard No. 4', type:'postcards', group:'lancashire',
    hint:'In the same place as the others.',
    desc:'The fourth and final Lancashire postcard.',
    note:'"All four are yours now. A whole little corner of Lancashire."'},
 
-  {id:17, kind:'gift', icon:'🍓', title:'Biscuits — Custard Cream: Strawberry', type:'edible ♡',
+  {id:18, kind:'gift', icon:'🍓', title:'Biscuits — Custard Cream: Strawberry', type:'edible ♡',
    hint:'[add a clue for this one]',
    desc:'[write a description]',
    note:'"[write your note here]"'},
 
-  {id:18, kind:'gift', icon:'🏷️', title:'Home Bargains Sticker Pack No. 3', type:'stickers',
+  {id:19, kind:'gift', icon:'🏷️', title:'Home Bargains Sticker Pack No. 3', type:'stickers',
    hint:'[add a clue for this one]',
    desc:'The last of the three red tissue paper parcels of Home Bargains mini sticker packs.',
    note:'"Right. Now go and stick something, somewhere brilliant."'},
 
-  {id:19, kind:'gift', icon:'🐦', title:'MogSweep Package', type:'custom illustrated ✦',
+  {id:20, kind:'gift', icon:'🐦', title:'MogSweep Package', type:'custom illustrated ✦',
    hint:'Find the box that looks very fancy, covered in postcards, addressed to me — the packaging was so good I was scared to unbox it. This one\'s in a separate box to most of the above.',
    desc:'Last year\'s MogSweep parcel was the best thing — custom illustrated envelope, a letter, a free postcard, free stickers. So I went back for more. This is that parcel.',
    note:'"MogSweep\'s packaging deserves its own gift stop. Genuinely one of the best things I\'ve ever ordered from Etsy."'},
 
-  {id:20, kind:'gift', icon:'🐌', title:'Snail Mail Sticker Pack', type:'stickers',
+  {id:21, kind:'gift', icon:'🐌', title:'Snail Mail Sticker Pack', type:'stickers',
    hint:'One of two things inside the MogSweep box. Look for the stickers. I haven\'t even looked inside myself, so I hope it\'s actually in there!',
    desc:'Snail-mail-themed stickers from MogSweep on Etsy.',
    note:'"Fingers crossed they\'re as good as I\'m imagining."'},
 
-  {id:21, kind:'gift', icon:'🕊️', title:'Pigeon Post Washi Tape', type:'stationery ✦',
+  {id:22, kind:'gift', icon:'🕊️', title:'Pigeon Post Washi Tape', type:'stationery ✦',
    hint:'The other of the two things inside the MogSweep box. Look for the tape.',
    desc:'Custom illustrated pigeon post washi tape, also from MogSweep.',
    note:'"Perfect for wrapping the next thing you send me."'},
 
-  {id:22, kind:'unlock', icon:'💛', title:'Reasons', type:'page unlock ✦',
+  {id:23, kind:'unlock', icon:'💛', title:'Reasons', type:'page unlock ✦',
    page:'reasons.html', pageLabel:'Reasons', direct:true,
    desc:'A new page just unlocked: Reasons. For whenever you need reminding.',
    note:'"Come back to this one any time you need it, not just today."'},
 
-  {id:23, kind:'gift', icon:'📜', title:'WWI Postcard No. 3', type:'WWI postcard',
+  {id:24, kind:'gift', icon:'📜', title:'WWI Postcard No. 3', type:'WWI postcard',
    hint:'In another envelope.',
    desc:'The third WWI postcard. Three down, one to go.',
    note:'"Three postcards in. The collection is nearly yours."'},
 
-  {id:24, kind:'gift', icon:'🍪', title:'Biscuits — Custard Cream: Digestive', type:'edible ♡',
+  {id:25, kind:'gift', icon:'🍪', title:'Biscuits — Custard Cream: Digestive', type:'edible ♡',
    hint:'[add a clue for this one]',
    desc:'[write a description]',
    note:'"[write your note here]"'},
 
-  {id:25, kind:'gift', icon:'🐱', title:'Cat Sticker Pack', type:'stickers',
+  {id:26, kind:'gift', icon:'🐱', title:'Cat Sticker Pack', type:'stickers',
    hint:'Not wrapped — probably at the side of the package. Should be obvious, it has cat stickers on it. Or at least what\'s left of them...',
    desc:'A pack of cat stickers.',
    note:'"No comment on the state of the packet."'},
 
-  {id:26, kind:'gift', icon:'🧸', title:'Plushie In Beans Tin', type:'✦ new tradition ✦',
+  {id:27, kind:'gift', icon:'🧸', title:'Plushie In Beans Tin', type:'✦ new tradition ✦',
    hint:'You\'ve probably already noticed the beans tin. You can have a proper look now.',
    desc:'This is the start of a brand new tradition. This little plushie is going to live at yours for six months, then come back to me at Christmas — and keep making that trip forever. It arrives in a Heinz Beans can. For reasons. (The beans meanz Heinz reason.)',
    note:'"It has my name on it but I think it officially belongs to both of us now. That\'s the deal. Look after them."'},
 
-  {id:27, kind:'unlock', icon:'🛂', title:'Passport', type:'page unlock ✦',
+  {id:28, kind:'unlock', icon:'🛂', title:'Passport', type:'page unlock ✦',
    page:'passport.html', pageLabel:'Passport', direct:true,
    desc:'A new page just unlocked: Passport.',
    note:'"Every good traveller needs one of these."'},
 
-  {id:28, kind:'gift', icon:'✉️', title:'WWI Postcard No. 4', type:'WWI postcard',
+  {id:29, kind:'gift', icon:'✉️', title:'WWI Postcard No. 4', type:'WWI postcard',
    hint:'In another envelope — and the very final WWI postcard!',
    desc:'The fourth and final WWI postcard. The complete set is yours now. All four, individually wrapped, all the way from me to you.',
    note:'"Four little windows into history, all for you. Frame them one day?"'},
 
-  {id:29, kind:'gift', icon:'🍪', title:'Biscuits — NICE', type:'edible ♡',
+  {id:30, kind:'gift', icon:'🍪', title:'Biscuits — NICE', type:'edible ♡',
    hint:'[add a clue for this one]',
    desc:'[write a description]',
    note:'"[write your note here]"'},
 
-  {id:30, kind:'gift', icon:'😄', title:'Funny Food Sayings Postcard No. 2', type:'postcards',
+  {id:31, kind:'gift', icon:'😄', title:'Funny Food Sayings Postcard No. 2', type:'postcards',
    hint:'[add a clue for this one — last of these two for now]',
    desc:'[write a description]',
    note:'"[write your note here]"'},
 
-  {id:31, kind:'gift', icon:'🐾', title:'Animals Sticker Pack', type:'stickers',
+  {id:32, kind:'gift', icon:'🐾', title:'Animals Sticker Pack', type:'stickers',
    hint:'[add a clue for this one — final sticker pack]',
    desc:'[write a description]',
    note:'"[write your note here]"'},
 
-  {id:32, kind:'gift', icon:'🦤', title:'Lesbian Birthday Ostrich Postcard', type:'postcards',
+  {id:33, kind:'gift', icon:'🦤', title:'Lesbian Birthday Ostrich Postcard', type:'postcards',
    hint:'[add a clue for this one — last postcard]',
    desc:'[write a description]',
    note:'"[write your note here]"'},
 
-  {id:33, kind:'unlock', icon:'💌', title:'POSTCARDS', type:'page unlock ✦',
-   page:'postcards.html', pageLabel:'Postcards', direct:false,
+  {id:34, kind:'unlock', icon:'💌', title:'POSTCARDS', type:'page unlock ✦',
+   page:'postcards.html', pageLabel:'Postcards', direct:true,
    desc:'A new page just unlocked: the Postcards gallery — every one you\'ve been sent, all in one place.',
    note:'"I\'ll let you find your way there yourself, whenever you\'re ready."'},
 
-  {id:34, kind:'gift', icon:'🍪', title:'Biscuits — Malted Milk', type:'edible ♡',
+  {id:35, kind:'gift', icon:'🍪', title:'Biscuits — Malted Milk', type:'edible ♡',
    hint:'[add a clue for this one — last biscuit pack, remember the Tier List page once you\'ve tried them all]',
    desc:'[write a description]',
    note:'"[write your note here]"'},
 
-  {id:35, kind:'gift', icon:'✉️', title:'Letter', type:'handwritten letter',
+  {id:36, kind:'gift', icon:'✉️', title:'Letter', type:'handwritten letter',
    hint:'In an envelope at the very bottom of everything — you might find the envelope design familiar...',
    desc:'A letter written just for you, with a bit of a throwback: the envelope has been decorated and addressed mimicking the way you wrote your envelope last year, because it was funny and beautiful.',
    note:'"I wrote this one on impulse and I meant every single word. No take-backsies. Ever."'},
 
-  {id:36, kind:'unlock', icon:'📩', title:'Letters', type:'page unlock ✦',
-   page:'letters.html', pageLabel:'Letters', direct:false,
+  {id:37, kind:'unlock', icon:'📩', title:'Letters', type:'page unlock ✦',
+   page:'letters.html', pageLabel:'Letters', direct:true,
    desc:'A new page just unlocked: Letters.',
    note:'"I\'ll let you find this one yourself too."'},
 
-  {id:37, kind:'unlock', icon:'❓', title:'Quiz', type:'page unlock ✦',
-   page:'quiz.html', pageLabel:'Quiz', direct:false,
+  {id:38, kind:'unlock', icon:'❓', title:'Quiz', type:'page unlock ✦',
+   page:'quiz.html', pageLabel:'Quiz', direct:true,
    desc:'A new page just unlocked: the Quiz. And that\'s everything!',
    note:'"Go see the final message first — the quiz and everything else will still be here after."'},
 ];
@@ -491,13 +496,8 @@ function renderAll() {
   document.getElementById('spine-fill').classList.toggle('has-progress', count > 0 && count < total);
   const allDone = count === total;
   document.getElementById('final-banner').style.display = allDone ? 'none' : 'block';
-  const nf = document.getElementById('nav-final');
-  const nt = document.getElementById('nav-timeline');
-  if (allDone) {
-    if (nf) { nf.classList.remove('locked'); nf.onclick = ()=>location.href='final.html'; nf.style.pointerEvents='auto'; }
-    if (nt) { nt.classList.remove('locked'); nt.onclick = ()=>location.href='timeline.html'; nt.style.pointerEvents='auto'; }
-    launchSeasonalConfetti();
-  }
+  if (allDone) launchSeasonalConfetti();
+  if (typeof buildNav === 'function') buildNav('gifts.html'); // keep the shared header nav in sync as pages unlock
 
   STOPS.forEach((g,i) => {
     const unlocked = isUnlocked(i);
