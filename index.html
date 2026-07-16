@@ -115,24 +115,29 @@ nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-be
 /* RESET */
 #reset-btn{position:fixed;bottom:1rem;left:1rem;background:rgba(58,32,16,0.08);color:rgba(58,32,16,0.2);border:1px solid rgba(58,32,16,0.08);padding:0.2rem 0.55rem;font-family:'Caveat',cursive;font-size:0.65rem;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;z-index:100}
 #reset-btn:hover{background:var(--warm);color:var(--brown);border-color:var(--tan)}
+#reset-secrets-btn{position:fixed;bottom:1rem;right:1rem;background:rgba(58,32,16,0.08);color:rgba(58,32,16,0.2);border:1px solid rgba(58,32,16,0.08);padding:0.2rem 0.55rem;font-family:'Caveat',cursive;font-size:0.65rem;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;z-index:100}
+#reset-secrets-btn:hover{background:var(--warm);color:var(--brown);border-color:var(--tan)}
 
 /* SECRETS BADGE (top set dynamically via JS, just below the nav) */
 #secrets-badge{position:fixed;right:1rem;top:5rem;background:rgba(58,32,16,0.07);color:rgba(58,32,16,0.42);border:1px solid rgba(58,32,16,0.08);padding:0.2rem 0.65rem;font-family:'Caveat',cursive;font-size:0.82rem;letter-spacing:1px;z-index:600;transition:top 0.2s ease;border-radius:2px;cursor:default;white-space:nowrap}
 
 /* COMPLETION BADGE (appears once all secrets are found) */
 #completion-badge{position:fixed;right:1rem;top:8rem;background:var(--gold);color:var(--deep);padding:0.3rem 0.8rem;font-family:'Caveat',cursive;font-size:0.9rem;font-weight:700;letter-spacing:0.5px;border-radius:2px;box-shadow:2px 2px 0 var(--brown);z-index:600;opacity:0;transform:scale(0.4);transition:opacity 0.3s ease,transform 0.3s ease;pointer-events:none;white-space:nowrap}
-#completion-badge.show{opacity:1;transform:scale(1)}
+#completion-badge.show{opacity:1;transform:scale(1);pointer-events:auto;cursor:pointer}
+#completion-badge.show:hover{background:#e0a840}
 #completion-badge.celebrate{animation:badgeCelebrate 1.4s cubic-bezier(0.34,1.6,0.64,1)}
 @keyframes badgeCelebrate{0%{transform:scale(0.3) rotate(-15deg);opacity:0}40%{transform:scale(1.35) rotate(6deg);opacity:1}60%{transform:scale(0.9) rotate(-3deg)}80%{transform:scale(1.08) rotate(2deg)}100%{transform:scale(1) rotate(0deg)}}
 
-/* GRAND CELEBRATION STAMP (plays once, when the last secret is found) */
-.grand-stamp{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:7000;font-family:'Playfair Display',serif;font-weight:700;font-size:clamp(1.1rem,4vw,1.8rem);color:var(--rose);background:var(--paper);border:4px solid var(--rose);padding:1.3rem 2.2rem;box-shadow:6px 6px 0 var(--brown);opacity:0;text-align:center;pointer-events:none;animation:grandStampIn 2.2s cubic-bezier(0.22,1,0.36,1) forwards}
-@keyframes grandStampIn{0%{opacity:0;transform:translate(-50%,-50%) scale(2.4) rotate(-14deg)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.08) rotate(4deg)}28%{transform:translate(-50%,-50%) scale(0.96) rotate(-2deg)}35%{transform:translate(-50%,-50%) scale(1) rotate(0deg)}85%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1) rotate(0deg)}}
+/* GRAND CELEBRATION (long, focused, dims the page) */
+.celebration-overlay{position:fixed;inset:0;background:rgba(20,8,2,0);z-index:6900;display:flex;align-items:center;justify-content:center;transition:background 0.7s ease;pointer-events:none}
+.celebration-overlay.dim{background:rgba(20,8,2,0.62)}
+.grand-stamp{position:relative;z-index:7000;font-family:'Playfair Display',serif;font-weight:700;font-size:clamp(1.3rem,4.5vw,2.2rem);color:var(--rose);background:var(--paper);border:4px solid var(--rose);padding:1.7rem 2.6rem;box-shadow:8px 8px 0 var(--brown),0 0 90px rgba(200,148,58,0.4);opacity:0;transform:scale(0.4) rotate(-10deg);transition:opacity 0.6s cubic-bezier(0.34,1.6,0.64,1),transform 0.6s cubic-bezier(0.34,1.6,0.64,1);text-align:center}
+.grand-stamp.in{opacity:1;transform:scale(1) rotate(0deg)}
 
-/* DRIFTING ENVELOPE - bigger, easier to catch, appears every 25s */
-.drifter{position:fixed;width:68px;height:68px;display:flex;align-items:center;justify-content:center;font-size:2.1rem;z-index:800;cursor:pointer;color:var(--rose);background:rgba(255,253,245,0.92);border:2.5px solid var(--rose);border-radius:50%;box-shadow:3px 3px 10px rgba(0,0,0,0.18);animation:driftAcross 12s linear forwards;transition:transform 0.15s}
+/* DRIFTING ENVELOPE - smaller, quicker, less frequent */
+.drifter{position:fixed;width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;z-index:800;cursor:pointer;color:var(--rose);background:rgba(255,253,245,0.92);border:2px solid var(--rose);border-radius:50%;box-shadow:3px 3px 10px rgba(0,0,0,0.18);animation:driftAcross 5.5s linear forwards;transition:transform 0.15s}
 .drifter:hover{transform:scale(1.15)}
-@keyframes driftAcross{0%{transform:translate(-15vw,0) rotate(-8deg);opacity:0}8%{opacity:1}92%{opacity:1}100%{transform:translate(115vw,-8vh) rotate(6deg);opacity:0}}
+@keyframes driftAcross{0%{transform:translate(-15vw,0) rotate(-8deg);opacity:0}10%{opacity:1}88%{opacity:1}100%{transform:translate(115vw,-8vh) rotate(6deg);opacity:0}}
 
 /* CHASE-THE-HEART EGG - flees the cursor, caught by herding it into the corner */
 .chase-heart{position:fixed;font-size:1.8rem;color:var(--rose);z-index:700;pointer-events:none;filter:drop-shadow(0 0 4px rgba(184,104,88,0.4));transform:translate(-50%,-50%)}
@@ -155,6 +160,7 @@ nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-be
 /* DRAG-THE-STAMP EGG (stick it onto the postmark) */
 .stamp{touch-action:none;cursor:grab}
 .stamp.stamp-dragging{cursor:grabbing;box-shadow:6px 10px 22px rgba(0,0,0,0.28);z-index:50}
+#postmark.drag-hint{box-shadow:0 0 0 6px rgba(200,148,58,0.4);transition:box-shadow 0.15s}
 </style>
 </head>
 <body>
@@ -223,6 +229,7 @@ nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-be
 </div>
 
 <button id="reset-btn" onclick="if(confirm('Reset ALL progress? This clears everything.')){localStorage.clear();location.reload()}">reset</button>
+<button id="reset-secrets-btn" onclick="if(confirm('Reset just the hidden secrets progress? Your gifts/letters stay untouched.')){localStorage.removeItem('ann_eggs_found');location.reload()}">reset secrets</button>
 
 <script src="nav.js"></script>
 <script>
@@ -400,15 +407,36 @@ function updateSecretsBadge(justCompleted){
   positionSecretsBadges();
 }
 
+// click the gold badge any time afterwards to replay the celebration
+document.getElementById('completion-badge').addEventListener('click', () => {
+  if(eggsFound.length >= EGG_KEYS.length) launchAllFoundCelebration();
+});
+
+// long, focused, dims the whole page - this is the "you found everything" moment
 function launchAllFoundCelebration(){
   launchConfetti();
   setTimeout(launchHeartBurst, 200);
-  setTimeout(launchHeartBurst, 550);
-  const s = document.createElement('div');
-  s.className = 'grand-stamp';
-  s.innerHTML = 'All secrets found ♡';
-  document.body.appendChild(s);
-  setTimeout(() => s.remove(), 2300);
+  setTimeout(launchHeartBurst, 900);
+  setTimeout(launchHeartBurst, 1700);
+  setTimeout(launchHeartBurst, 2600);
+
+  const overlay = document.createElement('div');
+  overlay.className = 'celebration-overlay';
+  const stamp = document.createElement('div');
+  stamp.className = 'grand-stamp';
+  stamp.innerHTML = 'All secrets found ♡<br><span style="font-family:\'Caveat\',cursive;font-size:0.5em;color:var(--brown);display:block;margin-top:0.5rem">every corner of this, explored</span>';
+  overlay.appendChild(stamp);
+  document.body.appendChild(overlay);
+
+  requestAnimationFrame(() => {
+    overlay.classList.add('dim');
+    stamp.classList.add('in');
+  });
+  setTimeout(() => {
+    overlay.classList.remove('dim');
+    stamp.classList.remove('in');
+    setTimeout(() => overlay.remove(), 700);
+  }, 4200);
 }
 
 function launchHeartBurst(){
@@ -456,7 +484,7 @@ document.querySelector('.nav-brand').addEventListener('click', function(e){
   if(navClicks >= 7){ navClicks = 0; unlockEgg('nav'); }
 });
 
-// DRIFTING ENVELOPE - bigger, easier to catch, shows up every 25 seconds
+// DRIFTING ENVELOPE - smaller, quicker crossing, shows up every 50 seconds
 function spawnDrifter(){
   const d = document.createElement('div');
   d.className = 'drifter';
@@ -464,10 +492,10 @@ function spawnDrifter(){
   d.style.top = (10 + Math.random()*65) + 'vh';
   d.onclick = () => { unlockEgg('idle'); d.remove(); };
   document.body.appendChild(d);
-  setTimeout(() => d.remove(), 12000);
+  setTimeout(() => d.remove(), 6000);
 }
-setTimeout(spawnDrifter, 6000);
-setInterval(spawnDrifter, 25000);
+setTimeout(spawnDrifter, 10000);
+setInterval(spawnDrifter, 50000);
 
 // DRAG THE STAMP ONTO THE POSTMARK ("mail it")
 (function(){
@@ -485,11 +513,20 @@ setInterval(spawnDrifter, 25000);
     if(!dragging) return;
     const dx = e.clientX - startX, dy = e.clientY - startY;
     stamp.style.transform = `translate(${dx}px,${dy}px)`;
+    // live "getting warmer" glow on the postmark as the stamp gets close
+    const pmRect = postmark.getBoundingClientRect();
+    const stRect = stamp.getBoundingClientRect();
+    const liveDist = Math.hypot(
+      (pmRect.left + pmRect.width/2) - (stRect.left + stRect.width/2),
+      (pmRect.top + pmRect.height/2) - (stRect.top + stRect.height/2)
+    );
+    postmark.classList.toggle('drag-hint', liveDist < 100);
   });
   stamp.addEventListener('pointerup', e => {
     if(!dragging) return;
     dragging = false;
     stamp.classList.remove('stamp-dragging');
+    postmark.classList.remove('drag-hint');
     const dx = e.clientX - startX, dy = e.clientY - startY;
     const moved = Math.hypot(dx, dy);
     const pmRect = postmark.getBoundingClientRect();
@@ -501,7 +538,7 @@ setInterval(spawnDrifter, 25000);
     stamp.style.transition = 'transform 0.5s cubic-bezier(0.34,1.6,0.64,1)';
     stamp.style.transform = 'translate(0,0)';
     setTimeout(() => { stamp.style.transition = ''; }, 520);
-    if(moved > 40 && dist < 70) unlockEgg('mail');
+    if(moved > 20 && dist < 100) unlockEgg('mail');
   });
 })();
 
