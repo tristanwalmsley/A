@@ -44,6 +44,55 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 
 .closing{font-family:'Playfair Display',serif;font-size:1.15rem;font-style:italic;color:var(--deep);line-height:1.6;display:none}
 .closing.show{display:block;animation:wrapIn 0.8s ease both}
+
+/* ---------- FINAL COUNTDOWN BUILD-UP ---------- */
+body.final-countdown .timer-unit{border-color:var(--rose);box-shadow:4px 4px 0 var(--rose);animation:unitPulse 0.8s ease-in-out infinite}
+body.final-countdown .brand,body.final-countdown .lead{color:var(--rose);transition:color 0.4s ease}
+@keyframes unitPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+body.imminent .wrap{animation:wrapShake 0.35s ease-in-out infinite}
+@keyframes wrapShake{0%,100%{transform:translate(0,0)}25%{transform:translate(-3px,2px)}50%{transform:translate(3px,-2px)}75%{transform:translate(-2px,3px)}}
+
+/* ---------- REVEAL: FLASH ---------- */
+#flash-overlay{position:fixed;inset:0;background:radial-gradient(circle,#fffdf0 0%,var(--gold) 100%);opacity:0;pointer-events:none;z-index:9998;transition:opacity 0.45s ease}
+#flash-overlay.flash{opacity:0.92}
+
+.sparkle.burst{animation:burstOut 1.2s ease-out forwards}
+@keyframes burstOut{0%{opacity:1;transform:translate(0,0) scale(0.6)}100%{opacity:0;transform:translate(var(--bx),var(--by)) scale(1.4)}}
+
+/* ---------- REVEAL: CURTAINS ---------- */
+#curtain-left,#curtain-right{position:fixed;top:0;bottom:0;width:52%;z-index:9997;background:repeating-linear-gradient(90deg,#3a1210 0px,#5a1c16 16px,#3a1210 32px);box-shadow:0 0 90px rgba(0,0,0,0.6) inset;transition:transform 1s cubic-bezier(0.76,0,0.24,1)}
+#curtain-left{left:0;transform:translateX(-100%)}
+#curtain-right{right:0;transform:translateX(100%)}
+#curtain-left.closed{transform:translateX(0)}
+#curtain-right.closed{transform:translateX(0)}
+
+/* ---------- PREMIERE STAGE ---------- */
+.premiere{display:none;opacity:0;transition:opacity 0.9s ease;flex-direction:column;align-items:center;position:relative;z-index:2;max-width:640px;width:100%}
+.premiere.in{opacity:1}
+
+.marquee-lights{display:flex;justify-content:center;gap:9px;margin-bottom:0.5rem}
+.marquee-lights span{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:bulbFlicker 1.3s ease-in-out infinite}
+.marquee-lights span:nth-child(odd){animation-delay:0.35s}
+.marquee-lights span:nth-child(3n){animation-delay:0.65s}
+@keyframes bulbFlicker{0%,100%{opacity:0.3;box-shadow:none}50%{opacity:1;box-shadow:0 0 8px var(--gold)}}
+
+.marquee{font-family:'Playfair Display',serif;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--rose);font-size:1.1rem;margin-bottom:0.3rem;text-align:center}
+.marquee-sub{font-family:'Caveat',cursive;font-size:1rem;color:var(--brown);margin-bottom:1.4rem;text-align:center}
+
+.cinema-stage{position:relative;width:100%;aspect-ratio:16/9;background:#000;border:10px solid var(--deep);border-radius:4px;box-shadow:0 20px 50px rgba(0,0,0,0.4),0 0 0 3px var(--gold) inset;overflow:hidden;margin-bottom:1rem}
+#main-video{width:100%;height:100%;object-fit:cover;display:block;background:#000}
+.play-gate{position:absolute;inset:0;margin:auto;width:84px;height:84px;border-radius:50%;background:rgba(255,253,245,0.94);border:3px solid var(--gold);color:var(--rose);font-size:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.2s ease,opacity 0.4s ease;box-shadow:0 8px 24px rgba(0,0,0,0.45)}
+.play-gate:hover{transform:scale(1.08)}
+.play-gate.hide{opacity:0;pointer-events:none;transform:scale(1.3)}
+
+.playlist{display:flex;gap:0.7rem;flex-wrap:wrap;justify-content:center;width:100%;margin-bottom:1.4rem}
+.playlist-item{background:var(--paper);border:1.5px solid var(--tan);box-shadow:3px 3px 0 var(--warm);padding:0.55rem 0.9rem;font-family:'Caveat',cursive;font-size:0.95rem;color:var(--brown);cursor:pointer;transition:all 0.15s ease;min-width:118px;text-align:center}
+.playlist-item:hover{transform:translateY(-2px);box-shadow:4px 5px 0 var(--warm)}
+.playlist-item.active{border-color:var(--rose);color:var(--rose);box-shadow:3px 3px 0 var(--rose)}
+.playlist-item.locked{opacity:0.45;cursor:default;pointer-events:none}
+.playlist-item .tag{display:block;font-family:'EB Garamond',serif;font-size:0.62rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-top:0.15rem}
+
+.waiting-note{font-family:'Playfair Display',serif;font-size:1rem;font-style:italic;color:var(--deep);line-height:1.6;text-align:center;max-width:480px}
 </style>
 </head>
 <body>
@@ -65,11 +114,32 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   <p class="closing" id="closing">It's time! The Office of Bestie Affairs is working to bring the site online, please sit tight and enjoy our on call entertainment in the meanwhile. ♡</p>
 </div>
 
+<div id="flash-overlay"></div>
+<div id="curtain-left"></div>
+<div id="curtain-right"></div>
+
+<section class="premiere" id="premiere">
+  <div class="marquee-lights">
+    <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <div class="marquee">Bestie Pictures Presents</div>
+  <p class="marquee-sub">It's time! The site's still getting its finishing touches, so please enjoy our entertainment to watch while the Office of Bestie Affairs Technical Department get the site up and running ♡</p>
+
+  <div class="cinema-stage">
+    <video id="main-video" playsinline></video>
+    <button class="play-gate" id="play-gate" aria-label="Play">▶</button>
+  </div>
+
+  <div class="playlist" id="playlist"></div>
+
+  <p class="waiting-note">we'll be on call through all of this anyway - but enjoy the show ♡</p>
+</section>
+
 <script>
-// Countdown target — 5th August 2026, 6:00pm.
+// Countdown target - 5th August 2026, 6:00pm.
 // Written as UK local time (BST, UTC+1 in August). If the person this counts
 // down for is somewhere else, adjust the "+01:00" offset below to match.
-const TARGET = new Date('2026-07-16T23:00:00+01:00').getTime();
+const TARGET = new Date('2026-07-17T00:51:00+01:00').getTime();
 
 function pad(n) { return String(Math.max(0, n)).padStart(2, '0'); }
 
@@ -78,12 +148,13 @@ function tick() {
   const diff = TARGET - now;
 
   if (diff <= 0) {
-    document.getElementById('timer').style.display = 'none';
-    document.getElementById('lead').style.display = 'none';
-    document.getElementById('closing').classList.add('show');
     clearInterval(intervalId);
+    triggerReveal();
     return;
   }
+
+  if (diff <= 10000) document.body.classList.add('final-countdown');
+  if (diff <= 3000) document.body.classList.add('imminent');
 
   const days = Math.floor(diff / 86400000);
   const hours = Math.floor((diff % 86400000) / 3600000);
@@ -107,6 +178,94 @@ function setUnit(id, value) {
 
 const intervalId = setInterval(tick, 1000);
 tick();
+
+// ---------- THE REVEAL ----------
+// flash -> curtains sweep shut -> scene swaps underneath -> curtains sweep open -> premiere fades in
+function triggerReveal(){
+  document.body.classList.remove('imminent');
+
+  document.getElementById('flash-overlay').classList.add('flash');
+  launchRevealBurst();
+  setTimeout(() => document.getElementById('flash-overlay').classList.remove('flash'), 450);
+
+  setTimeout(() => {
+    document.getElementById('curtain-left').classList.add('closed');
+    document.getElementById('curtain-right').classList.add('closed');
+  }, 200);
+
+  setTimeout(() => {
+    document.querySelector('.wrap').style.display = 'none';
+    const premiere = document.getElementById('premiere');
+    premiere.style.display = 'flex';
+    renderPlaylist();
+  }, 1250);
+
+  setTimeout(() => {
+    document.getElementById('curtain-left').classList.remove('closed');
+    document.getElementById('curtain-right').classList.remove('closed');
+  }, 1950);
+
+  setTimeout(() => {
+    document.getElementById('premiere').classList.add('in');
+  }, 2550);
+}
+
+function launchRevealBurst(){
+  const layer = document.getElementById('sparkles');
+  for (let i = 0; i < 34; i++) {
+    const s = document.createElement('div');
+    s.className = 'sparkle burst';
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 90 + Math.random() * 240;
+    s.style.cssText = `left:50%;top:45%;width:${3+Math.random()*4}px;height:${3+Math.random()*4}px;--bx:${Math.cos(angle)*dist}px;--by:${Math.sin(angle)*dist}px;`;
+    layer.appendChild(s);
+    setTimeout(() => s.remove(), 1400);
+  }
+}
+
+// ---------- THE PLAYLIST ----------
+// edit this to add real videos as they're ready. ready:false shows as "coming soon" and can't be clicked.
+// point `src` at wherever you're hosting the files, e.g. "videos/trailer-1.mp4"
+const PLAYLIST = [
+  { id: 'trailer1', title: 'Teaser Trailer',    src: 'videos/Ann Trailer I.mkv', ready: true  },
+  { id: 'trailer2', title: 'Trailer Two',       src: 'videos/Ann Trailer II.mkv', ready: false },
+  { id: 'extra1',   title: 'Behind the Scenes', src: 'videos/extra-1.mkv',   ready: false },
+  { id: 'extra2',   title: 'Bloopers',          src: 'videos/extra-2.mkv',   ready: false }
+];
+let currentIndex = 0;
+
+function renderPlaylist(){
+  const wrap = document.getElementById('playlist');
+  wrap.innerHTML = '';
+  PLAYLIST.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'playlist-item' + (i === currentIndex ? ' active' : '') + (item.ready ? '' : ' locked');
+    const tag = item.ready ? (i === currentIndex ? 'now playing' : 'play') : 'coming soon';
+    el.innerHTML = `${item.title}<span class="tag">${tag}</span>`;
+    if (item.ready) el.addEventListener('click', () => selectVideo(i));
+    wrap.appendChild(el);
+  });
+  loadVideo(PLAYLIST[currentIndex]);
+}
+function loadVideo(item){
+  const v = document.getElementById('main-video');
+  v.src = item.src;
+  v.load();
+  document.getElementById('play-gate').classList.remove('hide');
+}
+function selectVideo(i){
+  if (!PLAYLIST[i].ready) return;
+  currentIndex = i;
+  loadVideo(PLAYLIST[i]);
+  renderPlaylist();
+}
+document.getElementById('play-gate').addEventListener('click', () => {
+  document.getElementById('main-video').play();
+  document.getElementById('play-gate').classList.add('hide');
+});
+document.getElementById('main-video').addEventListener('ended', () => {
+  document.getElementById('play-gate').classList.remove('hide');
+});
 
 // gentle floating sparkles, purely decorative
 const layer = document.getElementById('sparkles');
