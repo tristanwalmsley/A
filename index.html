@@ -42,32 +42,55 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 @keyframes numTick{0%{transform:translateY(-8px);opacity:0.4}100%{transform:translateY(0);opacity:1}}
 .timer-label{font-family:'Caveat',cursive;font-size:0.8rem;letter-spacing:2px;text-transform:uppercase;color:var(--rose);margin-top:0.3rem}
 
-.closing{font-family:'Playfair Display',serif;font-size:1.15rem;font-style:italic;color:var(--deep);line-height:1.6;display:none}
-.closing.show{display:block;animation:wrapIn 0.8s ease both}
+/* ---------- ENTRY GATE ----------
+   one tap here is what unlocks autoplay-with-sound later on, since browsers
+   require a real user gesture somewhere on the page before that's allowed */
+#entry-gate{position:fixed;inset:0;z-index:10000;background:radial-gradient(ellipse at 50% 40%,#241008 0%,#140a04 70%);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:opacity 0.9s ease}
+#entry-gate.hide{opacity:0;pointer-events:none}
+.entry-card{text-align:center}
+.entry-title{font-family:'Caveat',cursive;font-size:2.1rem;color:var(--gold);margin-bottom:0.6rem}
+.entry-sub{font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:var(--warm);opacity:0.75;animation:entryPulse 1.8s ease-in-out infinite}
+@keyframes entryPulse{0%,100%{opacity:0.4}50%{opacity:0.9}}
 
-/* ---------- FINAL COUNTDOWN BUILD-UP ---------- */
-body.final-countdown .timer-unit{border-color:var(--rose);box-shadow:4px 4px 0 var(--rose);animation:unitPulse 0.8s ease-in-out infinite}
-body.final-countdown .brand,body.final-countdown .lead{color:var(--rose);transition:color 0.4s ease}
-@keyframes unitPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
-body.imminent .wrap{animation:wrapShake 0.35s ease-in-out infinite}
-@keyframes wrapShake{0%,100%{transform:translate(0,0)}25%{transform:translate(-3px,2px)}50%{transform:translate(3px,-2px)}75%{transform:translate(-2px,3px)}}
+/* ---------- STAGED BUILD-UP: 60s / 30s / 15s / 10s / 5s ---------- */
+body.stage-60 .timer-unit{border-color:var(--gold);box-shadow:4px 4px 0 var(--gold)}
+body.stage-30 .timer-unit{border-color:var(--rose);box-shadow:5px 5px 0 var(--rose);animation:unitPulse 1.1s ease-in-out infinite}
+body.stage-15 .timer-unit{animation:unitPulse 0.7s ease-in-out infinite;box-shadow:6px 6px 0 var(--rose)}
+body.stage-15 .brand,body.stage-15 .lead{color:var(--rose);transition:color 0.5s ease}
+body.stage-10 .timer-unit{animation:unitPulse 0.45s ease-in-out infinite}
+body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
+@keyframes unitPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+@keyframes wrapShake{0%,100%{transform:translate(0,0)}25%{transform:translate(-4px,2px)}50%{transform:translate(4px,-2px)}75%{transform:translate(-3px,3px)}}
+
+/* darkening vignette that closes in as zero approaches */
+#vignette{position:fixed;inset:0;pointer-events:none;z-index:500;background:radial-gradient(ellipse at 50% 45%,transparent 32%,rgba(10,4,2,0.75) 100%);opacity:0}
+
+/* big launch-style number for the final 5 seconds */
+#big-number{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.4);font-family:'Playfair Display',serif;font-weight:700;font-size:9rem;color:var(--rose);opacity:0;z-index:600;pointer-events:none;text-shadow:0 0 40px rgba(184,104,88,0.5)}
+#big-number.pop{animation:bigNumberPop 0.9s cubic-bezier(0.16,1,0.3,1) forwards}
+@keyframes bigNumberPop{0%{opacity:0;transform:translate(-50%,-50%) scale(0.3)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}45%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}
 
 /* ---------- REVEAL: FLASH ---------- */
-#flash-overlay{position:fixed;inset:0;background:radial-gradient(circle,#fffdf0 0%,var(--gold) 100%);opacity:0;pointer-events:none;z-index:9998;transition:opacity 0.45s ease}
+#flash-overlay{position:fixed;inset:0;background:radial-gradient(circle,#fffdf0 0%,var(--gold) 100%);opacity:0;pointer-events:none;z-index:9998;transition:opacity 0.6s ease}
 #flash-overlay.flash{opacity:0.92}
 
-.sparkle.burst{animation:burstOut 1.2s ease-out forwards}
+.sparkle.burst{animation:burstOut 1.4s ease-out forwards}
 @keyframes burstOut{0%{opacity:1;transform:translate(0,0) scale(0.6)}100%{opacity:0;transform:translate(var(--bx),var(--by)) scale(1.4)}}
 
-/* ---------- REVEAL: CURTAINS ---------- */
-#curtain-left,#curtain-right{position:fixed;top:0;bottom:0;width:52%;z-index:9997;background:repeating-linear-gradient(90deg,#3a1210 0px,#5a1c16 16px,#3a1210 32px);box-shadow:0 0 90px rgba(0,0,0,0.6) inset;transition:transform 1s cubic-bezier(0.76,0,0.24,1)}
+/* ---------- REVEAL: CURTAINS (long, theatrical) ---------- */
+#curtain-left,#curtain-right{position:fixed;top:0;bottom:0;width:52%;z-index:9997;background:repeating-linear-gradient(90deg,#3a1210 0px,#5a1c16 16px,#3a1210 32px);box-shadow:0 0 90px rgba(0,0,0,0.6) inset;transition:transform 3.2s cubic-bezier(0.65,0,0.35,1)}
 #curtain-left{left:0;transform:translateX(-100%)}
 #curtain-right{right:0;transform:translateX(100%)}
 #curtain-left.closed{transform:translateX(0)}
 #curtain-right.closed{transform:translateX(0)}
+#curtain-left.sway,#curtain-right.sway{animation:curtainSway 3.5s ease-in-out infinite}
+@keyframes curtainSway{0%,100%{filter:brightness(1)}50%{filter:brightness(1.07)}}
 
-/* ---------- PREMIERE STAGE ---------- */
-.premiere{display:none;opacity:0;transition:opacity 0.9s ease;flex-direction:column;align-items:center;position:relative;z-index:2;max-width:640px;width:100%}
+#curtain-title{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;font-family:'Playfair Display',serif;font-style:italic;font-size:1.5rem;color:var(--warm);opacity:0;text-align:center;letter-spacing:1px;transition:opacity 1.3s ease;pointer-events:none;text-shadow:0 2px 20px rgba(0,0,0,0.8)}
+#curtain-title.show{opacity:1}
+
+/* ---------- PREMIERE STAGE (automatic scene player) ---------- */
+.premiere{display:none;opacity:0;transition:opacity 1.4s ease;flex-direction:column;align-items:center;position:relative;z-index:2;max-width:640px;width:100%}
 .premiere.in{opacity:1}
 
 .marquee-lights{display:flex;justify-content:center;gap:9px;margin-bottom:0.5rem}
@@ -76,27 +99,34 @@ body.imminent .wrap{animation:wrapShake 0.35s ease-in-out infinite}
 .marquee-lights span:nth-child(3n){animation-delay:0.65s}
 @keyframes bulbFlicker{0%,100%{opacity:0.3;box-shadow:none}50%{opacity:1;box-shadow:0 0 8px var(--gold)}}
 
-.marquee{font-family:'Playfair Display',serif;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--rose);font-size:1.1rem;margin-bottom:0.3rem;text-align:center}
-.marquee-sub{font-family:'Caveat',cursive;font-size:1rem;color:var(--brown);margin-bottom:1.4rem;text-align:center}
+.marquee{font-family:'Playfair Display',serif;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--rose);font-size:1.1rem;margin-bottom:1.2rem;text-align:center}
 
-.cinema-stage{position:relative;width:100%;aspect-ratio:16/9;background:#000;border:10px solid var(--deep);border-radius:4px;box-shadow:0 20px 50px rgba(0,0,0,0.4),0 0 0 3px var(--gold) inset;overflow:hidden;margin-bottom:1rem}
+.scene-stage{position:relative;width:100%;min-height:200px;display:flex;align-items:center;justify-content:center}
+
+.scene-message{font-family:'Playfair Display',serif;font-size:1.2rem;font-style:italic;color:var(--deep);line-height:1.7;text-align:center;padding:1rem 0.5rem;opacity:0;transform:translateY(10px);transition:opacity 1s ease,transform 1s ease;max-width:520px}
+.scene-message.in{opacity:1;transform:translateY(0)}
+
+.cinema-stage{position:relative;width:100%;aspect-ratio:16/9;background:#000;border:10px solid var(--deep);border-radius:4px;box-shadow:0 20px 50px rgba(0,0,0,0.4),0 0 0 3px var(--gold) inset;overflow:hidden;opacity:0;transition:opacity 1s ease}
+.cinema-stage.in{opacity:1}
 #video-slot{width:100%;height:100%}
 #video-slot video,#video-slot iframe{width:100%;height:100%;display:block;background:#000;border:none}
-.play-gate{position:absolute;inset:0;margin:auto;width:84px;height:84px;border-radius:50%;background:rgba(255,253,245,0.94);border:3px solid var(--gold);color:var(--rose);font-size:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.2s ease,opacity 0.4s ease;box-shadow:0 8px 24px rgba(0,0,0,0.45)}
-.play-gate:hover{transform:scale(1.08)}
-.play-gate.hide{opacity:0;pointer-events:none;transform:scale(1.3)}
 
-.playlist{display:flex;gap:0.7rem;flex-wrap:wrap;justify-content:center;width:100%;margin-bottom:1.4rem}
-.playlist-item{background:var(--paper);border:1.5px solid var(--tan);box-shadow:3px 3px 0 var(--warm);padding:0.55rem 0.9rem;font-family:'Caveat',cursive;font-size:0.95rem;color:var(--brown);cursor:pointer;transition:all 0.15s ease;min-width:118px;text-align:center}
-.playlist-item:hover{transform:translateY(-2px);box-shadow:4px 5px 0 var(--warm)}
-.playlist-item.active{border-color:var(--rose);color:var(--rose);box-shadow:3px 3px 0 var(--rose)}
-.playlist-item.locked{opacity:0.45;cursor:default;pointer-events:none}
-.playlist-item .tag{display:block;font-family:'EB Garamond',serif;font-size:0.62rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-top:0.15rem}
+.now-playing{font-family:'Caveat',cursive;font-size:0.95rem;color:var(--rose);margin-top:0.8rem;text-align:center;min-height:1.3em}
 
-.waiting-note{font-family:'Playfair Display',serif;font-size:1rem;font-style:italic;color:var(--deep);line-height:1.6;text-align:center;max-width:480px}
+.waiting-note{font-family:'Playfair Display',serif;font-size:1rem;font-style:italic;color:var(--deep);line-height:1.6;text-align:center;max-width:480px;margin-top:1.2rem}
 </style>
 </head>
 <body>
+<div id="entry-gate">
+  <div class="entry-card">
+    <div class="entry-title">Besties ♡</div>
+    <div class="entry-sub">tap anywhere to begin</div>
+  </div>
+</div>
+
+<div id="vignette"></div>
+<div id="big-number"></div>
+
 <div class="glow-layer" id="glows"></div>
 <div class="drift-layer" id="drifts"></div>
 <div class="sparkle-layer" id="sparkles"></div>
@@ -111,38 +141,52 @@ body.imminent .wrap{animation:wrapShake 0.35s ease-in-out infinite}
     <div class="timer-unit"><div class="timer-num" id="t-mins">00</div><div class="timer-label">Minutes</div></div>
     <div class="timer-unit"><div class="timer-num" id="t-secs">00</div><div class="timer-label">Seconds</div></div>
   </div>
-
-  <p class="closing" id="closing">It's time! The Office of Bestie Affairs is working to bring the site online, please sit tight and enjoy our on call entertainment in the meanwhile. ♡</p>
 </div>
 
 <div id="flash-overlay"></div>
 <div id="curtain-left"></div>
 <div id="curtain-right"></div>
+<div id="curtain-title"></div>
 
 <section class="premiere" id="premiere">
   <div class="marquee-lights">
     <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
   </div>
   <div class="marquee">Bestie Pictures Presents</div>
-  <p class="marquee-sub">It's time! The site's still getting its finishing touches, so please enjoy our entertainment to watch while the Office of Bestie Affairs Technical Department get the site up and running ♡</p>
 
-  <div class="cinema-stage">
-    <div id="video-slot"></div>
-    <button class="play-gate" id="play-gate" aria-label="Play">▶</button>
+  <div class="scene-stage" id="scene-stage">
+    <div class="scene-message" id="scene-message"></div>
+    <div class="cinema-stage" id="cinema-stage" style="display:none">
+      <div id="video-slot"></div>
+    </div>
   </div>
-
-  <div class="playlist" id="playlist"></div>
+  <p class="now-playing" id="now-playing"></p>
 
   <p class="waiting-note">we'll be on call through all of this anyway - but enjoy the show ♡</p>
 </section>
 
 <script>
+// ---------- ENTRY GATE ----------
+// one tap anywhere here satisfies the browser's "user gesture" requirement,
+// so videos later in the automatic sequence are allowed to autoplay WITH sound.
+let gestureUnlocked = false;
+const entryGate = document.getElementById('entry-gate');
+function unlockEntry(){
+  if (gestureUnlocked) return;
+  gestureUnlocked = true;
+  entryGate.classList.add('hide');
+}
+entryGate.addEventListener('click', unlockEntry);
+entryGate.addEventListener('touchstart', unlockEntry, {passive: true});
+
 // Countdown target - 5th August 2026, 6:00pm.
 // Written as UK local time (BST, UTC+1 in August). If the person this counts
 // down for is somewhere else, adjust the "+01:00" offset below to match.
-const TARGET = new Date('2026-07-17T00:54:00+01:00').getTime();
+const TARGET = new Date('2026-07-17T01:07:00+01:00').getTime();
 
 function pad(n) { return String(Math.max(0, n)).padStart(2, '0'); }
+
+let lastBigNumber = null;
 
 function tick() {
   const now = Date.now();
@@ -154,8 +198,7 @@ function tick() {
     return;
   }
 
-  if (diff <= 10000) document.body.classList.add('final-countdown');
-  if (diff <= 3000) document.body.classList.add('imminent');
+  updateBuildUp(diff);
 
   const days = Math.floor(diff / 86400000);
   const hours = Math.floor((diff % 86400000) / 3600000);
@@ -166,6 +209,46 @@ function tick() {
   setUnit('t-hours', pad(hours));
   setUnit('t-mins', pad(mins));
   setUnit('t-secs', pad(secs));
+}
+
+// staged intensity at 60s / 30s / 15s / 10s / 5s, each triggers once;
+// a smoothly darkening vignette over the final 20s; a big flashing number
+// for the final 5 seconds, launch-countdown style
+function updateBuildUp(diff){
+  [[60000,'stage-60'],[30000,'stage-30'],[15000,'stage-15'],[10000,'stage-10'],[5000,'stage-5']].forEach(([t, cls]) => {
+    if (diff <= t && !document.body.classList.contains(cls)) {
+      document.body.classList.add(cls);
+      speedUpAmbience(0.72);
+    }
+  });
+
+  const vignette = document.getElementById('vignette');
+  if (diff <= 20000) {
+    vignette.style.opacity = Math.min(0.85, (1 - diff / 20000) * 0.85);
+  }
+
+  const secLeft = Math.ceil(diff / 1000);
+  if (secLeft <= 5 && secLeft >= 1 && secLeft !== lastBigNumber) {
+    lastBigNumber = secLeft;
+    flashBigNumber(secLeft);
+  }
+}
+
+// speeds up the ambient background layers a notch, so the whole page feels
+// like it's gaining energy as zero approaches
+function speedUpAmbience(multiplier){
+  document.querySelectorAll('.glow-blob,.sparkle,.drift').forEach(el => {
+    const cur = parseFloat(getComputedStyle(el).animationDuration) || 4;
+    el.style.animationDuration = (cur * multiplier) + 's';
+  });
+}
+
+function flashBigNumber(n){
+  const el = document.getElementById('big-number');
+  el.textContent = n;
+  el.classList.remove('pop');
+  void el.offsetWidth;
+  el.classList.add('pop');
 }
 
 function setUnit(id, value) {
@@ -181,34 +264,55 @@ const intervalId = setInterval(tick, 1000);
 tick();
 
 // ---------- THE REVEAL ----------
-// flash -> curtains sweep shut -> scene swaps underneath -> curtains sweep open -> premiere fades in
+// double flash -> curtains sweep shut (slow) -> hold, swaying, with a title card
+// -> scene swaps underneath -> curtains sweep back open (slow) -> premiere fades
+// in -> the automatic show begins. ~11 seconds start to finish.
 function triggerReveal(){
-  document.body.classList.remove('imminent');
+  document.body.classList.remove('stage-60','stage-30','stage-15','stage-10','stage-5');
+  document.getElementById('vignette').style.opacity = '0';
 
-  document.getElementById('flash-overlay').classList.add('flash');
+  const flash = document.getElementById('flash-overlay');
+  const curtainL = document.getElementById('curtain-left');
+  const curtainR = document.getElementById('curtain-right');
+  const title = document.getElementById('curtain-title');
+
+  // 1. a double flash + sparkle burst right at zero
+  flash.classList.add('flash');
   launchRevealBurst();
-  setTimeout(() => document.getElementById('flash-overlay').classList.remove('flash'), 450);
+  setTimeout(() => flash.classList.remove('flash'), 700);
+  setTimeout(() => { flash.classList.add('flash'); launchRevealBurst(); }, 900);
+  setTimeout(() => flash.classList.remove('flash'), 1500);
 
+  // 2. curtains sweep shut, slowly
   setTimeout(() => {
-    document.getElementById('curtain-left').classList.add('closed');
-    document.getElementById('curtain-right').classList.add('closed');
-  }, 200);
+    curtainL.classList.add('closed');
+    curtainR.classList.add('closed');
+  }, 600);
 
+  // 3. once closed, a gentle sway and a title card fades in, holds, fades out
+  setTimeout(() => {
+    curtainL.classList.add('sway');
+    curtainR.classList.add('sway');
+    title.textContent = "It's time ♡";
+    title.classList.add('show');
+  }, 4200);
+  setTimeout(() => title.classList.remove('show'), 6800);
+
+  // 4. swap what's underneath while still hidden behind the curtains
   setTimeout(() => {
     document.querySelector('.wrap').style.display = 'none';
-    const premiere = document.getElementById('premiere');
-    premiere.style.display = 'flex';
-    renderPlaylist();
-  }, 1250);
+    document.getElementById('premiere').style.display = 'flex';
+  }, 7300);
 
+  // 5. curtains sweep back open, slowly, revealing the premiere
   setTimeout(() => {
-    document.getElementById('curtain-left').classList.remove('closed');
-    document.getElementById('curtain-right').classList.remove('closed');
-  }, 1950);
+    curtainL.classList.remove('sway', 'closed');
+    curtainR.classList.remove('sway', 'closed');
+  }, 7600);
 
-  setTimeout(() => {
-    document.getElementById('premiere').classList.add('in');
-  }, 2550);
+  // 6. premiere fades in fully, then the automatic show begins
+  setTimeout(() => document.getElementById('premiere').classList.add('in'), 10200);
+  setTimeout(() => startScenes(), 11000);
 }
 
 function launchRevealBurst(){
@@ -224,77 +328,102 @@ function launchRevealBurst(){
   }
 }
 
-// ---------- THE PLAYLIST ----------
-// edit this to add real videos as they're ready. ready:false shows as "coming soon" and can't be clicked.
+// ---------- THE AUTOMATIC SHOW ----------
+// runs forever once started: message cards fade in and out, videos autoplay
+// and advance automatically when they end. anything not ready is skipped.
+// loops back to the start once it reaches the end.
 //
-// type: 'youtube'  -> set youtubeId to the video ID (the bit after "v=" or "youtu.be/" in the URL)
-// type: 'mp4'      -> set src to wherever you're hosting the file, e.g. "videos/trailer-1.mp4"
-const PLAYLIST = [
-  { id: 'trailer1', title: 'Trailer',    type: 'youtube', youtubeId: 'GetcsmJ9U3o', ready: true  },
-  { id: 'trailer2', title: 'Trailer',       type: 'youtube', youtubeId: '',              ready: false },
-  { id: 'extra1',   title: 'Behind the Scenes', type: 'youtube', youtubeId: '',              ready: false },
-  { id: 'extra2',   title: 'Bloopers',          type: 'youtube', youtubeId: '',              ready: false }
+// message scenes: { type:'message', text, duration }
+// video scenes:   { type:'video', title, youtubeId, ready }
+//   - youtubeId is the bit after "v=" or "youtu.be/" in the video's URL
+//   - set ready:true once a video actually exists - until then it's auto-skipped
+const SCENES = [
+  { type: 'message', text: "It's time! ♡", duration: 4000 },
+  { type: 'message', text: "The Office of Bestie Affairs' Technical Department is putting the finishing touches on the site \u2014 please enjoy the entertainment while you wait.", duration: 6200 },
+  { type: 'video', title: 'Trailer', youtubeId: 'GetcsmJ9U3o', ready: true },
+  { type: 'message', text: "more on the way soon...", duration: 3600 },
+  { type: 'video', title: 'Trailer Two', youtubeId: '', ready: false },
+  { type: 'video', title: 'Behind the Scenes', youtubeId: '', ready: false },
+  { type: 'video', title: 'Bloopers', youtubeId: '', ready: false }
 ];
-let currentIndex = 0;
 
-function renderPlaylist(){
-  const wrap = document.getElementById('playlist');
-  wrap.innerHTML = '';
-  PLAYLIST.forEach((item, i) => {
-    const el = document.createElement('div');
-    el.className = 'playlist-item' + (i === currentIndex ? ' active' : '') + (item.ready ? '' : ' locked');
-    const tag = item.ready ? (i === currentIndex ? 'now playing' : 'play') : 'coming soon';
-    el.innerHTML = `${item.title}<span class="tag">${tag}</span>`;
-    if (item.ready) el.addEventListener('click', () => selectVideo(i));
-    wrap.appendChild(el);
-  });
-  loadVideo(PLAYLIST[currentIndex]);
+let sceneIndex = -1;
+let sceneTimer = null;
+let ytApiRequested = false;
+
+function startScenes(){
+  loadYouTubeAPI();
+  nextScene();
 }
 
-// loads a resting/thumbnail state - actual playback only starts once play-gate is clicked
-// (browsers block autoplay-with-sound without a real click, so this is deliberate)
-function loadVideo(item){
+function loadYouTubeAPI(){
+  if (ytApiRequested) return;
+  ytApiRequested = true;
+  if (window.YT && window.YT.Player) return;
+  const tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(tag);
+}
+
+function nextScene(){
+  clearTimeout(sceneTimer);
+  sceneIndex = (sceneIndex + 1) % SCENES.length;
+  const scene = SCENES[sceneIndex];
+  if (scene.type === 'video' && (!scene.ready || !scene.youtubeId)) {
+    nextScene(); // auto-skip anything that isn't ready yet
+    return;
+  }
+  scene.type === 'message' ? playMessageScene(scene) : playVideoScene(scene);
+}
+
+function playMessageScene(scene){
+  document.getElementById('cinema-stage').classList.remove('in');
+  document.getElementById('cinema-stage').style.display = 'none';
+  document.getElementById('now-playing').textContent = '';
+
+  const el = document.getElementById('scene-message');
+  el.classList.remove('in');
+  setTimeout(() => {
+    el.textContent = scene.text;
+    void el.offsetWidth;
+    el.classList.add('in');
+  }, 350);
+
+  sceneTimer = setTimeout(() => {
+    el.classList.remove('in');
+    setTimeout(nextScene, 500);
+  }, scene.duration);
+}
+
+function playVideoScene(scene){
+  document.getElementById('scene-message').classList.remove('in');
+
+  const stage = document.getElementById('cinema-stage');
+  stage.style.display = 'block';
+  requestAnimationFrame(() => stage.classList.add('in'));
+  document.getElementById('now-playing').textContent = `Now Showing: ${scene.title}`;
+
   const slot = document.getElementById('video-slot');
   slot.innerHTML = '';
-  if (item.type === 'youtube' && item.youtubeId) {
-    const thumb = document.createElement('div');
-    thumb.style.cssText = `width:100%;height:100%;background:#000 center/cover no-repeat;background-image:url('https://img.youtube.com/vi/${item.youtubeId}/hqdefault.jpg')`;
-    slot.appendChild(thumb);
-  } else if (item.type === 'mp4') {
-    const v = document.createElement('video');
-    v.id = 'main-video';
-    v.playsInline = true;
-    v.src = item.src;
-    v.addEventListener('ended', () => document.getElementById('play-gate').classList.remove('hide'));
-    slot.appendChild(v);
-  }
-  document.getElementById('play-gate').classList.remove('hide');
-}
+  const playerDiv = document.createElement('div');
+  playerDiv.id = 'yt-player-target';
+  slot.appendChild(playerDiv);
 
-function selectVideo(i){
-  if (!PLAYLIST[i].ready) return;
-  currentIndex = i;
-  loadVideo(PLAYLIST[i]);
-  renderPlaylist();
-}
+  // safety net: if "ended" never fires for some reason, move on anyway
+  sceneTimer = setTimeout(nextScene, 240000);
 
-document.getElementById('play-gate').addEventListener('click', () => {
-  const item = PLAYLIST[currentIndex];
-  const slot = document.getElementById('video-slot');
-  if (item.type === 'youtube' && item.youtubeId) {
-    slot.innerHTML = '';
-    const iframe = document.createElement('iframe');
-    iframe.src = `https://www.youtube-nocookie.com/embed/${item.youtubeId}?autoplay=1&rel=0&modestbranding=1`;
-    iframe.title = item.title;
-    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-    iframe.allowFullscreen = true;
-    slot.appendChild(iframe);
-  } else {
-    const v = document.getElementById('main-video');
-    if (v) v.play();
-  }
-  document.getElementById('play-gate').classList.add('hide');
-});
+  (function startPlayer(){
+    if (!window.YT || !window.YT.Player) { setTimeout(startPlayer, 200); return; }
+    new YT.Player('yt-player-target', {
+      videoId: scene.youtubeId,
+      playerVars: { autoplay: 1, rel: 0, modestbranding: 1, playsinline: 1, mute: gestureUnlocked ? 0 : 1 },
+      events: {
+        onReady: e => e.target.playVideo(),
+        onStateChange: e => { if (e.data === YT.PlayerState.ENDED) nextScene(); }
+      }
+    });
+  })();
+}
 
 // gentle floating sparkles, purely decorative
 const layer = document.getElementById('sparkles');
