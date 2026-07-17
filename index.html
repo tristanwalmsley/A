@@ -35,7 +35,8 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .brand{font-family:'Caveat',cursive;font-size:1.4rem;color:var(--rose);font-weight:700;letter-spacing:0.5px;margin-bottom:2.2rem}
 .lead{font-family:'Caveat',cursive;font-size:1.2rem;color:var(--brown);letter-spacing:0.5px;margin-bottom:2.5rem}
 
-.timer{display:flex;justify-content:center;gap:0.8rem;flex-wrap:wrap;margin-bottom:2.6rem}
+.timer{display:flex;justify-content:center;gap:0.8rem;flex-wrap:wrap;margin-bottom:2.6rem;transition:opacity 0.5s ease,transform 0.5s ease}
+body.stage-10 .timer{opacity:0;transform:scale(0.85);pointer-events:none}
 .timer-unit{background:var(--paper);border:1.5px solid var(--tan);box-shadow:4px 4px 0 var(--warm);padding:1.1rem 0.5rem 0.9rem;min-width:78px}
 .timer-num{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:700;color:var(--deep);line-height:1;transition:transform 0.25s ease}
 .timer-num.tick{animation:numTick 0.4s ease}
@@ -65,6 +66,13 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 /* darkening vignette that closes in as zero approaches */
 #vignette{position:fixed;inset:0;pointer-events:none;z-index:500;background:radial-gradient(ellipse at 50% 45%,transparent 32%,rgba(10,4,2,0.75) 100%);opacity:0}
 
+/* spotlight sweeps that fade in and speed up as zero approaches */
+.spotlight{position:fixed;top:-25%;width:65vw;height:150vh;pointer-events:none;z-index:400;opacity:0;background:radial-gradient(ellipse at center,rgba(255,235,180,0.4) 0%,rgba(255,235,180,0) 65%);mix-blend-mode:screen}
+.spotlight-a{left:-25%;animation:spotSweepA 14s ease-in-out infinite}
+.spotlight-b{left:55%;animation:spotSweepB 17s ease-in-out infinite reverse}
+@keyframes spotSweepA{0%,100%{transform:translateX(0) rotate(-9deg)}50%{transform:translateX(42vw) rotate(9deg)}}
+@keyframes spotSweepB{0%,100%{transform:translateX(0) rotate(7deg)}50%{transform:translateX(-38vw) rotate(-7deg)}}
+
 /* big launch-style number for the final 5 seconds */
 #big-number{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.4);font-family:'Playfair Display',serif;font-weight:700;font-size:9rem;color:var(--rose);opacity:0;z-index:600;pointer-events:none;text-shadow:0 0 40px rgba(184,104,88,0.5)}
 #big-number.pop{animation:bigNumberPop 0.9s cubic-bezier(0.16,1,0.3,1) forwards}
@@ -89,9 +97,12 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 #curtain-title{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;font-family:'Playfair Display',serif;font-style:italic;font-size:1.5rem;color:var(--warm);opacity:0;text-align:center;letter-spacing:1px;transition:opacity 1.3s ease;pointer-events:none;text-shadow:0 2px 20px rgba(0,0,0,0.8)}
 #curtain-title.show{opacity:1}
 
-/* ---------- PREMIERE STAGE (automatic scene player) ---------- */
-.premiere{display:none;opacity:0;transition:opacity 1.4s ease;flex-direction:column;align-items:center;position:relative;z-index:2;width:94vw;max-width:1200px}
+/* ---------- PREMIERE STAGE (automatic scene player, fills the whole screen) ---------- */
+.premiere{display:none;opacity:0;transition:opacity 1.4s ease;flex-direction:column;position:fixed;inset:0;z-index:2;padding:2vh 3vw;box-sizing:border-box}
 .premiere.in{opacity:1}
+
+.premiere-header{flex:0 0 auto;text-align:center;padding-bottom:0.8rem}
+.premiere-footer{flex:0 0 auto;text-align:center;padding-top:0.8rem}
 
 .marquee-lights{display:flex;justify-content:center;gap:9px;margin-bottom:0.5rem}
 .marquee-lights span{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:bulbFlicker 1.3s ease-in-out infinite}
@@ -99,21 +110,26 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 .marquee-lights span:nth-child(3n){animation-delay:0.65s}
 @keyframes bulbFlicker{0%,100%{opacity:0.3;box-shadow:none}50%{opacity:1;box-shadow:0 0 8px var(--gold)}}
 
-.marquee{font-family:'Playfair Display',serif;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--rose);font-size:1.1rem;margin-bottom:1.2rem;text-align:center}
+.marquee{font-family:'Playfair Display',serif;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--rose);font-size:1.1rem;text-align:center}
 
-.scene-stage{position:relative;width:100%;min-height:200px;display:flex;align-items:center;justify-content:center}
+/* the middle area: fills all remaining space between header and footer.
+   both children are absolute overlays filling it completely, so they're
+   never sharing flex space with each other (that was the centering bug) */
+.scene-stage{position:relative;flex:1 1 auto;min-height:0;width:100%;overflow:hidden}
 
-.scene-message{font-family:'Playfair Display',serif;font-size:1.2rem;font-style:italic;color:var(--deep);line-height:1.7;text-align:center;padding:1rem 0.5rem;opacity:0;transform:translateY(10px);transition:opacity 1s ease,transform 1s ease;max-width:520px}
+.scene-message{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.3rem;font-style:italic;color:var(--deep);line-height:1.7;text-align:center;padding:1rem 8vw;opacity:0;transform:translateY(10px);transition:opacity 1s ease,transform 1s ease}
 .scene-message.in{opacity:1;transform:translateY(0)}
 
-.cinema-stage{position:relative;width:100%;aspect-ratio:16/9;max-height:74vh;background:#000;border:10px solid var(--deep);border-radius:4px;box-shadow:0 20px 50px rgba(0,0,0,0.4),0 0 0 3px var(--gold) inset;overflow:hidden;opacity:0;transition:opacity 1s ease}
+/* fills the entire scene-stage area edge to edge - YouTube's own player
+   handles internal letterboxing, so no aspect-ratio math needed here */
+.cinema-stage{position:absolute;inset:0;background:#000;border:10px solid var(--deep);border-radius:4px;box-shadow:0 20px 50px rgba(0,0,0,0.4),0 0 0 3px var(--gold) inset;overflow:hidden;opacity:0;transition:opacity 1s ease}
 .cinema-stage.in{opacity:1}
-#video-slot{width:100%;height:100%}
+#video-slot{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
 #video-slot video,#video-slot iframe{width:100%;height:100%;display:block;background:#000;border:none}
 
-.now-playing{font-family:'Caveat',cursive;font-size:0.95rem;color:var(--rose);margin-top:0.8rem;text-align:center;min-height:1.3em}
+.now-playing{font-family:'Caveat',cursive;font-size:0.95rem;color:var(--rose);text-align:center;min-height:1.3em}
 
-.waiting-note{font-family:'Playfair Display',serif;font-size:1rem;font-style:italic;color:var(--deep);line-height:1.6;text-align:center;max-width:480px;margin-top:1.2rem}
+.waiting-note{font-family:'Playfair Display',serif;font-size:1rem;font-style:italic;color:var(--deep);line-height:1.6;text-align:center;max-width:480px;margin:0.3rem auto 0}
 </style>
 </head>
 <body>
@@ -126,6 +142,8 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 
 <div id="vignette"></div>
 <div id="big-number"></div>
+<div class="spotlight spotlight-a" id="spot-a" data-base-duration="14"></div>
+<div class="spotlight spotlight-b" id="spot-b" data-base-duration="17"></div>
 
 <div class="glow-layer" id="glows"></div>
 <div class="drift-layer" id="drifts"></div>
@@ -149,10 +167,12 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 <div id="curtain-title"></div>
 
 <section class="premiere" id="premiere">
-  <div class="marquee-lights">
-    <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+  <div class="premiere-header">
+    <div class="marquee-lights">
+      <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="marquee">Bestie Pictures Presents</div>
   </div>
-  <div class="marquee">Bestie Pictures Presents</div>
 
   <div class="scene-stage" id="scene-stage">
     <div class="scene-message" id="scene-message"></div>
@@ -160,9 +180,11 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
       <div id="video-slot"></div>
     </div>
   </div>
-  <p class="now-playing" id="now-playing"></p>
 
-  <p class="waiting-note">we'll be on call through all of this anyway - but enjoy the show ♡</p>
+  <div class="premiere-footer">
+    <p class="now-playing" id="now-playing"></p>
+    <p class="waiting-note">we'll be on call through all of this anyway - but enjoy the show ♡</p>
+  </div>
 </section>
 
 <script>
@@ -182,11 +204,13 @@ entryGate.addEventListener('touchstart', unlockEntry, {passive: true});
 // Countdown target - 5th August 2026, 6:00pm.
 // Written as UK local time (BST, UTC+1 in August). If the person this counts
 // down for is somewhere else, adjust the "+01:00" offset below to match.
-const TARGET = new Date('2026-07-17T14:05:00+01:00').getTime();
+const TARGET = new Date('2026-07-18T00:24:00+01:00').getTime();
 
 function pad(n) { return String(Math.max(0, n)).padStart(2, '0'); }
 
 let lastBigNumber = null;
+let lastAmbienceUpdate = 0;
+const BUILD_UP_SPAN = 300000; // 5 minutes - the whole build-up window
 
 function tick() {
   const now = Date.now();
@@ -211,37 +235,43 @@ function tick() {
   setUnit('t-secs', pad(secs));
 }
 
-// staged intensity at 60s / 30s / 15s / 10s / 5s, each triggers once;
-// a smoothly darkening vignette over the final 20s; a big flashing number
-// for the final 5 seconds, launch-countdown style
+// continuous build-up from 5 minutes all the way to zero:
+// - vignette darkens and spotlights fade in + sweep faster, eased so it's barely
+//   there at 5 minutes and intense in the final seconds
+// - discrete stage classes still drive the sharper jumps (timer color/pulse/shake)
+// - final 10 seconds: timer fades out, replaced by a big flashing launch-style number
 function updateBuildUp(diff){
-  [[60000,'stage-60'],[30000,'stage-30'],[15000,'stage-15'],[10000,'stage-10'],[5000,'stage-5']].forEach(([t, cls]) => {
-    if (diff <= t && !document.body.classList.contains(cls)) {
-      document.body.classList.add(cls);
-      speedUpAmbience(0.72);
-    }
-  });
+  const t = clamp(1 - diff / BUILD_UP_SPAN, 0, 1); // 0 at 5min+, 1 at zero
+  const eased = t * t; // subtle early, much stronger near the end
 
-  const vignette = document.getElementById('vignette');
-  if (diff <= 20000) {
-    vignette.style.opacity = Math.min(0.85, (1 - diff / 20000) * 0.85);
+  [[60000,'stage-60'],[30000,'stage-30'],[15000,'stage-15'],[10000,'stage-10'],[5000,'stage-5']]
+    .forEach(([th, cls]) => { if (diff <= th) document.body.classList.add(cls); });
+
+  document.getElementById('vignette').style.opacity = (eased * 0.85).toFixed(3);
+
+  const spotOpacity = Math.min(0.85, eased * 1.1).toFixed(3);
+  document.getElementById('spot-a').style.opacity = spotOpacity;
+  document.getElementById('spot-b').style.opacity = spotOpacity;
+
+  // recalculate ambient speeds every ~2.5s (not every tick) - cheap and plenty smooth
+  const now = Date.now();
+  if (now - lastAmbienceUpdate > 2500) {
+    lastAmbienceUpdate = now;
+    const speedFactor = 1 - 0.65 * eased; // shrinks toward ~0.35x original duration at zero
+    document.querySelectorAll('.glow-blob,.sparkle,.drift,.spotlight').forEach(el => {
+      const base = parseFloat(el.dataset.baseDuration);
+      if (base) el.style.animationDuration = Math.max(base * speedFactor, base * 0.3) + 's';
+    });
   }
 
   const secLeft = Math.ceil(diff / 1000);
-  if (secLeft <= 5 && secLeft >= 1 && secLeft !== lastBigNumber) {
+  if (secLeft <= 10 && secLeft >= 1 && secLeft !== lastBigNumber) {
     lastBigNumber = secLeft;
     flashBigNumber(secLeft);
   }
 }
 
-// speeds up the ambient background layers a notch, so the whole page feels
-// like it's gaining energy as zero approaches
-function speedUpAmbience(multiplier){
-  document.querySelectorAll('.glow-blob,.sparkle,.drift').forEach(el => {
-    const cur = parseFloat(getComputedStyle(el).animationDuration) || 4;
-    el.style.animationDuration = (cur * multiplier) + 's';
-  });
-}
+function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
 
 function flashBigNumber(n){
   const el = document.getElementById('big-number');
@@ -270,6 +300,8 @@ tick();
 function triggerReveal(){
   document.body.classList.remove('stage-60','stage-30','stage-15','stage-10','stage-5');
   document.getElementById('vignette').style.opacity = '0';
+  document.getElementById('spot-a').style.opacity = '0';
+  document.getElementById('spot-b').style.opacity = '0';
 
   const flash = document.getElementById('flash-overlay');
   const curtainL = document.getElementById('curtain-left');
@@ -343,7 +375,9 @@ const SCENES = [
   { type: 'video', title: 'Trailer', youtubeId: 'GetcsmJ9U3o', ready: true },
   { type: 'message', text: "more on the way soon...", duration: 3600 },
   { type: 'video', title: 'Trailer Two', youtubeId: '', ready: false },
+  { type: 'message', text: "in the meantime: yes, we are still on call. no, you may not peek behind the curtain early.", duration: 4400 },
   { type: 'video', title: 'Behind the Scenes', youtubeId: '', ready: false },
+  { type: 'message', text: "thank you for your patience \u2014 The Office of Bestie Affairs appreciates your continued cooperation.", duration: 4400 },
   { type: 'video', title: 'Bloopers', youtubeId: '', ready: false }
 ];
 
@@ -382,6 +416,7 @@ function playMessageScene(scene){
   document.getElementById('now-playing').textContent = '';
 
   const el = document.getElementById('scene-message');
+  el.style.display = 'flex';
   el.classList.remove('in');
   setTimeout(() => {
     el.textContent = scene.text;
@@ -396,7 +431,9 @@ function playMessageScene(scene){
 }
 
 function playVideoScene(scene){
-  document.getElementById('scene-message').classList.remove('in');
+  const msgEl = document.getElementById('scene-message');
+  msgEl.classList.remove('in');
+  msgEl.style.display = 'none';
 
   const stage = document.getElementById('cinema-stage');
   stage.style.display = 'block';
@@ -431,7 +468,9 @@ for (let i = 0; i < 26; i++) {
   const s = document.createElement('div');
   s.className = 'sparkle';
   const sz = 2 + Math.random() * 3;
-  s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--sop:${0.2+Math.random()*0.5};animation-duration:${3+Math.random()*4}s;animation-delay:${Math.random()*4}s`;
+  const dur = 3 + Math.random() * 4;
+  s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--sop:${0.2+Math.random()*0.5};animation-duration:${dur}s;animation-delay:${Math.random()*4}s`;
+  s.dataset.baseDuration = dur;
   layer.appendChild(s);
 }
 
@@ -442,7 +481,9 @@ for (let i = 0; i < 4; i++) {
   const b = document.createElement('div');
   b.className = 'glow-blob';
   const size = 220 + Math.random() * 180;
-  b.style.cssText = `left:${Math.random()*90}%;top:${Math.random()*90}%;width:${size}px;height:${size}px;background:${glowColors[i % glowColors.length]};--bx:${(Math.random()-0.5)*140}px;--by:${(Math.random()-0.5)*140}px;animation-duration:${10+Math.random()*8}s`;
+  const dur = 10 + Math.random() * 8;
+  b.style.cssText = `left:${Math.random()*90}%;top:${Math.random()*90}%;width:${size}px;height:${size}px;background:${glowColors[i % glowColors.length]};--bx:${(Math.random()-0.5)*140}px;--by:${(Math.random()-0.5)*140}px;animation-duration:${dur}s`;
+  b.dataset.baseDuration = dur;
   glowLayer.appendChild(b);
 }
 
@@ -470,8 +511,10 @@ for (let i = 0; i < 22; i++) {
   d.style.setProperty('--dx', `${(Math.random()-0.5)*120}px`);
   d.style.setProperty('--drot', `${(Math.random()-0.5)*60}deg`);
   d.style.setProperty('--dop', `${0.25 + Math.random()*0.35}`);
-  d.style.animationDuration = `${14 + Math.random()*14}s`;
+  const driftDur = 14 + Math.random()*14;
+  d.style.animationDuration = `${driftDur}s`;
   d.style.animationDelay = `${Math.random()*18}s`;
+  d.dataset.baseDuration = driftDur;
   driftLayer.appendChild(d);
 }
 </script>
