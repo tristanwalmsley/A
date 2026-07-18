@@ -12,15 +12,15 @@ html,body{height:100%}
 body{background:radial-gradient(ellipse at 50% 38%, #fffaf0 0%, var(--cream) 65%);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden;display:flex;align-items:center;justify-content:center;padding:2rem}
 body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.6}
 
-.glow-layer{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.glow-layer{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:15}
 .glow-blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:0.3;animation:blobDrift ease-in-out infinite alternate}
 @keyframes blobDrift{from{transform:translate(0,0) scale(1)}to{transform:translate(var(--bx),var(--by)) scale(1.18)}}
 
-.sparkle-layer{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.sparkle-layer{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:15}
 .sparkle{position:absolute;border-radius:50%;background:var(--gold);opacity:0;animation:sparkleFloat ease-in-out infinite}
 @keyframes sparkleFloat{0%,100%{opacity:0;transform:translateY(0) scale(0.6)}50%{opacity:var(--sop);transform:translateY(-18px) scale(1)}}
 
-.drift-layer{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.drift-layer{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:15}
 .drift{position:absolute;bottom:-5%;opacity:0;line-height:1;animation:driftUp linear infinite;will-change:transform,opacity}
 @keyframes driftUp{
   0%{transform:translate(0,0) rotate(0deg);opacity:0}
@@ -63,23 +63,25 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 @keyframes unitPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
 @keyframes wrapShake{0%,100%{transform:translate(0,0)}25%{transform:translate(-4px,2px)}50%{transform:translate(4px,-2px)}75%{transform:translate(-3px,3px)}}
 
-/* uniform dark wash - shifts the WHOLE page toward dark brown as build-up
-   progresses, which is what actually makes the spotlights read clearly
-   instead of vanishing against the light background. Colors match the
-   entry-gate screen exactly, since that's the target "dark brown" the page
-   should reach. Sits BEHIND the text content (z-index below .wrap/.premiere)
-   so it darkens the backdrop without ever dimming the readable content. */
-#dark-wash{position:fixed;inset:0;pointer-events:none;z-index:10;background:radial-gradient(ellipse at 50% 40%,#241008 0%,#140a04 70%);opacity:0}
+/* the page's actual background layer - always fully visible (no opacity fade),
+   with its OWN color driven by JS every tick via HSL interpolation (not alpha
+   blending). This matters: alpha-blending a dark color over the light cream
+   mathematically desaturates toward gray at mid-opacity, which is exactly what
+   went wrong before. Animating hue/saturation/lightness directly avoids that
+   entirely and stays a rich brown the whole way through. Sits BEHIND the text
+   and particle layers (lower z-index) so nothing it darkens ever gets dimmed
+   along with it - particles and text ride on top and stay fully visible. */
+#dark-wash{position:fixed;inset:0;pointer-events:none;z-index:5;background:radial-gradient(ellipse at 50% 38%,hsl(40,70%,97%) 0%,hsl(40,55%,94%) 65%)}
 
-/* spotlights - real spotlight-sized circles (not page-height ellipses), sitting
-   behind the text content so they never obscure the countdown/messages */
-.spotlight{position:fixed;width:380px;height:380px;border-radius:50%;pointer-events:none;z-index:20;opacity:0;background:radial-gradient(circle,rgba(255,246,220,0.95) 0%,rgba(255,224,150,0.55) 45%,rgba(255,224,150,0) 72%)}
-.spotlight-a{top:15%;left:10%;animation:spotSweepA 13s ease-in-out infinite}
-.spotlight-b{top:55%;left:65%;animation:spotSweepB 16s ease-in-out infinite reverse}
-.spotlight-c{top:35%;left:40%;animation:spotSweepC 10s ease-in-out infinite}
-@keyframes spotSweepA{0%,100%{transform:translate(0,0)}50%{transform:translate(22vw,10vh)}}
-@keyframes spotSweepB{0%,100%{transform:translate(0,0)}50%{transform:translate(-20vw,-14vh)}}
-@keyframes spotSweepC{0%,100%{transform:translate(-14vw,8vh)}50%{transform:translate(12vw,-10vh)}}
+/* spotlights - real spotlight-sized circles, sitting above the dark-wash and
+   particles but behind text, tracing oval/figure-8 paths like a real light rig */
+.spotlight{position:fixed;width:380px;height:380px;border-radius:50%;pointer-events:none;z-index:20;opacity:0;background:radial-gradient(circle,rgba(255,246,220,0.95) 0%,rgba(255,224,150,0.55) 45%,rgba(255,224,150,0) 72%);transition:opacity 1.4s ease}
+.spotlight-a{top:15%;left:10%;animation:spotOvalA 13s ease-in-out infinite}
+.spotlight-b{top:55%;left:65%;animation:spotFigure8 18s ease-in-out infinite}
+.spotlight-c{top:35%;left:40%;animation:spotOvalC 11s ease-in-out infinite}
+@keyframes spotOvalA{0%{transform:translate(0,0)}25%{transform:translate(20vw,-6vh)}50%{transform:translate(4vw,-16vh)}75%{transform:translate(-16vw,-4vh)}100%{transform:translate(0,0)}}
+@keyframes spotOvalC{0%{transform:translate(0,0)}25%{transform:translate(-18vw,8vh)}50%{transform:translate(-2vw,16vh)}75%{transform:translate(16vw,6vh)}100%{transform:translate(0,0)}}
+@keyframes spotFigure8{0%{transform:translate(0,0)}12.5%{transform:translate(14vw,-9vh)}25%{transform:translate(22vw,0)}37.5%{transform:translate(14vw,9vh)}50%{transform:translate(0,0)}62.5%{transform:translate(-14vw,-9vh)}75%{transform:translate(-22vw,0)}87.5%{transform:translate(-14vw,9vh)}100%{transform:translate(0,0)}}
 
 /* fast streaks that shoot across the screen - the "CRAZY" particle flood */
 .zoom-particle{position:fixed;pointer-events:none;z-index:410;opacity:0;line-height:1;animation:zoomAcross var(--zdur,0.7s) linear forwards}
@@ -217,14 +219,45 @@ entryGate.addEventListener('touchstart', unlockEntry, {passive: true});
 // Countdown target - 5th August 2026, 6:00pm.
 // Written as UK local time (BST, UTC+1 in August). If the person this counts
 // down for is somewhere else, adjust the "+01:00" offset below to match.
-const TARGET = new Date('2026-07-18T14:11:00+01:00').getTime();
+const TARGET = new Date('2026-07-19T00:30:00+01:00').getTime();
 
 function pad(n) { return String(Math.max(0, n)).padStart(2, '0'); }
 
 let lastBigNumber = null;
 let lastParticleSpawn = 0;
 let extraParticleCount = 0;
-const BUILD_UP_SPAN = 300000; // 5 minutes - the whole build-up window
+const BUILD_UP_SPAN = 360000; // 6 minutes - the whole build-up window
+
+// color endpoints, defined in HSL rather than RGB. Interpolating hue/saturation/
+// lightness directly (instead of blending raw RGB values) is what avoids the
+// muddy gray midpoint - RGB-blending a light desaturated cream with a dark
+// saturated brown genuinely produces a low-saturation gray at ~50%, no matter
+// how the opacity/blend-mode is set up. Locking the hue and sweeping lightness
+// (with saturation staying moderate-to-high throughout) keeps it "brown" the
+// whole way, at every intermediate step, not just the two endpoints.
+const BG_INNER_START = {h:40, s:70, l:97};
+const BG_INNER_END   = {h:20, s:62, l:9};
+const BG_OUTER_START = {h:40, s:55, l:94};
+const BG_OUTER_END   = {h:16, s:68, l:6};
+const BRAND_START = {h:10, s:40, l:53}; // matches the original --rose closely
+const BRAND_END   = {h:10, s:48, l:88};
+const LEAD_START  = {h:28, s:43, l:33}; // matches the original --brown closely
+const LEAD_END    = {h:28, s:50, l:85};
+
+function lerp(a, b, t){ return a + (b - a) * t; }
+function hslLerp(a, b, t){
+  return `hsl(${lerp(a.h,b.h,t).toFixed(1)},${lerp(a.s,b.s,t).toFixed(1)}%,${lerp(a.l,b.l,t).toFixed(1)}%)`;
+}
+
+// spotlights enter on their own explicit schedule rather than a shared fade -
+// spotlight 1 at 5min, spotlight 2 at 3:30, spotlight 3 at 2min, then all three
+// go into "crazy mode" (full brightness + much faster sweep) in the final minute
+const SPOTLIGHT_SCHEDULE = [
+  { id: 'spot-a', at: 300000 }, // 5:00
+  { id: 'spot-b', at: 210000 }, // 3:30
+  { id: 'spot-c', at: 120000 }  // 2:00
+];
+const CRAZY_AT = 60000; // 1:00 - all spotlights go full intensity + fast
 
 function tick() {
   const now = Date.now();
@@ -249,43 +282,49 @@ function tick() {
   setUnit('t-secs', pad(secs));
 }
 
-// continuous build-up from 5 minutes all the way to zero:
-// - the page darkens to match the entry-gate's dark brown, fully there by 2 minutes out
-// - spotlights fade in behind the text and sweep faster as things intensify
-// - ambient particles speed up smoothly (via playbackRate, not duration rewrites -
-//   changing animation-duration on a running animation is what caused the jitter)
-// - MORE particles physically spawn in as intensity rises, on top of speeding up
-// - discrete stage classes still drive the sharper jumps (timer color/pulse/shake)
+// continuous build-up from 6 minutes all the way to zero:
+// - the page's background + text colors both animate in HSL space, from the
+//   original light cream/ink tones toward the entry-gate's dark brown and a
+//   light warm cream text - richly, without ever passing through gray
+// - fully dark by 2 minutes out, with real visible movement already by 4 minutes
+// - spotlights enter one at a time on a fixed schedule, then go "crazy" at 1 minute
+// - ambient particles speed up smoothly (via playbackRate, not duration rewrites)
+//   and MORE of them physically spawn in as intensity rises
 // - final 10 seconds: timer fades out, replaced by a big flashing launch-style number
 function updateBuildUp(diff){
-  const t = clamp(1 - diff / BUILD_UP_SPAN, 0, 1); // 0 at 5min+, 1 at zero
+  const t = clamp(1 - diff / BUILD_UP_SPAN, 0, 1); // 0 at 6min+, 1 at zero
   const eased = t * t; // subtle early, much stronger near the end - drives particle chaos/speed
 
-  // darkness gets its own faster, mostly-linear timeline: fully dark brown by the
-  // 2-minute mark, held there the rest of the way. the quadratic "eased" above was
-  // intentionally backloaded toward zero, which is why the darkening was barely
-  // noticeable even at 3 minutes out - this is a separate, quicker ramp.
-  const DARK_FULL_AT = 120000; // 2 minutes - fully dark from here onward
+  // darkness/color: its own faster, mostly-linear timeline - fully there by 2 minutes,
+  // held from there to zero
+  const DARK_FULL_AT = 120000; // 2 minutes
   const darkT = clamp((BUILD_UP_SPAN - diff) / (BUILD_UP_SPAN - DARK_FULL_AT), 0, 1);
 
   [[60000,'stage-60'],[30000,'stage-30'],[15000,'stage-15'],[10000,'stage-10'],[5000,'stage-5']]
     .forEach(([th, cls]) => { if (diff <= th) document.body.classList.add(cls); });
 
-  // the whole page darkens to the exact same brown as the entry-gate screen -
-  // full opacity (not capped) once darkT reaches 1, so it actually gets there
-  document.getElementById('dark-wash').style.opacity = darkT.toFixed(3);
+  // background + text colors, animated together in HSL space
+  document.getElementById('dark-wash').style.background =
+    `radial-gradient(ellipse at 50% 38%, ${hslLerp(BG_INNER_START, BG_INNER_END, darkT)} 0%, ${hslLerp(BG_OUTER_START, BG_OUTER_END, darkT)} 65%)`;
+  document.querySelector('.brand').style.color = hslLerp(BRAND_START, BRAND_END, darkT);
+  document.querySelector('.lead').style.color = hslLerp(LEAD_START, LEAD_END, darkT);
 
-  // spotlights: fade in and become clearly visible warm circles
-  const spotOpacity = Math.min(0.9, darkT * 1.1).toFixed(3);
-  document.getElementById('spot-a').style.opacity = spotOpacity;
-  document.getElementById('spot-b').style.opacity = spotOpacity;
-  document.getElementById('spot-c').style.opacity = (darkT > 0.45 ? Math.min(0.8, (darkT-0.45)*1.5).toFixed(3) : 0);
+  // spotlights: enter on schedule, go full-intensity in the final minute
+  const crazy = diff <= CRAZY_AT;
+  SPOTLIGHT_SCHEDULE.forEach(s => {
+    const el = document.getElementById(s.id);
+    if (diff <= s.at) el.style.opacity = crazy ? '1' : '0.85';
+  });
 
   // speed everything up smoothly using playbackRate - never touches duration,
-  // so nothing restarts or snaps
+  // so nothing restarts or snaps. spotlights get an extra kick once "crazy" hits.
   const rate = 1 + eased * 3.2; // up to ~4.2x speed right at zero
-  document.querySelectorAll('.glow-blob,.sparkle,.drift,.spotlight').forEach(el => {
+  document.querySelectorAll('.glow-blob,.sparkle,.drift').forEach(el => {
     el.getAnimations().forEach(a => { a.playbackRate = rate; });
+  });
+  const spotRate = rate * (crazy ? 2.6 : 1);
+  document.querySelectorAll('.spotlight').forEach(el => {
+    el.getAnimations().forEach(a => { a.playbackRate = spotRate; });
   });
 
   // physically spawn MORE particles as intensity rises - mild at first, a genuine
@@ -472,11 +511,11 @@ const SCENES = [
   { type: 'message', text: "The Office of Bestie Affairs' Technical Department is putting the finishing touches on the site \u2014 please enjoy the entertainment while you wait.", duration: 6200 },
   { type: 'video', title: 'Trailer', youtubeId: 'GetcsmJ9U3o', ready: true },
   { type: 'message', text: "more on the way soon...", duration: 3600 },
-  { type: 'video', title: 'Trailer Two', youtubeId: '', ready: false },
+  { type: 'video', title: 'Trailer', youtubeId: '', ready: false },
   { type: 'message', text: "in the meantime: yes, we are still on call. no, you may not peek behind the curtain early.", duration: 4400 },
-  { type: 'video', title: 'Behind the Scenes', youtubeId: '', ready: false },
+  { type: 'video', title: 'Trailer', youtubeId: 'S1Suq_FhgaA', ready: false },
   { type: 'message', text: "thank you for your patience \u2014 The Office of Bestie Affairs appreciates your continued cooperation.", duration: 4400 },
-  { type: 'video', title: 'Bloopers', youtubeId: '', ready: false }
+  { type: 'video', title: 'Trailer', youtubeId: '', ready: false }
 ];
 
 // when a video isn't ready yet, instead of skipping silently, a handful of
