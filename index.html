@@ -64,14 +64,17 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 @keyframes wrapShake{0%,100%{transform:translate(0,0)}25%{transform:translate(-4px,2px)}50%{transform:translate(4px,-2px)}75%{transform:translate(-3px,3px)}}
 
 /* darkening vignette that closes in as zero approaches */
-#vignette{position:fixed;inset:0;pointer-events:none;z-index:500;background:radial-gradient(ellipse at 50% 45%,transparent 32%,rgba(10,4,2,0.75) 100%);opacity:0}
+#vignette{position:fixed;inset:0;pointer-events:none;z-index:500;background:radial-gradient(ellipse at 50% 45%,transparent 12%,rgba(20,8,4,0.55) 55%,rgba(10,4,2,0.94) 100%);opacity:0}
 
-/* spotlight sweeps that fade in and speed up as zero approaches */
-.spotlight{position:fixed;top:-25%;width:65vw;height:150vh;pointer-events:none;z-index:400;opacity:0;background:radial-gradient(ellipse at center,rgba(255,235,180,0.4) 0%,rgba(255,235,180,0) 65%);mix-blend-mode:screen}
+/* spotlight sweeps - plain alpha compositing (not blend-mode) so they show up
+   clearly even against a light background, not just once it's already dark */
+.spotlight{position:fixed;top:-25%;width:60vw;height:150vh;pointer-events:none;z-index:520;opacity:0;background:radial-gradient(ellipse at center,rgba(255,244,210,0.85) 0%,rgba(255,224,150,0.35) 40%,rgba(255,224,150,0) 70%)}
 .spotlight-a{left:-25%;animation:spotSweepA 14s ease-in-out infinite}
 .spotlight-b{left:55%;animation:spotSweepB 17s ease-in-out infinite reverse}
+.spotlight-c{left:15%;animation:spotSweepC 11s ease-in-out infinite}
 @keyframes spotSweepA{0%,100%{transform:translateX(0) rotate(-9deg)}50%{transform:translateX(42vw) rotate(9deg)}}
 @keyframes spotSweepB{0%,100%{transform:translateX(0) rotate(7deg)}50%{transform:translateX(-38vw) rotate(-7deg)}}
+@keyframes spotSweepC{0%,100%{transform:translateX(-20vw) rotate(5deg)}50%{transform:translateX(25vw) rotate(-10deg)}}
 
 /* big launch-style number for the final 5 seconds */
 #big-number{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.4);font-family:'Playfair Display',serif;font-weight:700;font-size:9rem;color:var(--rose);opacity:0;z-index:600;pointer-events:none;text-shadow:0 0 40px rgba(184,104,88,0.5)}
@@ -142,8 +145,9 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 
 <div id="vignette"></div>
 <div id="big-number"></div>
-<div class="spotlight spotlight-a" id="spot-a" data-base-duration="14"></div>
-<div class="spotlight spotlight-b" id="spot-b" data-base-duration="17"></div>
+<div class="spotlight spotlight-a" id="spot-a"></div>
+<div class="spotlight spotlight-b" id="spot-b"></div>
+<div class="spotlight spotlight-c" id="spot-c"></div>
 
 <div class="glow-layer" id="glows"></div>
 <div class="drift-layer" id="drifts"></div>
@@ -204,12 +208,13 @@ entryGate.addEventListener('touchstart', unlockEntry, {passive: true});
 // Countdown target - 5th August 2026, 6:00pm.
 // Written as UK local time (BST, UTC+1 in August). If the person this counts
 // down for is somewhere else, adjust the "+01:00" offset below to match.
-const TARGET = new Date('2026-07-18T13:42:00+01:00').getTime();
+const TARGET = new Date('2026-07-18T13:45:00+01:00').getTime();
 
 function pad(n) { return String(Math.max(0, n)).padStart(2, '0'); }
 
 let lastBigNumber = null;
-let lastAmbienceUpdate = 0;
+let lastParticleSpawn = 0;
+let extraParticleCount = 0;
 const BUILD_UP_SPAN = 300000; // 5 minutes - the whole build-up window
 
 function tick() {
@@ -238,6 +243,9 @@ function tick() {
 // continuous build-up from 5 minutes all the way to zero:
 // - vignette darkens and spotlights fade in + sweep faster, eased so it's barely
 //   there at 5 minutes and intense in the final seconds
+// - ambient particles speed up smoothly (via playbackRate, not duration rewrites -
+//   changing animation-duration on a running animation is what caused the jitter)
+// - MORE particles physically spawn in as intensity rises, on top of speeding up
 // - discrete stage classes still drive the sharper jumps (timer color/pulse/shake)
 // - final 10 seconds: timer fades out, replaced by a big flashing launch-style number
 function updateBuildUp(diff){
@@ -247,21 +255,31 @@ function updateBuildUp(diff){
   [[60000,'stage-60'],[30000,'stage-30'],[15000,'stage-15'],[10000,'stage-10'],[5000,'stage-5']]
     .forEach(([th, cls]) => { if (diff <= th) document.body.classList.add(cls); });
 
-  document.getElementById('vignette').style.opacity = (eased * 0.85).toFixed(3);
+  // vignette: strong, real darkening (not just the extreme edges)
+  document.getElementById('vignette').style.opacity = (eased * 0.92).toFixed(3);
 
-  const spotOpacity = Math.min(0.85, eased * 1.1).toFixed(3);
+  // spotlights: fade in and become clearly visible warm sweeps
+  const spotOpacity = Math.min(0.7, eased * 0.9).toFixed(3);
   document.getElementById('spot-a').style.opacity = spotOpacity;
   document.getElementById('spot-b').style.opacity = spotOpacity;
+  document.getElementById('spot-c').style.opacity = (eased > 0.55 ? Math.min(0.6, (eased-0.55)*1.6).toFixed(3) : 0);
 
-  // recalculate ambient speeds every ~2.5s (not every tick) - cheap and plenty smooth
-  const now = Date.now();
-  if (now - lastAmbienceUpdate > 2500) {
-    lastAmbienceUpdate = now;
-    const speedFactor = 1 - 0.65 * eased; // shrinks toward ~0.35x original duration at zero
-    document.querySelectorAll('.glow-blob,.sparkle,.drift,.spotlight').forEach(el => {
-      const base = parseFloat(el.dataset.baseDuration);
-      if (base) el.style.animationDuration = Math.max(base * speedFactor, base * 0.3) + 's';
-    });
+  // speed everything up smoothly using playbackRate - never touches duration,
+  // so nothing restarts or snaps
+  const rate = 1 + eased * 3.2; // up to ~4.2x speed right at zero
+  document.querySelectorAll('.glow-blob,.sparkle,.drift,.spotlight').forEach(el => {
+    el.getAnimations().forEach(a => { a.playbackRate = rate; });
+  });
+
+  // physically spawn MORE particles as intensity rises - mild at first, a flood by the end
+  if (eased > 0) {
+    const now = Date.now();
+    const spawnInterval = 1100 - eased * 950; // 1100ms down to ~150ms
+    if (now - lastParticleSpawn > spawnInterval && extraParticleCount < 220) {
+      lastParticleSpawn = now;
+      const batch = 1 + Math.floor(eased * 4); // more added per spawn as it intensifies
+      for (let i = 0; i < batch; i++) spawnExtraParticle(eased);
+    }
   }
 
   const secLeft = Math.ceil(diff / 1000);
@@ -269,6 +287,25 @@ function updateBuildUp(diff){
     lastBigNumber = secLeft;
     flashBigNumber(secLeft);
   }
+}
+
+function spawnExtraParticle(eased){
+  extraParticleCount++;
+  const layer = document.getElementById('sparkles');
+  const s = document.createElement('div');
+  s.className = 'sparkle';
+  s.dataset.extra = '1';
+  const sz = 2 + Math.random() * (3 + eased * 4);
+  const dur = Math.max(0.9, 3.5 - eased * 2.6);
+  const life = 2200 + Math.random() * 1800;
+  s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--sop:${0.35+Math.random()*0.6};animation-duration:${dur}s`;
+  layer.appendChild(s);
+  setTimeout(() => { s.remove(); extraParticleCount--; }, life);
+}
+
+function clearExtraParticles(){
+  document.querySelectorAll('[data-extra]').forEach(el => el.remove());
+  extraParticleCount = 0;
 }
 
 function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
@@ -302,6 +339,8 @@ function triggerReveal(){
   document.getElementById('vignette').style.opacity = '0';
   document.getElementById('spot-a').style.opacity = '0';
   document.getElementById('spot-b').style.opacity = '0';
+  document.getElementById('spot-c').style.opacity = '0';
+  clearExtraParticles();
 
   const flash = document.getElementById('flash-overlay');
   const curtainL = document.getElementById('curtain-left');
@@ -381,6 +420,34 @@ const SCENES = [
   { type: 'video', title: 'Bloopers', youtubeId: '', ready: false }
 ];
 
+// when a video isn't ready yet, instead of skipping silently, a handful of
+// these play as quick "comments" in its place - pulled randomly, no repeats per reel
+const COMMENT_POOL = [
+  "bestie_anon: not me refreshing every 5 minutes",
+  "🍿🍿🍿",
+  "the wait is KILLING me",
+  "10/10 production values so far ngl",
+  "is this real life",
+  "the Office of Bestie Affairs never disappoints",
+  "she's gonna cry and I'm here for it",
+  "same energy as an actual movie premiere fr",
+  "okay but the curtains though??",
+  "waiting patiently (lie)",
+  "the marquee lights are sending me",
+  "content!! more content!!",
+  "brb screenshotting everything",
+  "this is so unnecessarily elaborate and I love it",
+  "someone check on the guy building this site",
+  "the drama... the suspense...",
+  "certified bestie moment",
+  "no because the sparkles are doing too much (affectionate)",
+  "I would also like a dedicated marquee",
+  "we stan a production",
+  "this is better than the last three films I've seen combined",
+  "genuinely unwell about this",
+  "put the trailer on repeat, thanks"
+];
+
 let sceneIndex = -1;
 let sceneTimer = null;
 let ytApiRequested = false;
@@ -404,13 +471,31 @@ function nextScene(){
   sceneIndex = (sceneIndex + 1) % SCENES.length;
   const scene = SCENES[sceneIndex];
   if (scene.type === 'video' && (!scene.ready || !scene.youtubeId)) {
-    nextScene(); // auto-skip anything that isn't ready yet
+    playCommentReel();
     return;
   }
   scene.type === 'message' ? playMessageScene(scene) : playVideoScene(scene);
 }
 
-function playMessageScene(scene){
+// fills a not-ready video's slot with 5-10 quick scrolling "comments" instead of nothing
+function playCommentReel(){
+  const count = 5 + Math.floor(Math.random() * 6); // 5-10
+  const pool = [...COMMENT_POOL];
+  const picks = [];
+  for (let i = 0; i < count && pool.length; i++) {
+    picks.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+  }
+  let i = 0;
+  function showNext(){
+    if (i >= picks.length) { nextScene(); return; }
+    playMessageScene({ text: picks[i], duration: 1700 }, showNext);
+    i++;
+  }
+  showNext();
+}
+
+function playMessageScene(scene, onDone){
+  onDone = onDone || nextScene;
   document.getElementById('cinema-stage').classList.remove('in');
   document.getElementById('cinema-stage').style.display = 'none';
   document.getElementById('now-playing').textContent = '';
@@ -426,7 +511,7 @@ function playMessageScene(scene){
 
   sceneTimer = setTimeout(() => {
     el.classList.remove('in');
-    setTimeout(nextScene, 500);
+    setTimeout(onDone, 400);
   }, scene.duration);
 }
 
