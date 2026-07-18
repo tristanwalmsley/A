@@ -76,12 +76,12 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 /* spotlights - real spotlight-sized circles, sitting above the dark-wash and
    particles but behind text, tracing oval/figure-8 paths like a real light rig */
 .spotlight{position:fixed;width:380px;height:380px;border-radius:50%;pointer-events:none;z-index:20;opacity:0;background:radial-gradient(circle,rgba(255,246,220,0.95) 0%,rgba(255,224,150,0.55) 45%,rgba(255,224,150,0) 72%);transition:opacity 1.4s ease}
-.spotlight-a{top:15%;left:10%;animation:spotOvalA 13s ease-in-out infinite}
-.spotlight-b{top:55%;left:65%;animation:spotFigure8 18s ease-in-out infinite}
-.spotlight-c{top:35%;left:40%;animation:spotOvalC 11s ease-in-out infinite}
-@keyframes spotOvalA{0%{transform:translate(0,0)}25%{transform:translate(20vw,-6vh)}50%{transform:translate(4vw,-16vh)}75%{transform:translate(-16vw,-4vh)}100%{transform:translate(0,0)}}
-@keyframes spotOvalC{0%{transform:translate(0,0)}25%{transform:translate(-18vw,8vh)}50%{transform:translate(-2vw,16vh)}75%{transform:translate(16vw,6vh)}100%{transform:translate(0,0)}}
-@keyframes spotFigure8{0%{transform:translate(0,0)}12.5%{transform:translate(14vw,-9vh)}25%{transform:translate(22vw,0)}37.5%{transform:translate(14vw,9vh)}50%{transform:translate(0,0)}62.5%{transform:translate(-14vw,-9vh)}75%{transform:translate(-22vw,0)}87.5%{transform:translate(-14vw,9vh)}100%{transform:translate(0,0)}}
+.spotlight-a{top:15%;left:10%;animation:spotOvalA 16s linear infinite}
+.spotlight-b{top:55%;left:65%;animation:spotFigure8 22s linear infinite}
+.spotlight-c{top:35%;left:40%;animation:spotOvalC 14s linear infinite}
+@keyframes spotOvalA{0.0000%{transform:translate(0.00vw,0.00vh)}4.1667%{transform:translate(-0.61vw,2.85vh)}8.3333%{transform:translate(-2.41vw,5.50vh)}12.5000%{transform:translate(-5.27vw,7.78vh)}16.6667%{transform:translate(-9.00vw,9.53vh)}20.8333%{transform:translate(-13.34vw,10.63vh)}25.0000%{transform:translate(-18.00vw,11.00vh)}29.1667%{transform:translate(-22.66vw,10.63vh)}33.3333%{transform:translate(-27.00vw,9.53vh)}37.5000%{transform:translate(-30.73vw,7.78vh)}41.6667%{transform:translate(-33.59vw,5.50vh)}45.8333%{transform:translate(-35.39vw,2.85vh)}50.0000%{transform:translate(-36.00vw,0.00vh)}54.1667%{transform:translate(-35.39vw,-2.85vh)}58.3333%{transform:translate(-33.59vw,-5.50vh)}62.5000%{transform:translate(-30.73vw,-7.78vh)}66.6667%{transform:translate(-27.00vw,-9.53vh)}70.8333%{transform:translate(-22.66vw,-10.63vh)}75.0000%{transform:translate(-18.00vw,-11.00vh)}79.1667%{transform:translate(-13.34vw,-10.63vh)}83.3333%{transform:translate(-9.00vw,-9.53vh)}87.5000%{transform:translate(-5.27vw,-7.78vh)}91.6667%{transform:translate(-2.41vw,-5.50vh)}95.8333%{transform:translate(-0.61vw,-2.85vh)}100.0000%{transform:translate(0.00vw,-0.00vh)}}
+@keyframes spotOvalC{0.0000%{transform:translate(0.00vw,0.00vh)}4.1667%{transform:translate(4.14vw,-0.44vh)}8.3333%{transform:translate(8.00vw,-1.74vh)}12.5000%{transform:translate(11.31vw,-3.81vh)}16.6667%{transform:translate(13.86vw,-6.50vh)}20.8333%{transform:translate(15.45vw,-9.64vh)}25.0000%{transform:translate(16.00vw,-13.00vh)}29.1667%{transform:translate(15.45vw,-16.36vh)}33.3333%{transform:translate(13.86vw,-19.50vh)}37.5000%{transform:translate(11.31vw,-22.19vh)}41.6667%{transform:translate(8.00vw,-24.26vh)}45.8333%{transform:translate(4.14vw,-25.56vh)}50.0000%{transform:translate(0.00vw,-26.00vh)}54.1667%{transform:translate(-4.14vw,-25.56vh)}58.3333%{transform:translate(-8.00vw,-24.26vh)}62.5000%{transform:translate(-11.31vw,-22.19vh)}66.6667%{transform:translate(-13.86vw,-19.50vh)}70.8333%{transform:translate(-15.45vw,-16.36vh)}75.0000%{transform:translate(-16.00vw,-13.00vh)}79.1667%{transform:translate(-15.45vw,-9.64vh)}83.3333%{transform:translate(-13.86vw,-6.50vh)}87.5000%{transform:translate(-11.31vw,-3.81vh)}91.6667%{transform:translate(-8.00vw,-1.74vh)}95.8333%{transform:translate(-4.14vw,-0.44vh)}100.0000%{transform:translate(-0.00vw,0.00vh)}}
+@keyframes spotFigure8{0.0000%{transform:translate(0.00vw,0.00vh)}3.1250%{transform:translate(7.65vw,2.15vh)}6.2500%{transform:translate(14.14vw,4.21vh)}9.3750%{transform:translate(18.48vw,6.11vh)}12.5000%{transform:translate(20.00vw,7.78vh)}15.6250%{transform:translate(18.48vw,9.15vh)}18.7500%{transform:translate(14.14vw,10.16vh)}21.8750%{transform:translate(7.65vw,10.79vh)}25.0000%{transform:translate(0.00vw,11.00vh)}28.1250%{transform:translate(-7.65vw,10.79vh)}31.2500%{transform:translate(-14.14vw,10.16vh)}34.3750%{transform:translate(-18.48vw,9.15vh)}37.5000%{transform:translate(-20.00vw,7.78vh)}40.6250%{transform:translate(-18.48vw,6.11vh)}43.7500%{transform:translate(-14.14vw,4.21vh)}46.8750%{transform:translate(-7.65vw,2.15vh)}50.0000%{transform:translate(-0.00vw,0.00vh)}53.1250%{transform:translate(7.65vw,-2.15vh)}56.2500%{transform:translate(14.14vw,-4.21vh)}59.3750%{transform:translate(18.48vw,-6.11vh)}62.5000%{transform:translate(20.00vw,-7.78vh)}65.6250%{transform:translate(18.48vw,-9.15vh)}68.7500%{transform:translate(14.14vw,-10.16vh)}71.8750%{transform:translate(7.65vw,-10.79vh)}75.0000%{transform:translate(0.00vw,-11.00vh)}78.1250%{transform:translate(-7.65vw,-10.79vh)}81.2500%{transform:translate(-14.14vw,-10.16vh)}84.3750%{transform:translate(-18.48vw,-9.15vh)}87.5000%{transform:translate(-20.00vw,-7.78vh)}90.6250%{transform:translate(-18.48vw,-6.11vh)}93.7500%{transform:translate(-14.14vw,-4.21vh)}96.8750%{transform:translate(-7.65vw,-2.15vh)}100.0000%{transform:translate(-0.00vw,-0.00vh)}}
 
 /* fast streaks that shoot across the screen - the "CRAZY" particle flood */
 .zoom-particle{position:fixed;pointer-events:none;z-index:410;opacity:0;line-height:1;animation:zoomAcross var(--zdur,0.7s) linear forwards}
@@ -219,12 +219,12 @@ entryGate.addEventListener('touchstart', unlockEntry, {passive: true});
 // Countdown target - 5th August 2026, 6:00pm.
 // Written as UK local time (BST, UTC+1 in August). If the person this counts
 // down for is somewhere else, adjust the "+01:00" offset below to match.
-const TARGET = new Date('2026-07-19T00:32:00+01:00').getTime();
+const TARGET = new Date('2026-07-19T00:45:00+01:00').getTime();
 
 function pad(n) { return String(Math.max(0, n)).padStart(2, '0'); }
 
 let lastBigNumber = null;
-let lastParticleSpawn = 0;
+let currentEased = 0;
 let extraParticleCount = 0;
 const BUILD_UP_SPAN = 360000; // 6 minutes - the whole build-up window
 
@@ -236,9 +236,9 @@ const BUILD_UP_SPAN = 360000; // 6 minutes - the whole build-up window
 // (with saturation staying moderate-to-high throughout) keeps it "brown" the
 // whole way, at every intermediate step, not just the two endpoints.
 const BG_INNER_START = {h:40, s:70, l:97};
-const BG_INNER_END   = {h:20, s:62, l:9};
+const BG_INNER_END   = {h:17.1, s:63.6, l:8.6}; // exact HSL match for the old #241008
 const BG_OUTER_START = {h:40, s:55, l:94};
-const BG_OUTER_END   = {h:16, s:68, l:6};
+const BG_OUTER_END   = {h:22.5, s:66.6, l:4.7}; // exact HSL match for the old #140a04
 const BRAND_START = {h:10, s:40, l:53}; // matches the original --rose closely
 const BRAND_END   = {h:10, s:48, l:88};
 const LEAD_START  = {h:28, s:43, l:33}; // matches the original --brown closely
@@ -286,7 +286,7 @@ function tick() {
 // - the page's background + text colors both animate in HSL space, from the
 //   original light cream/ink tones toward the entry-gate's dark brown and a
 //   light warm cream text - richly, without ever passing through gray
-// - fully dark by 2 minutes out, with real visible movement already by 4 minutes
+// - fully dark by 4 minutes out, held there the rest of the way to zero
 // - spotlights enter one at a time on a fixed schedule, then go "crazy" at 1 minute
 // - ambient particles speed up smoothly (via playbackRate, not duration rewrites)
 //   and MORE of them physically spawn in as intensity rises
@@ -295,9 +295,9 @@ function updateBuildUp(diff){
   const t = clamp(1 - diff / BUILD_UP_SPAN, 0, 1); // 0 at 6min+, 1 at zero
   const eased = t * t; // subtle early, much stronger near the end - drives particle chaos/speed
 
-  // darkness/color: its own faster, mostly-linear timeline - fully there by 2 minutes,
+  // darkness/color: its own faster, mostly-linear timeline - fully there by 4 minutes,
   // held from there to zero
-  const DARK_FULL_AT = 120000; // 2 minutes
+  const DARK_FULL_AT = 240000; // 4 minutes
   const darkT = clamp((BUILD_UP_SPAN - diff) / (BUILD_UP_SPAN - DARK_FULL_AT), 0, 1);
 
   [[60000,'stage-60'],[30000,'stage-30'],[15000,'stage-15'],[10000,'stage-10'],[5000,'stage-5']]
@@ -327,20 +327,11 @@ function updateBuildUp(diff){
     el.getAnimations().forEach(a => { a.playbackRate = spotRate; });
   });
 
-  // physically spawn MORE particles as intensity rises - mild at first, a genuine
-  // flood of fast streaks zooming across the screen by the end
-  if (eased > 0) {
-    const now = Date.now();
-    const spawnInterval = 850 - eased * 800; // 850ms down to ~50ms at max intensity
-    if (now - lastParticleSpawn > spawnInterval && extraParticleCount < 500) {
-      lastParticleSpawn = now;
-      const batch = 1 + Math.floor(eased * 9); // up to 10 per spawn tick near the end
-      for (let i = 0; i < batch; i++) {
-        if (eased > 0.3 && Math.random() < eased) spawnZoomParticle(eased);
-        else spawnExtraParticle(eased);
-      }
-    }
-  }
+  // record current intensity for the independent fast particle-spawn loop below
+  // (updateBuildUp only runs once per second via the countdown tick, so spawning
+  // particles here directly was capping the real rate at 1 batch/second no matter
+  // how short the interval was set to - that's why it never felt like "enough")
+  currentEased = eased;
 
   const secLeft = Math.ceil(diff / 1000);
   if (secLeft <= 10 && secLeft >= 1 && secLeft !== lastBigNumber) {
@@ -428,6 +419,17 @@ function setUnit(id, value) {
 const intervalId = setInterval(tick, 1000);
 tick();
 
+// particle spawning runs on its OWN fast loop, independent of the once-per-second
+// countdown tick - this is what actually lets the flood scale up properly
+setInterval(() => {
+  if (currentEased <= 0 || extraParticleCount >= 1400) return;
+  const batch = 1 + Math.floor(currentEased * 16); // up to ~17 particles per fast-tick near the end
+  for (let i = 0; i < batch; i++) {
+    if (currentEased > 0.3 && Math.random() < currentEased) spawnZoomParticle(currentEased);
+    else spawnExtraParticle(currentEased);
+  }
+}, 70); // ~14 spawn ticks/sec at full intensity - genuinely a lot of particles
+
 // ---------- THE REVEAL ----------
 // double flash -> curtains sweep shut (slow) -> hold, swaying, with a title card
 // -> scene swaps underneath -> curtains sweep back open (slow) -> premiere fades
@@ -439,6 +441,7 @@ function triggerReveal(){
   document.getElementById('spot-b').style.opacity = '0';
   document.getElementById('spot-c').style.opacity = '0';
   clearExtraParticles();
+  currentEased = 0; // stops the independent fast spawn loop too
 
   const flash = document.getElementById('flash-overlay');
   const curtainL = document.getElementById('curtain-left');
