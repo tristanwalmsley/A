@@ -459,10 +459,10 @@ const MINI_PATHS = ['spotOvalA', 'spotOvalC', 'spotFigure8'];
 
 function maybeSpawnMiniSpotlight(){
   if (currentDiff > CRAZY_AT) return;
-  const crazyT = clamp(1 - currentDiff / CRAZY_AT, 0, 1); // 0 at 60s left, 1 at zero
+  const crazyT = clamp(1 - currentDiff / CRAZY_AT, 0.3, 1); // 0 at 60s left, 1 at zero
   const interval = 1300 - crazyT * 1200; // 1300ms down to ~100ms - "more and more"
   const now = Date.now();
-  if (now - lastMiniSpawn < interval || miniSpotlightCount >= 18) return;
+  if (now - lastMiniSpawn < interval || miniSpotlightCount >= 50) return;
   lastMiniSpawn = now;
   spawnMiniSpotlight(crazyT);
 }
@@ -471,7 +471,7 @@ function spawnMiniSpotlight(crazyT){
   miniSpotlightCount++;
   const el = document.createElement('div');
   el.className = 'mini-spotlight';
-  const size = 140 + Math.random() * (220 + crazyT * 160);
+  const size = 200 + Math.random() * (220 + crazyT * 160);
   const color = GALAXY_COLORS[Math.floor(Math.random() * GALAXY_COLORS.length)];
   const fade = color.replace(/[\d.]+\)$/, '0)');
   el.style.width = size + 'px';
@@ -484,7 +484,7 @@ function spawnMiniSpotlight(crazyT){
   el.style.animation = `${anim} ${dur}s linear infinite`;
   document.body.appendChild(el);
   requestAnimationFrame(() => { el.style.opacity = (0.5 + Math.random() * 0.4).toFixed(2); });
-  const life = 3800 + Math.random() * 2600;
+  const life = 7800 + Math.random() * 2600;
   setTimeout(() => {
     el.style.opacity = '0';
     setTimeout(() => { el.remove(); miniSpotlightCount--; }, 1200);
