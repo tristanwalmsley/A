@@ -212,17 +212,40 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 // one tap anywhere here satisfies the browser's "user gesture" requirement,
 // so videos later in the automatic sequence are allowed to autoplay WITH sound.
 let gestureUnlocked = false;
+let intervalId = null;
 const entryGate = document.getElementById('entry-gate');
 function unlockEntry(){
   if (gestureUnlocked) return;
   gestureUnlocked = true;
   entryGate.classList.add('hide');
+  startCountdown(); // the timer (and any reveal it triggers) only starts now,
+                     // not silently in the background before the tap
 }
 entryGate.addEventListener('click', unlockEntry);
 entryGate.addEventListener('touchstart', unlockEntry, {passive: true});
 
+function startCountdown(){
+  intervalId = setInterval(tick, 1000);
+  tick();
+
+  // particle spawning runs on its OWN fast loop, independent of the once-per-second
+  // countdown tick - this is what actually lets the flood scale up properly
+  setInterval(() => {
+    if (currentEased > 0 && extraParticleCount < 1400) {
+      const batch = 1 + Math.floor(currentEased * 16); // up to ~17 particles per fast-tick near the end
+      for (let i = 0; i < batch; i++) {
+        if (currentEased > 0.3 && Math.random() < currentEased) spawnZoomParticle(currentEased);
+        else spawnExtraParticle(currentEased);
+      }
+    }
+    maybeSpawnMiniSpotlight();
+  }, 70); // ~14 spawn ticks/sec at full intensity - genuinely a lot of particles
+}
+
 // Countdown target - 5th August 2026, 6:00pm.
-const TARGET = new Date('2026-08-05T18:00:00+01:00').getTime();
+// Written as UK local time (BST, UTC+1 in August). If the person this counts
+// down for is somewhere else, adjust the "+01:00" offset below to match.
+const TARGET = new Date('2026-08-05T18:05:00+01:00').getTime();
 
 function pad(n) { return String(Math.max(0, n)).padStart(2, '0'); }
 
@@ -420,22 +443,6 @@ function setUnit(id, value) {
   void el.offsetWidth;
   el.classList.add('tick');
 }
-
-const intervalId = setInterval(tick, 1000);
-tick();
-
-// particle spawning runs on its OWN fast loop, independent of the once-per-second
-// countdown tick - this is what actually lets the flood scale up properly
-setInterval(() => {
-  if (currentEased > 0 && extraParticleCount < 1400) {
-    const batch = 1 + Math.floor(currentEased * 16); // up to ~17 particles per fast-tick near the end
-    for (let i = 0; i < batch; i++) {
-      if (currentEased > 0.3 && Math.random() < currentEased) spawnZoomParticle(currentEased);
-      else spawnExtraParticle(currentEased);
-    }
-  }
-  maybeSpawnMiniSpotlight();
-}, 70); // ~14 spawn ticks/sec at full intensity - genuinely a lot of particles
 
 // ---------- GALAXY-SWIRL FINALE ----------
 // during the crazy final minute, more and more colored spotlights flood in on
