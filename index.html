@@ -29,7 +29,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   100%{transform:translate(var(--dx,20px),-115vh) rotate(var(--drot,20deg));opacity:0}
 }
 
-.wrap{position:relative;z-index:30;text-align:center;max-width:520px;animation:wrapIn 1s ease both}
+.wrap{position:relative;z-index:30;text-align:center;max-width:520px;animation:wrapIn 1s ease backwards}
 @keyframes wrapIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
 .brand{font-family:'Caveat',cursive;font-size:1.4rem;color:var(--rose);font-weight:700;letter-spacing:0.5px;margin-bottom:2.2rem}
@@ -224,7 +224,7 @@ entryGate.addEventListener('touchstart', unlockEntry, {passive: true});
 // Countdown target - 5th August 2026, 6:00pm.
 // Written as UK local time (BST, UTC+1 in August). If the person this counts
 // down for is somewhere else, adjust the "+01:00" offset below to match.
-const TARGET = new Date('2026-07-19T01:02:00+01:00').getTime();
+const TARGET = new Date('2026-07-19T01:08:00+01:00').getTime();
 
 function pad(n) { return String(Math.max(0, n)).padStart(2, '0'); }
 
@@ -355,7 +355,7 @@ function spawnExtraParticle(eased){
   s.dataset.extra = '1';
   const sz = 2 + Math.random() * (3 + eased * 5);
   const dur = Math.max(0.8, 3.5 - eased * 2.8);
-  const life = 2000 + Math.random() * 1600;
+  const life = 2000 + Math.random() * 2600;
   s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--sop:${0.4+Math.random()*0.6};animation-duration:${dur}s`;
   layer.appendChild(s);
   setTimeout(() => { s.remove(); extraParticleCount--; }, life);
@@ -462,7 +462,7 @@ function maybeSpawnMiniSpotlight(){
   const crazyT = clamp(1 - currentDiff / CRAZY_AT, 0.3, 1); // 0 at 60s left, 1 at zero
   const interval = 1300 - crazyT * 1200; // 1300ms down to ~100ms - "more and more"
   const now = Date.now();
-  if (now - lastMiniSpawn < interval || miniSpotlightCount >= 50) return;
+  if (now - lastMiniSpawn < interval || miniSpotlightCount >= 200) return;
   lastMiniSpawn = now;
   spawnMiniSpotlight(crazyT);
 }
@@ -471,7 +471,7 @@ function spawnMiniSpotlight(crazyT){
   miniSpotlightCount++;
   const el = document.createElement('div');
   el.className = 'mini-spotlight';
-  const size = 200 + Math.random() * (220 + crazyT * 160);
+  const size = 200 + Math.random() * (620 + crazyT * 560);
   const color = GALAXY_COLORS[Math.floor(Math.random() * GALAXY_COLORS.length)];
   const fade = color.replace(/[\d.]+\)$/, '0)');
   el.style.width = size + 'px';
@@ -484,7 +484,7 @@ function spawnMiniSpotlight(crazyT){
   el.style.animation = `${anim} ${dur}s linear infinite`;
   document.body.appendChild(el);
   requestAnimationFrame(() => { el.style.opacity = (0.5 + Math.random() * 0.4).toFixed(2); });
-  const life = 78000 + Math.random() * 2600;
+  const life = 100000 + Math.random() * 26000;
   setTimeout(() => {
     el.style.opacity = '0';
     setTimeout(() => { el.remove(); miniSpotlightCount--; }, 1200);
