@@ -224,7 +224,7 @@ entryGate.addEventListener('touchstart', unlockEntry, {passive: true});
 // Countdown target - 5th August 2026, 6:00pm.
 // Written as UK local time (BST, UTC+1 in August). If the person this counts
 // down for is somewhere else, adjust the "+01:00" offset below to match.
-const TARGET = new Date('2026-07-19T01:00:00+01:00').getTime();
+const TARGET = new Date('2026-07-19T01:02:00+01:00').getTime();
 
 function pad(n) { return String(Math.max(0, n)).padStart(2, '0'); }
 
@@ -484,7 +484,7 @@ function spawnMiniSpotlight(crazyT){
   el.style.animation = `${anim} ${dur}s linear infinite`;
   document.body.appendChild(el);
   requestAnimationFrame(() => { el.style.opacity = (0.5 + Math.random() * 0.4).toFixed(2); });
-  const life = 7800 + Math.random() * 2600;
+  const life = 78000 + Math.random() * 2600;
   setTimeout(() => {
     el.style.opacity = '0';
     setTimeout(() => { el.remove(); miniSpotlightCount--; }, 1200);
