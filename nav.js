@@ -1,10 +1,10 @@
 // ═══════════════════════════════════════════
-// SHARED NAV STATE - ann_site
+// SHARED NAV STATE — ann_site
 // ═══════════════════════════════════════════
 
 const NAV_KEYS = {
   contract: 'ann_contract_signed_2025',
-  gifts: 'ann_bday_2025_v4',
+  gifts: 'ann_bday_2025_v5',
 };
 
 // Which stop IDs unlock which pages, matching the STOPS array in gifts.html
@@ -13,15 +13,15 @@ const PAGE_UNLOCKS = {
   'timeline.html':  2,   // Our Story
   'tierlist.html':  7,   // Tier List
   'extras.html':    13,  // Us
-  'reasons.html':   23,  // Reasons
-  'passport.html':  28,  // Passport
-  'postcards.html': 34,  // Postcards
-  'letters.html':   37,  // Letters
-  'quiz.html':      38,  // Quiz
-  'final.html':     38,  // all done
+  'reasons.html':   24,  // Reasons
+  'passport.html':  29,  // Passport
+  'postcards.html': 37,  // Postcards
+  'letters.html':   40,  // Letters
+  'quiz.html':      41,  // Quiz
+  'final.html':     41,  // all done
 };
 
-const TOTAL_GIFTS = 38;
+const TOTAL_GIFTS = 41;
 
 function getOpenedGifts() {
   try {
