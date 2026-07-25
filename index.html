@@ -29,6 +29,43 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   100%{transform:translate(var(--dx,20px),-115vh) rotate(var(--drot,20deg));opacity:0}
 }
 
+/* ---------- EVOLVING COUNTDOWN MOOD ----------
+   the page's accent color shifts as the big day gets closer - calm sage far
+   out, warming through gold and rose, landing on a vivid pink-red on the
+   day itself. Everything below (breeze particles, constellation stars)
+   reads this one variable, so the whole "evolution" stays in sync. */
+:root{--evo-accent:#7a9870}
+body.evo-1{--evo-accent:#7a9870}
+body.evo-2{--evo-accent:#c8943a}
+body.evo-3{--evo-accent:#b86858}
+body.evo-4{--evo-accent:#d43a72}
+
+/* ---------- BREEZE: whimsical particles drifting left -> right ----------
+   a slow, gentle "wind" layer separate from the up-drifting glyphs above -
+   which glyphs appear changes with the evolution stage, so the page
+   genuinely looks different week to week as the date approaches */
+.breeze-layer{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:16}
+.breeze{position:absolute;opacity:0;line-height:1;animation:breezeAcross linear infinite;will-change:transform,opacity}
+@keyframes breezeAcross{
+  0%{transform:translate(0,0) rotate(0deg);opacity:0}
+  10%{opacity:var(--bop,0.5)}
+  88%{opacity:var(--bop,0.5)}
+  100%{transform:translate(120vw,var(--bdy,0px)) rotate(var(--brot,20deg));opacity:0}
+}
+
+/* ---------- COUNTDOWN CONSTELLATION ----------
+   one little star per day between "now" and the big day, tucked in the
+   corner - lit stars are days still to come, dim ones are days already
+   passed, so the whole cluster quietly empties out as the date nears */
+.constellation{position:fixed;top:1rem;right:1rem;z-index:25;width:min(46vw,300px);height:min(46vw,300px);pointer-events:none;opacity:0;transition:opacity 1.2s ease}
+.constellation.show{opacity:1}
+.constellation svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.constellation .star-line{fill:none;stroke:var(--evo-accent);stroke-width:0.6;stroke-linecap:round;stroke-linejoin:round;opacity:0.5}
+.star-emoji{position:absolute;transform:translate(-50%,-50%);font-size:1.3rem;filter:drop-shadow(0 0 4px var(--evo-accent));opacity:0;transition:opacity 1.3s ease,transform 0.5s ease}
+.star-emoji.show{opacity:1}
+.star-emoji.today{animation:starPulse 1.4s ease-in-out infinite}
+@keyframes starPulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.4)}}
+
 .wrap{position:relative;z-index:30;text-align:center;max-width:520px;animation:wrapIn 1s ease backwards}
 @keyframes wrapIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
@@ -167,7 +204,12 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 
 <div class="glow-layer" id="glows"></div>
 <div class="drift-layer" id="drifts"></div>
+<div class="breeze-layer" id="breezes"></div>
 <div class="sparkle-layer" id="sparkles"></div>
+
+<div class="constellation" id="constellation">
+  <svg id="constellation-svg" viewBox="0 0 100 100"></svg>
+</div>
 
 <div class="wrap">
   <div class="brand">Besties ♡</div>
@@ -228,6 +270,10 @@ function startCountdown(){
   intervalId = setInterval(tick, 1000);
   tick();
 
+  // gentle everyday breeze, always drifting left -> right, independent of
+  // the final-minutes flood below
+  breezeIntervalId = setInterval(spawnBreeze, 1400);
+
   // particle spawning runs on its OWN fast loop, independent of the once-per-second
   // countdown tick - this is what actually lets the flood scale up properly
   setInterval(() => {
@@ -248,6 +294,141 @@ function startCountdown(){
 const TARGET = new Date('2026-08-05T18:05:00+01:00').getTime();
 
 function pad(n) { return String(Math.max(0, n)).padStart(2, '0'); }
+
+// ---------- EVOLVING COUNTDOWN MOOD ----------
+// the whole page's "personality" shifts in four stages as the big day nears -
+// calm and sage-toned when it's still a while off, warming to gold, then
+// rose, then a bright pink-red on the day itself. Both the breeze particles
+// and the constellation stars below read off this same stage.
+const EVO_STAGES = {
+  'evo-1': { glyphs: ['🍃','✧','•'],     label: 'a little while to go yet' },
+  'evo-2': { glyphs: ['🦋','✦','♡'],     label: 'getting closer now' },
+  'evo-3': { glyphs: ['🎈','✨','♡'],     label: 'so nearly here' },
+  'evo-4': { glyphs: ['🎉','✦','♡','💌'], label: 'today\u2019s the day!' }
+};
+function evoStageFor(daysLeft){
+  if (daysLeft <= 0) return 'evo-4';
+  if (daysLeft <= 3) return 'evo-3';
+  if (daysLeft <= 7) return 'evo-2';
+  return 'evo-1';
+}
+let currentEvoStage = null;
+function applyEvoStage(daysLeft){
+  const stage = evoStageFor(daysLeft);
+  if (stage === currentEvoStage) return;
+  currentEvoStage = stage;
+  Object.keys(EVO_STAGES).forEach(s => document.body.classList.remove(s));
+  document.body.classList.add(stage);
+}
+
+// ---------- COUNTDOWN CONSTELLATION ----------
+// a 14-star heart hidden in the corner - only the stars unlocked SO FAR are
+// shown (as ✨), with a line joining them in order. Nothing about the rest
+// of the shape is visible yet, so the idea is Ann has to check back daily
+// and piece it together herself as more of it appears, finishing as a full
+// heart outline on the big day itself.
+const CONSTELLATION_KEY = 'bestie_countdown_total_days_' + TARGET;
+// some sandboxed/embedded previews block localStorage entirely (throws on
+// access) - fall back to a plain in-memory value so the constellation (and
+// nothing else on the page) breaks if that happens
+let _memoryStore = {};
+function safeGet(key){
+  try { return localStorage.getItem(key); } catch(e) { return _memoryStore[key] ?? null; }
+}
+function safeSet(key, val){
+  try { localStorage.setItem(key, val); } catch(e) { _memoryStore[key] = val; }
+}
+const HEART_POINTS = [
+  [50.0,31.66],[53.53,22.56],[70.63,12.99],[90.0,23.51],[90.0,45.85],
+  [70.63,66.44],[53.53,83.36],[50.0,91.01],[46.47,83.36],[29.37,66.44],
+  [10.0,45.85],[10.0,23.51],[29.37,12.99],[46.47,22.56]
+];
+const HEART_N = HEART_POINTS.length;
+let constellationTotal = null;
+let constellationBuilt = false;
+let starEls = [];
+function buildConstellation(daysLeftNow){
+  let stored = parseInt(safeGet(CONSTELLATION_KEY), 10);
+  if (!stored || isNaN(stored) || stored < daysLeftNow) {
+    stored = daysLeftNow;
+    safeSet(CONSTELLATION_KEY, String(stored));
+  }
+  constellationTotal = Math.max(1, stored);
+
+  const wrap = document.getElementById('constellation');
+  const svg = document.getElementById('constellation-svg');
+  svg.innerHTML = '';
+  const ns = 'http://www.w3.org/2000/svg';
+  const path = document.createElementNS(ns, 'path');
+  path.setAttribute('class', 'star-line');
+  path.id = 'constellation-path';
+  svg.appendChild(path);
+
+  // remove any previously-created emoji spans, then make one per point
+  // (hidden by default - only revealed up to the current lit count)
+  wrap.querySelectorAll('.star-emoji').forEach(el => el.remove());
+  starEls = HEART_POINTS.map(p => {
+    const s = document.createElement('div');
+    s.className = 'star-emoji';
+    s.textContent = '\u2728';
+    s.style.left = p[0] + '%';
+    s.style.top = p[1] + '%';
+    wrap.appendChild(s);
+    return s;
+  });
+
+  constellationBuilt = true;
+  document.getElementById('constellation').classList.add('show');
+}
+function updateConstellation(daysLeft){
+  if (!constellationBuilt) buildConstellation(daysLeft);
+  const elapsedDays = Math.max(0, Math.min(constellationTotal, constellationTotal - daysLeft));
+  const fraction = constellationTotal > 0 ? elapsedDays / constellationTotal : 1;
+  const litCount = Math.max(0, Math.min(HEART_N, Math.round(fraction * HEART_N)));
+
+  starEls.forEach((el, i) => {
+    const isLit = i < litCount;
+    el.classList.toggle('show', isLit);
+    el.classList.toggle('today', isLit && i === litCount - 1 && daysLeft > 0);
+  });
+
+  // line only ever joins the stars actually revealed so far
+  const path = document.getElementById('constellation-path');
+  if (path) {
+    if (litCount >= 2) {
+      const d = 'M ' + HEART_POINTS.slice(0, litCount).map(p => p.join(',')).join(' L ');
+      path.setAttribute('d', d);
+    } else {
+      path.removeAttribute('d');
+    }
+  }
+}
+
+// ---------- BREEZE PARTICLES: whimsical, always left -> right ----------
+// a gentle, independent "wind" - separate from the fast build-up flood at
+// the very end - so the page has a bit of everyday whimsy from day one,
+// with whichever glyphs suit the current evolution stage
+function spawnBreeze(){
+  const stage = EVO_STAGES[currentEvoStage] || EVO_STAGES['evo-1'];
+  const layer = document.getElementById('breezes');
+  const el = document.createElement('div');
+  el.className = 'breeze';
+  const glyph = stage.glyphs[Math.floor(Math.random() * stage.glyphs.length)];
+  el.textContent = glyph;
+  const size = 0.9 + Math.random() * 1.1;
+  el.style.fontSize = size + 'rem';
+  el.style.color = 'var(--evo-accent)';
+  el.style.left = '-8vw';
+  el.style.top = (Math.random() * 92) + 'vh';
+  el.style.setProperty('--bdy', ((Math.random() - 0.5) * 90) + 'px');
+  el.style.setProperty('--brot', ((Math.random() - 0.5) * 50) + 'deg');
+  el.style.setProperty('--bop', (0.35 + Math.random() * 0.4).toFixed(2));
+  const dur = 7 + Math.random() * 7;
+  el.style.animationDuration = dur + 's';
+  layer.appendChild(el);
+  setTimeout(() => el.remove(), dur * 1000 + 200);
+}
+let breezeIntervalId = null;
 
 let lastBigNumber = null;
 let currentEased = 0;
@@ -303,10 +484,15 @@ function tick() {
   const mins = Math.floor((diff % 3600000) / 60000);
   const secs = Math.floor((diff % 60000) / 1000);
 
+  // the actual countdown digits always update first and unconditionally -
+  // nothing decorative below should ever be able to take them down with it
   setUnit('t-days', pad(days));
   setUnit('t-hours', pad(hours));
   setUnit('t-mins', pad(mins));
   setUnit('t-secs', pad(secs));
+
+  try { applyEvoStage(days); } catch(e) { console.warn('evo stage failed', e); }
+  try { updateConstellation(days); } catch(e) { console.warn('constellation failed', e); }
 }
 
 // continuous build-up from 6 minutes all the way to zero:
@@ -515,6 +701,8 @@ function triggerReveal(){
   clearMiniSpotlights();
   currentDiff = Infinity; // stops the mini-spotlight spawner too
   currentEased = 0; // stops the independent fast spawn loop too
+  if (breezeIntervalId) clearInterval(breezeIntervalId);
+  document.getElementById('constellation').classList.remove('show');
 
   const flash = document.getElementById('flash-overlay');
   const curtainL = document.getElementById('curtain-left');
