@@ -327,34 +327,24 @@ function applyEvoStage(daysLeft){
 // of the shape is visible yet, so the idea is Ann has to check back daily
 // and piece it together herself as more of it appears, finishing as a full
 // heart outline on the big day itself.
-const CONSTELLATION_KEY = 'bestie_countdown_total_days_' + TARGET;
-// some sandboxed/embedded previews block localStorage entirely (throws on
-// access) - fall back to a plain in-memory value so the constellation (and
-// nothing else on the page) breaks if that happens
-let _memoryStore = {};
-function safeGet(key){
-  try { return localStorage.getItem(key); } catch(e) { return _memoryStore[key] ?? null; }
-}
-function safeSet(key, val){
-  try { localStorage.setItem(key, val); } catch(e) { _memoryStore[key] = val; }
-}
+//
+// Anchored to a FIXED calendar date (14 days before TARGET), not to
+// whenever someone happens to first open the page. That matters: pinning
+// it via localStorage instead would reset back to "day zero" every time
+// it's opened somewhere new - a different browser, private browsing, a
+// cleared cache, or even just testing the downloaded file fresh - which
+// looks identical to "nothing is showing." A fixed date has none of that
+// risk and always agrees across every device.
+const COUNTDOWN_START = TARGET - 15 * 86400000;
 const HEART_POINTS = [
   [50.0,31.66],[53.53,22.56],[70.63,12.99],[90.0,23.51],[90.0,45.85],
   [70.63,66.44],[53.53,83.36],[50.0,91.01],[46.47,83.36],[29.37,66.44],
   [10.0,45.85],[10.0,23.51],[29.37,12.99],[46.47,22.56]
 ];
 const HEART_N = HEART_POINTS.length;
-let constellationTotal = null;
 let constellationBuilt = false;
 let starEls = [];
-function buildConstellation(daysLeftNow){
-  let stored = parseInt(safeGet(CONSTELLATION_KEY), 10);
-  if (!stored || isNaN(stored) || stored < daysLeftNow) {
-    stored = daysLeftNow;
-    safeSet(CONSTELLATION_KEY, String(stored));
-  }
-  constellationTotal = Math.max(1, stored);
-
+function buildConstellation(){
   const wrap = document.getElementById('constellation');
   const svg = document.getElementById('constellation-svg');
   svg.innerHTML = '';
@@ -364,8 +354,6 @@ function buildConstellation(daysLeftNow){
   path.id = 'constellation-path';
   svg.appendChild(path);
 
-  // remove any previously-created emoji spans, then make one per point
-  // (hidden by default - only revealed up to the current lit count)
   wrap.querySelectorAll('.star-emoji').forEach(el => el.remove());
   starEls = HEART_POINTS.map(p => {
     const s = document.createElement('div');
@@ -381,10 +369,9 @@ function buildConstellation(daysLeftNow){
   document.getElementById('constellation').classList.add('show');
 }
 function updateConstellation(daysLeft){
-  if (!constellationBuilt) buildConstellation(daysLeft);
-  const elapsedDays = Math.max(0, Math.min(constellationTotal, constellationTotal - daysLeft));
-  const fraction = constellationTotal > 0 ? elapsedDays / constellationTotal : 1;
-  const litCount = Math.max(0, Math.min(HEART_N, Math.round(fraction * HEART_N)));
+  if (!constellationBuilt) buildConstellation();
+  const elapsedDays = Math.floor((Date.now() - COUNTDOWN_START) / 86400000);
+  const litCount = Math.max(0, Math.min(HEART_N, elapsedDays));
 
   starEls.forEach((el, i) => {
     const isLit = i < litCount;
