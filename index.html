@@ -757,8 +757,12 @@ function startCountdown(){
   // the final-minutes flood below
   breezeIntervalId = setInterval(spawnBreeze, 1400);
 
-  // wandering, clickable leaves + the tiny hidden light counter they feed
+  // wandering, clickable leaves + the tiny hidden light counter they feed -
+  // one is guaranteed within the first 10 seconds of the page ever loading,
+  // so Ann actually has a real chance to stumble onto this early on, rather
+  // than possibly waiting up to 45s before the first one ever appears
   renderLightCount(getLightCount(), false);
+  setTimeout(() => { if (leafEventActive()) spawnWanderLeaf(); }, 3000 + Math.random() * 7000);
   scheduleNextLeaf();
 
   // particle spawning runs on its OWN fast loop, independent of the once-per-second
@@ -1145,7 +1149,7 @@ function spawnWanderLeaf(){
 // "occasionally" - a loose, randomised interval rather than a fixed beat,
 // so the leaves feel like they wander in on their own schedule
 function scheduleNextLeaf(){
-  const delay = 15000 + Math.random() * 60000; // roughly every 15s-75s
+  const delay = 15000 + Math.random() * 30000; // roughly every 15s-45s
   leafScheduleTimer = setTimeout(() => {
     if (leafEventActive()) spawnWanderLeaf();
     scheduleNextLeaf();
