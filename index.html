@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Besties ♡</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
@@ -57,8 +58,28 @@ body.evo-4{--evo-accent:#d43a72}
    one little star per day between "now" and the big day, tucked in the
    corner - lit stars are days still to come, dim ones are days already
    passed, so the whole cluster quietly empties out as the date nears */
-.constellation{position:fixed;top:1rem;right:1rem;z-index:25;width:min(46vw,300px);height:min(46vw,300px);pointer-events:none;opacity:0;transition:opacity 1.2s ease}
+.constellation{position:fixed;top:1rem;right:1rem;z-index:25;width:min(46vw,300px);height:min(46vw,300px);pointer-events:none;opacity:0;transition:opacity 1.2s ease,top 2.4s cubic-bezier(0.22,1,0.36,1),right 2.4s cubic-bezier(0.22,1,0.36,1),transform 2.4s cubic-bezier(0.22,1,0.36,1)}
 .constellation.show{opacity:1}
+
+/* 1:30 mark: a slow, cinematic moment for the heart - glides gently to
+   center and grows (2.4s), settles into two soft heartbeats (~3.6s),
+   blooms brighter and a little bigger (1.4s), then dissolves gracefully
+   into slow-drifting sparkles (~2s) rather than snapping away. ~9.5s total. */
+.constellation.heart-glide{top:50%;right:50%;transform:translate(50%,-50%) scale(1.75);z-index:9450}
+.constellation.heart-beat{animation:heartBeatPulse 1.8s ease-in-out 2}
+@keyframes heartBeatPulse{
+  0%,100%{transform:translate(50%,-50%) scale(1.75)}
+  18%{transform:translate(50%,-50%) scale(1.92)}
+  36%{transform:translate(50%,-50%) scale(1.75)}
+  50%{transform:translate(50%,-50%) scale(1.85)}
+  68%{transform:translate(50%,-50%) scale(1.75)}
+}
+.constellation.heart-bloom{animation:heartBloom 1.4s ease-in forwards}
+@keyframes heartBloom{
+  0%{transform:translate(50%,-50%) scale(1.75);filter:drop-shadow(0 0 0 transparent)}
+  100%{transform:translate(50%,-50%) scale(2.35);filter:drop-shadow(0 0 34px var(--evo-accent))}
+}
+.constellation.heart-gone{opacity:0;transform:translate(50%,-50%) scale(2.7);transition:opacity 2s ease,transform 2.2s ease}
 .constellation svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .constellation .star-line{fill:none;stroke:var(--evo-accent);stroke-width:0.6;stroke-linecap:round;stroke-linejoin:round;opacity:0.5}
 .star-emoji{position:absolute;transform:translate(-50%,-50%);font-size:1.3rem;filter:drop-shadow(0 0 4px var(--evo-accent));opacity:0;transition:opacity 1.3s ease,transform 0.5s ease}
@@ -66,14 +87,56 @@ body.evo-4{--evo-accent:#d43a72}
 .star-emoji.today{animation:starPulse 1.4s ease-in-out infinite}
 @keyframes starPulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.4)}}
 
+/* ---------- BIGGER, BOLDER STAR ARRIVAL ----------
+   every star gets a real "birth" moment - a springy pop-in with a spin and a
+   glow, a little shockwave ring, and a burst of sparkles flung outward from
+   right where it lands. Whichever star is the newest/most-recent one gets
+   the grander version of all three: bigger pop, bigger ring, more sparkles. */
+.star-emoji.birth{animation:starBirthPop 900ms cubic-bezier(0.34,1.56,0.64,1) forwards}
+@keyframes starBirthPop{
+  0%{transform:translate(-50%,-50%) scale(0) rotate(-160deg);opacity:0;filter:drop-shadow(0 0 0 transparent)}
+  45%{transform:translate(-50%,-50%) scale(1.65) rotate(16deg);opacity:1;filter:drop-shadow(0 0 12px var(--evo-accent))}
+  70%{transform:translate(-50%,-50%) scale(0.88) rotate(-6deg)}
+  100%{transform:translate(-50%,-50%) scale(1) rotate(0deg);opacity:1;filter:drop-shadow(0 0 5px var(--evo-accent))}
+}
+.star-emoji.epic{font-size:1.9rem;z-index:2;animation:starBirthEpic 1500ms cubic-bezier(0.34,1.56,0.64,1) forwards}
+@keyframes starBirthEpic{
+  0%{transform:translate(-50%,-50%) scale(0) rotate(-340deg);opacity:0;filter:drop-shadow(0 0 0 transparent)}
+  40%{transform:translate(-50%,-50%) scale(2.5) rotate(26deg);opacity:1;filter:drop-shadow(0 0 22px var(--evo-accent)) drop-shadow(0 0 46px var(--gold))}
+  60%{transform:translate(-50%,-50%) scale(1.5) rotate(-10deg)}
+  80%{transform:translate(-50%,-50%) scale(1.85) rotate(5deg);filter:drop-shadow(0 0 20px var(--evo-accent))}
+  100%{transform:translate(-50%,-50%) scale(1.55) rotate(0deg);opacity:1;filter:drop-shadow(0 0 14px var(--evo-accent))}
+}
+.star-ring{position:fixed;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;border:2px solid var(--evo-accent);opacity:0.95;pointer-events:none;z-index:9400;transform:translate(-50%,-50%) scale(0);animation:starRingExpand 950ms ease-out forwards}
+.star-ring.big{border-width:3px;box-shadow:0 0 18px var(--gold)}
+@keyframes starRingExpand{0%{transform:translate(-50%,-50%) scale(0);opacity:0.95}100%{transform:translate(-50%,-50%) scale(var(--ring-scale,6));opacity:0}}
+.star-spark{position:fixed;pointer-events:none;z-index:9400;opacity:0;line-height:1;will-change:transform,opacity;animation:starSparkFly var(--spark-dur,1.1s) ease-out forwards}
+@keyframes starSparkFly{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(0.3) rotate(0deg)}
+  18%{opacity:1}
+  100%{opacity:0;transform:translate(calc(-50% + var(--sx,0px)),calc(-50% + var(--sy,0px))) scale(1.1) rotate(var(--srot,90deg))}
+}
+
 .wrap{position:relative;z-index:30;text-align:center;max-width:520px;animation:wrapIn 1s ease backwards}
 @keyframes wrapIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
-.brand{font-family:'Caveat',cursive;font-size:1.4rem;color:var(--rose);font-weight:700;letter-spacing:0.5px;margin-bottom:2.2rem}
-.lead{font-family:'Caveat',cursive;font-size:1.2rem;color:var(--brown);letter-spacing:0.5px;margin-bottom:2.5rem}
+.brand{font-family:'Caveat',cursive;font-size:1.4rem;color:var(--rose);font-weight:700;letter-spacing:0.5px;margin-bottom:2.2rem;max-height:6rem;transition:transform 1.2s cubic-bezier(0.22,1,0.36,1),opacity 0.9s ease,max-height 0.9s ease,margin 0.9s ease}
+.lead{font-family:'Caveat',cursive;font-size:1.2rem;color:var(--brown);letter-spacing:0.5px;margin-bottom:2.5rem;max-height:4rem;transition:opacity 1s ease,max-height 1s ease,margin 1s ease,transform 1s ease,letter-spacing 1s ease}
+
+/* 40-minute mark: "keep checking back soon" quietly dissolves away */
+.lead.lead-gone{opacity:0;max-height:0;margin-bottom:0;transform:translateY(-8px) scale(0.92);letter-spacing:2.5px;pointer-events:none}
+
+/* 10-minute mark: the "Besties" text grows slightly */
+body.brand-grow .brand{transform:scale(1.55)}
+
+/* finale track starts: besties text collapses away entirely, timer re-centers
+   and gets a touch of emphasis since it's now the only thing left in .wrap */
+body.finale-focus .brand,body.finale-focus .lead{opacity:0;max-height:0;margin:0;transform:translateY(-10px);pointer-events:none}
+body.finale-focus .timer{transform:scale(1.1);transition:transform 1.2s cubic-bezier(0.22,1,0.36,1),opacity 0.5s ease}
 
 .timer{display:flex;justify-content:center;gap:0.8rem;flex-wrap:wrap;margin-bottom:2.6rem;transition:opacity 0.5s ease,transform 0.5s ease}
 body.stage-10 .timer{opacity:0;transform:scale(0.85);pointer-events:none}
+body.timer-grow .timer{transform:scale(1.4);transition:transform 15s cubic-bezier(0.45,0,0.55,1)}
 .timer-unit{background:var(--paper);border:1.5px solid var(--tan);box-shadow:4px 4px 0 var(--warm);padding:1.1rem 0.5rem 0.9rem;min-width:78px}
 .timer-num{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:700;color:var(--deep);line-height:1;transition:transform 0.25s ease}
 .timer-num.tick{animation:numTick 0.4s ease}
@@ -91,7 +154,8 @@ body.stage-10 .timer{opacity:0;transform:scale(0.85);pointer-events:none}
 @keyframes entryPulse{0%,100%{opacity:0.4}50%{opacity:0.9}}
 
 /* ---------- STAGED BUILD-UP: 65s zoom / 60s / 30s / 15s / 10s / 5s ---------- */
-body.mega-zoom .wrap{transform:scale(1.6);transition:transform 5s cubic-bezier(0.22,1,0.36,1)}
+body.mega-zoom .wrap{transform:scale(1.9);transition:transform 60s cubic-bezier(0.45,0,0.55,1);filter:drop-shadow(0 0 0 rgba(200,148,58,0));animation:megaZoomGlow 60s ease-in forwards}
+@keyframes megaZoomGlow{0%{filter:drop-shadow(0 0 0 rgba(200,148,58,0))}100%{filter:drop-shadow(0 0 26px rgba(200,148,58,0.55))}}
 body.stage-60 .timer-unit{border-color:var(--gold);box-shadow:4px 4px 0 var(--gold)}
 body.stage-30 .timer-unit{border-color:var(--rose);box-shadow:5px 5px 0 var(--rose);animation:unitPulse 1.1s ease-in-out infinite}
 body.stage-15 .timer-unit{animation:unitPulse 0.7s ease-in-out infinite;box-shadow:6px 6px 0 var(--rose)}
@@ -127,6 +191,7 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 
 /* fast streaks that shoot across the screen - the "CRAZY" particle flood */
 .zoom-particle{position:fixed;pointer-events:none;z-index:410;opacity:0;line-height:1;animation:zoomAcross var(--zdur,0.7s) linear forwards}
+@keyframes heartBurstFly{0%{opacity:0;transform:translate(-50%,-50%) scale(0.4)}12%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--zx)),calc(-50% + var(--zy))) scale(1.3)}}
 @keyframes zoomAcross{0%{transform:translate(0,0);opacity:0}10%{opacity:0.95}85%{opacity:0.95}100%{transform:translate(var(--zx),var(--zy));opacity:0}}
 
 /* big launch-style number for the final 5 seconds */
@@ -180,12 +245,84 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
    handles internal letterboxing, so no aspect-ratio math needed here */
 .cinema-stage{position:absolute;inset:0;background:#000;border:10px solid var(--deep);border-radius:4px;box-shadow:0 20px 50px rgba(0,0,0,0.4),0 0 0 3px var(--gold) inset;overflow:hidden;opacity:0;transition:opacity 1s ease}
 .cinema-stage.in{opacity:1}
+
+/* big centered sparkle-heart sitting behind the trailers/messages, with the
+   besties text glowing inside it - subtle enough not to fight with actual
+   video content (which covers it entirely once a trailer is playing) */
+.premiere-heart{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 1.6s ease;pointer-events:none;z-index:1}
+.premiere-heart.show{opacity:1}
+.premiere-heart-svg{position:absolute;width:min(70vh,70vw,520px);height:min(70vh,70vw,520px);overflow:visible}
+.premiere-heart-svg path{fill:none;stroke:var(--evo-accent);stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round;opacity:0.4;filter:drop-shadow(0 0 8px var(--evo-accent));animation:heartGlowPulse 4s ease-in-out infinite}
+@keyframes heartGlowPulse{0%,100%{opacity:0.28}50%{opacity:0.55}}
+.premiere-heart-text{position:relative;font-family:'Caveat',cursive;font-weight:700;font-size:2.6rem;color:var(--rose);text-shadow:0 2px 14px rgba(255,250,240,0.65);z-index:1}
+
+/* film-strip side borders, only during the premiere/trailer sequence -
+   classic sprocket-hole reel pattern with a slow scroll and a warm gold
+   trim, so the sides of the screen feel like part of the show rather than
+   just empty margin */
+.film-border{position:fixed;top:0;bottom:0;width:clamp(18px,3vw,34px);z-index:29;opacity:0;pointer-events:none;
+  background-color:#241206;
+  background-image:radial-gradient(circle, rgba(255,250,240,0.9) 28%, transparent 30%);
+  background-size:100% 42px;
+  background-repeat:repeat-y;
+  background-position:center 0;
+  transition:opacity 1.4s ease}
+.film-border.left{left:0;box-shadow:inset -3px 0 0 var(--gold),4px 0 16px rgba(0,0,0,0.35)}
+.film-border.right{right:0;box-shadow:inset 3px 0 0 var(--gold),-4px 0 16px rgba(0,0,0,0.35)}
+.film-border.show{opacity:1;animation:filmScroll 3.2s linear infinite}
+@keyframes filmScroll{from{background-position-y:0}to{background-position-y:42px}}
 #video-slot{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
 #video-slot video,#video-slot iframe{width:100%;height:100%;display:block;background:#000;border:none}
 
 .now-playing{font-family:'Caveat',cursive;font-size:0.95rem;color:var(--rose);text-align:center;min-height:1.3em}
 
 .waiting-note{font-family:'Playfair Display',serif;font-size:1rem;font-style:italic;color:var(--deep);line-height:1.6;text-align:center;max-width:480px;margin:0.3rem auto 0}
+
+/* ---------- MUSIC INTRO: a slow, cinematic build-up instead of a jump-scare ----------
+   glow blooms outward -> soundwave rings pulse out in a staggered wave ->
+   the speaker eases in with a soft halo and a gentle idle bob -> musical
+   notes drift up around it -> everything fades together as the music itself
+   fades in underneath. ~5.5s total, nothing here snaps in or out abruptly. */
+#music-intro{position:fixed;inset:0;z-index:9500;pointer-events:none;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 1.1s ease}
+#music-intro.show{opacity:1}
+
+.mi-glow{position:absolute;width:64vmax;height:64vmax;border-radius:50%;background:radial-gradient(circle, rgba(200,148,58,0.32) 0%, rgba(184,104,88,0.14) 42%, rgba(200,148,58,0) 72%);filter:blur(8px);opacity:0;transform:scale(0.3)}
+#music-intro.show .mi-glow{animation:miGlowIn 3.4s cubic-bezier(0.22,1,0.36,1) forwards}
+@keyframes miGlowIn{0%{opacity:0;transform:scale(0.3)}40%{opacity:1;transform:scale(1)}100%{opacity:0.8;transform:scale(1.2)}}
+
+.mi-ring{position:absolute;width:150px;height:150px;border-radius:50%;border:2px solid var(--gold);opacity:0}
+#music-intro.show .mi-ring{animation:miRing 2.8s ease-out forwards}
+#music-intro.show .mi-ring.r1{animation-delay:0.3s}
+#music-intro.show .mi-ring.r2{animation-delay:0.95s}
+#music-intro.show .mi-ring.r3{animation-delay:1.6s}
+#music-intro.show .mi-ring.r4{animation-delay:2.25s}
+@keyframes miRing{0%{opacity:0;transform:scale(0.4)}18%{opacity:0.7}100%{opacity:0;transform:scale(3.6)}}
+
+.mi-speaker{position:relative;font-size:5.5rem;opacity:0;transform:scale(0.4) rotate(-10deg);filter:drop-shadow(0 10px 34px rgba(0,0,0,0.4))}
+#music-intro.show .mi-speaker{animation:miSpeakerIn 1.7s cubic-bezier(0.16,1,0.3,1) 1.1s forwards,miSpeakerBob 2.4s ease-in-out 2.8s infinite}
+@keyframes miSpeakerIn{0%{opacity:0;transform:scale(0.4) rotate(-10deg)}55%{opacity:1;transform:scale(1.2) rotate(4deg)}75%{transform:scale(0.96) rotate(-2deg)}100%{opacity:1;transform:scale(1) rotate(0deg)}}
+@keyframes miSpeakerBob{0%,100%{transform:scale(1) translateY(0)}50%{transform:scale(1.05) translateY(-7px)}}
+
+.mi-halo{position:absolute;inset:-35%;border-radius:50%;background:radial-gradient(circle, rgba(255,246,220,0.55) 0%, rgba(255,246,220,0) 70%);opacity:0;z-index:-1}
+#music-intro.show .mi-halo{animation:miHaloIn 1.8s ease-out 1.1s forwards}
+@keyframes miHaloIn{0%{opacity:0;transform:scale(0.6)}100%{opacity:1;transform:scale(1)}}
+
+.mi-note{position:absolute;font-size:1.5rem;color:var(--gold);opacity:0;text-shadow:0 2px 10px rgba(0,0,0,0.25);animation:miNoteFloat 2.8s ease-out forwards}
+@keyframes miNoteFloat{0%{opacity:0;transform:translate(0,0) scale(0.6) rotate(0deg)}15%{opacity:0.9}100%{opacity:0;transform:translate(var(--nx),-150px) scale(1.15) rotate(var(--nrot))}}
+
+/* ---------- COLOUR-CHANGE PULSE ----------
+   a quick, single pulse that marks the moment the background/text colour
+   transition begins (6:00 left) and again the moment it finishes (4:00 left) -
+   a soft radial flash plus an expanding ring, both in the current evolving
+   accent colour so it reads as "that's the colour shift happening" rather
+   than as a generic flash. ~1s each, fires once per threshold, never loops. */
+#color-pulse{position:fixed;inset:0;z-index:9400;pointer-events:none;opacity:0;background:radial-gradient(circle, var(--evo-accent) 0%, rgba(0,0,0,0) 70%);mix-blend-mode:soft-light}
+#color-pulse.go{animation:colorPulseFlash 0.9s ease-out}
+@keyframes colorPulseFlash{0%{opacity:0}18%{opacity:0.55}100%{opacity:0}}
+
+#color-pulse-ring{position:fixed;top:50%;left:50%;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;border:3px solid var(--evo-accent);opacity:0;pointer-events:none;z-index:9401}
+#color-pulse-ring.go{animation:colorPulseRing 1.1s ease-out}
+@keyframes colorPulseRing{0%{opacity:0;transform:scale(0.3)}15%{opacity:0.85}100%{opacity:0;transform:scale(6)}}
 </style>
 </head>
 <body>
@@ -223,10 +360,24 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
   </div>
 </div>
 
+<div id="music-intro" aria-hidden="true">
+  <div class="mi-glow"></div>
+  <div class="mi-ring r1"></div>
+  <div class="mi-ring r2"></div>
+  <div class="mi-ring r3"></div>
+  <div class="mi-ring r4"></div>
+  <div class="mi-speaker">🔊<div class="mi-halo"></div></div>
+  <div id="mi-notes"></div>
+</div>
+<video id="bgm-player" style="display:none" playsinline></video>
+<div id="color-pulse"></div>
+<div id="color-pulse-ring"></div>
 <div id="flash-overlay"></div>
 <div id="curtain-left"></div>
 <div id="curtain-right"></div>
 <div id="curtain-title"></div>
+<div class="film-border left" id="film-border-left"></div>
+<div class="film-border right" id="film-border-right"></div>
 
 <section class="premiere" id="premiere">
   <div class="premiere-header">
@@ -237,6 +388,10 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
   </div>
 
   <div class="scene-stage" id="scene-stage">
+    <div class="premiere-heart" id="premiere-heart">
+      <svg viewBox="0 0 100 100" class="premiere-heart-svg"><path id="premiere-heart-path"></path></svg>
+      <div class="premiere-heart-text">Besties ♡</div>
+    </div>
     <div class="scene-message" id="scene-message"></div>
     <div class="cinema-stage" id="cinema-stage" style="display:none">
       <div id="video-slot"></div>
@@ -266,7 +421,309 @@ function unlockEntry(){
 entryGate.addEventListener('click', unlockEntry);
 entryGate.addEventListener('touchstart', unlockEntry, {passive: true});
 
+// ---------- MUSIC ----------
+// EDIT THESE to match whatever you actually drop in the folder next to this
+// file. Files are .mp4 but that's fine - we only ever use the audio track,
+// the <video> element is hidden and never shown.
+//
+// Tracks play IN ORDER, back to back, timed so the 7th one finishes exactly
+// as the finale track begins, and the finale finishes exactly at zero. This
+// only works if the "duration" values below are accurate to the real files -
+// update them if you swap any track out.
+const MUSIC_FOLDER = 'countdown_music/';
+const TRACKS = [
+  { file: 'music (1).mp4', duration: 274 }, // 04:34
+  { file: 'music (2).mp4', duration: 363 }, // 06:03
+  { file: 'music (3).mp4', duration: 230 }, // 03:50
+  { file: 'music (4).mp4', duration: 303 }, // 05:03
+  { file: 'music (5).mp4', duration: 294 }, // 04:54
+  { file: 'music (6).mp4', duration: 183 }, // 03:03
+  { file: 'music (7).mp4', duration: 193 }  // 03:13
+];
+const FINALE_TRACK = 'final_music.mp4';
+const FINALE_DURATION = 299; // 04:59 - NOT looped; starts a second "late" on purpose (299s
+                             // in vs a flat 300s/5:00) so it lands exactly on zero instead
+                             // of finishing a second early
+
+// only these tracks are allowed to play as post-reveal filler music (between
+// trailers, when a slot isn't ready) - tracks 2 and 6 are deliberately left
+// out. Edit this list any time to change which ones are eligible.
+const FILLER_POOL = [
+  TRACKS[0], // track 1
+  TRACKS[2], // track 3
+  TRACKS[3], // track 4
+  TRACKS[4], // track 5
+  TRACKS[6], // track 7
+  { file: FINALE_TRACK, duration: FINALE_DURATION } // final
+];
+const MUSIC_VOLUME = 0.55; // 0-1, the "settled" volume once faded in
+
+// derived scheduling - track 1 starts at exactly the point where the whole
+// remaining pool (all 7 tracks) plus the finale will fit perfectly up to zero
+const POOL_TOTAL_S = TRACKS.reduce((s, t) => s + t.duration, 0); // 1840s
+const MUSIC_START_AT_S = POOL_TOTAL_S + FINALE_DURATION;          // 2139s = 35:39 left
+const FINALE_AT_S = FINALE_DURATION;                              // 299s = 4:59 left
+const MUSIC_START_AT = MUSIC_START_AT_S * 1000;
+const FINALE_AT = FINALE_AT_S * 1000;
+
+let musicIntroStarted = false;
+let finaleStarted = false;
+let musicMode = null; // 'pool' | 'finale' | 'filler'
+let poolIndex = -1;
+const bgm = document.getElementById('bgm-player');
+
+function fadeVolume(el, from, to, duration, onDone){
+  const steps = 24;
+  const stepTime = duration / steps;
+  let i = 0;
+  el.volume = from;
+  const id = setInterval(() => {
+    i++;
+    const v = from + (to - from) * (i / steps);
+    el.volume = Math.max(0, Math.min(1, v));
+    if (i >= steps) { clearInterval(id); el.volume = Math.max(0, Math.min(1, to)); if (onDone) onDone(); }
+  }, stepTime);
+}
+
+// loads a file, optionally seeks to an offset once its metadata is ready
+// (needed both for resuming mid-track on refresh, and for the randomized
+// filler music). fadeMs of 0/null plays instantly at full volume - used for
+// every sequential countdown track, since fading was clipping the tail end
+// of whichever track was mid-way through when the next one kicked in. Fades
+// are still used for the between-trailers filler music (see further down).
+function loadAndPlay(file, offset, mode, loop, fadeMs){
+  musicMode = mode;
+  bgm.loop = !!loop;
+  bgm.src = MUSIC_FOLDER + file;
+  bgm.volume = fadeMs ? 0 : MUSIC_VOLUME;
+  const onReady = () => {
+    bgm.removeEventListener('loadedmetadata', onReady);
+    if (offset > 0) { try { bgm.currentTime = offset; } catch(e) {} }
+    const p = bgm.play();
+    if (p && p.catch) p.catch(err => console.warn('music play blocked/failed', err));
+  };
+  bgm.addEventListener('loadedmetadata', onReady);
+  if (fadeMs) fadeVolume(bgm, 0, MUSIC_VOLUME, fadeMs);
+}
+
+// pool tracks advance to the next one in sequence as each one ends (this is
+// what makes a mid-track refresh, seeking, etc. still land back in order).
+// The moment the 7th one finishes IN FULL, we move straight into the finale -
+// tied to the actual 'ended' event rather than a wall-clock threshold, so the
+// last pool track always gets to play out completely before the finale starts.
+bgm.addEventListener('ended', () => {
+  if (musicMode !== 'pool') return;
+  const next = poolIndex + 1;
+  if (next < TRACKS.length) {
+    poolIndex = next;
+    loadAndPlay(TRACKS[next].file, 0, 'pool', false, 0);
+  } else if (!finaleStarted) {
+    beginFinale(0, true);
+  }
+});
+
+// a slow, swelling sound design instead of a jump-scare beep: a low pad rises
+// and sweeps upward, a shimmering higher layer blooms in over it, and it all
+// resolves into two soft bell notes right as the music itself fades in.
+// ~4.3s total, entirely synthesized - no extra audio file needed.
+function playIntroSound(){
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = ctx.currentTime;
+
+    const master = ctx.createGain();
+    master.gain.setValueAtTime(0.0001, now);
+    master.gain.exponentialRampToValueAtTime(0.32, now + 1.5);
+    master.gain.exponentialRampToValueAtTime(0.2, now + 2.7);
+    master.gain.exponentialRampToValueAtTime(0.0001, now + 4.3);
+    master.connect(ctx.destination);
+
+    // low pad, gently sweeping upward
+    const pad = ctx.createOscillator();
+    pad.type = 'sine';
+    pad.frequency.setValueAtTime(220, now);
+    pad.frequency.exponentialRampToValueAtTime(330, now + 2.8);
+    pad.connect(master);
+    pad.start(now);
+    pad.stop(now + 4.3);
+
+    // shimmering higher layer that blooms in over the pad
+    const shimmer = ctx.createOscillator();
+    shimmer.type = 'sine';
+    shimmer.frequency.setValueAtTime(440, now + 0.6);
+    shimmer.frequency.exponentialRampToValueAtTime(660, now + 3);
+    const shimmerGain = ctx.createGain();
+    shimmerGain.gain.setValueAtTime(0, now);
+    shimmerGain.gain.linearRampToValueAtTime(0.5, now + 1.7);
+    shimmerGain.gain.linearRampToValueAtTime(0, now + 3.4);
+    shimmer.connect(shimmerGain).connect(master);
+    shimmer.start(now + 0.6);
+    shimmer.stop(now + 3.5);
+
+    // two soft resolving bell notes near the end
+    [880, 1318.5].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = freq;
+      const start = now + 2.9 + i * 0.22;
+      gain.gain.setValueAtTime(0, start);
+      gain.gain.linearRampToValueAtTime(0.3, start + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + 1.6);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + 1.7);
+    });
+  } catch(e) { console.warn('intro sound failed', e); }
+}
+
+// musical notes drifting up and out around the speaker while it holds
+function spawnIntroNotes(){
+  const layer = document.getElementById('mi-notes');
+  const glyphs = ['♪', '♫', '♬'];
+  for (let i = 0; i < 14; i++) {
+    setTimeout(() => {
+      const n = document.createElement('div');
+      n.className = 'mi-note';
+      n.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+      n.style.left = (45 + Math.random() * 10) + '%';
+      n.style.top = (45 + Math.random() * 10) + '%';
+      n.style.setProperty('--nx', ((Math.random() - 0.5) * 220) + 'px');
+      n.style.setProperty('--nrot', ((Math.random() - 0.5) * 60) + 'deg');
+      layer.appendChild(n);
+      setTimeout(() => n.remove(), 2900);
+    }, 1300 + i * 180);
+  }
+}
+
+// the full visual sequence: glow blooms, rings pulse out in a staggered wave,
+// the speaker eases in with a halo and settles into a gentle bob, notes drift
+// up around it, then the whole thing fades together - ~5.6s, nothing snaps
+function runMusicIntroAnimation(){
+  const el = document.getElementById('music-intro');
+  el.classList.remove('show');
+  void el.offsetWidth; // restart the CSS animations cleanly
+  el.classList.add('show');
+  spawnIntroNotes();
+  setTimeout(() => el.classList.remove('show'), 5600);
+}
+
+// fired only on a LIVE crossing of the 35:39 mark during an active session
+function startMusicIntro(){
+  if (musicIntroStarted) return;
+  musicIntroStarted = true;
+  playIntroSound();
+  runMusicIntroAnimation();
+  setTimeout(() => {
+    poolIndex = 0;
+    loadAndPlay(TRACKS[0].file, 0, 'pool', false, 0);
+  }, 4200); // music starts right as the sound design resolves into the bell notes
+}
+
+// the single entry point for starting the finale track, whether that's
+// triggered live (the 7th pool track just finished, or the 4:59 wall-clock
+// fallback below) or by resuming mid-finale after a refresh. `live` controls
+// whether the flourish animation plays - a resume just snaps straight to the
+// right visual state instead of replaying it.
+function beginFinale(offset, live){
+  finaleStarted = true;
+  loadAndPlay(FINALE_TRACK, offset, 'finale', false, 0);
+  if (live) {
+    triggerColorPulse();
+    setTimeout(() => document.body.classList.add('finale-focus'), 500);
+  } else {
+    document.body.classList.add('finale-focus');
+  }
+}
+
+// fired on a live crossing of the 4:59 mark - a fallback in case 'ended'
+// somehow didn't fire (e.g. autoplay got blocked)
+function startFinaleTrack(){
+  if (finaleStarted) return;
+  beginFinale(0, true);
+}
+
+function fadeOutAndStopMusic(){
+  if (!musicIntroStarted || bgm.paused) return;
+  fadeVolume(bgm, bgm.volume, 0, 1500, () => { bgm.pause(); });
+}
+
+// checked every tick - handles the two LIVE threshold crossings
+function checkMusicSchedule(diff){
+  if (!musicIntroStarted && diff <= MUSIC_START_AT && diff > 0) startMusicIntro();
+  if (!finaleStarted && diff <= FINALE_AT && diff > 0) startFinaleTrack();
+}
+
+// works out exactly what should be playing (and at what offset) for a given
+// amount of time remaining - this is what makes a refresh land on "the
+// closest song" instead of restarting the whole sequence from track 1
+function computeMusicState(diffMs){
+  const remaining = diffMs / 1000;
+  if (remaining > MUSIC_START_AT_S || remaining <= 0) return null;
+  if (remaining <= FINALE_AT_S) {
+    return { mode: 'finale', file: FINALE_TRACK, offset: FINALE_AT_S - remaining, index: -1 };
+  }
+  const elapsed = MUSIC_START_AT_S - remaining;
+  let acc = 0;
+  for (let i = 0; i < TRACKS.length; i++) {
+    if (elapsed < acc + TRACKS[i].duration) {
+      return { mode: 'pool', file: TRACKS[i].file, offset: elapsed - acc, index: i };
+    }
+    acc += TRACKS[i].duration;
+  }
+  return { mode: 'finale', file: FINALE_TRACK, offset: 0, index: -1 };
+}
+
+// called once, right as the countdown starts (first tap, OR a tap after a
+// refresh) - if we're already past 35:39 left, jump straight to the right
+// track at the right offset instead of waiting to "catch up"
+function resumeMusicIfMidStream(diffMs){
+  const state = computeMusicState(diffMs);
+  if (!state) return;
+  musicIntroStarted = true;
+  if (state.mode === 'pool') {
+    poolIndex = state.index;
+    loadAndPlay(state.file, state.offset, 'pool', false, 0);
+  } else {
+    beginFinale(state.offset, false);
+  }
+}
+
+// ---------- FILLER MUSIC (post-reveal premiere, between trailers) ----------
+// when a trailer slot isn't ready yet and the comment-reel filler plays
+// instead, we drop in a random track from the pool at a random point in it,
+// picking a fresh one each time. Paused (faded out) the moment a real,
+// ready trailer starts, since that has its own audio.
+function playRandomFillerMusic(){
+  const startNew = () => {
+    const pick = FILLER_POOL[Math.floor(Math.random() * FILLER_POOL.length)];
+    musicMode = 'filler';
+    bgm.loop = true;
+    bgm.src = MUSIC_FOLDER + pick.file;
+    bgm.volume = 0;
+    const onReady = () => {
+      bgm.removeEventListener('loadedmetadata', onReady);
+      const dur = isFinite(bgm.duration) && bgm.duration > 0 ? bgm.duration : pick.duration;
+      bgm.currentTime = Math.random() * Math.max(0, dur - 3);
+      const p = bgm.play();
+      if (p && p.catch) p.catch(() => {});
+    };
+    bgm.addEventListener('loadedmetadata', onReady);
+    fadeVolume(bgm, 0, MUSIC_VOLUME, 1200);
+  };
+  if (musicMode !== null && !bgm.paused) fadeVolume(bgm, bgm.volume, 0, 500, startNew);
+  else startNew();
+}
+
+function pauseFillerMusicForVideo(){
+  if (musicMode === 'filler' && !bgm.paused) {
+    fadeVolume(bgm, bgm.volume, 0, 500, () => bgm.pause());
+  }
+}
+
 function startCountdown(){
+  resumeMusicIfMidStream(TARGET - Date.now());
+  resumeMilestonesIfMidStream(TARGET - Date.now());
   intervalId = setInterval(tick, 1000);
   tick();
 
@@ -291,7 +748,7 @@ function startCountdown(){
 // Countdown target - 5th August 2026, 6:00pm.
 // Written as UK local time (BST, UTC+1 in August). If the person this counts
 // down for is somewhere else, adjust the "+01:00" offset below to match.
-const TARGET = new Date('2026-08-05T18:05:00+01:00').getTime();
+const TARGET = new Date('2026-08-05T18:09:00+01:00').getTime();
 
 function pad(n) { return String(Math.max(0, n)).padStart(2, '0'); }
 
@@ -304,7 +761,7 @@ const EVO_STAGES = {
   'evo-1': { glyphs: ['🍃','✧','•'],     label: 'a little while to go yet' },
   'evo-2': { glyphs: ['🦋','✦','♡'],     label: 'getting closer now' },
   'evo-3': { glyphs: ['🎈','✨','♡'],     label: 'so nearly here' },
-  'evo-4': { glyphs: ['🎉','✦','♡','💌'], label: 'today\u2019s the day!' }
+  'evo-4': { glyphs: ['🎉','✦','♡','💌','🌿','🍃','🍂','🍪','❤️'], label: 'today\u2019s the day!' }
 };
 function evoStageFor(daysLeft){
   if (daysLeft <= 0) return 'evo-4';
@@ -344,15 +801,31 @@ const HEART_POINTS = [
 const HEART_N = HEART_POINTS.length;
 let constellationBuilt = false;
 let starEls = [];
+let segmentEls = []; // one path per adjacent pair of heart points
+let starRevealed = []; // per-star "has its arrival animation already played THIS load" flag -
+                        // deliberately in-memory only (not localStorage) so a refresh always
+                        // starts every star fresh and the whole build-up replays from scratch
 function buildConstellation(){
   const wrap = document.getElementById('constellation');
   const svg = document.getElementById('constellation-svg');
   svg.innerHTML = '';
   const ns = 'http://www.w3.org/2000/svg';
-  const path = document.createElementNS(ns, 'path');
-  path.setAttribute('class', 'star-line');
-  path.id = 'constellation-path';
-  svg.appendChild(path);
+
+  segmentEls = [];
+  for (let i = 0; i < HEART_N - 1; i++) {
+    const seg = document.createElementNS(ns, 'path');
+    seg.setAttribute('class', 'star-line');
+    svg.appendChild(seg);
+    const [x1, y1] = HEART_POINTS[i];
+    const [x2, y2] = HEART_POINTS[i + 1];
+    seg.setAttribute('d', `M ${x1},${y1} L ${x2},${y2}`);
+    let len = 40;
+    try { len = seg.getTotalLength(); } catch (e) {}
+    seg.style.opacity = '0';
+    seg.style.strokeDasharray = String(len);
+    seg.style.strokeDashoffset = String(len);
+    segmentEls.push(seg);
+  }
 
   wrap.querySelectorAll('.star-emoji').forEach(el => el.remove());
   starEls = HEART_POINTS.map(p => {
@@ -365,29 +838,116 @@ function buildConstellation(){
     return s;
   });
 
+  starRevealed = new Array(HEART_N).fill(false);
   constellationBuilt = true;
   document.getElementById('constellation').classList.add('show');
 }
+
+// converts a heart-point's percentage position into real screen coordinates,
+// so a star's sparkle burst/ring lands exactly on top of it
+function starScreenPos(i){
+  const wrap = document.getElementById('constellation');
+  const rect = wrap.getBoundingClientRect();
+  const [px, py] = HEART_POINTS[i];
+  return { x: rect.left + rect.width * (px / 100), y: rect.top + rect.height * (py / 100) };
+}
+
+// a burst of little sparkles flung outward from a newly-lit star - bigger,
+// more numerous, and longer-lived for the epic/newest-star reveal
+function spawnStarSparkles(i, epic){
+  const { x, y } = starScreenPos(i);
+  const layer = document.body;
+  const glyphs = epic ? ['\u2727','\u2726','\u2729','\u2728','\u2661'] : ['\u2727','\u2726','\u2728'];
+  const count = epic ? 20 : 8;
+  for (let k = 0; k < count; k++) {
+    const el = document.createElement('div');
+    el.className = 'star-spark';
+    el.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+    el.style.color = 'var(--evo-accent)';
+    el.style.fontSize = (epic ? (0.9 + Math.random() * 1.1) : (0.5 + Math.random() * 0.6)) + 'rem';
+    const angle = Math.random() * Math.PI * 2;
+    const dist = (epic ? 60 : 30) + Math.random() * (epic ? 60 : 30);
+    el.style.setProperty('--sx', (Math.cos(angle) * dist) + 'px');
+    el.style.setProperty('--sy', (Math.sin(angle) * dist) + 'px');
+    el.style.setProperty('--srot', ((Math.random() - 0.5) * 220) + 'deg');
+    const dur = (epic ? 1.3 : 0.9) + Math.random() * 0.5;
+    el.style.setProperty('--spark-dur', dur + 's');
+    layer.appendChild(el);
+    setTimeout(() => el.remove(), dur * 1000 + 150);
+  }
+}
+
+// a quick expanding shockwave ring right on top of the star
+function spawnStarRing(i, epic){
+  const { x, y } = starScreenPos(i);
+  const layer = document.body;
+  const ring = document.createElement('div');
+  ring.className = 'star-ring' + (epic ? ' big' : '');
+  ring.style.left = x + 'px';
+  ring.style.top = y + 'px';
+  ring.style.setProperty('--ring-scale', epic ? '11' : '5');
+  layer.appendChild(ring);
+  setTimeout(() => ring.remove(), epic ? 1500 : 1050);
+}
+
+// draws in the segment connecting a newly-revealed star to the one just
+// before it with a genuine stroke "draw" animation, never a snap
+function revealSegment(segIdx){
+  const seg = segmentEls[segIdx];
+  if (!seg) return;
+  seg.style.transition = 'stroke-dashoffset 700ms ease, opacity 500ms ease';
+  seg.style.opacity = '0.55';
+  seg.style.strokeDashoffset = '0';
+}
+
+// reveals a single star: springy pop-in, ring flash, sparkle burst - and, if
+// it's the newest star of all, the bigger "epic" version of every part of it
+function revealStar(i, epic, daysLeftNow){
+  const el = starEls[i];
+  if (!el) return;
+  el.classList.remove('birth', 'epic', 'today');
+  void el.offsetWidth; // forces a reflow so the animation restarts cleanly every time
+  el.classList.add('show');
+  el.classList.add(epic ? 'epic' : 'birth');
+  spawnStarRing(i, epic);
+  spawnStarSparkles(i, epic);
+  if (i > 0) revealSegment(i - 1);
+  setTimeout(() => {
+    el.classList.remove('birth', 'epic');
+    if (epic && daysLeftNow > 0) el.classList.add('today');
+  }, epic ? 1500 : 950);
+}
+
+// stars that are "owed" get revealed one at a time with a short building
+// stagger - the heart quite literally pieces itself together star by star -
+// and whichever one turns out to be the newest gets the grander reveal
+function revealNewStars(indices, litCount, daysLeftNow){
+  indices.forEach((i, order) => {
+    setTimeout(() => revealStar(i, i === litCount - 1, daysLeftNow), order * 380);
+  });
+}
+
 function updateConstellation(daysLeft){
   if (!constellationBuilt) buildConstellation();
   const elapsedDays = Math.floor((Date.now() - COUNTDOWN_START) / 86400000);
   const litCount = Math.max(0, Math.min(HEART_N, elapsedDays));
 
-  starEls.forEach((el, i) => {
-    const isLit = i < litCount;
-    el.classList.toggle('show', isLit);
-    el.classList.toggle('today', isLit && i === litCount - 1 && daysLeft > 0);
-  });
+  const newlyLit = [];
+  for (let i = 0; i < litCount; i++) {
+    if (!starRevealed[i]) { starRevealed[i] = true; newlyLit.push(i); }
+  }
+  if (newlyLit.length) revealNewStars(newlyLit, litCount, daysLeft);
 
-  // line only ever joins the stars actually revealed so far
-  const path = document.getElementById('constellation-path');
-  if (path) {
-    if (litCount >= 2) {
-      const d = 'M ' + HEART_POINTS.slice(0, litCount).map(p => p.join(',')).join(' L ');
-      path.setAttribute('d', d);
-    } else {
-      path.removeAttribute('d');
-    }
+  // keeps the "today" glow correctly assigned to whichever star is truly the
+  // most recent one, even on ticks where nothing new gets revealed
+  if (!newlyLit.length && litCount > 0) {
+    starEls.forEach((el, i) => {
+      if (el.classList.contains('birth') || el.classList.contains('epic')) return; // mid-animation, leave it alone
+      if (i === litCount - 1) el.classList.toggle('today', daysLeft > 0);
+      else el.classList.remove('today');
+    });
   }
 }
 
@@ -415,6 +975,80 @@ function spawnBreeze(){
   layer.appendChild(el);
   setTimeout(() => el.remove(), dur * 1000 + 200);
 }
+// 1:30 mark: the fully-built corner heart glides gently into the center,
+// settles into two soft heartbeats, blooms warmer and brighter, then
+// dissolves gracefully into slow-drifting sparkles - no snapping, no jump
+function spawnHeartBurstSparkles(){
+  const layer = document.getElementById('sparkles');
+  const glyphs = ['✧','✦','♡','✨'];
+  for (let i = 0; i < 26; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'zoom-particle';
+      el.dataset.extra = '1';
+      el.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+      el.style.color = 'var(--evo-accent)';
+      el.style.fontSize = (1 + Math.random() * 1.3) + 'rem';
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 20 + Math.random() * 42;
+      el.style.left = '50vw';
+      el.style.top = '50vh';
+      el.style.setProperty('--zx', (Math.cos(angle) * dist) + 'vw');
+      el.style.setProperty('--zy', (Math.sin(angle) * dist) + 'vh');
+      el.style.animation = 'heartBurstFly 2.8s ease-out forwards';
+      layer.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
+    }, i * 70);
+  }
+}
+function triggerHeartBurst(){
+  const el = document.getElementById('constellation');
+  if (!el) return;
+  el.classList.add('heart-glide');                                   // 0.0s: gentle glide + grow to center, 2.4s
+  setTimeout(() => el.classList.add('heart-beat'), 2400);             // 2.4s: two soft heartbeats, ~3.6s
+  setTimeout(() => {                                                  // 6.0s: warm, brighter bloom, 1.4s
+    el.classList.remove('heart-beat');
+    el.classList.add('heart-bloom');
+  }, 6000);
+  setTimeout(() => {                                                  // 7.4s: slow graceful dissolve + sparkles
+    el.classList.add('heart-gone');
+    spawnHeartBurstSparkles();
+  }, 7400);
+}
+
+// resumes any of the one-shot countdown milestones that a fresh page load
+// (e.g. a refresh) has already landed past, without replaying their live animations
+function resumeMilestonesIfMidStream(diff){
+  if (diff <= 40 * 60 * 1000) {
+    leadHidden = true;
+    const lead = document.getElementById('lead');
+    if (lead) lead.classList.add('lead-gone');
+  }
+  if (diff <= 10 * 60 * 1000) {
+    brandGrown = true;
+    document.body.classList.add('brand-grow');
+  }
+  if (diff <= 4 * 60 * 1000) {
+    timerGrowFired = true;
+    if (diff <= 3 * 60 * 1000 + 45 * 1000) {
+      // already past the 15s growth window - snap straight to full size, no animation
+      const timer = document.querySelector('.timer');
+      if (timer) {
+        timer.style.transition = 'none';
+        document.body.classList.add('timer-grow');
+        requestAnimationFrame(() => { timer.style.transition = ''; });
+      }
+    } else {
+      document.body.classList.add('timer-grow');
+    }
+  }
+  if (diff <= 90 * 1000 && diff > 0) {
+    heartBurstFired = true;
+    const el = document.getElementById('constellation');
+    if (el) el.classList.add('heart-glide', 'heart-bloom', 'heart-gone');
+  }
+}
+
 let breezeIntervalId = null;
 
 let lastBigNumber = null;
@@ -422,6 +1056,17 @@ let currentEased = 0;
 let currentDiff = Infinity;
 let extraParticleCount = 0;
 const BUILD_UP_SPAN = 360000; // 6 minutes - the whole build-up window
+const DARK_FULL_AT = 240000; // 4 minutes - background colour transition finishes here (full 2 min)
+const TEXT_FULL_AT = 300000; // 5 minutes - text colour transition finishes here (twice as fast, done after minute 1 of the 2)
+
+let colorPulseStartFired = false;
+let colorPulseEndFired = false;
+function triggerColorPulse(){
+  const flash = document.getElementById('color-pulse');
+  const ring = document.getElementById('color-pulse-ring');
+  flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go');
+  ring.classList.remove('go'); void ring.offsetWidth; ring.classList.add('go');
+}
 
 // color endpoints, defined in HSL rather than RGB. Interpolating hue/saturation/
 // lightness directly (instead of blending raw RGB values) is what avoids the
@@ -454,6 +1099,30 @@ const SPOTLIGHT_SCHEDULE = [
 ];
 const CRAZY_AT = 60000; // 1:00 - all spotlights go full intensity + fast
 
+let leadHidden = false;
+let brandGrown = false;
+let timerGrowFired = false;
+let heartBurstFired = false;
+function checkMilestones(diff){
+  if (!leadHidden && diff <= 40 * 60 * 1000) {
+    leadHidden = true;
+    const lead = document.getElementById('lead');
+    if (lead) lead.classList.add('lead-gone');
+  }
+  if (!brandGrown && diff <= 10 * 60 * 1000) {
+    brandGrown = true;
+    document.body.classList.add('brand-grow');
+  }
+  if (!timerGrowFired && diff <= 4 * 60 * 1000) {
+    timerGrowFired = true;
+    document.body.classList.add('timer-grow');
+  }
+  if (!heartBurstFired && diff <= 90 * 1000) {
+    heartBurstFired = true;
+    triggerHeartBurst();
+  }
+}
+
 function tick() {
   const now = Date.now();
   const diff = TARGET - now;
@@ -465,6 +1134,8 @@ function tick() {
   }
 
   updateBuildUp(diff);
+  try { checkMusicSchedule(diff); } catch(e) { console.warn('music schedule failed', e); }
+  try { checkMilestones(diff); } catch(e) { console.warn('milestone check failed', e); }
 
   const days = Math.floor(diff / 86400000);
   const hours = Math.floor((diff % 86400000) / 3600000);
@@ -495,19 +1166,24 @@ function updateBuildUp(diff){
   const t = clamp(1 - diff / BUILD_UP_SPAN, 0, 1); // 0 at 6min+, 1 at zero
   const eased = t * t; // subtle early, much stronger near the end - drives particle chaos/speed
 
+  if (!colorPulseStartFired && diff <= BUILD_UP_SPAN) { colorPulseStartFired = true; triggerColorPulse(); }
+  if (!colorPulseEndFired && diff <= DARK_FULL_AT) { colorPulseEndFired = true; triggerColorPulse(); }
+
   // darkness/color: its own faster, mostly-linear timeline - fully there by 4 minutes,
   // held from there to zero
-  const DARK_FULL_AT = 240000; // 4 minutes
   const darkT = clamp((BUILD_UP_SPAN - diff) / (BUILD_UP_SPAN - DARK_FULL_AT), 0, 1);
+  // text finishes its color change twice as fast as the background (done by 5:00
+  // instead of 4:00), so it doesn't lag behind everything else evolving around it
+  const textT = clamp((BUILD_UP_SPAN - diff) / (BUILD_UP_SPAN - TEXT_FULL_AT), 0, 1);
 
-  [[65000,'mega-zoom'],[60000,'stage-60'],[30000,'stage-30'],[15000,'stage-15'],[10000,'stage-10'],[5000,'stage-5']]
+  [[60000,'mega-zoom'],[60000,'stage-60'],[30000,'stage-30'],[15000,'stage-15'],[10000,'stage-10'],[5000,'stage-5']]
     .forEach(([th, cls]) => { if (diff <= th) document.body.classList.add(cls); });
 
   // background + text colors, animated together in HSL space
   document.getElementById('dark-wash').style.background =
     `radial-gradient(ellipse at 50% 38%, ${hslLerp(BG_INNER_START, BG_INNER_END, darkT)} 0%, ${hslLerp(BG_OUTER_START, BG_OUTER_END, darkT)} 65%)`;
-  document.querySelector('.brand').style.color = hslLerp(BRAND_START, BRAND_END, darkT);
-  document.querySelector('.lead').style.color = hslLerp(LEAD_START, LEAD_END, darkT);
+  document.querySelector('.brand').style.color = hslLerp(BRAND_START, BRAND_END, textT);
+  document.querySelector('.lead').style.color = hslLerp(LEAD_START, LEAD_END, textT);
 
   // spotlights: enter on schedule, go full-intensity in the final minute
   const crazy = diff <= CRAZY_AT;
@@ -679,6 +1355,7 @@ function clearMiniSpotlights(){
 // -> scene swaps underneath -> curtains sweep back open (slow) -> premiere fades
 // in -> the automatic show begins. ~11 seconds start to finish.
 function triggerReveal(){
+  fadeOutAndStopMusic();
   document.body.classList.remove('mega-zoom','stage-60','stage-30','stage-15','stage-10','stage-5');
   document.getElementById('dark-wash').style.opacity = '0';
   document.getElementById('spot-a').style.opacity = '0';
@@ -690,6 +1367,11 @@ function triggerReveal(){
   currentEased = 0; // stops the independent fast spawn loop too
   if (breezeIntervalId) clearInterval(breezeIntervalId);
   document.getElementById('constellation').classList.remove('show');
+
+  const heartPath = document.getElementById('premiere-heart-path');
+  if (heartPath) heartPath.setAttribute('d', 'M ' + HEART_POINTS.map(p => p.join(',')).join(' L ') + ' Z');
+  const premiereHeart = document.getElementById('premiere-heart');
+  if (premiereHeart) premiereHeart.classList.add('show');
 
   const flash = document.getElementById('flash-overlay');
   const curtainL = document.getElementById('curtain-left');
@@ -731,7 +1413,13 @@ function triggerReveal(){
   }, 7600);
 
   // 6. premiere fades in fully, then the automatic show begins
-  setTimeout(() => document.getElementById('premiere').classList.add('in'), 10200);
+  setTimeout(() => {
+    document.getElementById('premiere').classList.add('in');
+    const fbl = document.getElementById('film-border-left');
+    const fbr = document.getElementById('film-border-right');
+    if (fbl) fbl.classList.add('show');
+    if (fbr) fbr.classList.add('show');
+  }, 10200);
   setTimeout(() => startScenes(), 11000);
 }
 
@@ -758,15 +1446,26 @@ function launchRevealBurst(){
 //   - youtubeId is the bit after "v=" or "youtu.be/" in the video's URL
 //   - set ready:true once a video actually exists - until then it's auto-skipped
 const SCENES = [
-  { type: 'message', text: "It's time! ♡", duration: 4000 },
-  { type: 'message', text: "The Office of Bestie Affairs' Technical Department is putting the finishing touches on the site \u2014 please enjoy the entertainment while you wait.", duration: 6200 },
+  { type: 'message', text: "It's time! ♡", duration: 3000 },
+  { type: 'message', text: "The Office of Bestie Affairs' Technical Department is putting the finishing touches on the site - please enjoy the entertainment while you wait.", duration: 6200 },
   { type: 'video', title: 'Trailer', youtubeId: 'GetcsmJ9U3o', ready: true },
-  { type: 'message', text: "more on the way soon...", duration: 3600 },
-  { type: 'video', title: 'Trailer', youtubeId: '', ready: false },
-  { type: 'message', text: "in the meantime: yes, we are still on call. no, you may not peek behind the curtain early.", duration: 4400 },
   { type: 'video', title: 'Trailer', youtubeId: 'S1Suq_FhgaA', ready: true },
-  { type: 'message', text: "thank you for your patience \u2014 The Office of Bestie Affairs appreciates your continued cooperation.", duration: 4400 },
-  { type: 'video', title: 'Trailer', youtubeId: '', ready: false }
+  { type: 'message', text: "more on the way soon...", duration: 3000 },
+  { type: 'video', title: 'Trailer', youtubeId: '', ready: false },
+  { type: 'message', text: "We sincerely hope your experience today is top notch.", duration: 3000 },
+  { type: 'video', title: 'Teaser Trailer', youtubeId: 'S3ss23jqeJs', ready: true },
+  { type: 'message', text: "in the meantime: yes, we are still on call. no, you may not peek behind the curtain early.", duration: 3000 },
+  { type: 'video', title: 'Trailer', youtubeId: '', ready: false },
+  { type: 'message', text: "thank you for your patience - The Office of Bestie Affairs appreciates your continued cooperation.", duration: 3000 },
+  { type: 'video', title: 'Trailer', youtubeId: '', ready: false },
+  { type: 'message', text: "If you have any complaints about today, please redirect them to our Bin Division, and they will not take care of them, many thanks.", duration: 3000 },
+  { type: 'video', title: 'Teaser Trailer', youtubeId: 'F4QBhh8Z5Os', ready: true },
+  { type: 'message', text: "more on the way soon...", duration: 3000 },
+  { type: 'video', title: 'Teaser Trailer', youtubeId: 'udybD6grIUI', ready: true },
+  { type: 'video', title: 'Trailer', youtubeId: '', ready: true },
+  { type: 'video', title: 'Application', youtubeId: 'hgFDoLYA2vg', ready: true },
+  { type: 'message', text: "What\'s the saying? Bing Chilling Innit. We sure hope you are.", duration: 3000 },
+  { type: 'video', title: 'Bloopers', youtubeId: 'PJseh9UWnVg', ready: true }
 ];
 
 // when a video isn't ready yet, instead of skipping silently, a handful of
@@ -794,7 +1493,47 @@ const COMMENT_POOL = [
   "we stan a production",
   "this is better than the last three films I've seen combined",
   "genuinely unwell about this",
-  "put the trailer on repeat, thanks"
+  "put the trailer on repeat, thanks",
+  "bestie_anon: he built a WEBSITE. a whole website.",
+  "beans meanz heinz and I'll die on this hill",
+  "bestie_anon: the biscuit lore is deep this year",
+  "custard cream propaganda arc incoming",
+  "someone's getting a Jammy Dodger and I'm nervous for her",
+  "the MogSweep person has no idea how loved this box is",
+  "snail mail?? in THIS economy??",
+  "the WWI postcards are unreasonably well wrapped",
+  "aeroplane stickers is such a specific bit",
+  "bing chillin innit is not leaving my head now",
+  "who IS Wren, the people demand answers",
+  "the Nest lore runs deep",
+  "insync era supremacy",
+  "unhinged era supremacy too tbh, no wrong answers",
+  "bestie_anon: the membership contract has CLAUSES",
+  "Annual Bestieship or nothing",
+  "a formal rejection notice for a friendship tier is insane behaviour",
+  "the North Sea is not a problem, it is a setting - iconic line",
+  "genuinely the funniest clause in any contract I've read",
+  "she has NO idea what beans are",
+  "the beans evil plot twist is so cruel and I respect it",
+  "two phase reveal?? this man storyboards",
+  "the [REDACTED] page is about to cause an argument",
+  "biscuit rankings are a blood sport in this friendship apparently",
+  "she's going to open so many things and cry at least 6 times",
+  "boop beep boop beep",
+  "the constellation thing in the corner is so cute what",
+  "bestie_anon: the countdown particles are giving film reel",
+  "someone give this production an award",
+  "the amount of easter eggs hidden in this site is unhinged",
+  "quiz round 5 just dropped and it's chaos",
+  "'all of them are correct' is such a good cop-out answer",
+  "Ann's Dars, Phas Monday, I need context on both immediately",
+  "the Heinz beans can as packaging is criminally underrated",
+  "she's going to need a minute after the letter",
+  "Lil Beans Guy",
+  "okay the box decoration alone deserves its own gallery",
+  "we are so close I cannot breathe",
+  "the lights just dimmed I think we're close",
+  "is it happening. is it happening right now"
 ];
 
 let sceneIndex = -1;
@@ -828,7 +1567,8 @@ function nextScene(){
 
 // fills a not-ready video's slot with 5-10 quick scrolling "comments" instead of nothing
 function playCommentReel(){
-  const count = 5 + Math.floor(Math.random() * 6); // 5-10
+  playRandomFillerMusic();
+  const count = 10;
   const pool = [...COMMENT_POOL];
   const picks = [];
   for (let i = 0; i < count && pool.length; i++) {
@@ -837,7 +1577,7 @@ function playCommentReel(){
   let i = 0;
   function showNext(){
     if (i >= picks.length) { nextScene(); return; }
-    playMessageScene({ text: picks[i], duration: 5000 }, showNext);
+    playMessageScene({ text: picks[i], duration: 3000 }, showNext);
     i++;
   }
   showNext();
@@ -865,6 +1605,7 @@ function playMessageScene(scene, onDone){
 }
 
 function playVideoScene(scene){
+  pauseFillerMusicForVideo();
   const msgEl = document.getElementById('scene-message');
   msgEl.classList.remove('in');
   msgEl.style.display = 'none';
@@ -887,6 +1628,7 @@ function playVideoScene(scene){
     if (!window.YT || !window.YT.Player) { setTimeout(startPlayer, 200); return; }
     new YT.Player('yt-player-target', {
       videoId: scene.youtubeId,
+      host: 'https://www.youtube-nocookie.com',
       playerVars: { autoplay: 1, rel: 0, modestbranding: 1, playsinline: 1, mute: gestureUnlocked ? 0 : 1 },
       events: {
         onReady: e => e.target.playVideo(),
