@@ -329,9 +329,9 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
    tucked in the corner, that quietly ticks up whenever a wandering leaf gets
    caught. Invisible until the very first one is ever caught, then stays as
    a small, quiet presence rather than announcing itself. */
-#light-counter{position:fixed;left:0.7rem;bottom:0.6rem;z-index:50;display:flex;align-items:center;gap:0.3rem;font-family:'EB Garamond',Georgia,serif;font-size:0.62rem;letter-spacing:0.5px;color:var(--brown);opacity:0;pointer-events:none;transition:opacity 1.4s ease}
+#light-counter{position:fixed;left:0.8rem;bottom:0.7rem;z-index:50;display:flex;align-items:center;gap:0.4rem;font-family:'EB Garamond',Georgia,serif;font-size:0.85rem;letter-spacing:0.5px;color:var(--brown);opacity:0;pointer-events:none;transition:opacity 1.4s ease}
 #light-counter.seen{opacity:0.38}
-#light-counter-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 4px var(--gold);display:inline-block}
+#light-counter-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 5px var(--gold);display:inline-block}
 #light-counter.bump #light-counter-dot{animation:lightCounterBlip 0.6s ease}
 @keyframes lightCounterBlip{0%,100%{transform:scale(1)}40%{transform:scale(1.8)}}
 #light-counter.bump #light-counter-num{animation:lightCounterTick 0.5s ease}
@@ -1095,13 +1095,13 @@ function spawnWanderLeaf(){
   const startCx = 10 + Math.random() * 80;
   const startCy = 15 + Math.random() * 70;
   const driftAngle = Math.random() * Math.PI * 2;
-  const driftDist = 25 + Math.random() * 30;
+  const driftDist = 15 + Math.random() * 20;
   const endCx = startCx + Math.cos(driftAngle) * driftDist;
   const endCy = startCy + Math.sin(driftAngle) * driftDist;
-  const orbitRadius = 6 + Math.random() * 8;
-  const turns = 2 + Math.random() * 2; // full spins over the leaf's lifetime
+  const orbitRadius = 5 + Math.random() * 6;
+  const turns = 1.2 + Math.random() * 1.3; // full spins over the leaf's lifetime
   const spinDir = Math.random() < 0.5 ? -1 : 1;
-  const duration = 5200 + Math.random() * 2600;
+  const duration = 8000 + Math.random() * 4000;
   const startTime = performance.now();
   let caught = false;
   let rafId = null;
@@ -1145,7 +1145,7 @@ function spawnWanderLeaf(){
 // "occasionally" - a loose, randomised interval rather than a fixed beat,
 // so the leaves feel like they wander in on their own schedule
 function scheduleNextLeaf(){
-  const delay = 45000 + Math.random() * 55000; // roughly every 45s-100s
+  const delay = 15000 + Math.random() * 60000; // roughly every 15s-75s
   leafScheduleTimer = setTimeout(() => {
     if (leafEventActive()) spawnWanderLeaf();
     scheduleNextLeaf();
