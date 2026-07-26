@@ -329,13 +329,34 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
    tucked in the corner, that quietly ticks up whenever a wandering leaf gets
    caught. Invisible until the very first one is ever caught, then stays as
    a small, quiet presence rather than announcing itself. */
-#light-counter{position:fixed;left:0.8rem;bottom:0.7rem;z-index:50;display:flex;align-items:center;gap:0.4rem;font-family:'EB Garamond',Georgia,serif;font-size:0.85rem;letter-spacing:0.5px;color:var(--brown);opacity:0;pointer-events:none;transition:opacity 1.4s ease}
-#light-counter.seen{opacity:0.38}
+/* ---------- LIGHT COUNTER ----------
+   Ann's found this already, so it no longer needs to hide - just stays
+   small and tasteful, but genuinely readable against any background. */
+#light-counter{position:fixed;left:0.8rem;bottom:0.7rem;z-index:50;display:flex;align-items:center;gap:0.45rem;font-family:'EB Garamond',Georgia,serif;font-size:0.95rem;font-weight:600;letter-spacing:0.4px;color:var(--brown);opacity:0.92;pointer-events:none;padding:0.3rem 0.65rem;border-radius:999px;background:rgba(255,251,240,0.65);box-shadow:0 1px 6px rgba(58,32,16,0.12);border:1px solid rgba(184,104,88,0.18);transition:opacity 0.8s ease,transform 0.3s ease}
 #light-counter-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 5px var(--gold);display:inline-block}
+#light-counter-next{font-size:0.8rem;font-weight:500;opacity:0.62;letter-spacing:0.2px}
 #light-counter.bump #light-counter-dot{animation:lightCounterBlip 0.6s ease}
 @keyframes lightCounterBlip{0%,100%{transform:scale(1)}40%{transform:scale(1.8)}}
 #light-counter.bump #light-counter-num{animation:lightCounterTick 0.5s ease}
 @keyframes lightCounterTick{0%{transform:translateY(-4px);opacity:0.3}100%{transform:translateY(0);opacity:1}}
+#light-counter.milestone{animation:lightCounterMilestone 1.1s ease}
+@keyframes lightCounterMilestone{0%{transform:scale(1);box-shadow:0 1px 6px rgba(58,32,16,0.12)}30%{transform:scale(1.18);box-shadow:0 0 22px rgba(212,160,60,0.55)}100%{transform:scale(1);box-shadow:0 1px 6px rgba(58,32,16,0.12)}}
+
+/* ---------- GROWING LEAF BORDER ----------
+   the whole point of the leaf-catching game: every milestone of accumulated
+   "light" permanently sprouts a few more little leaves around the very edge
+   of the screen, so that by the end of the countdown the entire viewport is
+   framed in a leafy garland. Sits above the ambient background layers but
+   behind the main card, so it reads as a frame rather than a distraction. */
+.leaf-border-layer{position:fixed;inset:0;z-index:22;pointer-events:none}
+.border-leaf{position:fixed;left:0;top:0;transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(0);opacity:0;font-size:var(--leaf-size,1.1rem);filter:drop-shadow(0 1px 3px rgba(58,32,16,0.22));transition:opacity 0.9s ease,transform 0.9s cubic-bezier(0.34,1.56,0.64,1)}
+.border-leaf.grown{opacity:var(--leaf-op,0.85);transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(1)}
+.border-leaf.sprout{animation:borderLeafSprout 0.75s cubic-bezier(0.34,1.56,0.64,1)}
+@keyframes borderLeafSprout{
+  0%{transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(0);filter:drop-shadow(0 0 0 transparent)}
+  55%{transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(1.45);filter:drop-shadow(0 0 10px var(--gold))}
+  100%{transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(1);filter:drop-shadow(0 1px 3px rgba(58,32,16,0.22))}
+}
 
 /* ---------- WANDERING LEAVES ----------
    occasional little leaves spin and swirl their way across the screen
@@ -347,6 +368,13 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 .wander-leaf.caught{animation:leafCaughtPop 0.5s ease-out forwards;pointer-events:none}
 @keyframes leafCaughtPop{0%{opacity:0.92;transform:scale(1) rotate(0deg)}100%{opacity:0;transform:scale(1.9) rotate(35deg)}}
 .leaf-catch-spark{position:fixed;pointer-events:none;z-index:9401;opacity:0;line-height:1;will-change:transform,opacity;animation:starSparkFly var(--spark-dur,0.8s) ease-out forwards}
+.leaf-value-pop{position:fixed;pointer-events:none;z-index:9402;font-family:'Playfair Display',serif;font-weight:700;color:var(--gold);text-shadow:0 1px 4px rgba(58,32,16,0.35);opacity:0;transform:translate(-50%,-50%) scale(0.7);animation:leafValuePop 0.95s cubic-bezier(0.16,1,0.3,1) forwards}
+@keyframes leafValuePop{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(0.6)}
+  22%{opacity:1;transform:translate(-50%,-60%) scale(1.15)}
+  70%{opacity:1;transform:translate(-50%,-115%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-145%) scale(0.95)}
+}
 </style>
 </head>
 <body>
@@ -367,8 +395,9 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 <div class="drift-layer" id="drifts"></div>
 <div class="breeze-layer" id="breezes"></div>
 <div class="sparkle-layer" id="sparkles"></div>
+<div class="leaf-border-layer" id="leaf-border-layer"></div>
 
-<div id="light-counter" aria-hidden="true"><span id="light-counter-dot"></span><span id="light-counter-num">0</span></div>
+<div id="light-counter" aria-hidden="true"><span id="light-counter-dot"></span><span id="light-counter-num">0</span><span id="light-counter-next">/ 18</span></div>
 
 <div class="constellation" id="constellation">
   <svg id="constellation-svg" viewBox="0 0 100 100"></svg>
@@ -757,12 +786,11 @@ function startCountdown(){
   // the final-minutes flood below
   breezeIntervalId = setInterval(spawnBreeze, 1400);
 
-  // wandering, clickable leaves + the tiny hidden light counter they feed -
-  // one is guaranteed within the first 10 seconds of the page ever loading,
-  // so Ann actually has a real chance to stumble onto this early on, rather
-  // than possibly waiting up to 45s before the first one ever appears
+  // wandering, clickable leaves + the (now visible) light counter they feed -
+  // Ann's already found the mechanic, so there's no need to force an early
+  // guaranteed spawn anymore; leaves just follow the normal day-paced schedule
   renderLightCount(getLightCount(), false);
-  setTimeout(() => { if (leafEventActive()) spawnWanderLeaf(); }, 3000 + Math.random() * 7000);
+  initBorderFromStorage();
   scheduleNextLeaf();
 
   // particle spawning runs on its OWN fast loop, independent of the once-per-second
@@ -792,7 +820,7 @@ function pad(n) { return String(Math.max(0, n)).padStart(2, '0'); }
 // rose, then a bright pink-red on the day itself. Both the breeze particles
 // and the constellation stars below read off this same stage.
 const EVO_STAGES = {
-  'evo-1': { glyphs: ['🍃','✧','•'],     label: 'a little while to go yet' },
+  'evo-1': { glyphs: ['🦋','✧','•','🐟','😺'],     label: 'a little while to go yet' },
   'evo-2': { glyphs: ['🦋','✦','♡'],     label: 'getting closer now' },
   'evo-3': { glyphs: ['🎈','✨','♡'],     label: 'so nearly here' },
   'evo-4': { glyphs: ['🎉','✦','♡','💌','🌿','🍃','🍂','🍪','❤️'], label: 'today\u2019s the day!' }
@@ -1011,31 +1039,44 @@ function spawnBreeze(){
 }
 
 // ---------- TINY HIDDEN LIGHT COUNTER ----------
-// a small, unexplained count of how many wandering leaves have been caught -
-// persisted in localStorage (deliberately, unlike the calendar-anchored
-// constellation above) since this genuinely needs to survive across days
-// and page refreshes to mean anything at all.
+// a running count of accumulated "light" from caught leaves - persisted in
+// localStorage (deliberately, unlike the calendar-anchored constellation
+// above) since this needs to survive across days and refreshes to build
+// toward anything. Ann's found the mechanic now, so the counter itself is
+// simply visible rather than hidden - what it's secretly building toward
+// (the border, below) stays the actual surprise.
 const LIGHT_COUNT_KEY = 'annLeafLightCount';
 function getLightCount(){
   const raw = localStorage.getItem(LIGHT_COUNT_KEY);
   const n = raw ? parseInt(raw, 10) : 0;
   return isNaN(n) ? 0 : n;
 }
+// smallest milestone threshold still ahead of `total` - once every milestone
+// is reached (border fully complete) this just returns the final threshold,
+// so the display settles on "368 / 368" rather than showing nothing
+function nextMilestoneThreshold(total){
+  for (let i = 0; i < MILESTONE_THRESHOLDS.length; i++){
+    if (total < MILESTONE_THRESHOLDS[i]) return MILESTONE_THRESHOLDS[i];
+  }
+  return MILESTONE_THRESHOLDS[MILESTONE_THRESHOLDS.length - 1];
+}
 function renderLightCount(count, justBumped){
   const wrap = document.getElementById('light-counter');
   const num = document.getElementById('light-counter-num');
+  const next = document.getElementById('light-counter-next');
   if (!wrap || !num) return;
   num.textContent = String(count);
-  if (count > 0) wrap.classList.add('seen');
+  if (next) next.textContent = '/ ' + nextMilestoneThreshold(count);
   if (justBumped) {
     wrap.classList.remove('bump'); void wrap.offsetWidth;
     wrap.classList.add('bump');
   }
 }
-function bumpLightCount(){
-  const next = getLightCount() + 1;
+function bumpLightCount(value){
+  const next = getLightCount() + value;
   localStorage.setItem(LIGHT_COUNT_KEY, String(next));
   renderLightCount(next, true);
+  growBorderTo(next);
 }
 
 // ---------- WANDERING LEAVES ----------
@@ -1046,10 +1087,59 @@ function bumpLightCount(){
 // constellation's COUNTDOWN_START above - a relative timer would reset if
 // opened fresh somewhere else).
 const LEAF_EVENT_START = new Date('2026-07-26T00:00:00+01:00').getTime();
-const LEAF_EVENT_END = LEAF_EVENT_START + 10 * 86400000;
-const LEAF_GLYPHS = ['\ud83c\udf42','\ud83c\udf43','\ud83c\udf41'];
+const LEAF_EVENT_DAYS = 10;
+const LEAF_EVENT_END = LEAF_EVENT_START + LEAF_EVENT_DAYS * 86400000;
 let leafScheduleTimer = null;
 let activeLeaves = [];
+
+// each type has a point value (Ann's requested scheme), and gets harder to
+// catch the more it's worth - smaller, faster, and spinning more erratically
+// the higher up the scale it goes, so the rarer/more valuable ones actually
+// feel like a genuine catch rather than a freebie
+const LEAF_TYPES = [
+  { glyph: '\ud83e\udd6c', value: 1, sizeMin: 1.35, sizeMax: 1.75, speed: 0.78 }, // 🥬 - big, slow, easy
+  { glyph: '\ud83c\udf3f', value: 2, sizeMin: 1.25, sizeMax: 1.6,  speed: 0.9  }, // 🌿
+  { glyph: '\ud83c\udf43', value: 3, sizeMin: 1.15, sizeMax: 1.5,  speed: 1.0  }, // 🍃
+  { glyph: '\ud83c\udf42', value: 4, sizeMin: 1.05, sizeMax: 1.4,  speed: 1.15 }, // 🍂
+  { glyph: '\ud83c\udf41', value: 5, sizeMin: 0.95, sizeMax: 1.3,  speed: 1.32 }, // 🍁
+  { glyph: '\ud83c\udf40', value: 6, sizeMin: 0.85, sizeMax: 1.2,  speed: 1.5  }, // 🍀 - small, fast, hard
+];
+
+// which leaf types tend to show up shifts over the 10 days: early on it's
+// mostly the low-value easy ones, and higher-value types gradually become
+// more common as the days go on. Combined with the spawn interval below
+// (which also speeds up over the days), this is what actually paces the
+// whole thing across all 10 days instead of letting it get finished in one
+// sitting on day one - both "how often" and "how much they're worth" ramp
+// up together as the days pass.
+const LEAF_DAY_PHASES = [
+  { upToDay: 2, weights: [40, 28, 16, 10, 5, 1] },   // days 0-2: mostly 🥬🌿
+  { upToDay: 6, weights: [20, 20, 20, 16, 14, 10] }, // days 3-6: nicely mixed
+  { upToDay: 99, weights: [10, 13, 17, 20, 21, 19] } // days 7+: mostly 🍁🍀🍂
+];
+function currentLeafDayIndex(){
+  return Math.max(0, Math.min(LEAF_EVENT_DAYS - 1, Math.floor((Date.now() - LEAF_EVENT_START) / 86400000)));
+}
+function pickLeafType(){
+  const day = currentLeafDayIndex();
+  const phase = LEAF_DAY_PHASES.find(p => day <= p.upToDay) || LEAF_DAY_PHASES[LEAF_DAY_PHASES.length - 1];
+  const weights = phase.weights;
+  const total = weights.reduce((a, b) => a + b, 0);
+  let r = Math.random() * total;
+  for (let i = 0; i < LEAF_TYPES.length; i++) {
+    r -= weights[i];
+    if (r <= 0) return LEAF_TYPES[i];
+  }
+  return LEAF_TYPES[LEAF_TYPES.length - 1];
+}
+// spawn frequency also ramps up over the 10 days - slower/rarer at the
+// start, noticeably more frequent by the end
+function currentSpawnDelayRange(){
+  const t = currentLeafDayIndex() / (LEAF_EVENT_DAYS - 1); // 0 (day 0) -> 1 (final day)
+  const min = 15000 - t * 5000;  // 15s -> 10s
+  const max = 45000 - t * 20000; // 45s -> 25s
+  return { min, max };
+}
 
 function leafEventActive(){
   const now = Date.now();
@@ -1058,6 +1148,20 @@ function leafEventActive(){
 
 // a quick little burst right where a leaf gets tapped, distinct from (and
 // smaller than) the star reveal's sparkle burst
+// a quick "+N" popup right where the leaf was tapped, confirming exactly
+// how much light it was worth - bigger, punchier text for the higher-value
+// (harder to catch) leaves so a good catch actually feels like one
+function spawnLeafValuePop(x, y, value){
+  const el = document.createElement('div');
+  el.className = 'leaf-value-pop';
+  el.textContent = '+' + value;
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+  el.style.fontSize = (1.05 + value * 0.09) + 'rem';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1000);
+}
+
 function spawnLeafCatchSparkles(x, y){
   const glyphs = ['\u2727','\u2726','\u2728'];
   for (let k = 0; k < 7; k++) {
@@ -1084,10 +1188,11 @@ function spawnLeafCatchSparkles(x, y){
 // several seconds (genuinely "spinning all around"), then drifts off an
 // edge and fades - unless Ann catches it first
 function spawnWanderLeaf(){
+  const type = pickLeafType();
   const el = document.createElement('div');
   el.className = 'wander-leaf';
-  el.textContent = LEAF_GLYPHS[Math.floor(Math.random() * LEAF_GLYPHS.length)];
-  el.style.fontSize = (1.2 + Math.random() * 0.9) + 'rem';
+  el.textContent = type.glyph;
+  el.style.fontSize = (type.sizeMin + Math.random() * (type.sizeMax - type.sizeMin)) + 'rem';
   document.body.appendChild(el);
   activeLeaves.push(el);
   requestAnimationFrame(() => el.classList.add('in'));
@@ -1095,7 +1200,8 @@ function spawnWanderLeaf(){
   // the swirl's own centre drifts diagonally across the viewport while the
   // leaf orbits around that moving centre - two motions layered together is
   // what actually reads as "spinning around the screen" rather than just
-  // circling in one spot
+  // circling in one spot. Higher-value types move through this faster
+  // (shorter duration, slightly more turns) so they're a genuine catch.
   const startCx = 10 + Math.random() * 80;
   const startCy = 15 + Math.random() * 70;
   const driftAngle = Math.random() * Math.PI * 2;
@@ -1103,9 +1209,9 @@ function spawnWanderLeaf(){
   const endCx = startCx + Math.cos(driftAngle) * driftDist;
   const endCy = startCy + Math.sin(driftAngle) * driftDist;
   const orbitRadius = 5 + Math.random() * 6;
-  const turns = 1.2 + Math.random() * 1.3; // full spins over the leaf's lifetime
+  const turns = (1.2 + Math.random() * 1.3) * (0.85 + type.speed * 0.2);
   const spinDir = Math.random() < 0.5 ? -1 : 1;
-  const duration = 8000 + Math.random() * 4000;
+  const duration = (8000 + Math.random() * 4000) / type.speed;
   const startTime = performance.now();
   let caught = false;
   let rafId = null;
@@ -1140,16 +1246,19 @@ function spawnWanderLeaf(){
     if (rafId) cancelAnimationFrame(rafId);
     const rect = el.getBoundingClientRect();
     spawnLeafCatchSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    spawnLeafValuePop(rect.left + rect.width / 2, rect.top, type.value);
     el.classList.add('caught');
-    bumpLightCount();
+    bumpLightCount(type.value);
     setTimeout(() => { el.remove(); activeLeaves = activeLeaves.filter(l => l !== el); }, 550);
   });
 }
 
-// "occasionally" - a loose, randomised interval rather than a fixed beat,
-// so the leaves feel like they wander in on their own schedule
+// "occasionally" - a loose, randomised interval (that itself speeds up over
+// the 10 days, see currentSpawnDelayRange) rather than a fixed beat, so the
+// leaves feel like they wander in on their own schedule
 function scheduleNextLeaf(){
-  const delay = 15000 + Math.random() * 30000; // roughly every 15s-45s
+  const { min, max } = currentSpawnDelayRange();
+  const delay = min + Math.random() * (max - min);
   leafScheduleTimer = setTimeout(() => {
     if (leafEventActive()) spawnWanderLeaf();
     scheduleNextLeaf();
@@ -1159,6 +1268,140 @@ function stopLeafEvents(){
   if (leafScheduleTimer) clearTimeout(leafScheduleTimer);
   activeLeaves.forEach(el => el.remove());
   activeLeaves = [];
+}
+
+// ---------- GROWING LEAF BORDER ----------
+// the actual payoff: accumulated light reaches a series of milestones, and
+// each milestone permanently sprouts a small contiguous cluster of leaves
+// along the very edge of the screen - so the garland visibly grows outward
+// from wherever it last left off, rather than sprinkling in randomly all
+// over. Lots of small, cheap-ish early milestones (quick, satisfying wins),
+// getting steadily pricier, so the whole thing paces out across all 10 days
+// rather than being finishable in one or two sittings - a normal night's
+// play should land somewhere around 5-10% of the total, with the last
+// milestone landing right at the very end of the event.
+const BORDER_POS_PER_SIDE = 20;
+const TOTAL_BORDER_POSITIONS = BORDER_POS_PER_SIDE * 4; // 80 clusters around the 4 edges
+const LEAVES_PER_POSITION_MIN = 5;
+const LEAVES_PER_POSITION_MAX = 8; // varies per cluster - some spots bunch up thicker than others
+const BORDER_INSET_X = 1.5; // vw base distance from the edge
+const BORDER_INSET_Y = 1.5; // vh base distance from the edge
+const BORDER_INSET_JITTER = 1.7; // extra +/- vw/vh spread so leaves layer at different depths, not one thin line
+const BORDER_ALONG_JITTER = 0.55; // how far a cluster can drift off its "slot" along the edge, as a fraction of the slot width - avoids a perfectly ruled-off grid
+const BORDER_DECOR_GLYPHS = ['\ud83c\udf3f','\ud83c\udf43','\ud83c\udf42','\ud83c\udf41','\ud83e\udd6c','\ud83c\udf40']; // 🌿🍃🍂🍁🥬🍀 - the same leaves Ann's been collecting
+
+// more, smaller milestones (40 of them) instead of a handful of big ones -
+// costs climb steadily (11, 13, 15, ... up to 89) so it stays satisfying
+// early on and appropriately effortful by the end. Sums to 2000 total light
+// needed to complete the whole border.
+const MILESTONE_COUNT = 40;
+const MILESTONE_START_COST = 11;
+const MILESTONE_COST_STEP = 2;
+const MILESTONE_DELTAS = Array.from({ length: MILESTONE_COUNT }, (_, i) => MILESTONE_START_COST + i * MILESTONE_COST_STEP);
+const MILESTONE_THRESHOLDS = (() => { let sum = 0; return MILESTONE_DELTAS.map(d => { sum += d; return sum; }); })();
+const POSITIONS_PER_MILESTONE = TOTAL_BORDER_POSITIONS / MILESTONE_THRESHOLDS.length; // 2 - a small, contiguous chunk each time
+
+let borderEls = []; // borderEls[positionIndex] = array of leaf DOM elements at that cluster
+let unlockedBorderCount = 0; // how many positions (in growth order, i.e. contiguous from the start) are currently grown
+
+// perimeter positions, evenly spaced as a baseline but with real jitter
+// applied to both the along-the-edge placement and the inset depth, so the
+// result reads as a natural, slightly uneven garland rather than a ruled
+// grid of icons
+function buildBorderPoints(){
+  const pts = [];
+  const n = BORDER_POS_PER_SIDE;
+  const slot = 1 / n;
+  const slotVw = (100 - 2 * BORDER_INSET_X) / n;
+  const slotVh = (100 - 2 * BORDER_INSET_Y) / n;
+  const jitterT = () => (Math.random() - 0.5) * 2 * BORDER_ALONG_JITTER * slot;
+  const insetJ = () => (Math.random() - 0.5) * 2 * BORDER_INSET_JITTER;
+  for (let i = 0; i < n; i++) { const t = (i + 0.5) / n + jitterT(); pts.push({ x: clamp(BORDER_INSET_X + insetJ(), 0.2, 6) + t * (100 - 2 * BORDER_INSET_X), y: BORDER_INSET_Y + insetJ(), rot: 0, along: 'x', spread: slotVw }); }
+  for (let i = 0; i < n; i++) { const t = (i + 0.5) / n + jitterT(); pts.push({ x: 100 - BORDER_INSET_X - insetJ(), y: BORDER_INSET_Y + insetJ() + t * (100 - 2 * BORDER_INSET_Y), rot: 90, along: 'y', spread: slotVh }); }
+  for (let i = 0; i < n; i++) { const t = (i + 0.5) / n + jitterT(); pts.push({ x: 100 - BORDER_INSET_X - insetJ() - t * (100 - 2 * BORDER_INSET_X), y: 100 - BORDER_INSET_Y - insetJ(), rot: 180, along: 'x', spread: slotVw }); }
+  for (let i = 0; i < n; i++) { const t = (i + 0.5) / n + jitterT(); pts.push({ x: BORDER_INSET_X + insetJ(), y: 100 - BORDER_INSET_Y - insetJ() - t * (100 - 2 * BORDER_INSET_Y), rot: 270, along: 'y', spread: slotVh }); }
+  return pts;
+}
+function milestonesReachedFor(total){
+  let m = 0;
+  for (let i = 0; i < MILESTONE_THRESHOLDS.length; i++) if (total >= MILESTONE_THRESHOLDS[i]) m = i + 1;
+  return m;
+}
+function unlockedPositionCountFor(total){
+  return Math.min(TOTAL_BORDER_POSITIONS, Math.round(milestonesReachedFor(total) * POSITIONS_PER_MILESTONE));
+}
+// builds a thick little cluster of leaves around one perimeter anchor point -
+// varied sizes, rotations, glyphs and small random offsets so each cluster
+// looks like a natural bunch rather than a single repeated icon
+function buildCluster(layer, anchor){
+  const count = LEAVES_PER_POSITION_MIN + Math.floor(Math.random() * (LEAVES_PER_POSITION_MAX - LEAVES_PER_POSITION_MIN + 1));
+  const els = [];
+  // leaves spread across ~180% of the slot along the edge (generous overlap
+  // margin, so neighboring clusters' spans always overlap regardless of the
+  // anchor jitter) and a real perpendicular spread too, so the garland reads
+  // as genuinely several leaves deep rather than a thin single-file line
+  const alongSpread = (anchor.spread || 4) * 1.8;
+  const acrossSpread = 3.2;
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('div');
+    el.className = 'border-leaf';
+    el.textContent = BORDER_DECOR_GLYPHS[Math.floor(Math.random() * BORDER_DECOR_GLYPHS.length)];
+    const along = (Math.random() - 0.5) * alongSpread;
+    const across = (Math.random() - 0.5) * acrossSpread;
+    const dx = anchor.along === 'x' ? along : across;
+    const dy = anchor.along === 'y' ? along : across;
+    el.style.left = (anchor.x + dx) + 'vw';
+    el.style.top = (anchor.y + dy) + 'vh';
+    el.style.setProperty('--rot', (anchor.rot + (Math.random() - 0.5) * 70) + 'deg');
+    el.style.setProperty('--leaf-size', (0.8 + Math.random() * 0.75) + 'rem');
+    el.style.setProperty('--leaf-op', (0.68 + Math.random() * 0.28).toFixed(2));
+    layer.appendChild(el);
+    els.push(el);
+  }
+  return els;
+}
+function buildLeafBorder(){
+  const layer = document.getElementById('leaf-border-layer');
+  if (!layer) return;
+  layer.innerHTML = '';
+  const points = buildBorderPoints();
+  borderEls = points.map(p => buildCluster(layer, p));
+}
+// called once on load: silently shows however much border was already
+// earned in previous sessions, with no celebration since that was earned
+// before now
+function initBorderFromStorage(){
+  buildLeafBorder();
+  const target = unlockedPositionCountFor(getLightCount());
+  for (let k = 0; k < target; k++) {
+    (borderEls[k] || []).forEach(el => el.classList.add('grown'));
+  }
+  unlockedBorderCount = target;
+}
+// called every time light is gained: grows the border further the moment a
+// new milestone is actually crossed - always the NEXT contiguous section
+// along the perimeter, so it reads as one garland steadily extending itself
+// rather than leaves popping up in random spots
+function growBorderTo(total){
+  const target = unlockedPositionCountFor(total);
+  if (target <= unlockedBorderCount) return;
+  let leafDelay = 0;
+  for (let k = unlockedBorderCount; k < target; k++) {
+    (borderEls[k] || []).forEach(el => {
+      const delay = leafDelay;
+      leafDelay += 70;
+      setTimeout(() => {
+        el.classList.add('grown', 'sprout');
+        setTimeout(() => el.classList.remove('sprout'), 750);
+      }, delay);
+    });
+  }
+  unlockedBorderCount = target;
+  const counter = document.getElementById('light-counter');
+  if (counter) {
+    counter.classList.remove('milestone'); void counter.offsetWidth;
+    counter.classList.add('milestone');
+  }
 }
 
 // 1:30 mark: the fully-built corner heart glides gently into the center,
