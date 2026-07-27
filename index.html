@@ -479,7 +479,7 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 
 <div class="wrap">
   <div class="brand">Besties ♡</div>
-  <p class="lead" id="lead">keep checking back! power hour activates at 7pm gmt+1 daily</p>
+  <p class="lead" id="lead">keep checking back! power hour activates at 8pm gmt+1 daily</p>
 
   <div class="timer" id="timer">
     <div class="timer-unit"><div class="timer-num" id="t-days">00</div><div class="timer-label">Days</div></div>
@@ -1205,7 +1205,7 @@ function breakCatchStreak(){
 // leaf-day rolls over at the exact same instant the main countdown's days
 // digit ticks down - keep this hour/minute in sync with TARGET above if
 // TARGET's time ever changes
-const LEAF_EVENT_START = new Date('2026-07-26T18:00:00+01:00').getTime();
+const LEAF_EVENT_START = new Date('2026-07-26T19:00:00+01:00').getTime();
 const LEAF_EVENT_DAYS = 10;
 const LEAF_EVENT_END = LEAF_EVENT_START + LEAF_EVENT_DAYS * 86400000;
 let leafScheduleTimer = null;
