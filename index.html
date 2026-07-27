@@ -1363,15 +1363,24 @@ function leafEventActive(){
 // noticeably more often - a real daily "event" window rather than a hidden
 // multiplier nobody notices. Factored into the milestone total below (see
 // note there) since it adds meaningful extra light on top of the daily ramp.
-const POWER_HOUR_START_HOUR = 19; // 5pm
-const POWER_HOUR_END_HOUR = 20;   // 6pm
+// Power hour is defined by a fixed UTC clock time so it lands at the same
+// real-world moment for everyone, regardless of their local timezone -
+// 18:00 UTC is 7pm in the UK (BST) and 8pm in central Europe (CEST) at the
+// same instant. EDIT these three to move when power hour starts and how
+// long it runs.
+const POWER_HOUR_START_HOUR_UTC = 18;   // 18 = 6pm UTC (7pm BST / 8pm CEST)
+const POWER_HOUR_START_MINUTE_UTC = 7;  // set to e.g. 30 for a half-past start
+const POWER_HOUR_DURATION_MINUTES = 60; // how long power hour lasts
 const POWER_HOUR_VALUE_MULT = 2;
 const POWER_HOUR_SPAWN_MULT = 0.6; // spawn delays multiplied by this -> ~40% faster
 let powerHourWasActive = false;
 function isPowerHourActive(){
   if (!leafEventActive()) return false;
-  const h = new Date().getHours();
-  return h >= POWER_HOUR_START_HOUR && h < POWER_HOUR_END_HOUR;
+  const now = new Date();
+  const minutesNow = now.getUTCHours() * 60 + now.getUTCMinutes();
+  const start = POWER_HOUR_START_HOUR_UTC * 60 + POWER_HOUR_START_MINUTE_UTC;
+  const end = start + POWER_HOUR_DURATION_MINUTES;
+  return minutesNow >= start && minutesNow < end;
 }
 // ---------- POWER HOUR GALAXY STARFIELD ----------
 // a scattering of small twinkling stars, generated once up front and simply
