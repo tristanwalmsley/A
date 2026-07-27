@@ -2374,7 +2374,12 @@ for (let i = 0; i < 26; i++) {
 }
 
 // soft ambient glow blobs, slowly drifting behind everything
-const glowColors = ['#c8943a','#b86858','#7a9870','#d4b483'];
+const glowColors = [
+    '#b8e994', // light fresh green
+    '#8bcf7d', // leaf green
+    '#6fb26d', // medium green
+    '#4f8d4e'  // deep forest green
+];
 const glowLayer = document.getElementById('glows');
 for (let i = 0; i < 4; i++) {
   const b = document.createElement('div');
@@ -2388,7 +2393,12 @@ for (let i = 0; i < 4; i++) {
 
 // slow-drifting glyphs rising up the whole page for extra depth
 const driftGlyphs = ['♡','✦','✧','•','◦'];
-const driftColors = ['#c8943a','#b86858','#d4b483','#7a9870'];
+const driftColors = [
+    '#b8e994', // light fresh green
+    '#8bcf7d', // leaf green
+    '#6fb26d', // medium green
+    '#4f8d4e'  // deep forest green
+];
 const driftLayer = document.getElementById('drifts');
 for (let i = 0; i < 22; i++) {
   const d = document.createElement('div');
