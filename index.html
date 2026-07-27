@@ -10,7 +10,19 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--cream:#faf4e8;--warm:#f0ddb8;--tan:#d4b483;--brown:#7a5230;--deep:#3a2010;--rose:#b86858;--gold:#c8943a;--sage:#7a9870;--paper:#fffdf5;--ink:#2a1a08}
 html,body{height:100%}
-body{background:radial-gradient(ellipse at 50% 38%, #fffaf0 0%, var(--cream) 65%);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden;display:flex;align-items:center;justify-content:center;padding:2rem}
+body{background:
+radial-gradient(
+    ellipse at top,
+    rgba(255,255,255,0.55) 0%,
+    rgba(255,255,255,0) 55%
+),
+linear-gradient(
+    180deg,
+    #f7fdf4 0%,
+    #eaf7e2 30%,
+    #d5efc8 65%,
+    #b7df9d 100%
+);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden;display:flex;align-items:center;justify-content:center;padding:2rem}
 body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.6}
 
 /* ---------- POWER HOUR VOLUME SLIDER ----------
