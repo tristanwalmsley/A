@@ -342,6 +342,50 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 #light-counter.milestone{animation:lightCounterMilestone 1.1s ease}
 @keyframes lightCounterMilestone{0%{transform:scale(1);box-shadow:0 1px 6px rgba(58,32,16,0.12)}30%{transform:scale(1.18);box-shadow:0 0 22px rgba(212,160,60,0.55)}100%{transform:scale(1);box-shadow:0 1px 6px rgba(58,32,16,0.12)}}
 
+/* ---------- STREAK COUNTER ----------
+   sits directly above the light counter, same pill styling for a matched
+   set. Purely for satisfaction - doesn't affect the economy at all, just
+   quietly tracks consecutive days Ann's opened the page during the event. */
+#streak-counter{position:fixed;left:0.8rem;bottom:2.65rem;z-index:50;display:flex;align-items:center;gap:0.4rem;font-family:'EB Garamond',Georgia,serif;font-size:0.95rem;font-weight:600;letter-spacing:0.4px;color:var(--brown);opacity:0;pointer-events:none;padding:0.3rem 0.65rem;border-radius:999px;background:rgba(255,251,240,0.65);box-shadow:0 1px 6px rgba(58,32,16,0.12);border:1px solid rgba(184,104,88,0.18);transition:opacity 0.8s ease,transform 0.3s ease}
+#streak-counter.show{opacity:0.92}
+#streak-counter.bump{animation:lightCounterMilestone 1.1s ease}
+
+/* ---------- POWER HOUR BADGE ----------
+   only visible 5-6pm each day of the leaf event - a small, warm callout so
+   the daily 2x window actually feels like an event rather than a hidden
+   multiplier nobody notices. */
+#power-hour-badge{position:fixed;left:50%;top:1rem;transform:translateX(-50%) translateY(-140%);z-index:55;font-family:'Caveat',cursive;font-size:1.25rem;font-weight:700;color:var(--paper);letter-spacing:0.5px;padding:0.4rem 1.1rem;border-radius:999px;background:linear-gradient(135deg,var(--gold),var(--rose));box-shadow:0 3px 14px rgba(58,32,16,0.28);opacity:0;transition:opacity 0.7s ease,transform 0.7s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;white-space:nowrap}
+#power-hour-badge.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* 30s "beginning" flourish: badge sweeps in oversized and glowing, throws a
+   full-screen light wash behind it, then settles down to normal size right
+   as the steady active pulse (below) takes over */
+#power-hour-badge.ph-beginning{animation:powerHourBegin 30s cubic-bezier(0.22,1,0.36,1) forwards}
+@keyframes powerHourBegin{
+  0%{transform:translateX(-50%) translateY(-140%) scale(0.6);box-shadow:0 3px 14px rgba(58,32,16,0.28)}
+  12%{transform:translateX(-50%) translateY(0) scale(1.9);box-shadow:0 0 60px 12px rgba(200,148,58,0.65)}
+  35%{transform:translateX(-50%) translateY(0) scale(1.55);box-shadow:0 0 40px 8px rgba(200,148,58,0.5)}
+  100%{transform:translateX(-50%) translateY(0) scale(1);box-shadow:0 3px 14px rgba(58,32,16,0.28)}
+}
+#power-hour-begin-wash{position:fixed;inset:0;z-index:54;pointer-events:none;background:radial-gradient(ellipse at 50% 0%, rgba(200,148,58,0.35), transparent 65%);opacity:0}
+#power-hour-begin-wash.go{animation:powerHourWash 30s ease-out forwards}
+@keyframes powerHourWash{0%{opacity:0}15%{opacity:1}100%{opacity:0}}
+/* steady indicator while power hour is live: a slow, unmistakable breathing
+   glow so it's obvious at a glance the 2x window is on, without being as
+   showy as the begin/end flourishes */
+#power-hour-badge.ph-active{animation:powerHourPulse 2.4s ease-in-out infinite}
+@keyframes powerHourPulse{
+  0%,100%{box-shadow:0 3px 14px rgba(58,32,16,0.28),0 0 0 0 rgba(200,148,58,0.55)}
+  50%{box-shadow:0 3px 14px rgba(58,32,16,0.28),0 0 22px 6px rgba(200,148,58,0.55)}
+}
+/* 30s "ending" dissolve: the glow gradually drains and the badge sinks back
+   away rather than snapping off */
+#power-hour-badge.ph-ending{animation:powerHourEnd 30s ease-in forwards}
+@keyframes powerHourEnd{
+  0%{transform:translateX(-50%) translateY(0) scale(1);opacity:1;box-shadow:0 3px 14px rgba(58,32,16,0.28),0 0 22px 6px rgba(200,148,58,0.55)}
+  70%{transform:translateX(-50%) translateY(0) scale(0.97);opacity:0.85;box-shadow:0 3px 14px rgba(58,32,16,0.28),0 0 0 0 transparent}
+  100%{transform:translateX(-50%) translateY(-140%) scale(0.85);opacity:0}
+}
+
 /* ---------- GROWING LEAF BORDER ----------
    the whole point of the leaf-catching game: every milestone of accumulated
    "light" permanently sprouts a few more little leaves around the very edge
@@ -375,6 +419,33 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
   70%{opacity:1;transform:translate(-50%,-115%) scale(1)}
   100%{opacity:0;transform:translate(-50%,-145%) scale(0.95)}
 }
+
+/* ---------- MOBILE ----------
+   Ann's on her phone for this, so: less wasted edge padding (more room for
+   the timer to stay on one row), the timer/big-number text scales down
+   instead of wrapping or clipping, the corner pills (light/streak/power
+   hour) shrink and tuck in a bit tighter, and wandering leaves get a
+   slightly bigger tap target since a fingertip is far less precise than a
+   cursor. */
+@media (max-width: 480px){
+  body{padding:1rem}
+  .wrap{max-width:100%}
+  .timer{gap:0.45rem;margin-bottom:1.8rem}
+  .timer-unit{min-width:0;flex:1 1 68px;max-width:80px;padding:0.8rem 0.3rem 0.7rem}
+  .timer-num{font-size:clamp(1.5rem,7vw,2.4rem)}
+  .timer-label{font-size:0.68rem;letter-spacing:1px}
+  .brand{font-size:1.2rem;margin-bottom:1.6rem}
+  .lead{font-size:1.05rem;margin-bottom:1.8rem}
+  #big-number{font-size:clamp(5rem,26vw,9rem)}
+  .constellation{width:min(38vw,220px);height:min(38vw,220px)}
+  #light-counter,#streak-counter{font-size:0.82rem;padding:0.25rem 0.55rem;left:0.5rem}
+  #light-counter{bottom:0.5rem}
+  #streak-counter{bottom:2.15rem}
+  #power-hour-badge{font-size:1.05rem;padding:0.35rem 0.9rem;top:0.6rem}
+  .wander-leaf{font-size:2rem} /* bigger effective tap target for touch; the JS's -0.75em centering offset scales with font-size automatically */
+  .entry-title{font-size:1.7rem}
+  .entry-sub{font-size:0.9rem}
+}
 </style>
 </head>
 <body>
@@ -398,6 +469,9 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 <div class="leaf-border-layer" id="leaf-border-layer"></div>
 
 <div id="light-counter" aria-hidden="true"><span id="light-counter-dot"></span><span id="light-counter-num">0</span><span id="light-counter-next">/ 18</span></div>
+<div id="streak-counter" aria-hidden="true"><span>🔥</span><span id="streak-counter-num">0</span><span id="streak-counter-label">in a row</span></div>
+<div id="power-hour-badge" aria-hidden="true">⚡ Power Hour – 2x leaves!</div>
+<div id="power-hour-begin-wash" aria-hidden="true"></div>
 
 <div class="constellation" id="constellation">
   <svg id="constellation-svg" viewBox="0 0 100 100"></svg>
@@ -405,7 +479,7 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 
 <div class="wrap">
   <div class="brand">Besties ♡</div>
-  <p class="lead" id="lead">keep checking back daily!</p>
+  <p class="lead" id="lead">keep checking back! power hour activates at 7pm gmt+1 daily</p>
 
   <div class="timer" id="timer">
     <div class="timer-unit"><div class="timer-num" id="t-days">00</div><div class="timer-label">Days</div></div>
@@ -779,6 +853,7 @@ function pauseFillerMusicForVideo(){
 function startCountdown(){
   resumeMusicIfMidStream(TARGET - Date.now());
   resumeMilestonesIfMidStream(TARGET - Date.now());
+  try { checkPowerHour(); } catch(e) { console.warn('power hour check failed', e); }
   intervalId = setInterval(tick, 1000);
   tick();
 
@@ -810,7 +885,7 @@ function startCountdown(){
 // Countdown target - 5th August 2026, 6:00pm.
 // Written as UK local time (BST, UTC+1 in August). If the person this counts
 // down for is somewhere else, adjust the "+01:00" offset below to match.
-const TARGET = new Date('2026-08-05T18:09:00+01:00').getTime();
+const TARGET = new Date('2026-08-05T18:00:00+01:00').getTime();
 
 function pad(n) { return String(Math.max(0, n)).padStart(2, '0'); }
 
@@ -1079,6 +1154,46 @@ function bumpLightCount(value){
   growBorderTo(next);
 }
 
+// ---------- CATCH STREAK ----------
+// purely cosmetic satisfaction, no bonus attached on purpose (Ann's request) -
+// counts CONSECUTIVE leaf catches in a row. Every successful catch bumps it
+// by one; the moment a spawned leaf finishes its wander and drifts off
+// uncaught, the streak breaks back to 0. Best-ever streak is remembered
+// (localStorage) so it can be surfaced later, but only the live current
+// streak is shown - a page reload starts a fresh run, same as walking away
+// and coming back to catch leaves again.
+const BEST_STREAK_KEY = 'annLeafBestStreak';
+let currentStreak = 0;
+function getBestStreak(){
+  try { return parseInt(localStorage.getItem(BEST_STREAK_KEY), 10) || 0; }
+  catch (e) { return 0; }
+}
+function renderStreak(streak, bumped){
+  const wrap = document.getElementById('streak-counter');
+  const num = document.getElementById('streak-counter-num');
+  const label = document.getElementById('streak-counter-label');
+  if (!wrap || !num) return;
+  if (streak <= 0) { wrap.classList.remove('show'); return; }
+  num.textContent = String(streak);
+  if (label) label.textContent = streak === 1 ? 'in a row' : 'in a row';
+  wrap.classList.add('show');
+  if (bumped) { wrap.classList.remove('bump'); void wrap.offsetWidth; wrap.classList.add('bump'); }
+}
+// called every time a leaf is actually caught
+function bumpCatchStreak(){
+  currentStreak += 1;
+  const best = Math.max(getBestStreak(), currentStreak);
+  try { localStorage.setItem(BEST_STREAK_KEY, String(best)); } catch (e) {}
+  renderStreak(currentStreak, true);
+}
+// called whenever a spawned leaf finishes its wander uncaught (drifts off
+// and fades) - breaks the streak back to zero
+function breakCatchStreak(){
+  if (currentStreak === 0) return;
+  currentStreak = 0;
+  renderStreak(0, false);
+}
+
 // ---------- WANDERING LEAVES ----------
 // only active for a limited window (roughly the ~10 days leading up to the
 // big day) - adjust LEAF_EVENT_START if this gets deployed on a different
@@ -1086,7 +1201,11 @@ function bumpLightCount(value){
 // from whenever this happens to first load" (same reasoning as the
 // constellation's COUNTDOWN_START above - a relative timer would reset if
 // opened fresh somewhere else).
-const LEAF_EVENT_START = new Date('2026-07-26T00:00:00+01:00').getTime();
+// aligned to TARGET's time-of-day (18:00 BST) rather than midnight, so a
+// leaf-day rolls over at the exact same instant the main countdown's days
+// digit ticks down - keep this hour/minute in sync with TARGET above if
+// TARGET's time ever changes
+const LEAF_EVENT_START = new Date('2026-07-26T18:00:00+01:00').getTime();
 const LEAF_EVENT_DAYS = 10;
 const LEAF_EVENT_END = LEAF_EVENT_START + LEAF_EVENT_DAYS * 86400000;
 let leafScheduleTimer = null;
@@ -1105,25 +1224,33 @@ const LEAF_TYPES = [
   { glyph: '\ud83c\udf40', value: 6, sizeMin: 0.85, sizeMax: 1.2,  speed: 1.5  }, // 🍀 - small, fast, hard
 ];
 
-// which leaf types tend to show up shifts over the 10 days: early on it's
-// mostly the low-value easy ones, and higher-value types gradually become
-// more common as the days go on. Combined with the spawn interval below
-// (which also speeds up over the days), this is what actually paces the
-// whole thing across all 10 days instead of letting it get finished in one
-// sitting on day one - both "how often" and "how much they're worth" ramp
-// up together as the days pass.
-const LEAF_DAY_PHASES = [
-  { upToDay: 2, weights: [40, 28, 16, 10, 5, 1] },   // days 0-2: mostly 🥬🌿
-  { upToDay: 6, weights: [20, 20, 20, 16, 14, 10] }, // days 3-6: nicely mixed
-  { upToDay: 99, weights: [10, 13, 17, 20, 21, 19] } // days 7+: mostly 🍁🍀🍂
-];
+// ---------- DAILY RAMP ----------
+// everything that changes day to day lives here, driven by one continuous
+// 0 (day 0) -> 1 (final day) progress value `t` rather than the old 3
+// fixed buckets - so instead of jumping between three flat plateaus, rarity,
+// value, spawn rate, and simultaneous spawns all creep up smoothly EVERY
+// single day. Concretely, per day this ramp increases:
+//   1. how much each leaf type is worth (LEAF_VALUE ramp below)
+//   2. how likely the rarer/higher-value types are to spawn at all (weights)
+//   3. how often ANY leaf spawns (spawn interval shrinks)
+//   4. from day ~5 on, the chance a second leaf spawns alongside the first
+//      ("appear more often" beyond just a shorter gap between them)
 function currentLeafDayIndex(){
   return Math.max(0, Math.min(LEAF_EVENT_DAYS - 1, Math.floor((Date.now() - LEAF_EVENT_START) / 86400000)));
 }
+function currentLeafDayProgress(){
+  return currentLeafDayIndex() / (LEAF_EVENT_DAYS - 1); // 0 -> 1 across the 10 days
+}
+// rarity weights lerp smoothly from "mostly common" to "mostly rare", instead
+// of snapping between 3 fixed brackets - every day nudges the odds a little
+const LEAF_WEIGHTS_START = [40, 28, 16, 10, 5, 1];  // day 0: heavily 🥬🌿
+const LEAF_WEIGHTS_END   = [6, 9, 14, 19, 23, 29];  // final day: heavily 🍁🍀🍂
+function currentLeafWeights(){
+  const t = currentLeafDayProgress();
+  return LEAF_WEIGHTS_START.map((w, i) => w + (LEAF_WEIGHTS_END[i] - w) * t);
+}
 function pickLeafType(){
-  const day = currentLeafDayIndex();
-  const phase = LEAF_DAY_PHASES.find(p => day <= p.upToDay) || LEAF_DAY_PHASES[LEAF_DAY_PHASES.length - 1];
-  const weights = phase.weights;
+  const weights = currentLeafWeights();
   const total = weights.reduce((a, b) => a + b, 0);
   let r = Math.random() * total;
   for (let i = 0; i < LEAF_TYPES.length; i++) {
@@ -1132,18 +1259,90 @@ function pickLeafType(){
   }
   return LEAF_TYPES[LEAF_TYPES.length - 1];
 }
-// spawn frequency also ramps up over the 10 days - slower/rarer at the
-// start, noticeably more frequent by the end
+// every leaf type's base value is scaled up by this multiplier as the days
+// pass (1x today/day 0, 2x by day 1/tomorrow, climbing to 10x on the final
+// day) - a 🥬 caught on the last day is worth dramatically more than one
+// caught today, on top of rarer types simply showing up more often
+const LEAF_VALUE_DAY_MULT_MAX = 10.0; // day0 stays 1x (today's baseline), day1 lands at 2x, final day hits 10x
+function currentLeafValueMultiplier(){
+  return 1 + currentLeafDayProgress() * (LEAF_VALUE_DAY_MULT_MAX - 1);
+}
+// spawn frequency ramps up over the 10 days - slower/rarer at the start,
+// noticeably more frequent by the end
 function currentSpawnDelayRange(){
-  const t = currentLeafDayIndex() / (LEAF_EVENT_DAYS - 1); // 0 (day 0) -> 1 (final day)
-  const min = 15000 - t * 5000;  // 15s -> 10s
-  const max = 45000 - t * 20000; // 45s -> 25s
+  const t = currentLeafDayProgress();
+  let min = 15000 - t * 6000;  // 15s -> 9s
+  let max = 45000 - t * 25000; // 45s -> 20s
+  if (isPowerHourActive()) { min *= POWER_HOUR_SPAWN_MULT; max *= POWER_HOUR_SPAWN_MULT; }
   return { min, max };
+}
+// from day 5 onward there's a growing chance a SECOND leaf spawns right
+// alongside the first, rather than only relying on a shorter gap between
+// single spawns - this is what makes the later days feel busier, not just
+// faster. Power hour also adds its own flat bump to this chance.
+const DOUBLE_SPAWN_START_DAY = 5;
+function doubleSpawnChance(){
+  const day = currentLeafDayIndex();
+  let chance = day < DOUBLE_SPAWN_START_DAY ? 0 : (day - DOUBLE_SPAWN_START_DAY) / (LEAF_EVENT_DAYS - 1 - DOUBLE_SPAWN_START_DAY) * 0.5; // up to 50%
+  if (isPowerHourActive()) chance = Math.min(1, chance + 0.25);
+  return chance;
 }
 
 function leafEventActive(){
   const now = Date.now();
   return now >= LEAF_EVENT_START && now <= LEAF_EVENT_END && currentDiff > 0;
+}
+
+// ---------- POWER HOUR ----------
+// tied to the countdown itself, not the device's wall clock: fires for the
+// hour immediately after each leaf-day rollover (LEAF_EVENT_START is aligned
+// to 18:00 BST, same time-of-day as TARGET - see note up there), so "9 days
+// exactly" ticking over into "8 days 23 hours" is the moment power hour
+// begins, and it runs for exactly one hour from there. Because
+// LEAF_EVENT_START is pinned to 18:00 BST this lands on 6-7pm BST every day
+// as a side effect, but the source of truth is the target-relative rollover,
+// not the clock - so it stays correct even if the page is opened from a
+// different timezone. Leaves are worth 2x AND spawn noticeably more often
+// during this window. Factored into the milestone total below (see note
+// there) since it adds meaningful extra light on top of the daily ramp.
+const POWER_HOUR_DURATION_MS = 3600000; // 1 hour
+const POWER_HOUR_VALUE_MULT = 2;
+const POWER_HOUR_SPAWN_MULT = 0.6; // spawn delays multiplied by this -> ~40% faster
+const POWER_HOUR_ANIM_MS = 30000; // length of the begin/end transition animations
+let powerHourWasActive = false;
+let powerHourBeginTimer = null, powerHourEndTimer = null;
+function isPowerHourActive(){
+  if (!leafEventActive()) return false;
+  const sinceStart = Date.now() - LEAF_EVENT_START;
+  if (sinceStart < 0) return false;
+  return (sinceStart % 86400000) < POWER_HOUR_DURATION_MS;
+}
+function checkPowerHour(){
+  const active = isPowerHourActive();
+  if (active === powerHourWasActive) return;
+  powerHourWasActive = active;
+  const badge = document.getElementById('power-hour-badge');
+  const wash = document.getElementById('power-hour-begin-wash');
+  if (!badge) return;
+  clearTimeout(powerHourBeginTimer); clearTimeout(powerHourEndTimer);
+  if (active) {
+    // 30s "beginning" flourish, then settle into the steady active indicator
+    badge.classList.remove('ph-ending');
+    badge.classList.add('show', 'ph-beginning');
+    if (wash) { wash.classList.remove('go'); void wash.offsetWidth; wash.classList.add('go'); }
+    powerHourBeginTimer = setTimeout(() => {
+      badge.classList.remove('ph-beginning');
+      badge.classList.add('ph-active');
+    }, POWER_HOUR_ANIM_MS);
+  } else {
+    // 30s "ending" dissolve, then fully hide
+    badge.classList.remove('ph-beginning', 'ph-active');
+    badge.classList.add('ph-ending');
+    if (wash) wash.classList.remove('go');
+    powerHourEndTimer = setTimeout(() => {
+      badge.classList.remove('show', 'ph-ending');
+    }, POWER_HOUR_ANIM_MS);
+  }
 }
 
 // a quick little burst right where a leaf gets tapped, distinct from (and
@@ -1231,6 +1430,7 @@ function spawnWanderLeaf(){
     el.style.transform = `rotate(${(angle * 180 / Math.PI) % 360}deg) scale(${hoverScale})`;
     if (t >= 1) {
       el.classList.remove('in');
+      breakCatchStreak();
       setTimeout(() => { el.remove(); activeLeaves = activeLeaves.filter(l => l !== el); }, 650);
       return;
     }
@@ -1245,10 +1445,13 @@ function spawnWanderLeaf(){
     caught = true;
     if (rafId) cancelAnimationFrame(rafId);
     const rect = el.getBoundingClientRect();
+    let finalValue = Math.round(type.value * currentLeafValueMultiplier());
+    if (isPowerHourActive()) finalValue *= POWER_HOUR_VALUE_MULT;
     spawnLeafCatchSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2);
-    spawnLeafValuePop(rect.left + rect.width / 2, rect.top, type.value);
+    spawnLeafValuePop(rect.left + rect.width / 2, rect.top, finalValue);
     el.classList.add('caught');
-    bumpLightCount(type.value);
+    bumpLightCount(finalValue);
+    bumpCatchStreak();
     setTimeout(() => { el.remove(); activeLeaves = activeLeaves.filter(l => l !== el); }, 550);
   });
 }
@@ -1260,7 +1463,10 @@ function scheduleNextLeaf(){
   const { min, max } = currentSpawnDelayRange();
   const delay = min + Math.random() * (max - min);
   leafScheduleTimer = setTimeout(() => {
-    if (leafEventActive()) spawnWanderLeaf();
+    if (leafEventActive()) {
+      spawnWanderLeaf();
+      if (Math.random() < doubleSpawnChance()) spawnWanderLeaf();
+    }
     scheduleNextLeaf();
   }, delay);
 }
@@ -1290,16 +1496,27 @@ const BORDER_INSET_JITTER = 1.7; // extra +/- vw/vh spread so leaves layer at di
 const BORDER_ALONG_JITTER = 0.55; // how far a cluster can drift off its "slot" along the edge, as a fraction of the slot width - avoids a perfectly ruled-off grid
 const BORDER_DECOR_GLYPHS = ['\ud83c\udf3f','\ud83c\udf43','\ud83c\udf42','\ud83c\udf41','\ud83e\udd6c','\ud83c\udf40']; // 🌿🍃🍂🍁🥬🍀 - the same leaves Ann's been collecting
 
-// more, smaller milestones (40 of them) instead of a handful of big ones -
-// costs climb steadily (11, 13, 15, ... up to 89) so it stays satisfying
-// early on and appropriately effortful by the end. Sums to 2000 total light
-// needed to complete the whole border.
-const MILESTONE_COUNT = 40;
-const MILESTONE_START_COST = 11;
-const MILESTONE_COST_STEP = 2;
+// lots of small milestones (150 of them - denser than before, both extra
+// ones threaded in between the old spacing AND a much longer tail beyond
+// it) rather than a handful of big ones - costs climb steadily (8, 9.25,
+// 10.5, ... up to ~194.25) so it stays satisfying early on and appropriately
+// effortful by the end. Sums to ~15,170 total light needed to complete the
+// whole border - deliberately sized well past the old 7,440 total (and past
+// what the value ramp alone would justify) as headroom: better to have the
+// event undershoot the border than let it finish early, since more day-mult
+// multipliers/ramp tweaks can always be layered on later days if it's
+// pacing too slow, but a finished border with days still left can't be
+// undone. Each border cluster now takes ~2 milestones instead of 1, so the
+// visible frame still grows in small, frequent steps despite the bigger
+// total. With ~2x value already active today (day 1) a normal day's play
+// should land only a few milestones in - nowhere near the ~30/150 (20%)
+// mark - leaving the vast majority of the border for the remaining days.
+const MILESTONE_COUNT = 150;
+const MILESTONE_START_COST = 8;
+const MILESTONE_COST_STEP = 1.25;
 const MILESTONE_DELTAS = Array.from({ length: MILESTONE_COUNT }, (_, i) => MILESTONE_START_COST + i * MILESTONE_COST_STEP);
 const MILESTONE_THRESHOLDS = (() => { let sum = 0; return MILESTONE_DELTAS.map(d => { sum += d; return sum; }); })();
-const POSITIONS_PER_MILESTONE = TOTAL_BORDER_POSITIONS / MILESTONE_THRESHOLDS.length; // 2 - a small, contiguous chunk each time
+const POSITIONS_PER_MILESTONE = TOTAL_BORDER_POSITIONS / MILESTONE_THRESHOLDS.length; // 80/150 ≈ 0.53 - roughly 2 milestones per visible border cluster
 
 let borderEls = []; // borderEls[positionIndex] = array of leaf DOM elements at that cluster
 let unlockedBorderCount = 0; // how many positions (in growth order, i.e. contiguous from the start) are currently grown
@@ -1565,6 +1782,7 @@ function tick() {
   updateBuildUp(diff);
   try { checkMusicSchedule(diff); } catch(e) { console.warn('music schedule failed', e); }
   try { checkMilestones(diff); } catch(e) { console.warn('milestone check failed', e); }
+  try { checkPowerHour(); } catch(e) { console.warn('power hour check failed', e); }
 
   const days = Math.floor(diff / 86400000);
   const hours = Math.floor((diff % 86400000) / 3600000);
