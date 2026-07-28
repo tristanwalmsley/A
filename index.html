@@ -1550,9 +1550,9 @@ function leafEventActive(){
 // 18:00 UTC is 7pm in the UK (BST) and 8pm in central Europe (CEST) at the
 // same instant. EDIT these three to move when power hour starts and how
 // long it runs.
-const POWER_HOUR_START_HOUR_UTC = 13;   // 18 = 6pm UTC (7pm BST / 8pm CEST)
-const POWER_HOUR_START_MINUTE_UTC = 12;  // set to e.g. 30 for a half-past start
-const POWER_HOUR_DURATION_MINUTES = 60; // how long power hour lasts
+const POWER_HOUR_START_HOUR_UTC = 18;   // 18 = 6pm UTC (7pm BST / 8pm CEST)
+const POWER_HOUR_START_MINUTE_UTC = 02;  // set to e.g. 30 for a half-past start
+const POWER_HOUR_DURATION_MINUTES = 120; // how long power hour lasts
 const POWER_HOUR_VALUE_MULT = 2;
 const POWER_HOUR_SPAWN_MULT = 0.6; // spawn delays multiplied by this -> ~40% faster
 let powerHourWasActive = false;
