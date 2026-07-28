@@ -620,6 +620,7 @@ body.garden-enchanted .brand{color:#8a5a1f}
 </div>
 <video id="bgm-player" style="display:none" playsinline></video>
 <video id="power-hour-bgm-player" style="display:none" playsinline loop></video>
+<div id="power-hour-yt-target" style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden" aria-hidden="true"></div>
 <div id="color-pulse"></div>
 <div id="color-pulse-ring"></div>
 <div id="flash-overlay"></div>
@@ -779,6 +780,14 @@ function loadAndPlay(file, offset, mode, loop, fadeMs){
 // stays active. EDIT the filenames below to match whatever's actually
 // dropped in the power_hour folder next to this file.
 const POWER_HOUR_MUSIC_FOLDER = 'power_hour/';
+// each entry is either:
+//   - a plain string  -> a local file dropped in the power_hour/ folder, e.g. 'track (1).mp4'
+//   - { youtube: '…' } -> a YouTube video/URL to play instead. Accepts a full link
+//     (youtube.com/watch?v=…, youtu.be/…, youtube.com/embed/…) or just the bare 11-char video ID.
+// the two kinds can be freely mixed in the same list, e.g.:
+//   'track (1).mp4',
+//   { youtube: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' },
+//   { youtube: 'dQw4w9WgXcQ' },
 const POWER_HOUR_TRACKS = [
   'track (1).mp4',
   'track (2).mp4',
@@ -797,12 +806,46 @@ const POWER_HOUR_TRACKS = [
   'track (15).mp4',
   'track (16).mp4',
   'track (17).mp4',
-  'track (18).mp4',
   'track (19).mp4',
   'track (20).mp4',
   'track (21).mp4',
-  'track (22).mp4'
+  'track (22).mp4',
+  { youtube: 'LJTZXZWxEAY' },
+  { youtube: 'uMshgHF9Gso' },
+  { youtube: '898fwnkHoHg' },
+  { youtube: '6kZVtF8iaWw' },
+  { youtube: '2ntuD3snxvo' },
+  { youtube: 'xAWDqdpOlu8' },
+  { youtube: 'xAWDqdpOlu8' },
+  { youtube: 'JCJKq2-l0Z0' },
+  { youtube: 'UTcPyEOQfUA' },
+  { youtube: 'yzc6nrWesYY' },
+  { youtube: 'YSdTPdMGtss' }
 ];
+
+// pulls an 11-char YouTube video ID out of a full URL, or passes a bare ID through as-is
+function extractYouTubeId(input){
+  if (!input) return null;
+  input = String(input).trim();
+  if (/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
+  try {
+    const url = new URL(input);
+    if (url.hostname.includes('youtu.be')) return url.pathname.slice(1).split('/')[0] || null;
+    const v = url.searchParams.get('v');
+    if (v) return v;
+    const embedMatch = url.pathname.match(/\/embed\/([a-zA-Z0-9_-]{11})/);
+    if (embedMatch) return embedMatch[1];
+    const shortsMatch = url.pathname.match(/\/shorts\/([a-zA-Z0-9_-]{11})/);
+    if (shortsMatch) return shortsMatch[1];
+  } catch (e) {}
+  return null;
+}
+
+// returns the YouTube ID for a track entry, or null if it's a local file entry
+function getPowerHourYouTubeId(track){
+  if (track && typeof track === 'object' && track.youtube) return extractYouTubeId(track.youtube);
+  return null;
+}
 const POWER_HOUR_MUSIC_VOLUME = 0.6;
 const phBgm = document.getElementById('power-hour-bgm-player');
 const phVolSlider = document.getElementById('power-hour-volume-slider');
@@ -812,12 +855,34 @@ if (phVolSlider) {
   phVolSlider.addEventListener('input', () => {
     phUserVolume = phVolSlider.value / 100;
     phBgm.volume = phUserVolume;
+    if (phYtPlayer && phYtPlayer.setVolume) { try { phYtPlayer.setVolume(Math.round(phUserVolume * 100)); } catch(e) {} }
     const icon = document.querySelector('#power-hour-volume .ph-vol-icon');
     if (icon) icon.textContent = phUserVolume === 0 ? '🔇' : (phUserVolume < 0.4 ? '🔉' : '🔊');
   });
 }
 let phMusicQueue = [];
 let phMusicPlaying = false;
+let phYtPlayer = null; // lazily-created YT.Player reused for every youtube power hour track
+
+// same fade shape as fadeVolume() above, but drives a YT.Player's 0-100 setVolume()
+// instead of an HTMLMediaElement's 0-1 .volume property
+function fadeYouTubeVolume(player, from, to, duration, onDone){
+  const steps = 24;
+  const stepTime = duration / steps;
+  let i = 0;
+  const apply = v => { try { player.setVolume(Math.max(0, Math.min(100, Math.round(v * 100)))); } catch(e) {} };
+  apply(from);
+  const id = setInterval(() => {
+    i++;
+    const v = from + (to - from) * (i / steps);
+    apply(v);
+    if (i >= steps) { clearInterval(id); apply(to); if (onDone) onDone(); }
+  }, stepTime);
+}
+
+function stopPowerHourYouTube(){
+  if (phYtPlayer && phYtPlayer.stopVideo) { try { phYtPlayer.stopVideo(); } catch(e) {} }
+}
 
 function shufflePowerHourQueue(){
   phMusicQueue = [...POWER_HOUR_TRACKS];
@@ -830,13 +895,51 @@ function shufflePowerHourQueue(){
 function playNextPowerHourTrack(){
   if (!phMusicPlaying) return;
   if (!phMusicQueue.length) shufflePowerHourQueue();
-  const file = phMusicQueue.shift();
+  const track = phMusicQueue.shift();
+  const ytId = getPowerHourYouTubeId(track);
+  if (ytId) {
+    playPowerHourYouTubeTrack(ytId);
+  } else {
+    playPowerHourFileTrack(track);
+  }
+}
+
+function playPowerHourFileTrack(file){
+  stopPowerHourYouTube();
   phBgm.loop = false;
   phBgm.src = POWER_HOUR_MUSIC_FOLDER + file;
   phBgm.volume = 0;
   const p = phBgm.play();
   if (p && p.catch) p.catch(err => console.warn('power hour music blocked/failed', err));
   fadeVolume(phBgm, 0, phUserVolume, 1500);
+}
+
+function playPowerHourYouTubeTrack(videoId){
+  try { phBgm.pause(); } catch(e) {}
+  loadYouTubeAPI();
+  (function startYt(){
+    if (!window.YT || !window.YT.Player) { setTimeout(startYt, 200); return; }
+    if (!phMusicPlaying) return; // power hour may have ended while we were waiting on the API
+    if (!phYtPlayer) {
+      phYtPlayer = new YT.Player('power-hour-yt-target', {
+        videoId: videoId,
+        host: 'https://www.youtube-nocookie.com',
+        playerVars: { autoplay: 1, controls: 0, rel: 0, playsinline: 1, mute: gestureUnlocked ? 0 : 1 },
+        events: {
+          onReady: e => {
+            e.target.setVolume(0);
+            e.target.playVideo();
+            fadeYouTubeVolume(e.target, 0, phUserVolume, 1500);
+          },
+          onStateChange: e => { if (e.data === YT.PlayerState.ENDED) playNextPowerHourTrack(); }
+        }
+      });
+    } else {
+      phYtPlayer.setVolume(0);
+      phYtPlayer.loadVideoById(videoId);
+      fadeYouTubeVolume(phYtPlayer, 0, phUserVolume, 1500);
+    }
+  })();
 }
 phBgm.addEventListener('ended', playNextPowerHourTrack);
 
@@ -847,6 +950,7 @@ if (phSkipBtn) {
   phSkipBtn.addEventListener('click', () => {
     if (!phMusicPlaying) return;
     phBgm.pause();
+    stopPowerHourYouTube();
     playNextPowerHourTrack();
   });
 }
@@ -865,6 +969,9 @@ function stopPowerHourMusic(){
   if (!phMusicPlaying) return;
   phMusicPlaying = false;
   fadeVolume(phBgm, phBgm.volume, 0, 1200, () => { phBgm.pause(); });
+  if (phYtPlayer && phYtPlayer.getVolume) {
+    fadeYouTubeVolume(phYtPlayer, phUserVolume, 0, 1200, () => { try { phYtPlayer.pauseVideo(); } catch(e) {} });
+  }
   fadeVolume(bgm, bgm.volume, MUSIC_VOLUME, 1500);
 }
 
@@ -1551,8 +1658,8 @@ function leafEventActive(){
 // same instant. EDIT these three to move when power hour starts and how
 // long it runs.
 const POWER_HOUR_START_HOUR_UTC = 18;   // 18 = 6pm UTC (7pm BST / 8pm CEST)
-const POWER_HOUR_START_MINUTE_UTC = 04;  // set to e.g. 30 for a half-past start
-const POWER_HOUR_DURATION_MINUTES = 116; // how long power hour lasts
+const POWER_HOUR_START_MINUTE_UTC = 0;  // set to e.g. 30 for a half-past start
+const POWER_HOUR_DURATION_MINUTES = 120; // how long power hour lasts
 const POWER_HOUR_VALUE_MULT = 2;
 const POWER_HOUR_SPAWN_MULT = 0.6; // spawn delays multiplied by this -> ~40% faster
 let powerHourWasActive = false;
