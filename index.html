@@ -425,6 +425,27 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
    before drifting off - tap one before it goes and it quietly adds to the
    light counter above. Nothing explains why; it's just a nice thing to
    notice and chase. */
+/* ---------- GARDEN STAGE DECORATIONS ----------
+   purely additive visuals layered on top of the finished/in-progress border
+   once accumulated light crosses each garden-stage threshold - flowers,
+   then butterflies, then fireflies, then the final "enchanted" flourishes.
+   None of this touches the border-leaf milestones above. */
+.border-flower{position:fixed;left:0;top:0;transform:translate(-50%,-50%) scale(0);opacity:0;pointer-events:none;filter:drop-shadow(0 1px 3px rgba(58,32,16,0.22));transition:opacity 1s ease,transform 1s cubic-bezier(0.34,1.56,0.64,1);z-index:22}
+.border-flower.grown{opacity:var(--fl-op,0.9);transform:translate(-50%,-50%) scale(1)}
+
+.garden-butterfly{position:fixed;z-index:23;font-size:1.35rem;line-height:1;pointer-events:none;opacity:0;filter:drop-shadow(0 2px 4px rgba(58,32,16,0.2));transition:opacity 1.2s ease}
+.garden-butterfly.in{opacity:0.92}
+
+.firefly-dot{position:fixed;z-index:21;width:5px;height:5px;border-radius:50%;background:radial-gradient(circle,#fff6c8,#e8c766 60%,transparent 100%);pointer-events:none;box-shadow:0 0 6px 2px rgba(232,199,102,0.75);animation:fireflyDrift ease-in-out infinite,fireflyGlow ease-in-out infinite}
+@keyframes fireflyDrift{0%{transform:translate(0,0)}50%{transform:translate(var(--fx,10px),var(--fy,-14px))}100%{transform:translate(0,0)}}
+@keyframes fireflyGlow{0%,100%{opacity:0.12}50%{opacity:0.85}}
+
+.shooting-star{position:fixed;z-index:24;width:2px;height:2px;background:#fff;border-radius:50%;box-shadow:0 0 6px 2px #fff,-70px 12px 14px 2px rgba(255,255,255,0.35);pointer-events:none;animation:shootingStarFly 1.1s linear forwards}
+@keyframes shootingStarFly{0%{opacity:1;transform:translate(0,0)}100%{opacity:0;transform:translate(-230px,150px)}}
+
+/* subtle gold cast to the paper tones once the garden is fully "enchanted" */
+body.garden-enchanted .brand{color:#8a5a1f}
+
 .wander-leaf{position:fixed;z-index:9300;font-size:1.5rem;line-height:1;cursor:pointer;user-select:none;pointer-events:auto;filter:drop-shadow(0 2px 6px rgba(58,32,16,0.25));opacity:0;transition:opacity 0.6s ease}
 .wander-leaf.in{opacity:0.92}
 .wander-leaf.caught{animation:leafCaughtPop 0.5s ease-out forwards;pointer-events:none}
@@ -1233,6 +1254,7 @@ function bumpLightCount(value){
   localStorage.setItem(LIGHT_COUNT_KEY, String(next));
   renderLightCount(next, true);
   growBorderTo(next);
+  applyGardenStage(next);
 }
 
 // ---------- CATCH STREAK ----------
@@ -1669,6 +1691,7 @@ function initBorderFromStorage(){
     (borderEls[k] || []).forEach(el => el.classList.add('grown'));
   }
   unlockedBorderCount = target;
+  applyGardenStage(getLightCount());
 }
 // called every time light is gained: grows the border further the moment a
 // new milestone is actually crossed - always the NEXT contiguous section
@@ -1695,6 +1718,147 @@ function growBorderTo(total){
     counter.classList.add('milestone');
   }
 }
+
+// ---------- GARDEN STAGES (beyond the border) ----------
+// the border above tops out at 7,440 light - deliberately left untouched so
+// nothing already earned ever moves. This is a second, independent layer of
+// checkpoints read off the exact same running total, purely additive:
+// flowers, then butterflies, then fireflies, then a final "enchanted" set
+// of flourishes. Nothing here can ever undo border progress, and nothing
+// here is gated by the border being "done" first (it naturally will be by
+// the time these kick in, but the code doesn't assume that).
+const GARDEN_STAGES = [
+  { key:'seed',      threshold:0,      label:'First Growth' },
+  { key:'flourish',  threshold:10000,  label:'Flourishing' },
+  { key:'bloom1',    threshold:30000,  label:'First Bloom' },
+  { key:'bloom2',    threshold:60000,  label:'Full Bloom' },
+  { key:'butterfly', threshold:100000, label:'Living Garden' },
+  { key:'firefly',   threshold:150000, label:'Twilight Garden' },
+  { key:'enchanted', threshold:250000, label:'Enchanted Garden' },
+];
+const GARDEN_FLOWER_GLYPHS = ['\ud83c\udf3c','\ud83c\udf38','\ud83c\udf3a','\ud83c\udf37'];
+let currentGardenStageKey = null;
+let gardenFlowersPlaced = 0;
+let butterflyTimer = null, fireflyTimer = null, enchantedTimer = null;
+let activeFireflies = [];
+
+function gardenStageIndexFor(total){
+  let idx = 0;
+  for (let i = 0; i < GARDEN_STAGES.length; i++) if (total >= GARDEN_STAGES[i].threshold) idx = i;
+  return idx;
+}
+
+// called on every light gain AND once on load, so a returning visit picks
+// up exactly where it left off with no re-celebration of old stages
+function applyGardenStage(total){
+  const stage = GARDEN_STAGES[gardenStageIndexFor(total)];
+  maybeAddFlowers(total);
+  if (stage.key === currentGardenStageKey) return;
+  currentGardenStageKey = stage.key;
+  GARDEN_STAGES.forEach(s => document.body.classList.remove('garden-' + s.key));
+  document.body.classList.add('garden-' + stage.key);
+  stopButterflies(); stopFireflies(); stopEnchanted();
+  if (stage.key === 'butterfly' || stage.key === 'firefly' || stage.key === 'enchanted') startButterflies();
+  if (stage.key === 'firefly' || stage.key === 'enchanted') startFireflies();
+  if (stage.key === 'enchanted') startEnchanted();
+}
+
+// adds at most ONE flower per call (called often, on every catch, so this
+// fills in naturally over a few seconds rather than needing a loop that
+// could stall waiting on border growth) - count scales gently past 30k and
+// caps out so it never gets cluttered
+function maybeAddFlowers(total){
+  const bloomAt = GARDEN_STAGES.find(s => s.key === 'bloom1').threshold;
+  if (total < bloomAt) return;
+  const targetFlowers = Math.min(40, Math.floor((total - bloomAt) / 4000) + 4);
+  if (gardenFlowersPlaced >= targetFlowers) return;
+  const layer = document.getElementById('leaf-border-layer');
+  if (!layer || !borderEls.length) return;
+  const grownIdxs = [];
+  for (let i = 0; i < borderEls.length; i++) {
+    if (borderEls[i] && borderEls[i][0] && borderEls[i][0].classList.contains('grown')) grownIdxs.push(i);
+  }
+  if (!grownIdxs.length) return;
+  const idx = grownIdxs[Math.floor(Math.random() * grownIdxs.length)];
+  const anchorLeaf = borderEls[idx][0];
+  const fl = document.createElement('div');
+  fl.className = 'border-flower';
+  fl.textContent = GARDEN_FLOWER_GLYPHS[Math.floor(Math.random() * GARDEN_FLOWER_GLYPHS.length)];
+  fl.style.left = anchorLeaf.style.left;
+  fl.style.top = anchorLeaf.style.top;
+  fl.style.fontSize = (0.9 + Math.random() * 0.5) + 'rem';
+  fl.style.setProperty('--fl-op', (0.8 + Math.random() * 0.2).toFixed(2));
+  layer.appendChild(fl);
+  requestAnimationFrame(() => fl.classList.add('grown'));
+  gardenFlowersPlaced++;
+}
+
+// a butterfly that glides in, wanders briefly, then fades - purely
+// decorative, never catchable, never touches the light count
+function spawnGardenButterfly(){
+  const el = document.createElement('div');
+  el.className = 'garden-butterfly';
+  el.textContent = '\ud83e\udd8b';
+  el.style.transition = 'left 3.5s ease-in-out, top 3.5s ease-in-out, opacity 1.2s ease';
+  const x1 = 10 + Math.random() * 80, y1 = 20 + Math.random() * 60;
+  const x2 = 10 + Math.random() * 80, y2 = 20 + Math.random() * 60;
+  el.style.left = x1 + 'vw'; el.style.top = y1 + 'vh';
+  document.body.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('in'));
+  setTimeout(() => { el.style.left = x2 + 'vw'; el.style.top = y2 + 'vh'; }, 200);
+  setTimeout(() => { el.classList.remove('in'); }, 4200);
+  setTimeout(() => el.remove(), 5400);
+}
+function startButterflies(){
+  if (butterflyTimer) return;
+  const loop = () => { spawnGardenButterfly(); butterflyTimer = setTimeout(loop, 9000 + Math.random() * 9000); };
+  loop();
+}
+function stopButterflies(){ if (butterflyTimer) { clearTimeout(butterflyTimer); butterflyTimer = null; } }
+
+// soft drifting fireflies with a gentle golden glow
+function spawnFirefly(){
+  const el = document.createElement('div');
+  el.className = 'firefly-dot';
+  el.style.left = (5 + Math.random() * 90) + 'vw';
+  el.style.top = (10 + Math.random() * 75) + 'vh';
+  el.style.setProperty('--fx', (Math.random() * 30 - 15) + 'px');
+  el.style.setProperty('--fy', (Math.random() * 30 - 15) + 'px');
+  el.style.animationDuration = (5 + Math.random() * 4) + 's, ' + (2 + Math.random() * 2) + 's';
+  document.body.appendChild(el);
+  activeFireflies.push(el);
+  setTimeout(() => { el.remove(); activeFireflies = activeFireflies.filter(f => f !== el); }, 14000);
+}
+function startFireflies(){
+  if (fireflyTimer) return;
+  const loop = () => { spawnFirefly(); fireflyTimer = setTimeout(loop, 1200 + Math.random() * 1600); };
+  loop();
+}
+function stopFireflies(){
+  if (fireflyTimer) { clearTimeout(fireflyTimer); fireflyTimer = null; }
+  activeFireflies.forEach(f => f.remove()); activeFireflies = [];
+}
+
+// the final flourish: occasional golden sparkle bursts plus a rare
+// shooting star streaking across the sky
+function spawnShootingStar(){
+  const el = document.createElement('div');
+  el.className = 'shooting-star';
+  el.style.left = (20 + Math.random() * 60) + 'vw';
+  el.style.top = (5 + Math.random() * 25) + 'vh';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1200);
+}
+function startEnchanted(){
+  if (enchantedTimer) return;
+  const loop = () => {
+    if (Math.random() < 0.4) spawnShootingStar();
+    spawnLeafCatchSparkles(10 + Math.random() * window.innerWidth * 0.8, 10 + Math.random() * window.innerHeight * 0.6);
+    enchantedTimer = setTimeout(loop, 5000 + Math.random() * 6000);
+  };
+  loop();
+}
+function stopEnchanted(){ if (enchantedTimer) { clearTimeout(enchantedTimer); enchantedTimer = null; } }
 
 // 1:30 mark: the fully-built corner heart glides gently into the center,
 // settles into two soft heartbeats, blooms warmer and brighter, then
