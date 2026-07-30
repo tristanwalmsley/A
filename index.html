@@ -316,7 +316,8 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 
 /* spotlights - real spotlight-sized circles, sitting above the dark-wash and
    particles but behind text, tracing oval/figure-8 paths like a real light rig */
-.spotlight{position:fixed;width:380px;height:380px;border-radius:50%;pointer-events:none;z-index:20;opacity:0;background:radial-gradient(circle,rgba(255,246,220,0.95) 0%,rgba(255,224,150,0.55) 45%,rgba(255,224,150,0) 72%);transition:opacity 1.4s ease}
+.spotlight{position:fixed;width:380px;height:380px;border-radius:50%;pointer-events:none;z-index:20;opacity:0;background:radial-gradient(circle,rgba(255,246,220,0.95) 0%,rgba(255,224,150,0.55) 45%,rgba(255,224,150,0) 72%);transition:opacity 1.4s ease;animation-play-state:paused}
+.spotlight.active{animation-play-state:running}
 
 /* galaxy-swirl finale: many extra colored spotlights flood in during the final
    minute, riding the same smooth oval/figure-8 paths as the main three */
@@ -501,6 +502,13 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
    framed in a leafy garland. Sits above the ambient background layers but
    behind the main card, so it reads as a frame rather than a distraction. */
 .leaf-border-layer{position:fixed;inset:0;z-index:22;pointer-events:none}
+/* once every leaf position is grown, we swap the ~500 individual leaf DOM
+   nodes for a single static image - visually the same finished garland, but
+   the browser only has to paint/composite one element instead of hundreds,
+   which is what was making things laggy (especially on click, once the
+   border was fully built). */
+.leaf-border-image{position:fixed;inset:0;width:100vw;height:100vh;object-fit:fill;z-index:22;pointer-events:none;opacity:0;transition:opacity 0.9s ease}
+.leaf-border-image.show{opacity:1}
 .border-leaf{position:fixed;left:0;top:0;transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(0);opacity:0;font-size:var(--leaf-size,1.1rem);text-shadow:0 1px 3px rgba(58,32,16,0.22);transition:opacity 0.9s ease,transform 0.9s cubic-bezier(0.34,1.56,0.64,1)}
 .border-leaf.grown{opacity:var(--leaf-op,0.85);transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(1)}
 .border-leaf.sprout{animation:borderLeafSprout 0.75s cubic-bezier(0.34,1.56,0.64,1)}
@@ -581,6 +589,7 @@ body.garden-enchanted .brand{color:#8a5a1f}
 <div class="breeze-layer" id="breezes"></div>
 <div class="sparkle-layer" id="sparkles"></div>
 <div class="leaf-border-layer" id="leaf-border-layer"></div>
+<img class="leaf-border-image" id="leaf-border-image" src="images/leaf_border.png" alt="" />
 
 <div id="light-counter" aria-hidden="true"><span id="light-counter-dot"></span><span id="light-counter-num">0</span><span id="light-counter-next">/ 18</span></div>
 <div id="streak-counter" aria-hidden="true"><span>🔥</span><span id="streak-counter-num">0</span><span id="streak-counter-label">in a row</span></div>
@@ -1966,8 +1975,10 @@ const MILESTONE_DELTAS = Array.from({ length: MILESTONE_COUNT }, (_, i) => MILES
 const MILESTONE_THRESHOLDS = (() => { let sum = 0; return MILESTONE_DELTAS.map(d => { sum += d; return sum; }); })();
 const POSITIONS_PER_MILESTONE = TOTAL_BORDER_POSITIONS / MILESTONE_THRESHOLDS.length; // 2 - a small, contiguous chunk each time
 
-let borderEls = []; // borderEls[positionIndex] = array of leaf DOM elements at that cluster
+let borderEls = []; // borderEls[positionIndex] = array of leaf DOM elements at that cluster (empty once finished, see finalizeLeafBorderImage)
+let borderPoints = []; // borderPoints[positionIndex] = {x,y,...} anchor for that cluster - kept around after the DOM leaves are removed, so flowers still have somewhere to anchor
 let unlockedBorderCount = 0; // how many positions (in growth order, i.e. contiguous from the start) are currently grown
+let borderFinished = false; // true once every position is grown and we've swapped to the static image
 
 // perimeter positions, evenly spaced as a baseline but with real jitter
 // applied to both the along-the-edge placement and the inset depth, so the
@@ -2029,19 +2040,51 @@ function buildLeafBorder(){
   const layer = document.getElementById('leaf-border-layer');
   if (!layer) return;
   layer.innerHTML = '';
-  const points = buildBorderPoints();
-  borderEls = points.map(p => buildCluster(layer, p));
+  borderPoints = buildBorderPoints();
+  borderEls = borderPoints.map(p => buildCluster(layer, p));
+}
+// once every position is grown, the ~500 individual leaf divs are replaced
+// by a single static image (images/leaf_border.png) covering the viewport.
+// Visually identical end state, but afterwards the browser only has one
+// element to paint/composite in that layer instead of hundreds, which is
+// what was causing the lagginess (especially noticeable on click) once the
+// border finished building. borderPoints is kept around (it's cheap - just
+// plain {x,y,...} objects) so flowers still know where to anchor.
+function finalizeLeafBorderImage(instant){
+  borderFinished = true;
+  const img = document.getElementById('leaf-border-image');
+  const layer = document.getElementById('leaf-border-layer');
+  const removeLeaves = () => {
+    if (layer) layer.querySelectorAll('.border-leaf').forEach(el => el.remove());
+    borderEls = [];
+  };
+  if (!img) { removeLeaves(); return; }
+  if (instant) {
+    img.classList.add('show');
+    removeLeaves();
+    return;
+  }
+  requestAnimationFrame(() => img.classList.add('show'));
+  setTimeout(removeLeaves, 950); // matches the image's fade-in transition
 }
 // called once on load: silently shows however much border was already
 // earned in previous sessions, with no celebration since that was earned
 // before now
 function initBorderFromStorage(){
-  buildLeafBorder();
   const target = unlockedPositionCountFor(getLightCount());
-  for (let k = 0; k < target; k++) {
-    (borderEls[k] || []).forEach(el => el.classList.add('grown'));
+  if (target >= TOTAL_BORDER_POSITIONS) {
+    // border was already finished in a previous session - skip building the
+    // (soon to be deleted) leaf DOM entirely and jump straight to the image
+    borderPoints = buildBorderPoints();
+    unlockedBorderCount = target;
+    finalizeLeafBorderImage(true);
+  } else {
+    buildLeafBorder();
+    for (let k = 0; k < target; k++) {
+      (borderEls[k] || []).forEach(el => el.classList.add('grown'));
+    }
+    unlockedBorderCount = target;
   }
-  unlockedBorderCount = target;
   applyGardenStage(getLightCount());
 }
 // called every time light is gained: grows the border further the moment a
@@ -2063,6 +2106,9 @@ function growBorderTo(total){
     });
   }
   unlockedBorderCount = target;
+  if (target >= TOTAL_BORDER_POSITIONS && !borderFinished) {
+    setTimeout(() => finalizeLeafBorderImage(false), leafDelay + 750);
+  }
   const counter = document.getElementById('light-counter');
   if (counter) {
     counter.classList.remove('milestone'); void counter.offsetWidth;
@@ -2142,19 +2188,17 @@ function maybeAddFlowers(total){
   const targetFlowers = Math.round(rampProgress(total, FLOWER_RAMP_START, FLOWER_RAMP_FULL) * 40);
   if (gardenFlowersPlaced >= targetFlowers) return;
   const layer = document.getElementById('leaf-border-layer');
-  if (!layer || !borderEls.length) return;
-  const grownIdxs = [];
-  for (let i = 0; i < borderEls.length; i++) {
-    if (borderEls[i] && borderEls[i][0] && borderEls[i][0].classList.contains('grown')) grownIdxs.push(i);
-  }
-  if (!grownIdxs.length) return;
-  const idx = grownIdxs[Math.floor(Math.random() * grownIdxs.length)];
-  const anchorLeaf = borderEls[idx][0];
+  if (!layer || !borderPoints.length || unlockedBorderCount < 1) return;
+  // anchor off the plain position data rather than a leaf DOM element - the
+  // leaves themselves get removed once the border finishes (see
+  // finalizeLeafBorderImage), but borderPoints sticks around for exactly this
+  const idx = Math.floor(Math.random() * Math.min(unlockedBorderCount, borderPoints.length));
+  const anchor = borderPoints[idx];
   const fl = document.createElement('div');
   fl.className = 'border-flower';
   fl.textContent = GARDEN_FLOWER_GLYPHS[Math.floor(Math.random() * GARDEN_FLOWER_GLYPHS.length)];
-  fl.style.left = anchorLeaf.style.left;
-  fl.style.top = anchorLeaf.style.top;
+  fl.style.left = anchor.x + 'vw';
+  fl.style.top = anchor.y + 'vh';
   fl.style.fontSize = (2.3 + Math.random() * 0.7) + 'rem';
   fl.style.setProperty('--fl-op', (0.8 + Math.random() * 0.2).toFixed(2));
   layer.appendChild(fl);
@@ -2470,11 +2514,14 @@ function updateBuildUp(diff){
   document.querySelector('.brand').style.color = hslLerp(BRAND_START, BRAND_END, textT);
   document.querySelector('.lead').style.color = hslLerp(LEAD_START, LEAD_END, textT);
 
-  // spotlights: enter on schedule, go full-intensity in the final minute
+  // spotlights: enter on schedule, go full-intensity in the final minute.
+  // the CSS animation itself stays paused (see .spotlight/.spotlight.active)
+  // until this point too, so nothing is being animated/composited for the
+  // many minutes before a spotlight is actually due to appear
   const crazy = diff <= CRAZY_AT;
   SPOTLIGHT_SCHEDULE.forEach(s => {
     const el = document.getElementById(s.id);
-    if (diff <= s.at) el.style.opacity = crazy ? '1' : '0.85';
+    if (diff <= s.at) { el.classList.add('active'); el.style.opacity = crazy ? '1' : '0.85'; }
   });
 
   // speed everything up smoothly using playbackRate - never touches duration,
@@ -2646,6 +2693,7 @@ function triggerReveal(){
   document.getElementById('spot-a').style.opacity = '0';
   document.getElementById('spot-b').style.opacity = '0';
   document.getElementById('spot-c').style.opacity = '0';
+  document.querySelectorAll('.spotlight').forEach(el => el.classList.remove('active'));
   clearExtraParticles();
   clearMiniSpotlights();
   currentDiff = Infinity; // stops the mini-spotlight spawner too
