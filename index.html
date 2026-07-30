@@ -668,9 +668,25 @@ const entrySub = document.getElementById('entry-sub');
 function unlockEntry(){
   if (gestureUnlocked || !entryReady) return;
   gestureUnlocked = true;
-  entryGate.classList.add('hide');
-  startCountdown(); // the timer (and any reveal it triggers) only starts now,
-                     // not silently in the background before the tap
+
+  // swap the tap-prompt back for the spinner - there's a beat of real work
+  // (timer, particles, music, etc. all spinning up) between the tap and the
+  // gate actually fading out, and a static screen during that gap reads as
+  // "did that even register?" rather than "loading".
+  entrySpinner.classList.remove('done');
+  entrySub.classList.remove('ready');
+  entrySub.textContent = 'just a moment...';
+
+  // let the browser actually paint the spinner before doing the (synchronous,
+  // sometimes a little heavy) setup work - otherwise the spinner and the
+  // setup would land in the same frame and never visibly show up at all
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      startCountdown();
+      // small minimum so the spinner reads as "loading" rather than a flicker
+      setTimeout(() => { entryGate.classList.add('hide'); }, 300);
+    });
+  });
 }
 entryGate.addEventListener('click', unlockEntry);
 entryGate.addEventListener('touchstart', unlockEntry, {passive: true});
@@ -1586,27 +1602,29 @@ const LEAF_TYPES = [
 // ---------- DAILY RAMP ----------
 // everything that changes day to day lives here, driven by one continuous
 // 0 (day 0) -> 1 (final day) progress value `t` rather than the old 3
-// fixed buckets - so instead of jumping between three flat plateaus, rarity,
-// value, spawn rate, and simultaneous spawns all creep up smoothly EVERY
-// single day. Concretely, per day this ramp increases:
+// fixed buckets - so instead of jumping between three flat plateaus, value
+// and spawn rate both creep up smoothly EVERY single day. Concretely, per
+// day this ramp increases:
 //   1. how much each leaf type is worth (LEAF_VALUE ramp below)
-//   2. how likely the rarer/higher-value types are to spawn at all (weights)
-//   3. how often ANY leaf spawns (spawn interval shrinks)
-//   4. from day ~5 on, the chance a second leaf spawns alongside the first
+//   2. how often ANY leaf spawns (spawn interval shrinks)
+//   3. from day ~5 on, the chance a second leaf spawns alongside the first
 //      ("appear more often" beyond just a shorter gap between them)
+// (which TYPE of leaf spawns is no longer part of this ramp - see the fixed
+// LEAF_WEIGHTS just below instead.)
 function currentLeafDayIndex(){
   return Math.max(0, Math.min(LEAF_EVENT_DAYS - 1, Math.floor((Date.now() - LEAF_EVENT_START) / 86400000)));
 }
 function currentLeafDayProgress(){
   return currentLeafDayIndex() / (LEAF_EVENT_DAYS - 1); // 0 -> 1 across the 10 days
 }
-// rarity weights lerp smoothly from "mostly common" to "mostly rare", instead
-// of snapping between 3 fixed brackets - every day nudges the odds a little
-const LEAF_WEIGHTS_START = [40, 28, 16, 10, 5, 1];  // day 0: heavily 🥬🌿
-const LEAF_WEIGHTS_END   = [6, 9, 14, 19, 23, 29];  // final day: heavily 🍁🍀🍂
+// rarity weighting - fixed (not day-ramped): the 2nd and 3rd leaf types are
+// the most common, the 1st and 4th next most common, then the 5th, then the
+// 6th is rarest of all. Day-to-day progression instead comes entirely from
+// currentLeafValueMultiplier() below (each catch is worth more as the days
+// pass), not from the rarer glyphs showing up more often.
+const LEAF_WEIGHTS = [20, 30, 30, 20, 12, 6]; // 🥬 🌿 🍃 🍂 🍁 🍀
 function currentLeafWeights(){
-  const t = currentLeafDayProgress();
-  return LEAF_WEIGHTS_START.map((w, i) => w + (LEAF_WEIGHTS_END[i] - w) * t);
+  return LEAF_WEIGHTS;
 }
 function pickLeafType(){
   const weights = currentLeafWeights();
@@ -1628,19 +1646,24 @@ function currentLeafValueMultiplier(){
 }
 // spawn frequency ramps up over the 10 days - slower/rarer at the start,
 // noticeably more frequent by the end
-// a small, purely-cosmetic-adjacent perk for keeping the catch streak alive -
-// every point of streak shaves a tiny bit more off the spawn delay (0.5% per
-// streak point, capped at streak 50 = 25% faster spawns), stacking with the
-// day ramp and power hour rather than replacing either
-const STREAK_SPAWN_BOOST_PER_POINT = 0.005; // 0.5% per streak point
-const STREAK_SPAWN_BOOST_CAP_STREAK = 50;   // caps out at 50 in a row = 25%
+// a perk for keeping the catch streak alive, on two fronts: leaves spawn
+// faster AND are worth more the longer a streak runs, so a long streak
+// actually feels like it's paying off rather than being a purely cosmetic
+// number. Both ramp linearly with streak and cap out at streak 100.
+const STREAK_SPAWN_BOOST_PER_POINT = 0.006; // 0.6% faster spawns per streak point
+const STREAK_SPAWN_BOOST_CAP_STREAK = 100;  // caps out at 100 in a row = 60% faster spawns
 function currentStreakSpawnBoost(){
   return Math.min(currentStreak, STREAK_SPAWN_BOOST_CAP_STREAK) * STREAK_SPAWN_BOOST_PER_POINT;
 }
+const STREAK_VALUE_BOOST_PER_POINT = 0.005; // +0.5% leaf value per streak point
+const STREAK_VALUE_BOOST_CAP_STREAK = 100;  // caps out at 100 in a row = +50% value
+function currentStreakValueBoost(){
+  return 1 + Math.min(currentStreak, STREAK_VALUE_BOOST_CAP_STREAK) * STREAK_VALUE_BOOST_PER_POINT;
+}
 function currentSpawnDelayRange(){
   const t = currentLeafDayProgress();
-  let min = 15000 - t * 6000;  // 15s -> 9s
-  let max = 45000 - t * 25000; // 45s -> 20s
+  let min = 8000 - t * 6000;   // 8s -> 2s
+  let max = 30000 - t * 22000; // 30s -> 8s
   const streakBoost = 1 - currentStreakSpawnBoost();
   min *= streakBoost; max *= streakBoost;
   if (isPowerHourActive()) { min *= POWER_HOUR_SPAWN_MULT; max *= POWER_HOUR_SPAWN_MULT; }
@@ -1878,7 +1901,7 @@ function spawnWanderLeaf(){
     caught = true;
     if (rafId) cancelAnimationFrame(rafId);
     const rect = el.getBoundingClientRect();
-    let finalValue = Math.round(type.value * currentLeafValueMultiplier());
+    let finalValue = Math.round(type.value * currentLeafValueMultiplier() * currentStreakValueBoost());
     if (isPowerHourActive()) finalValue *= POWER_HOUR_VALUE_MULT;
     spawnLeafCatchSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2);
     spawnLeafValuePop(rect.left + rect.width / 2, rect.top, finalValue);
