@@ -501,7 +501,7 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
    of the screen, so that by the end of the countdown the entire viewport is
    framed in a leafy garland. Sits above the ambient background layers but
    behind the main card, so it reads as a frame rather than a distraction. */
-.leaf-border-layer{position:fixed;inset:0;z-index:22;pointer-events:none}
+.leaf-border-layer{position:fixed;inset:0;z-index:21;pointer-events:none}
 /* once every leaf position is grown, we swap the ~500 individual leaf DOM
    nodes for a single static image - visually the same finished garland, but
    the browser only has to paint/composite one element instead of hundreds,
@@ -611,7 +611,7 @@ body.garden-enchanted .brand{color:#8a5a1f}
 </div>
 
 <div id="power-hour-clock" aria-hidden="true">
-  <div class="ph-clock-label">⚡ Power Hour – 2x leaves! ⚡</div>
+  <div class="ph-clock-label">⚡ Power Hour – 3x leaves! ⚡</div>
   <div class="timer ph-clock-timer">
     <div class="timer-unit"><div class="timer-num" id="ph-mins">60</div><div class="timer-label">Minutes</div></div>
     <div class="timer-unit"><div class="timer-num" id="ph-secs">00</div><div class="timer-label">Seconds</div></div>
@@ -1599,13 +1599,13 @@ let activeLeaves = [];
 // the higher up the scale it goes, so the rarer/more valuable ones actually
 // feel like a genuine catch rather than a freebie
 const LEAF_TYPES = [
-  { glyph: '\ud83e\udd6c', value: 1, sizeMin: 1.35, sizeMax: 1.75, speed: 0.78 }, // 🥬 - big, slow, easy
-  { glyph: '\ud83c\udf3f', value: 2, sizeMin: 1.25, sizeMax: 1.6,  speed: 0.9  }, // 🌿
-  { glyph: '\ud83c\udf43', value: 3, sizeMin: 1.15, sizeMax: 1.5,  speed: 1.0  }, // 🍃
-  { glyph: '\ud83c\udf42', value: 4, sizeMin: 1.05, sizeMax: 1.4,  speed: 1.15 }, // 🍂
-  { glyph: '\ud83c\udf41', value: 5, sizeMin: 0.95, sizeMax: 1.3,  speed: 1.32 }, // 🍁
-  { glyph: '\ud83c\udf40', value: 6, sizeMin: 0.85, sizeMax: 1.2,  speed: 1.5  }, // 🍀 - small, fast, hard
-  { glyph: '🧸', value: 20, sizeMin: 0.50, sizeMax: 1.0,  speed: 2.5  }, // 🧸 - small, fast, hard
+  { glyph: '\ud83e\udd6c', value: 1, sizeMin: 1.6, sizeMax: 2.25, speed: 1.0 }, // 🥬 - big, slow, easy
+  { glyph: '\ud83c\udf3f', value: 2, sizeMin: 1.5, sizeMax: 2.1,  speed: 1.1  }, // 🌿
+  { glyph: '\ud83c\udf43', value: 3, sizeMin: 1.4, sizeMax: 2.0,  speed: 1.2  }, // 🍃
+  { glyph: '\ud83c\udf42', value: 4, sizeMin: 1.3, sizeMax: 1.9,  speed: 1.3 }, // 🍂
+  { glyph: '\ud83c\udf41', value: 5, sizeMin: 1.05, sizeMax: 1.8,  speed: 1.4 }, // 🍁
+  { glyph: '\ud83c\udf40', value: 6, sizeMin: 1.0, sizeMax: 1.7,  speed: 1.5  }, // 🍀 - small, fast, hard
+  { glyph: '🧸', value: 20, sizeMin: 0.75, sizeMax: 1.5,  speed: 1.7  }, // 🧸 - small, fast, hard
 ];
 
 // ---------- DAILY RAMP ----------
@@ -1631,7 +1631,7 @@ function currentLeafDayProgress(){
 // 6th is rarest of all. Day-to-day progression instead comes entirely from
 // currentLeafValueMultiplier() below (each catch is worth more as the days
 // pass), not from the rarer glyphs showing up more often.
-const LEAF_WEIGHTS = [20, 30, 30, 20, 12, 6, 2]; // 🥬 🌿 🍃 🍂 🍁 🍀 🧸
+const LEAF_WEIGHTS = [20, 30, 30, 20, 12, 7, 4]; // 🥬 🌿 🍃 🍂 🍁 🍀 🧸
 function currentLeafWeights(){
   return LEAF_WEIGHTS;
 }
