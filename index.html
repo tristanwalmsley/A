@@ -1649,9 +1649,9 @@ function pickLeafType(){
 // pass (1x today/day 0, 2x by day 1/tomorrow, climbing to 10x on the final
 // day) - a 🥬 caught on the last day is worth dramatically more than one
 // caught today, on top of rarer types simply showing up more often
-const LEAF_VALUE_DAY_MULT_MAX = 15.0; // day0 stays 1x (today's baseline), day1 lands at 2x, final day hits 10x
+const LEAF_VALUE_DAY_MULT_MAX = 10.0; // day0 stays 1x (today's baseline), day1 lands at 2x, final day hits 10x
 function currentLeafValueMultiplier(){
-  return 1.5 + currentLeafDayProgress() * (LEAF_VALUE_DAY_MULT_MAX - 1);
+  return 1 + currentLeafDayProgress() * (LEAF_VALUE_DAY_MULT_MAX - 1);
 }
 // spawn frequency ramps up over the 10 days - slower/rarer at the start,
 // noticeably more frequent by the end
@@ -1660,18 +1660,18 @@ function currentLeafValueMultiplier(){
 // actually feels like it's paying off rather than being a purely cosmetic
 // number. Both ramp linearly with streak and cap out at streak 100.
 const STREAK_SPAWN_BOOST_PER_POINT = 0.01; // 2% faster spawns per streak point
-const STREAK_SPAWN_BOOST_CAP_STREAK = 200;  // caps out at 200 in a row = 400% faster spawns
+const STREAK_SPAWN_BOOST_CAP_STREAK = 100;  // caps out at 200 in a row = 400% faster spawns
 function currentStreakSpawnBoost(){
   return Math.min(currentStreak, STREAK_SPAWN_BOOST_CAP_STREAK) * STREAK_SPAWN_BOOST_PER_POINT;
 }
 const STREAK_VALUE_BOOST_PER_POINT = 0.01; // +2% leaf value per streak point
-const STREAK_VALUE_BOOST_CAP_STREAK = 200;  // caps out at 200 in a row = +400% value
+const STREAK_VALUE_BOOST_CAP_STREAK = 100;  // caps out at 200 in a row = +400% value
 function currentStreakValueBoost(){
   return 1 + Math.min(currentStreak, STREAK_VALUE_BOOST_CAP_STREAK) * STREAK_VALUE_BOOST_PER_POINT;
 }
 function currentSpawnDelayRange(){
   const t = currentLeafDayProgress();
-  let min = 8000 - t * 7000;   // 8s -> 2s
+  let min = 9000 - t * 6000;   // 8s -> 2s
   let max = 25000 - t * 20000; // 25s -> 3s
   const streakBoost = 1 - currentStreakSpawnBoost();
   min *= streakBoost; max *= streakBoost;
@@ -1709,7 +1709,7 @@ const POWER_HOUR_START_HOUR_UTC = 18;   // 18 = 6pm UTC (7pm BST / 8pm CEST)
 const POWER_HOUR_START_MINUTE_UTC = 0;  // set to e.g. 30 for a half-past start
 const POWER_HOUR_DURATION_MINUTES = 60; // how long power hour lasts
 const POWER_HOUR_VALUE_MULT = 3;
-const POWER_HOUR_SPAWN_MULT = 0.4; // spawn delays multiplied by this -> ~60% faster
+const POWER_HOUR_SPAWN_MULT = 0.6; // spawn delays multiplied by this -> ~60% faster
 let powerHourWasActive = false;
 function isPowerHourActive(){
   if (!leafEventActive()) return false;
