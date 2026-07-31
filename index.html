@@ -507,7 +507,7 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
    the browser only has to paint/composite one element instead of hundreds,
    which is what was making things laggy (especially on click, once the
    border was fully built). */
-.leaf-border-image{position:fixed;inset:0;width:100vw;height:100vh;object-fit:fill;z-index:22;pointer-events:none;opacity:0;transition:opacity 0.9s ease}
+.leaf-border-image{position:fixed;inset:0;width:100vw;height:100vh;object-fit:fill;z-index:15;pointer-events:none;opacity:0;transition:opacity 0.9s ease}
 .leaf-border-image.show{opacity:1}
 .border-leaf{position:fixed;left:0;top:0;transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(0);opacity:0;font-size:var(--leaf-size,1.1rem);text-shadow:0 1px 3px rgba(58,32,16,0.22);transition:opacity 0.9s ease,transform 0.9s cubic-bezier(0.34,1.56,0.64,1)}
 .border-leaf.grown{opacity:var(--leaf-op,0.85);transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(1)}
