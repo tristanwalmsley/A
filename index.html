@@ -1659,12 +1659,12 @@ function currentLeafValueMultiplier(){
 // faster AND are worth more the longer a streak runs, so a long streak
 // actually feels like it's paying off rather than being a purely cosmetic
 // number. Both ramp linearly with streak and cap out at streak 100.
-const STREAK_SPAWN_BOOST_PER_POINT = 0.01; // 2% faster spawns per streak point
+const STREAK_SPAWN_BOOST_PER_POINT = 0.005; // 2% faster spawns per streak point
 const STREAK_SPAWN_BOOST_CAP_STREAK = 100;  // caps out at 200 in a row = 400% faster spawns
 function currentStreakSpawnBoost(){
   return Math.min(currentStreak, STREAK_SPAWN_BOOST_CAP_STREAK) * STREAK_SPAWN_BOOST_PER_POINT;
 }
-const STREAK_VALUE_BOOST_PER_POINT = 0.01; // +2% leaf value per streak point
+const STREAK_VALUE_BOOST_PER_POINT = 0.005; // +2% leaf value per streak point
 const STREAK_VALUE_BOOST_CAP_STREAK = 100;  // caps out at 200 in a row = +400% value
 function currentStreakValueBoost(){
   return 1 + Math.min(currentStreak, STREAK_VALUE_BOOST_CAP_STREAK) * STREAK_VALUE_BOOST_PER_POINT;
@@ -1685,8 +1685,8 @@ function currentSpawnDelayRange(){
 const DOUBLE_SPAWN_START_DAY = 5;
 function doubleSpawnChance(){
   const day = currentLeafDayIndex();
-  let chance = day < DOUBLE_SPAWN_START_DAY ? 0 : (day - DOUBLE_SPAWN_START_DAY) / (LEAF_EVENT_DAYS - 1 - DOUBLE_SPAWN_START_DAY) * 0.5; // up to 50%
-  if (isPowerHourActive()) chance = Math.min(1, chance + 0.25);
+  let chance = day < DOUBLE_SPAWN_START_DAY ? 0 : (day - DOUBLE_SPAWN_START_DAY) / (LEAF_EVENT_DAYS - 1 - DOUBLE_SPAWN_START_DAY) * 0.1; // up to 50%
+  if (isPowerHourActive()) chance = Math.min(1, chance + 0.15);
   return chance;
 }
 
@@ -1708,7 +1708,7 @@ function leafEventActive(){
 const POWER_HOUR_START_HOUR_UTC = 18;   // 18 = 6pm UTC (7pm BST / 8pm CEST)
 const POWER_HOUR_START_MINUTE_UTC = 0;  // set to e.g. 30 for a half-past start
 const POWER_HOUR_DURATION_MINUTES = 60; // how long power hour lasts
-const POWER_HOUR_VALUE_MULT = 3;
+const POWER_HOUR_VALUE_MULT = 2.5;
 const POWER_HOUR_SPAWN_MULT = 0.6; // spawn delays multiplied by this -> ~60% faster
 let powerHourWasActive = false;
 function isPowerHourActive(){
