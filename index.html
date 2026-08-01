@@ -25,6 +25,31 @@ linear-gradient(
 );font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden;display:flex;align-items:center;justify-content:center;padding:2rem}
 body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.6}
 
+/* ---------- FINAL DAY: BIRTHDAY MOMENT + PLAYLIST CHIP ---------- */
+#birthday-burst{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:0;
+  background:radial-gradient(circle at 50% 45%,rgba(255,255,255,0.95) 0%,rgba(255,214,170,0.6) 18%,rgba(200,148,58,0.25) 42%,transparent 68%);
+  mix-blend-mode:screen}
+#birthday-burst.fire{animation:bdayBurst 2.2s cubic-bezier(0.16,1,0.3,1) forwards}
+@keyframes bdayBurst{0%{opacity:0;transform:scale(0.3)}12%{opacity:1;transform:scale(1.05)}100%{opacity:0;transform:scale(2.4)}}
+
+#birthday-message{position:fixed;inset:0;z-index:59;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity 1.1s ease}
+#birthday-message.show{opacity:1}
+#birthday-message .bday-text{font-family:'Caveat',cursive;font-weight:700;font-size:clamp(2.4rem,8vw,5rem);color:var(--rose);text-shadow:0 4px 24px rgba(0,0,0,0.15);text-align:center}
+
+#playlist-chip{position:fixed;left:1rem;bottom:1rem;z-index:55;display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0.9rem;border-radius:999px;background:rgba(40,22,12,0.82);color:#fdf6e8;font-family:'EB Garamond',serif;font-size:0.9rem;box-shadow:0 3px 14px rgba(0,0,0,0.25);opacity:0;transform:translateY(140%);transition:opacity 0.7s ease,transform 0.7s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none}
+#playlist-chip.show{opacity:1;transform:translateY(0);pointer-events:auto}
+#playlist-chip .pl-icon{opacity:0.8}
+#playlist-chip .pl-sep{opacity:0.5}
+#playlist-chip #pl-track-name{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#playlist-chip #pl-spotify-link{color:#fdf6e8;text-decoration:none;opacity:0.75;margin-left:0.15rem}
+#playlist-chip #pl-spotify-link:hover{opacity:1}
+
+/* the swapped-in "X until event" lead line - sits exactly where .lead sits,
+   crossfades with it rather than replacing its text so both can be styled
+   independently */
+#lead-final{opacity:0;max-height:0;overflow:hidden;transition:opacity 0.9s ease,max-height 0.9s ease;font-family:'EB Garamond',serif;font-style:italic;text-align:center;color:var(--brown);margin-top:0.3rem}
+#lead-final.show{opacity:1;max-height:3rem}
+
 /* ---------- POWER HOUR VOLUME SLIDER ----------
    a small control, top-left, that only appears while power hour is live -
    lets the volume of the power hour music be turned up/down (or muted)
@@ -600,7 +625,7 @@ body.garden-enchanted .brand{color:#8a5a1f}
 
 <div class="wrap" id="wrap">
   <div class="brand">Besties ♡</div>
-  <p class="lead" id="lead">keep checking back daily - power hour happens at 7pm bst / 8pm cest</p>
+  <p class="lead" id="lead">keep checking back daily - power hour happens at 8pm cest</p>
 
   <div class="timer" id="timer">
     <div class="timer-unit"><div class="timer-num" id="t-days">00</div><div class="timer-label">Days</div></div>
@@ -611,12 +636,35 @@ body.garden-enchanted .brand{color:#8a5a1f}
 </div>
 
 <div id="power-hour-clock" aria-hidden="true">
-  <div class="ph-clock-label">⚡ Power Hour – 3x leaves! ⚡</div>
+  <div class="ph-clock-label">⚡ Power Hour - 3x leaves! ⚡</div>
   <div class="timer ph-clock-timer">
     <div class="timer-unit"><div class="timer-num" id="ph-mins">60</div><div class="timer-label">Minutes</div></div>
     <div class="timer-unit"><div class="timer-num" id="ph-secs">00</div><div class="timer-label">Seconds</div></div>
   </div>
 </div>
+
+<!-- ---------- FINAL DAY: BIRTHDAY MOMENT ----------
+     fires once, at FINAL_DAY_SCHEDULE.BIRTHDAY_MOMENT - a full-screen burst
+     of effects + a message card, plus a small "now playing" chip for the
+     birthday playlist that follows it. See the FINAL_DAY_SCHEDULE block in
+     the script for exactly when this fires and how to move it. -->
+<div id="birthday-burst" aria-hidden="true"></div>
+<div id="birthday-message" aria-hidden="true">
+  <div class="bday-text">Happy Birthday ♡</div>
+</div>
+<div id="playlist-chip" aria-hidden="true">
+  <span class="pl-icon">♪</span>
+  <span id="pl-track-num">Track 1</span>
+  <span class="pl-sep">·</span>
+  <span id="pl-track-name">—</span>
+  <a id="pl-spotify-link" href="#" target="_blank" rel="noopener" title="Open in Spotify">↗</a>
+</div>
+
+<!-- ---------- FINAL DAY: "X UNTIL EVENT" LEAD TEXT ----------
+     the normal .lead text ("keep checking back daily...") swaps to this
+     once FINAL_DAY_SCHEDULE.TEXT_SWAP fires - kept as a separate element so
+     the swap is a simple crossfade rather than juggling text content. -->
+<p class="lead" id="lead-final" aria-hidden="true">the wait is almost over ♡</p>
 
 <div id="music-intro" aria-hidden="true">
   <div class="mi-glow"></div>
@@ -1121,6 +1169,7 @@ function runMusicIntroAnimation(){
 function startMusicIntro(){
   if (musicIntroStarted) return;
   musicIntroStarted = true;
+  fireGardenFarewell();
   playIntroSound();
   runMusicIntroAnimation();
   setTimeout(() => {
@@ -1190,6 +1239,11 @@ function resumeMusicIfMidStream(diffMs){
   const state = computeMusicState(diffMs);
   if (!state) return;
   musicIntroStarted = true;
+  gardenFarewellFired = true; // snap straight to "already gone" on a mid-stream refresh, no replaying the bow-out
+  ['leaf-border-layer','leaf-border-image','light-counter','streak-counter'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
   if (state.mode === 'pool') {
     poolIndex = state.index;
     loadAndPlay(state.file, state.offset, 'pool', false, 0);
@@ -1233,6 +1287,7 @@ function pauseFillerMusicForVideo(){
 function startCountdown(){
   resumeMusicIfMidStream(TARGET - Date.now());
   resumeMilestonesIfMidStream(TARGET - Date.now());
+  try { checkFinalDaySchedule(TARGET - Date.now()); } catch(e) { console.warn('final day schedule failed', e); }
   try { checkPowerHour(); } catch(e) { console.warn('power hour check failed', e); }
   intervalId = setInterval(tick, 1000);
   tick();
@@ -1265,7 +1320,217 @@ function startCountdown(){
 // Countdown target - 5th August 2026, 6:00pm.
 // Written as UK local time (BST, UTC+1 in August). If the person this counts
 // down for is somewhere else, adjust the "+01:00" offset below to match.
-const TARGET = new Date('2026-08-05T19:00:00+01:00').getTime();
+const TARGET = new Date('2026-08-05T12:00:00+01:00').getTime();
+
+// ---------- MASTER TIMELINE (reference only - nothing here is code) ----------
+// Everything below is relative to TARGET. Change TARGET and every line here
+// shifts with it. Two kinds of entries:
+//  - [FINAL_DAY_SCHEDULE] = editable below, in this file, in one place
+//  - [auto]  = fires itself based on real track lengths/existing logic,
+//              listed here so you can see it alongside everything else
+//
+//  TARGET − 15 days   [auto] constellation build-up begins (COUNTDOWN_START)
+//  TARGET − 10 days*  [auto] daily wandering-leaves + daily power-hour window begins
+//                             (*shifts with TARGET - see LEAF_EVENT_START/END)
+//  TARGET − 23h       [FINAL_DAY_SCHEDULE.TEXT_SWAP]        "check back daily" -> "the wait is almost over"
+//  TARGET − 20h       [FINAL_DAY_SCHEDULE.BIRTHDAY_MOMENT]  birthday burst+message, playlist starts, power hour retires for a permanent higher multiplier
+//  TARGET − 2h        [FINAL_DAY_SCHEDULE.PLAYLIST_STOP]    birthday playlist fades out
+//  TARGET − 1h30       [FINAL_DAY_SCHEDULE.FINAL_STAR]       constellation's final star pulse
+//  TARGET − ~35:39*   [auto] pre-reveal build-up music starts (*= however long your actual TRACKS add up to, see MUSIC_START_AT)
+//  TARGET − ~35:39*   [auto] garden/border/light-counter/streak-counter farewell (fireGardenFarewell - fires exactly WITH the music above, not a separate offset)
+//  TARGET − 40min     [auto] "keep checking back" lead line fully hidden (checkMilestones)
+//  TARGET − 10min     [auto] "Besties" brand text grows (checkMilestones)
+//  TARGET − 6min      [auto] visual build-up starts: background/text darken, particles speed up (BUILD_UP_SPAN)
+//  TARGET − 5:00      [auto] spotlight A enters (SPOTLIGHT_SCHEDULE)
+//  TARGET − 4:59*     [auto] finale music track begins (*= FINALE_AT, tied to your finale track's actual length)
+//  TARGET − 4min      [auto] timer digits grow (checkMilestones)
+//  TARGET − 3:30      [auto] spotlight B enters (SPOTLIGHT_SCHEDULE)
+//  TARGET − 4min      [auto] background fully dark (DARK_FULL_AT)
+//  TARGET − 2:00      [auto] spotlight C enters (SPOTLIGHT_SCHEDULE)
+//  TARGET − 1:30      [auto] heart-burst milestone fires (checkMilestones)
+//  TARGET − 1:00      [auto] all 3 spotlights go "crazy mode" (CRAZY_AT)
+//  TARGET − 0:10→0:00 [auto] big flashing countdown number, one per second
+//  TARGET (0:00)      [auto] triggerReveal(): flash, curtains close, "It's time ♡", curtains open, cinema/premiere reel begins on loop
+//
+// ---------- FINAL DAY SCHEDULE ----------
+// The single place to edit if you change TARGET or want to move any of the
+// final-day beats around. Every entry is an OFFSET in milliseconds relative
+// to TARGET (always negative = "this many ms before TARGET"). Change TARGET
+// above and every single one of these times shifts with it automatically -
+// nothing else in the file needs touching.
+//
+// Order matters only in the sense of what the numbers say - list them however
+// you like, they're evaluated independently every tick.
+//
+// hrs()/mins() are just readability helpers so you can write "hrs(20)"
+// instead of doing the ms math by hand.
+function hrs(h){ return h * 3600000; }
+function mins(m){ return m * 60000; }
+
+const FINAL_DAY_SCHEDULE = {
+  // "keep checking back daily..." crossfades into the "X until event" line.
+  // Currently: 8pm BST the day before TARGET.
+  TEXT_SWAP: { offset: -hrs(23), fired: false },
+
+  // the big one: birthday burst + message, the birthday playlist starts
+  // (with track-number chip), power hour is retired for the rest of the
+  // run (see FINAL_DAY_POWER_MULT below), and the daily-ramp multiplier
+  // jumps up permanently instead. Currently: her midnight (23:00 BST / 00:00 CEST).
+  BIRTHDAY_MOMENT: { offset: -hrs(20), fired: false },
+
+  // the last constellation star appears, well ahead of the final sequence
+  // so it has room to breathe on its own. Currently: 1.5h before TARGET.
+  FINAL_STAR: { offset: -mins(90), fired: false },
+
+  // birthday playlist fades out. Set well before the existing pre-reveal
+  // build-up music (the pool tracks + finale track, ~35:39 total - see
+  // MUSIC_START_AT below, which auto-starts based on however long your
+  // actual tracks are) so the two never overlap or fight for the speaker.
+  // Currently: 2 hours before TARGET, leaving a deliberate ~1h20 quiet gap
+  // before the build-up music takes over on its own.
+  PLAYLIST_STOP: { offset: -hrs(2), fired: false }
+};
+
+// fires any FINAL_DAY_SCHEDULE entries whose moment has arrived - called
+// every tick, and once up front on load/refresh so a reload after the
+// moment has passed still catches up instantly instead of waiting forever
+// for a moment that already happened.
+function checkFinalDaySchedule(diff){
+  Object.entries(FINAL_DAY_SCHEDULE).forEach(([key, ev]) => {
+    if (!ev.fired && diff <= -ev.offset) {
+      ev.fired = true;
+      fireFinalDayEvent(key);
+    }
+  });
+}
+
+function fireFinalDayEvent(key){
+  if (key === 'TEXT_SWAP') return swapToFinalLeadText();
+  if (key === 'BIRTHDAY_MOMENT') return startBirthdayMoment();
+  if (key === 'FINAL_STAR') return triggerFinalStar();
+  if (key === 'PLAYLIST_STOP') return stopBirthdayPlaylist();
+}
+
+// ---------- TEXT_SWAP ----------
+function swapToFinalLeadText(){
+  const lead = document.getElementById('lead');
+  const leadFinal = document.getElementById('lead-final');
+  if (lead) lead.classList.add('lead-gone');
+  if (leadFinal) leadFinal.classList.add('show');
+}
+
+// ---------- BIRTHDAY_MOMENT ----------
+// TODO: drop your playlist files in a birthday_playlist/ folder next to this
+// file and list them here in order, with each one's runtime in seconds
+// (used to know when to auto-advance to the next track). title is shown in
+// the chip; spotifyTrackUrl is optional per-track, spotifyPlaylistUrl below
+// is the fallback used if a track doesn't have its own link.
+const BIRTHDAY_PLAYLIST = [
+  // { title: 'Track title here', file: 'track1.mp3', duration: 210 },
+];
+const BIRTHDAY_PLAYLIST_FOLDER = 'birthday_playlist/';
+const BIRTHDAY_SPOTIFY_PLAYLIST_URL = ''; // TODO: paste the Spotify playlist link here
+
+let birthdayPlaylistIndex = -1;
+let birthdayPlaylistPlayer = null;
+
+function startBirthdayMoment(){
+  // burst + message
+  const burst = document.getElementById('birthday-burst');
+  if (burst) { burst.classList.remove('fire'); void burst.offsetWidth; burst.classList.add('fire'); }
+  const msg = document.getElementById('birthday-message');
+  if (msg) {
+    msg.classList.add('show');
+    setTimeout(() => msg.classList.remove('show'), 5000);
+  }
+
+  // power hour is done for good from this point on - see isPowerHourActive()
+  finalDayLockoutActive = true;
+
+  // start the playlist, if any tracks are configured yet
+  if (BIRTHDAY_PLAYLIST.length) startBirthdayPlaylist(0);
+}
+
+function startBirthdayPlaylist(index){
+  birthdayPlaylistIndex = index % BIRTHDAY_PLAYLIST.length;
+  const track = BIRTHDAY_PLAYLIST[birthdayPlaylistIndex];
+  if (!birthdayPlaylistPlayer) {
+    birthdayPlaylistPlayer = new Audio();
+    birthdayPlaylistPlayer.addEventListener('ended', () => startBirthdayPlaylist(birthdayPlaylistIndex + 1));
+  }
+  birthdayPlaylistPlayer.src = BIRTHDAY_PLAYLIST_FOLDER + track.file;
+  const p = birthdayPlaylistPlayer.play();
+  if (p && p.catch) p.catch(() => {}); // autoplay can be blocked until first user interaction
+
+  const chip = document.getElementById('playlist-chip');
+  const num = document.getElementById('pl-track-num');
+  const name = document.getElementById('pl-track-name');
+  const link = document.getElementById('pl-spotify-link');
+  if (num) num.textContent = `Track ${birthdayPlaylistIndex + 1}`;
+  if (name) name.textContent = track.title || '—';
+  if (link) link.href = track.spotifyTrackUrl || BIRTHDAY_SPOTIFY_PLAYLIST_URL || '#';
+  if (chip) chip.classList.add('show');
+}
+
+function stopBirthdayPlaylist(){
+  const chip = document.getElementById('playlist-chip');
+  if (chip) chip.classList.remove('show');
+  if (birthdayPlaylistPlayer && !birthdayPlaylistPlayer.paused) {
+    fadeVolume(birthdayPlaylistPlayer, birthdayPlaylistPlayer.volume || 1, 0, 2000, () => birthdayPlaylistPlayer.pause());
+  }
+}
+
+// ---------- GARDEN / BORDER / COUNTERS FAREWELL ----------
+// the leaf border, garden flowers, light counter and streak counter have
+// been quietly accumulating for ~15 days by this point and are still on
+// screen. They need to take a bow and clear out before the dark pre-reveal
+// staging (spotlights etc.) takes over, or they'll clash with it.
+//
+// This is NOT on a fixed offset - it's triggered from inside
+// startMusicIntro()/resumeMusicIfMidStream() so it fires at exactly the
+// moment the build-up pool music kicks in (35:39 before TARGET by default,
+// but this automatically follows however long your actual tracks add up
+// to - see MUSIC_START_AT below). That keeps the "chapter change" feeling
+// coordinated with the music regardless of track lengths.
+let gardenFarewellFired = false;
+function fireGardenFarewell(){
+  if (gardenFarewellFired) return;
+  gardenFarewellFired = true;
+
+  // one last little celebration: a handful of extra flowers + a sparkle
+  // burst right where the border lives, so it reads as "taking a bow"
+  // rather than just vanishing
+  for (let i = 0; i < 8; i++) setTimeout(() => maybeAddFlowers(999999), i * 120);
+  launchRevealBurst();
+
+  // fade everything out together, then remove it from layout
+  const ids = ['leaf-border-layer', 'leaf-border-image', 'light-counter', 'streak-counter'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.transition = 'opacity 1.8s ease, transform 1.8s ease';
+    el.style.transform = 'translateY(12px)';
+    el.style.opacity = '0';
+  });
+  stopLeafEvents();
+  setTimeout(() => {
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+  }, 1900);
+}
+
+// ---------- FINAL_STAR ----------
+// a one-off bloom distinct from the day-by-day constellation build - the
+// constellation just gets a brief extra-bright pulse to mark "this is the
+// last one" without needing its own new star system.
+function triggerFinalStar(){
+  const wrap = document.getElementById('constellation');
+  if (!wrap) return;
+  wrap.classList.add('heart-beat');
+  setTimeout(() => wrap.classList.remove('heart-beat'), 3700);
+}
 
 function pad(n) { return String(Math.max(0, n)).padStart(2, '0'); }
 
@@ -1588,9 +1853,14 @@ function breakCatchStreak(){
 // from whenever this happens to first load" (same reasoning as the
 // constellation's COUNTDOWN_START above - a relative timer would reset if
 // opened fresh somewhere else).
-const LEAF_EVENT_START = new Date('2026-07-26T00:00:00+01:00').getTime();
+// derived from TARGET (not a separate fixed date) so changing TARGET moves
+// this window automatically: ends at BST midnight at the start of the final
+// day, starts LEAF_EVENT_DAYS before that. +3600000/-3600000 is the BST
+// (UTC+1) correction so "midnight" lands on the right calendar day even
+// though this is all done in UTC math.
 const LEAF_EVENT_DAYS = 10;
-const LEAF_EVENT_END = LEAF_EVENT_START + LEAF_EVENT_DAYS * 86400000;
+const LEAF_EVENT_END = Math.floor((TARGET + 3600000) / 86400000) * 86400000 - 3600000;
+const LEAF_EVENT_START = LEAF_EVENT_END - LEAF_EVENT_DAYS * 86400000;
 let leafScheduleTimer = null;
 let activeLeaves = [];
 
@@ -1675,7 +1945,7 @@ function currentSpawnDelayRange(){
   let max = 25000 - t * 20000; // 25s -> 3s
   const streakBoost = 1 - currentStreakSpawnBoost();
   min *= streakBoost; max *= streakBoost;
-  if (isPowerHourActive()) { min *= POWER_HOUR_SPAWN_MULT; max *= POWER_HOUR_SPAWN_MULT; }
+  if (isPowerHourActive()) { min *= currentSpawnMult(); max *= currentSpawnMult(); }
   return { min, max };
 }
 // from day 5 onward there's a growing chance a SECOND leaf spawns right
@@ -1710,8 +1980,19 @@ const POWER_HOUR_START_MINUTE_UTC = 0;  // set to e.g. 30 for a half-past start
 const POWER_HOUR_DURATION_MINUTES = 60; // how long power hour lasts
 const POWER_HOUR_VALUE_MULT = 2.5;
 const POWER_HOUR_SPAWN_MULT = 0.6; // spawn delays multiplied by this -> ~60% faster
+
+// once FINAL_DAY_SCHEDULE.BIRTHDAY_MOMENT fires, the daily on/off power hour
+// window retires for good and power hour effectively runs continuously from
+// then to TARGET, at a stronger multiplier than the normal daily one - see
+// startBirthdayMoment() above, which is the only place this gets set true.
+let finalDayLockoutActive = false;
+const FINAL_DAY_VALUE_MULT = 4;    // stronger than the usual POWER_HOUR_VALUE_MULT (2.5)
+const FINAL_DAY_SPAWN_MULT = 0.4;  // stronger than the usual POWER_HOUR_SPAWN_MULT (0.6)
+
 let powerHourWasActive = false;
-function isPowerHourActive(){
+// plain daily on/off window, no lockout override - used for the visual
+// galaxy/clock/music side of things (see checkPowerHour)
+function isDailyPowerHourWindowActive(){
   if (!leafEventActive()) return false;
   const now = new Date();
   const minutesNow = now.getUTCHours() * 60 + now.getUTCMinutes();
@@ -1719,6 +2000,17 @@ function isPowerHourActive(){
   const end = start + POWER_HOUR_DURATION_MINUTES;
   return minutesNow >= start && minutesNow < end;
 }
+// used for the spawn-rate/value multiplier side of things - true either
+// during the normal daily window, OR continuously once the final-day
+// lockout has kicked in (see startBirthdayMoment)
+function isPowerHourActive(){
+  if (finalDayLockoutActive) return true; // final day: always "on" from here to TARGET
+  return isDailyPowerHourWindowActive();
+}
+// picks which multiplier is active - the boosted final-day one once locked in,
+// otherwise the normal daily power-hour one
+function currentValueMult(){ return finalDayLockoutActive ? FINAL_DAY_VALUE_MULT : POWER_HOUR_VALUE_MULT; }
+function currentSpawnMult(){ return finalDayLockoutActive ? FINAL_DAY_SPAWN_MULT : POWER_HOUR_SPAWN_MULT; }
 // ---------- POWER HOUR GALAXY STARFIELD ----------
 // a scattering of small twinkling stars, generated once up front and simply
 // shown/hidden (via the #power-hour-stars.show class) whenever power hour
@@ -1750,7 +2042,13 @@ function updatePowerHourClock(){
 }
 
 function checkPowerHour(){
-  const active = isPowerHourActive();
+  // the final-day lockout boosts spawn/value multipliers continuously (see
+  // isPowerHourActive/currentValueMult/currentSpawnMult) but deliberately
+  // does NOT re-trigger the galaxy dark-mode / clock / music visuals - those
+  // are a "this hour is special" cue that doesn't make sense running for
+  // ~20 straight hours. So visuals below only ever respond to the normal
+  // daily window, never to finalDayLockoutActive.
+  const active = !finalDayLockoutActive && isDailyPowerHourWindowActive();
   if (active) updatePowerHourClock();
   if (active === powerHourWasActive) return;
   powerHourWasActive = active;
@@ -1911,7 +2209,7 @@ function spawnWanderLeaf(){
     if (rafId) cancelAnimationFrame(rafId);
     const rect = el.getBoundingClientRect();
     let finalValue = Math.round(type.value * currentLeafValueMultiplier() * currentStreakValueBoost());
-    if (isPowerHourActive()) finalValue *= POWER_HOUR_VALUE_MULT;
+    if (isPowerHourActive()) finalValue *= currentValueMult();
     spawnLeafCatchSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2);
     spawnLeafValuePop(rect.left + rect.width / 2, rect.top, finalValue);
     el.classList.add('caught');
@@ -2464,6 +2762,7 @@ function tick() {
   updateBuildUp(diff);
   try { checkMusicSchedule(diff); } catch(e) { console.warn('music schedule failed', e); }
   try { checkMilestones(diff); } catch(e) { console.warn('milestone check failed', e); }
+  try { checkFinalDaySchedule(diff); } catch(e) { console.warn('final day schedule failed', e); }
   try { checkPowerHour(); } catch(e) { console.warn('power hour check failed', e); }
 
   const days = Math.floor(diff / 86400000);
