@@ -567,7 +567,7 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 @keyframes shootingStarFly{0%{opacity:1;transform:translate(0,0)}100%{opacity:0;transform:translate(-230px,150px)}}
 
 /* subtle gold cast to the paper tones once the garden is fully "enchanted" */
-body.garden-enchanted .brand{color:#8a5a1f}
+body.stage-garden-enchanted .brand{color:#8a5a1f}
 
 .wander-leaf{position:fixed;left:0;top:0;z-index:9300;font-size:1.5rem;line-height:1;cursor:pointer;user-select:none;pointer-events:auto;filter:drop-shadow(0 2px 6px rgba(58,32,16,0.25));opacity:0;transition:opacity 0.6s ease}
 .wander-leaf.in{opacity:0.92}
@@ -2471,8 +2471,8 @@ function applyGardenStage(total){
   updateFireflyRamp(total);
   if (stage.key === currentGardenStageKey) return;
   currentGardenStageKey = stage.key;
-  GARDEN_STAGES.forEach(s => document.body.classList.remove('garden-' + s.key));
-  document.body.classList.add('garden-' + stage.key);
+  GARDEN_STAGES.forEach(s => document.body.classList.remove('stage-garden-' + s.key));
+  document.body.classList.add('stage-garden-' + stage.key);
   if (stage.key === 'enchanted') startEnchanted(); else stopEnchanted();
 }
 
