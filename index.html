@@ -1388,8 +1388,9 @@ const FINAL_DAY_SCHEDULE = {
   // the big one: birthday burst + message, the birthday playlist starts
   // (with track-number chip), power hour is retired for the rest of the
   // run (see FINAL_DAY_POWER_MULT below), and the daily-ramp multiplier
-  // jumps up permanently instead. Currently: her midnight (23:00 BST / 00:00 CEST).
-  BIRTHDAY_MOMENT: { offset: -hrs(20), fired: false },
+  // jumps up permanently instead. Currently: 25h40m before TARGET (i.e.
+  // 1h40m before the 24-hours-to-go mark).
+  BIRTHDAY_MOMENT: { offset: -(hrs(25) + mins(40)), fired: false },
 
   // the last constellation star appears, well ahead of the final sequence
   // so it has room to breathe on its own. Currently: 1.5h before TARGET.
@@ -1479,8 +1480,15 @@ function startBirthdayMoment(){
   // power hour is done for good from this point on - see isPowerHourActive()
   finalDayLockoutActive = true;
 
-  // start the playlist, if any tracks are configured yet
-  if (BIRTHDAY_PLAYLIST.length) startBirthdayPlaylist(0);
+  // start the playlist, if any tracks are configured yet - but only if we
+  // haven't ALSO already sailed past PLAYLIST_STOP's moment (this can happen
+  // on a fresh page load/catch-up that occurs less than 2h before TARGET,
+  // where both this and PLAYLIST_STOP would otherwise fire back-to-back in
+  // the same tick and the playlist would start only to be killed instantly).
+  const stopOffset = FINAL_DAY_SCHEDULE.PLAYLIST_STOP.offset;
+  const alreadyPastStop = (TARGET - Date.now()) <= -stopOffset;
+  if (BIRTHDAY_PLAYLIST.length && !alreadyPastStop) startBirthdayPlaylist(0);
+  if (alreadyPastStop) FINAL_DAY_SCHEDULE.PLAYLIST_STOP.fired = true; // nothing to stop, mark handled
 }
 
 function startBirthdayPlaylist(index){
