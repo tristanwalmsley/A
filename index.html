@@ -1954,8 +1954,8 @@ function currentStreakValueBoost(){
 }
 function currentSpawnDelayRange(){
   const t = currentLeafDayProgress();
-  let min = 50000 - t * 4000;   // 10s -> 3s
-  let max = 5000 - t * 4000; // 25s -> 3s
+  let min = 10000 - t * 7000;   // 10s -> 3s
+  let max = 25000 - t * 22000; // 25s -> 3s
   const streakBoost = 1 - currentStreakSpawnBoost();
   min *= streakBoost; max *= streakBoost;
   if (isPowerHourActive()) { min *= currentSpawnMult(); max *= currentSpawnMult(); }
