@@ -294,6 +294,16 @@ body.brand-grow .brand{transform:scale(1.55)}
 body.finale-focus .brand,body.finale-focus .lead{opacity:0;max-height:0;margin:0;transform:translateY(-10px);pointer-events:none}
 body.finale-focus .timer{transform:scale(1.1);transition:transform 1.2s cubic-bezier(0.22,1,0.36,1),opacity 0.5s ease}
 
+.timer-holder{position:relative}
+/* ---------- PAUSED OVERLAY ----------
+   a simple box, same visual language as the timer units, sitting directly
+   on top of the countdown. Lives inside .timer-holder so it inherits every
+   transform/scale the countdown itself goes through (power hour shrink,
+   build-up growth, etc) automatically - always covering it, in every state. */
+.paused-overlay{position:absolute;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;background:var(--paper);border:1.5px solid var(--tan);box-shadow:4px 4px 0 var(--warm);pointer-events:none}
+.paused-overlay span{font-family:'Playfair Display',serif;font-weight:700;font-size:1.7rem;letter-spacing:3px;color:var(--deep)}
+body.power-hour-active .paused-overlay{background:#1e1432;border-color:rgba(150,120,220,0.55);box-shadow:4px 4px 0 rgba(0,0,0,0.4)}
+body.power-hour-active .paused-overlay span{color:#fbf8ff}
 .timer{display:flex;justify-content:center;gap:0.8rem;flex-wrap:wrap;margin-bottom:2.6rem;transition:opacity 0.5s ease,transform 0.5s ease}
 body.stage-10 .timer{opacity:0;transform:scale(0.85);pointer-events:none}
 body.timer-grow .timer{transform:scale(1.4);transition:transform 15s cubic-bezier(0.45,0,0.55,1)}
@@ -627,11 +637,14 @@ body.stage-garden-enchanted .brand{color:#8a5a1f}
   <div class="brand">Besties ♡</div>
   <p class="lead" id="lead">keep checking back daily - power hour happens at 8pm cest</p>
 
-  <div class="timer" id="timer">
-    <div class="timer-unit"><div class="timer-num" id="t-days">00</div><div class="timer-label">Days</div></div>
-    <div class="timer-unit"><div class="timer-num" id="t-hours">00</div><div class="timer-label">Hours</div></div>
-    <div class="timer-unit"><div class="timer-num" id="t-mins">00</div><div class="timer-label">Minutes</div></div>
-    <div class="timer-unit"><div class="timer-num" id="t-secs">00</div><div class="timer-label">Seconds</div></div>
+  <div class="timer-holder">
+    <div class="timer" id="timer">
+      <div class="timer-unit"><div class="timer-num" id="t-days">00</div><div class="timer-label">Days</div></div>
+      <div class="timer-unit"><div class="timer-num" id="t-hours">00</div><div class="timer-label">Hours</div></div>
+      <div class="timer-unit"><div class="timer-num" id="t-mins">00</div><div class="timer-label">Minutes</div></div>
+      <div class="timer-unit"><div class="timer-num" id="t-secs">00</div><div class="timer-label">Seconds</div></div>
+    </div>
+    <div class="paused-overlay"><span>PAUSED</span></div>
   </div>
 </div>
 
