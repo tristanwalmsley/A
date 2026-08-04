@@ -1914,7 +1914,7 @@ function currentLeafDayProgress(){
 // 6th is rarest of all. Day-to-day progression instead comes entirely from
 // currentLeafValueMultiplier() below (each catch is worth more as the days
 // pass), not from the rarer glyphs showing up more often.
-const LEAF_WEIGHTS = [34, 35, 33, 19, 12, 6, 3]; // 🥬 🌿 🍃 🍂 🍁 🍀 🧸
+const LEAF_WEIGHTS = [15, 16, 17, 18, 19, 20, 14]; // 🥬 🌿 🍃 🍂 🍁 🍀 🧸
 function currentLeafWeights(){
   return LEAF_WEIGHTS;
 }
@@ -1932,7 +1932,7 @@ function pickLeafType(){
 // pass (1x today/day 0, 2x by day 1/tomorrow, climbing to 10x on the final
 // day) - a 🥬 caught on the last day is worth dramatically more than one
 // caught today, on top of rarer types simply showing up more often
-const LEAF_VALUE_DAY_MULT_MAX = 10.0; // day0 stays 1x (today's baseline), day1 lands at 2x, final day hits 10x
+const LEAF_VALUE_DAY_MULT_MAX = 25.0; // day0 stays 1x (today's baseline), day1 lands at 2x, final day hits 10x
 function currentLeafValueMultiplier(){
   return 1 + currentLeafDayProgress() * (LEAF_VALUE_DAY_MULT_MAX - 1);
 }
@@ -1954,8 +1954,8 @@ function currentStreakValueBoost(){
 }
 function currentSpawnDelayRange(){
   const t = currentLeafDayProgress();
-  let min = 13000 - t * 6000;   // 8s -> 2s
-  let max = 25000 - t * 20000; // 25s -> 3s
+  let min = 10000 - t * 7000;   // 10s -> 3s
+  let max = 25000 - t * 22000; // 25s -> 3s
   const streakBoost = 1 - currentStreakSpawnBoost();
   min *= streakBoost; max *= streakBoost;
   if (isPowerHourActive()) { min *= currentSpawnMult(); max *= currentSpawnMult(); }
