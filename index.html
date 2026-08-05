@@ -2093,13 +2093,13 @@ function currentLeafValueMultiplier(){
 // faster AND are worth more the longer a streak runs, so a long streak
 // actually feels like it's paying off rather than being a purely cosmetic
 // number. Both ramp linearly with streak and cap out at streak 100.
-const STREAK_SPAWN_BOOST_PER_POINT = 0.005; // 2% faster spawns per streak point
-const STREAK_SPAWN_BOOST_CAP_STREAK = 100;  // caps out at 200 in a row = 400% faster spawns
+const STREAK_SPAWN_BOOST_PER_POINT = 0.015; // 2% faster spawns per streak point
+const STREAK_SPAWN_BOOST_CAP_STREAK = 200;  // caps out at 200 in a row = 400% faster spawns
 function currentStreakSpawnBoost(){
   return Math.min(currentStreak, STREAK_SPAWN_BOOST_CAP_STREAK) * STREAK_SPAWN_BOOST_PER_POINT;
 }
-const STREAK_VALUE_BOOST_PER_POINT = 0.005; // +2% leaf value per streak point
-const STREAK_VALUE_BOOST_CAP_STREAK = 100;  // caps out at 200 in a row = +400% value
+const STREAK_VALUE_BOOST_PER_POINT = 0.015; // +2% leaf value per streak point
+const STREAK_VALUE_BOOST_CAP_STREAK = 200;  // caps out at 200 in a row = +400% value
 function currentStreakValueBoost(){
   return 1 + Math.min(currentStreak, STREAK_VALUE_BOOST_CAP_STREAK) * STREAK_VALUE_BOOST_PER_POINT;
 }
