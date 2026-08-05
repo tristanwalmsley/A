@@ -97,6 +97,19 @@ body.power-hour-active #track-progress-bar{background:rgba(255,255,255,0.15)}
 #power-hour-volume .ph-skip-btn:hover{opacity:1;transform:scale(1.12)}
 #power-hour-volume .ph-skip-btn:active{transform:scale(0.92)}
 
+/* ---------- BUILD-UP MUSIC VOLUME (~35:39 pre-reveal "final playlist") ----------
+   Same pill widget, top-left, as the power-hour one above. Safe to reuse the
+   exact same spot since power hour is permanently retired by the time this
+   build-up music starts (finalDayLockoutActive flips true at BIRTHDAY_MOMENT,
+   24h before TARGET - well before this music kicks in at ~35:39 before TARGET),
+   so the two never appear at the same time. */
+#buildup-volume{position:fixed;left:1rem;top:1rem;z-index:55;display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0.9rem;border-radius:999px;background:rgba(40,22,12,0.82);box-shadow:0 3px 14px rgba(0,0,0,0.25);opacity:0;transform:translateY(-140%);transition:opacity 0.7s ease,transform 0.7s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none}
+#buildup-volume.show{opacity:1;transform:translateY(0);pointer-events:auto}
+#buildup-volume .bu-vol-icon{font-size:1.1rem;line-height:1;user-select:none}
+#buildup-volume input[type="range"]{-webkit-appearance:none;appearance:none;width:90px;height:4px;border-radius:999px;background:rgba(255,255,255,0.35);outline:none;cursor:pointer}
+#buildup-volume input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 2px rgba(255,255,255,0.7);cursor:pointer}
+#buildup-volume input[type="range"]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;border:none;background:var(--gold);box-shadow:0 0 0 2px rgba(255,255,255,0.7);cursor:pointer}
+
 /* ---------- POWER HOUR DARK MODE: GALAXY ----------
    the whole page dims down into a deep-space nebula while power hour is
    live - soft purple/blue blooms behind a scattering of twinkling stars -
@@ -652,6 +665,10 @@ body.stage-garden-enchanted .brand{color:#8a5a1f}
   <input type="range" id="power-hour-volume-slider" min="0" max="100" value="60" aria-label="Power hour music volume">
   <button type="button" class="ph-skip-btn" id="power-hour-skip-btn" aria-label="Skip this track">⏭</button>
 </div>
+<div id="buildup-volume" aria-hidden="true">
+  <span class="bu-vol-icon">🔊</span>
+  <input type="range" id="buildup-volume-slider" min="0" max="100" value="55" aria-label="Build-up music volume">
+</div>
 <div class="glow-layer" id="glows"></div>
 <div class="drift-layer" id="drifts"></div>
 <div class="breeze-layer" id="breezes"></div>
@@ -713,7 +730,7 @@ body.stage-garden-enchanted .brand{color:#8a5a1f}
 
 <!-- ---------- FINAL DAY: "X UNTIL EVENT" LEAD TEXT ----------
      the normal .lead text ("keep checking back daily...") swaps to this
-     once FINAL_DAY_SCHEDULE.TEXT_SWAP fires - kept as a separate element so
+     once startBirthdayMoment() swaps it in (24h before TARGET) - kept as a separate element so
      the swap is a simple crossfade rather than juggling text content. -->
 <p class="lead" id="lead-final" aria-hidden="true">the wait is almost over ♡</p>
 
@@ -862,6 +879,17 @@ let finaleStarted = false;
 let musicMode = null; // 'pool' | 'finale' | 'filler'
 let poolIndex = -1;
 const bgm = document.getElementById('bgm-player');
+const buVolSlider = document.getElementById('buildup-volume-slider');
+let buUserVolume = MUSIC_VOLUME; // updated live as the slider is dragged
+if (buVolSlider) {
+  buVolSlider.value = Math.round(MUSIC_VOLUME * 100);
+  buVolSlider.addEventListener('input', () => {
+    buUserVolume = buVolSlider.value / 100;
+    bgm.volume = buUserVolume;
+    const icon = document.querySelector('#buildup-volume .bu-vol-icon');
+    if (icon) icon.textContent = buUserVolume === 0 ? '🔇' : (buUserVolume < 0.4 ? '🔉' : '🔊');
+  });
+}
 
 function fadeVolume(el, from, to, duration, onDone){
   const steps = 24;
@@ -886,7 +914,7 @@ function loadAndPlay(file, offset, mode, loop, fadeMs){
   musicMode = mode;
   bgm.loop = !!loop;
   bgm.src = MUSIC_FOLDER + file;
-  bgm.volume = fadeMs ? 0 : MUSIC_VOLUME;
+  bgm.volume = fadeMs ? 0 : buUserVolume;
   const onReady = () => {
     bgm.removeEventListener('loadedmetadata', onReady);
     if (offset > 0) { try { bgm.currentTime = offset; } catch(e) {} }
@@ -894,7 +922,7 @@ function loadAndPlay(file, offset, mode, loop, fadeMs){
     if (p && p.catch) p.catch(err => console.warn('music play blocked/failed', err));
   };
   bgm.addEventListener('loadedmetadata', onReady);
-  if (fadeMs) fadeVolume(bgm, 0, MUSIC_VOLUME, fadeMs);
+  if (fadeMs) fadeVolume(bgm, 0, buUserVolume, fadeMs);
 }
 
 // ---------- POWER HOUR MUSIC ----------
@@ -1111,7 +1139,7 @@ function stopPowerHourMusic(){
   if (phYtPlayer && phYtPlayer.getVolume) {
     fadeYouTubeVolume(phYtPlayer, phUserVolume, 0, 1200, () => { try { phYtPlayer.pauseVideo(); } catch(e) {} });
   }
-  fadeVolume(bgm, bgm.volume, MUSIC_VOLUME, 1500);
+  fadeVolume(bgm, bgm.volume, buUserVolume, 1500);
 }
 
 // pool tracks advance to the next one in sequence as each one ends (this is
@@ -1223,6 +1251,8 @@ function startMusicIntro(){
   fireGardenFarewell();
   playIntroSound();
   runMusicIntroAnimation();
+  const volCtl = document.getElementById('buildup-volume');
+  if (volCtl) volCtl.classList.add('show');
   setTimeout(() => {
     poolIndex = 0;
     loadAndPlay(TRACKS[0].file, 0, 'pool', false, 0);
@@ -1236,6 +1266,8 @@ function startMusicIntro(){
 // right visual state instead of replaying it.
 function beginFinale(offset, live){
   finaleStarted = true;
+  const volCtl = document.getElementById('buildup-volume');
+  if (volCtl) volCtl.classList.remove('show');
   loadAndPlay(FINALE_TRACK, offset, 'finale', false, 0);
   if (live) {
     triggerColorPulse();
@@ -1291,6 +1323,7 @@ function resumeMusicIfMidStream(diffMs){
   if (!state) return;
   musicIntroStarted = true;
   gardenFarewellFired = true; // snap straight to "already gone" on a mid-stream refresh, no replaying the bow-out
+  endLeafCollection(); // this normally happens inside fireGardenFarewell(), which we're skipping here
   ['leaf-border-layer','leaf-border-image','light-counter','streak-counter'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
@@ -1298,6 +1331,8 @@ function resumeMusicIfMidStream(diffMs){
   if (state.mode === 'pool') {
     poolIndex = state.index;
     loadAndPlay(state.file, state.offset, 'pool', false, 0);
+    const volCtl = document.getElementById('buildup-volume');
+    if (volCtl) volCtl.classList.add('show');
   } else {
     beginFinale(state.offset, false);
   }
@@ -1323,7 +1358,7 @@ function playRandomFillerMusic(){
       if (p && p.catch) p.catch(() => {});
     };
     bgm.addEventListener('loadedmetadata', onReady);
-    fadeVolume(bgm, 0, MUSIC_VOLUME, 1200);
+    fadeVolume(bgm, 0, buUserVolume, 1200);
   };
   if (musicMode !== null && !bgm.paused) fadeVolume(bgm, bgm.volume, 0, 500, startNew);
   else startNew();
@@ -1371,7 +1406,7 @@ function startCountdown(){
 // Countdown target - 5th August 2026, 6:00pm.
 // Written as UK local time (BST, UTC+1 in August). If the person this counts
 // down for is somewhere else, adjust the "+01:00" offset below to match.
-const TARGET = new Date('2026-08-05T23:00:00+01:00').getTime();
+const TARGET = new Date('2026-08-05T22:00:00+01:00').getTime();
 
 // ---------- MASTER TIMELINE (reference only - nothing here is code) ----------
 // Everything below is relative to TARGET. Change TARGET and every line here
@@ -1388,7 +1423,6 @@ const TARGET = new Date('2026-08-05T23:00:00+01:00').getTime();
 //  TARGET − ~35:39*   [auto] pre-reveal "final playlist" build-up music starts (*= however long your actual TRACKS add up to, see MUSIC_START_AT)
 //  TARGET − ~35:39*   [auto] garden/border/light-counter/streak-counter farewell (fireGardenFarewell - fires exactly WITH the music above, not a separate offset)
 //  TARGET − 10min     [auto] "Besties" brand text grows (checkMilestones)
-//  TARGET − 9min      [FINAL_DAY_SCHEDULE.TEXT_SWAP]        "check back daily" -> "the wait is almost over"
 //  TARGET − 7min      [FINAL_DAY_SCHEDULE.FINAL_STAR]       constellation's final star pulse
 //  TARGET − 6.5min    [FINAL_DAY_SCHEDULE.LEAF_COLLECTION_END] leaf collection cuts off, light counter fades
 //  TARGET − 6min      [auto] visual build-up starts: background/text darken, particles speed up (BUILD_UP_SPAN)
@@ -1421,7 +1455,8 @@ function mins(m){ return m * 60000; }
 // NOTE: BIRTHDAY_MOMENT and PLAYLIST_STOP intentionally stay on their own
 // longer-range schedule (24h before / 6pm respectively) - these are the big,
 // slow-burn beats (playlist + birthday message) that should be running well
-// ahead of time, not squeezed into the final minutes. TEXT_SWAP, FINAL_STAR,
+// ahead of time, not squeezed into the final minutes. The lead-text swap now
+// also runs on that same 24h schedule (see startBirthdayMoment). FINAL_STAR,
 // and LEAF_COLLECTION_END, on the other hand, are compressed into the final
 // 10 minutes before TARGET, kept in the same relative order as before just
 // squeezed tighter, and all finish before the auto build-up kicks in at
@@ -1429,9 +1464,10 @@ function mins(m){ return m * 60000; }
 // pre-reveal build-up ("final playlist") music (MUSIC_START_AT, ~35:39
 // before TARGET) is also left alone on its own auto schedule.
 const FINAL_DAY_SCHEDULE = {
-  // "keep checking back daily..." crossfades into the "X until event" line.
-  // Currently: 9 minutes before TARGET.
-  TEXT_SWAP: { offset: -mins(9), fired: false },
+  // NOTE: the "keep checking back daily..." -> "Xm Ys till next event"
+  // crossfade no longer lives on its own offset here - it's fired directly
+  // from startBirthdayMoment() below, so it starts right at the 24h mark
+  // alongside everything else that moment kicks off.
 
   // the big one: birthday burst + message, the birthday playlist starts
   // (with track-number chip), power hour is retired for the rest of the
@@ -1448,12 +1484,11 @@ const FINAL_DAY_SCHEDULE = {
   // build-up music, so the two never overlap or fight for the speaker.
   PLAYLIST_STOP: { offset: -hrs(5), fired: false },
 
-  // leaf collection cuts off cleanly at a fixed point before TARGET,
-  // independent of the garden farewell above (which is tied to however
-  // long the build-up music tracks add up to, and could land earlier or
-  // later than this). No new leaves spawn after this point, and the light
-  // counter (bottom-left) fades out since there's nothing left to count.
-  // Currently: 6.5 minutes before TARGET (just ahead of the -6min build-up).
+  // safety-net only: leaf collection now actually ends inside
+  // fireGardenFarewell(), which fires exactly WITH the build-up music
+  // (~35:39 before TARGET). This entry just guarantees collection is
+  // definitely off by 6.5min even in the edge case where the music/garden
+  // farewell somehow never fired (e.g. audio blocked entirely).
   LEAF_COLLECTION_END: { offset: -mins(6.5), fired: false }
 };
 
@@ -1475,7 +1510,6 @@ function checkFinalDaySchedule(diff){
 }
 
 function fireFinalDayEvent(key){
-  if (key === 'TEXT_SWAP') return swapToFinalLeadText();
   if (key === 'BIRTHDAY_MOMENT') return startBirthdayMoment();
   if (key === 'FINAL_STAR') return triggerFinalStar();
   if (key === 'PLAYLIST_STOP') return stopBirthdayPlaylist();
@@ -1493,7 +1527,7 @@ function endLeafCollection(){
   if (counter) counter.style.transition = 'opacity 1.2s ease', counter.style.opacity = '0';
 }
 
-// ---------- TEXT_SWAP ----------
+// ---------- LEAD TEXT SWAP (now fired from startBirthdayMoment, 24h out) ----------
 let textSwapped = false;
 function swapToFinalLeadText(){
   const lead = document.getElementById('lead');
@@ -1510,7 +1544,7 @@ function swapToFinalLeadText(){
 // automatically picks up the next one in the list - no extra bookkeeping.
 // NAMED_EVENTS itself is defined further down (it needs SPOTLIGHT_SCHEDULE/
 // CRAZY_AT/etc to already exist), so this function is safe to call from
-// then on but not before - textSwapped only flips true after TEXT_SWAP
+// then on but not before - textSwapped only flips true after startBirthdayMoment
 // fires, which is well after all of those are defined at parse time anyway.
 function updateFinalLeadText(diff){
   if (!textSwapped) return;
@@ -1529,9 +1563,9 @@ function updateFinalLeadText(diff){
   const m = Math.floor((totalSecs % 3600) / 60);
   const s = totalSecs % 60;
   let text;
-  if (h > 0) text = `${h}h ${m}m until ${next.label}`;
-  else if (m > 0) text = `${m}m ${s}s until ${next.label}`;
-  else text = `${s}s until ${next.label}`;
+  if (h > 0) text = `${h}h ${m}m till next event`;
+  else if (m > 0) text = `${m}m ${s}s till next event`;
+  else text = `${s}s till next event`;
   leadFinal.textContent = text;
 }
 
@@ -1590,6 +1624,10 @@ function startBirthdayMoment(){
   const alreadyPastStop = (TARGET - Date.now()) <= -stopOffset;
   if (BIRTHDAY_PLAYLIST.length && !alreadyPastStop) startBirthdayPlaylist(0);
   if (alreadyPastStop) FINAL_DAY_SCHEDULE.PLAYLIST_STOP.fired = true; // nothing to stop, mark handled
+
+  // the "Xm Ys till next event" line now starts right here, 24h out,
+  // instead of waiting until -9min
+  swapToFinalLeadText();
 }
 
 // keeps the dropdown's currently-playing entry visually marked, whether it
@@ -1714,6 +1752,12 @@ let gardenFarewellFired = false;
 function fireGardenFarewell(){
   if (gardenFarewellFired) return;
   gardenFarewellFired = true;
+
+  // leaf collection stops in this exact same moment - no new leaves spawn
+  // once the border/counter are taking their bow below (previously this
+  // was on its own separate -6.5min timer, which let leaves keep spawning
+  // invisibly for ~29 minutes after the border/counter had already faded)
+  endLeafCollection();
 
   // one last little celebration: a handful of extra flowers + a sparkle
   // burst right where the border lives, so it reads as "taking a bow"
