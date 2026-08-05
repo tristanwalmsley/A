@@ -699,7 +699,7 @@ body.stage-garden-enchanted .brand{color:#8a5a1f}
   <div class="bday-text">Happy Birthday ♡</div>
 </div>
 <div id="track-progress-bar" aria-hidden="true"><div id="track-progress-fill"></div></div>
-<div id="playlist-chip" aria-hidden="true" style="position:relative">
+<div id="playlist-chip" aria-hidden="true">
   <div id="pl-track-dropdown" role="listbox" aria-label="Choose a track"></div>
   <span class="pl-icon">♪</span>
   <span id="pl-track-num">Track 1</span>
@@ -1754,7 +1754,7 @@ const EVO_STAGES = {
   'evo-1': { glyphs: ['🧩','✧','•','✦','🎉','💎','🎈','✨','♡'],     label: 'a little while to go yet' },
   'evo-2': { glyphs: ['🧩','✧','•','✦','🎉','💎','🎈','✨','♡'],     label: 'getting closer now' },
   'evo-3': { glyphs: ['🧩','✧','•','✦','🎉','💎','🎈','✨','♡'],     label: 'so nearly here' },
-  'evo-4': { glyphs: ['🧩','✧','•','✦','🎉','💎','🎈','✨','♡'],     label: 'today\u2019s the day!' }
+  'evo-4': { glyphs: ['💐','🎂','🎈','🎉','🎁','✧','•','✦','🎉','💎','✨','♡','🍪','🍵','📫','📨'],     label: 'today\u2019s the day!' }
 };
 function evoStageFor(daysLeft){
   if (daysLeft <= 0) return 'evo-4';
@@ -2080,8 +2080,8 @@ let activeLeaves = [];
 // the higher up the scale it goes, so the rarer/more valuable ones actually
 // feel like a genuine catch rather than a freebie
 const LEAF_TYPES = [
-  { glyph: '\ud83e\udd6c', value: 2, sizeMin: 1.5, sizeMax: 2.6, speed: 0.4 }, // 🥬 - big, slow, easy
-  { glyph: '\ud83c\udf3f', value: 3, sizeMin: 1.4, sizeMax: 2.4,  speed: 0.5  }, // 🌿
+  { glyph: '\ud83e\udd6c', value: 2, sizeMin: 1.5, sizeMax: 4.0, speed: 0.6 }, // 🥬 - big, slow, easy
+  { glyph: '\ud83c\udf3f', value: 3, sizeMin: 1.4, sizeMax: 3.0,  speed: 0.6  }, // 🌿
   { glyph: '\ud83c\udf43', value: 4, sizeMin: 1.3, sizeMax: 2.2,  speed: 0.6  }, // 🍃
   { glyph: '\ud83c\udf42', value: 5, sizeMin: 1.2, sizeMax: 2.0,  speed: 0.7 }, // 🍂
   { glyph: '\ud83c\udf41', value: 6, sizeMin: 1.1, sizeMax: 1.8,  speed: 0.8 }, // 🍁
@@ -2140,13 +2140,13 @@ function currentLeafValueMultiplier(){
 // faster AND are worth more the longer a streak runs, so a long streak
 // actually feels like it's paying off rather than being a purely cosmetic
 // number. Both ramp linearly with streak and cap out at streak 100.
-const STREAK_SPAWN_BOOST_PER_POINT = 0.005; // 2% faster spawns per streak point
-const STREAK_SPAWN_BOOST_CAP_STREAK = 100;  // caps out at 200 in a row = 400% faster spawns
+const STREAK_SPAWN_BOOST_PER_POINT = 0.015; // 2% faster spawns per streak point
+const STREAK_SPAWN_BOOST_CAP_STREAK = 200;  // caps out at 200 in a row = 400% faster spawns
 function currentStreakSpawnBoost(){
   return Math.min(currentStreak, STREAK_SPAWN_BOOST_CAP_STREAK) * STREAK_SPAWN_BOOST_PER_POINT;
 }
-const STREAK_VALUE_BOOST_PER_POINT = 0.005; // +2% leaf value per streak point
-const STREAK_VALUE_BOOST_CAP_STREAK = 100;  // caps out at 200 in a row = +400% value
+const STREAK_VALUE_BOOST_PER_POINT = 0.015; // +2% leaf value per streak point
+const STREAK_VALUE_BOOST_CAP_STREAK = 200;  // caps out at 200 in a row = +400% value
 function currentStreakValueBoost(){
   return 1 + Math.min(currentStreak, STREAK_VALUE_BOOST_CAP_STREAK) * STREAK_VALUE_BOOST_PER_POINT;
 }
