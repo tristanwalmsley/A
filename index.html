@@ -2151,7 +2151,9 @@ const POWER_HOUR_SPAWN_MULT = 0.5; // spawn delays multiplied by this -> ~60% fa
 // startBirthdayMoment() above, which is the only place this gets set true.
 let finalDayLockoutActive = false;
 const FINAL_DAY_VALUE_MULT = 4;    // stronger than the usual POWER_HOUR_VALUE_MULT (2.5)
-const FINAL_DAY_SPAWN_MULT = 0.4;  // stronger than the usual POWER_HOUR_SPAWN_MULT (0.6)
+const FINAL_DAY_SPAWN_MULT = 0.75;  // gentler than power hour's 0.6 - this runs continuously for
+                                     // ~25h instead of just a 1h burst, so it needs to be sustainable
+                                     // rather than as intense as a short power-hour spike
 
 let powerHourWasActive = false;
 // plain daily on/off window, no lockout override - used for the visual
@@ -2311,7 +2313,11 @@ function spawnLeafCatchSparkles(x, y){
 // one leaf: spirals/swirls its way across a good chunk of the screen over
 // several seconds (genuinely "spinning all around"), then drifts off an
 // edge and fades - unless Ann catches it first
+const MAX_ACTIVE_LEAVES = 8; // hard cap on-screen at once, regardless of spawn timing - a safety
+                              // net so the screen can never get overwhelmed even if the timing
+                              // math above ends up more aggressive than intended
 function spawnWanderLeaf(){
+  if (activeLeaves.length >= MAX_ACTIVE_LEAVES) return;
   const type = pickLeafType();
   const el = document.createElement('div');
   el.className = 'wander-leaf';
