@@ -1383,14 +1383,14 @@ const TARGET = new Date('2026-08-05T23:00:00+01:00').getTime();
 //  TARGET − 15 days   [auto] constellation build-up begins (COUNTDOWN_START)
 //  TARGET − 10 days*  [auto] daily wandering-leaves + daily power-hour window begins
 //                             (*shifts with TARGET - see LEAF_EVENT_START/END)
-//  TARGET − 23h       [FINAL_DAY_SCHEDULE.TEXT_SWAP]        "check back daily" -> "the wait is almost over"
-//  TARGET − 20h       [FINAL_DAY_SCHEDULE.BIRTHDAY_MOMENT]  birthday burst+message, playlist starts, power hour retires for a permanent higher multiplier
-//  TARGET − 2h        [FINAL_DAY_SCHEDULE.PLAYLIST_STOP]    birthday playlist fades out
-//  TARGET − 1h30       [FINAL_DAY_SCHEDULE.FINAL_STAR]       constellation's final star pulse
-//  TARGET − ~35:39*   [auto] pre-reveal build-up music starts (*= however long your actual TRACKS add up to, see MUSIC_START_AT)
+//  TARGET − 24h       [FINAL_DAY_SCHEDULE.BIRTHDAY_MOMENT]  birthday burst+message, playlist starts, power hour retires for a permanent higher multiplier
+//  TARGET − 5h (6pm)  [FINAL_DAY_SCHEDULE.PLAYLIST_STOP]    birthday playlist fades out
+//  TARGET − ~35:39*   [auto] pre-reveal "final playlist" build-up music starts (*= however long your actual TRACKS add up to, see MUSIC_START_AT)
 //  TARGET − ~35:39*   [auto] garden/border/light-counter/streak-counter farewell (fireGardenFarewell - fires exactly WITH the music above, not a separate offset)
-//  TARGET − 40min     [auto] "keep checking back" lead line fully hidden (checkMilestones)
 //  TARGET − 10min     [auto] "Besties" brand text grows (checkMilestones)
+//  TARGET − 9min      [FINAL_DAY_SCHEDULE.TEXT_SWAP]        "check back daily" -> "the wait is almost over"
+//  TARGET − 7min      [FINAL_DAY_SCHEDULE.FINAL_STAR]       constellation's final star pulse
+//  TARGET − 6.5min    [FINAL_DAY_SCHEDULE.LEAF_COLLECTION_END] leaf collection cuts off, light counter fades
 //  TARGET − 6min      [auto] visual build-up starts: background/text darken, particles speed up (BUILD_UP_SPAN)
 //  TARGET − 5:00      [auto] spotlight A enters (SPOTLIGHT_SCHEDULE)
 //  TARGET − 4:59*     [auto] finale music track begins (*= FINALE_AT, tied to your finale track's actual length)
@@ -1418,36 +1418,43 @@ const TARGET = new Date('2026-08-05T23:00:00+01:00').getTime();
 function hrs(h){ return h * 3600000; }
 function mins(m){ return m * 60000; }
 
+// NOTE: BIRTHDAY_MOMENT and PLAYLIST_STOP intentionally stay on their own
+// longer-range schedule (24h before / 6pm respectively) - these are the big,
+// slow-burn beats (playlist + birthday message) that should be running well
+// ahead of time, not squeezed into the final minutes. TEXT_SWAP, FINAL_STAR,
+// and LEAF_COLLECTION_END, on the other hand, are compressed into the final
+// 10 minutes before TARGET, kept in the same relative order as before just
+// squeezed tighter, and all finish before the auto build-up kicks in at
+// -6min (BUILD_UP_SPAN) so nothing collides with that sequence. The
+// pre-reveal build-up ("final playlist") music (MUSIC_START_AT, ~35:39
+// before TARGET) is also left alone on its own auto schedule.
 const FINAL_DAY_SCHEDULE = {
   // "keep checking back daily..." crossfades into the "X until event" line.
-  // Currently: 8pm BST the day before TARGET.
-  TEXT_SWAP: { offset: -hrs(23), fired: false },
+  // Currently: 9 minutes before TARGET.
+  TEXT_SWAP: { offset: -mins(9), fired: false },
 
   // the big one: birthday burst + message, the birthday playlist starts
   // (with track-number chip), power hour is retired for the rest of the
   // run (see FINAL_DAY_POWER_MULT below), and the daily-ramp multiplier
-  // jumps up permanently instead. Currently: 25h40m before TARGET (i.e.
-  // 1h40m before the 24-hours-to-go mark).
-  BIRTHDAY_MOMENT: { offset: -(hrs(25) + mins(40)), fired: false },
+  // jumps up permanently instead. Currently: 24 hours before TARGET.
+  BIRTHDAY_MOMENT: { offset: -hrs(24), fired: false },
 
   // the last constellation star appears, well ahead of the final sequence
-  // so it has room to breathe on its own. Currently: 1.5h before TARGET.
-  FINAL_STAR: { offset: -mins(90), fired: false },
+  // so it has room to breathe on its own. Currently: 7 minutes before TARGET.
+  FINAL_STAR: { offset: -mins(7), fired: false },
 
-  // birthday playlist fades out. Set well before the existing pre-reveal
-  // build-up music (the pool tracks + finale track, ~35:39 total - see
-  // MUSIC_START_AT below, which auto-starts based on however long your
-  // actual tracks are) so the two never overlap or fight for the speaker.
-  // Currently: 2 hours before TARGET, leaving a deliberate ~1h20 quiet gap
-  // before the build-up music takes over on its own.
-  PLAYLIST_STOP: { offset: -hrs(2), fired: false },
+  // birthday playlist fades out. Currently: 6pm on the day of TARGET (5
+  // hours before an 11pm TARGET) - well ahead of the ~35:39 pre-reveal
+  // build-up music, so the two never overlap or fight for the speaker.
+  PLAYLIST_STOP: { offset: -hrs(5), fired: false },
 
-  // leaf collection cuts off cleanly at a fixed 30 minutes before TARGET,
+  // leaf collection cuts off cleanly at a fixed point before TARGET,
   // independent of the garden farewell above (which is tied to however
   // long the build-up music tracks add up to, and could land earlier or
   // later than this). No new leaves spawn after this point, and the light
   // counter (bottom-left) fades out since there's nothing left to count.
-  LEAF_COLLECTION_END: { offset: -mins(30), fired: false }
+  // Currently: 6.5 minutes before TARGET (just ahead of the -6min build-up).
+  LEAF_COLLECTION_END: { offset: -mins(6.5), fired: false }
 };
 
 // fires any FINAL_DAY_SCHEDULE entries whose moment has arrived - called
