@@ -82,6 +82,11 @@ body.power-hour-active #track-progress-bar{background:rgba(255,255,255,0.15)}
    independently */
 #lead-final{opacity:0;max-height:0;overflow:hidden;transition:opacity 0.9s ease,max-height 0.9s ease;font-family:'EB Garamond',serif;font-style:italic;text-align:center;color:var(--brown);margin-top:0.3rem}
 #lead-final.show{opacity:1;max-height:3rem}
+/* once the timer starts growing (4:00 mark), this gets pulled out of .wrap
+   entirely and pinned to the true top of the viewport, small - otherwise the
+   swelling timer/brand transforms (which don't reflow their siblings) run
+   straight over it. See compactFinalLeadText(). */
+#lead-final.lead-final-compact{position:fixed;top:0.8rem;left:50%;right:auto;transform:translateX(-50%);margin:0;max-height:none;font-size:0.72rem;letter-spacing:0.2px;z-index:70;text-shadow:0 1px 6px rgba(255,251,240,0.6);white-space:nowrap}
 
 /* ---------- POWER HOUR VOLUME SLIDER ----------
    a small control, top-left, that only appears while power hour is live -
@@ -459,23 +464,26 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
    never sharing flex space with each other (that was the centering bug) */
 .scene-stage{position:relative;flex:1 1 auto;min-height:0;width:100%;overflow:hidden}
 
-.scene-message{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.3rem;font-style:italic;color:var(--deep);line-height:1.7;text-align:center;padding:1rem 8vw;opacity:0;transform:translateY(10px);transition:opacity 1s ease,transform 1s ease}
+.scene-message{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.3rem;font-style:italic;color:var(--deep);line-height:1.7;text-align:center;padding:1rem 8vw;opacity:0;transform:translateY(10px);transition:opacity 1s ease,transform 1s ease}
 .scene-message.in{opacity:1;transform:translateY(0)}
 
 /* fills the entire scene-stage area edge to edge - YouTube's own player
    handles internal letterboxing, so no aspect-ratio math needed here */
-.cinema-stage{position:absolute;inset:0;background:#000;border:10px solid var(--deep);border-radius:4px;box-shadow:0 20px 50px rgba(0,0,0,0.4),0 0 0 3px var(--gold) inset;overflow:hidden;opacity:0;transition:opacity 1s ease}
+.cinema-stage{position:absolute;inset:0;z-index:2;background:#000;border:10px solid var(--deep);border-radius:4px;box-shadow:0 20px 50px rgba(0,0,0,0.4),0 0 0 3px var(--gold) inset;overflow:hidden;opacity:0;transition:opacity 1s ease}
 .cinema-stage.in{opacity:1}
 
-/* big centered sparkle-heart sitting behind the trailers/messages, with the
-   besties text glowing inside it - subtle enough not to fight with actual
-   video content (which covers it entirely once a trailer is playing) */
-.premiere-heart{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 1.6s ease;pointer-events:none;z-index:1}
+/* big centered sparkle-heart sitting behind the trailers/messages -
+   subtle enough not to fight with actual video content (which covers it
+   entirely once a trailer is playing). z-index:0 (rather than 1) keeps it
+   below .scene-message and .cinema-stage, which sit later in the DOM and
+   are given their own explicit z-index below - previously this had
+   z-index:1 which put it ABOVE both regardless of DOM order, which is why
+   it was showing on top of the videos/text. */
+.premiere-heart{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 1.6s ease;pointer-events:none;z-index:0}
 .premiere-heart.show{opacity:1}
 .premiere-heart-svg{position:absolute;width:min(70vh,70vw,520px);height:min(70vh,70vw,520px);overflow:visible}
 .premiere-heart-svg path{fill:none;stroke:var(--evo-accent);stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round;opacity:0.4;filter:drop-shadow(0 0 8px var(--evo-accent));animation:heartGlowPulse 4s ease-in-out infinite}
 @keyframes heartGlowPulse{0%,100%{opacity:0.28}50%{opacity:0.55}}
-.premiere-heart-text{position:relative;font-family:'Caveat',cursive;font-weight:700;font-size:2.6rem;color:var(--rose);text-shadow:0 2px 14px rgba(255,250,240,0.65);z-index:1}
 
 /* film-strip side borders, only during the premiere/trailer sequence -
    classic sprocket-hole reel pattern with a slow scroll and a warm gold
@@ -686,6 +694,11 @@ body.stage-garden-enchanted .brand{color:#8a5a1f}
 <div class="wrap" id="wrap">
   <div class="brand">Besties ♡</div>
   <p class="lead" id="lead">and with that, power hours are over forever!</p>
+  <!-- moved in from outside .wrap: it had no position of its own, so with
+       everything around it fixed/absolute it was the only element left in
+       normal document flow and rendered off at the top-left of the page,
+       invisible - now it sits right under "lead" like it's meant to. -->
+  <p class="lead" id="lead-final" aria-hidden="true">the wait is almost over ♡</p>
 
   <div class="timer-holder">
     <div class="timer" id="timer">
@@ -728,12 +741,6 @@ body.stage-garden-enchanted .brand{color:#8a5a1f}
   <a id="pl-spotify-link" href="#" target="_blank" rel="noopener" title="Open in Spotify">↗</a>
 </div>
 
-<!-- ---------- FINAL DAY: "X UNTIL EVENT" LEAD TEXT ----------
-     the normal .lead text ("keep checking back daily...") swaps to this
-     once startBirthdayMoment() swaps it in (24h before TARGET) - kept as a separate element so
-     the swap is a simple crossfade rather than juggling text content. -->
-<p class="lead" id="lead-final" aria-hidden="true">the wait is almost over ♡</p>
-
 <div id="music-intro" aria-hidden="true">
   <div class="mi-glow"></div>
   <div class="mi-ring r1"></div>
@@ -766,7 +773,6 @@ body.stage-garden-enchanted .brand{color:#8a5a1f}
   <div class="scene-stage" id="scene-stage">
     <div class="premiere-heart" id="premiere-heart">
       <svg viewBox="0 0 100 100" class="premiere-heart-svg"><path id="premiere-heart-path"></path></svg>
-      <div class="premiere-heart-text">Besties ♡</div>
     </div>
     <div class="scene-message" id="scene-message"></div>
     <div class="cinema-stage" id="cinema-stage" style="display:none">
@@ -1248,7 +1254,6 @@ function runMusicIntroAnimation(){
 function startMusicIntro(){
   if (musicIntroStarted) return;
   musicIntroStarted = true;
-  fireGardenFarewell();
   playIntroSound();
   runMusicIntroAnimation();
   const volCtl = document.getElementById('buildup-volume');
@@ -1322,12 +1327,6 @@ function resumeMusicIfMidStream(diffMs){
   const state = computeMusicState(diffMs);
   if (!state) return;
   musicIntroStarted = true;
-  gardenFarewellFired = true; // snap straight to "already gone" on a mid-stream refresh, no replaying the bow-out
-  endLeafCollection(); // this normally happens inside fireGardenFarewell(), which we're skipping here
-  ['leaf-border-layer','leaf-border-image','light-counter','streak-counter'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = 'none';
-  });
   if (state.mode === 'pool') {
     poolIndex = state.index;
     loadAndPlay(state.file, state.offset, 'pool', false, 0);
@@ -1742,12 +1741,11 @@ function stopBirthdayPlaylist(){
 // screen. They need to take a bow and clear out before the dark pre-reveal
 // staging (spotlights etc.) takes over, or they'll clash with it.
 //
-// This is NOT on a fixed offset - it's triggered from inside
-// startMusicIntro()/resumeMusicIfMidStream() so it fires at exactly the
-// moment the build-up pool music kicks in (35:39 before TARGET by default,
-// but this automatically follows however long your actual tracks add up
-// to - see MUSIC_START_AT below). That keeps the "chapter change" feeling
-// coordinated with the music regardless of track lengths.
+// This is NOT on a fixed offset in the sense of FINAL_DAY_SCHEDULE - it's
+// tied to BUILD_UP_SPAN (6 minutes before TARGET, same moment the visual
+// build-up/darkening starts) so it coincides with that "chapter change"
+// feeling rather than the music, which runs on its own much-earlier
+// schedule (~35:39 before TARGET, see MUSIC_START_AT).
 let gardenFarewellFired = false;
 function fireGardenFarewell(){
   if (gardenFarewellFired) return;
@@ -2131,13 +2129,13 @@ let activeLeaves = [];
 // the higher up the scale it goes, so the rarer/more valuable ones actually
 // feel like a genuine catch rather than a freebie
 const LEAF_TYPES = [
-  { glyph: '\ud83e\udd6c', value: 10, sizeMin: 1.5, sizeMax: 4.0, speed: 0.6 }, // 🥬 - big, slow, easy
-  { glyph: '\ud83c\udf3f', value: 15, sizeMin: 1.4, sizeMax: 3.0,  speed: 0.6  }, // 🌿
-  { glyph: '\ud83c\udf43', value: 20, sizeMin: 1.3, sizeMax: 2.2,  speed: 0.6  }, // 🍃
-  { glyph: '\ud83c\udf42', value: 25, sizeMin: 1.2, sizeMax: 2.0,  speed: 0.7 }, // 🍂
-  { glyph: '\ud83c\udf41', value: 30, sizeMin: 1.1, sizeMax: 1.8,  speed: 0.8 }, // 🍁
-  { glyph: '\ud83c\udf40', value: 35, sizeMin: 1.0, sizeMax: 1.6,  speed: 0.9  }, // 🍀 - small, fast, hard
-  { glyph: '🧸', value: 40, sizeMin: 0.9, sizeMax: 1.4,  speed: 1.0  }, // 🧸 - small, fast, hard
+  { glyph: '\ud83e\udd6c', value: 2, sizeMin: 1.5, sizeMax: 4.0, speed: 0.6 }, // 🥬 - big, slow, easy
+  { glyph: '\ud83c\udf3f', value: 3, sizeMin: 1.4, sizeMax: 3.0,  speed: 0.6  }, // 🌿
+  { glyph: '\ud83c\udf43', value: 4, sizeMin: 1.3, sizeMax: 2.2,  speed: 0.6  }, // 🍃
+  { glyph: '\ud83c\udf42', value: 5, sizeMin: 1.2, sizeMax: 2.0,  speed: 0.7 }, // 🍂
+  { glyph: '\ud83c\udf41', value: 6, sizeMin: 1.1, sizeMax: 1.8,  speed: 0.8 }, // 🍁
+  { glyph: '\ud83c\udf40', value: 7, sizeMin: 1.0, sizeMax: 1.6,  speed: 0.9  }, // 🍀 - small, fast, hard
+  { glyph: '🧸', value: 8, sizeMin: 0.9, sizeMax: 1.4,  speed: 1.0  }, // 🧸 - small, fast, hard
 ];
 
 // ---------- DAILY RAMP ----------
@@ -2924,6 +2922,7 @@ function resumeMilestonesIfMidStream(diff){
   }
   if (diff <= 4 * 60 * 1000) {
     timerGrowFired = true;
+    compactFinalLeadText(true);
     if (diff <= 3 * 60 * 1000 + 45 * 1000) {
       // already past the 15s growth window - snap straight to full size, no animation
       const timer = document.querySelector('.timer');
@@ -2941,6 +2940,17 @@ function resumeMilestonesIfMidStream(diff){
     const el = document.getElementById('constellation');
     if (el) el.classList.add('heart-glide', 'heart-bloom', 'heart-gone');
   }
+  if (diff <= BUILD_UP_SPAN && diff > 0 && !gardenFarewellFired) {
+    // snap straight to "already gone" on a mid-stream refresh past the
+    // 6-minute mark, no replaying the fade/bow-out animation
+    gardenFarewellFired = true;
+    endLeafCollection();
+    ['leaf-border-layer','leaf-border-image','light-counter','streak-counter'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    stopLeafEvents();
+  }
 }
 
 let breezeIntervalId = null;
@@ -2952,6 +2962,8 @@ let extraParticleCount = 0;
 const BUILD_UP_SPAN = 360000; // 6 minutes - the whole build-up window
 const DARK_FULL_AT = 240000; // 4 minutes - background colour transition finishes here (full 2 min)
 const TEXT_FULL_AT = 300000; // 5 minutes - text colour transition finishes here (twice as fast, done after minute 1 of the 2)
+const GALAXY_FULL_AT = 180000; // 3 minutes - once the brown wash has settled (at 4:00), it spends the next minute
+                                // fading into the galaxy nebula/starfield instead, fully there by 3:00, held to zero
 
 let colorPulseStartFired = false;
 let colorPulseEndFired = false;
@@ -3025,6 +3037,39 @@ const NAMED_EVENTS = [
   { offset: 0,                                               label: 'event' }
 ];
 
+let finalLeadCompacted = false;
+// pulls #lead-final out of .wrap and pins it small to the top of the real
+// viewport. It has to be reparented (not just re-styled in place) because
+// .wrap has its own `transform`, which makes it the containing block for any
+// fixed-position descendant - a `position:fixed` child of .wrap would end up
+// positioned relative to .wrap's own (scaling, moving) box, not the screen.
+function compactFinalLeadText(instant){
+  if (finalLeadCompacted) return;
+  finalLeadCompacted = true;
+  const leadFinal = document.getElementById('lead-final');
+  if (!leadFinal) return;
+  const move = () => {
+    document.body.appendChild(leadFinal);
+    leadFinal.classList.add('lead-final-compact');
+  };
+  if (instant) {
+    leadFinal.style.transition = 'none';
+    leadFinal.classList.remove('show');
+    move();
+    void leadFinal.offsetWidth;
+    leadFinal.classList.add('show');
+    requestAnimationFrame(() => { leadFinal.style.transition = ''; });
+  } else {
+    // brief fade-out, reparent while invisible, fade back in up top
+    leadFinal.classList.remove('show');
+    setTimeout(() => {
+      move();
+      void leadFinal.offsetWidth;
+      leadFinal.classList.add('show');
+    }, 900);
+  }
+}
+
 let leadHidden = false;
 let brandGrown = false;
 let timerGrowFired = false;
@@ -3042,6 +3087,7 @@ function checkMilestones(diff){
   if (!timerGrowFired && diff <= 4 * 60 * 1000) {
     timerGrowFired = true;
     document.body.classList.add('timer-grow');
+    compactFinalLeadText(false);
   }
   if (!heartBurstFired && diff <= 90 * 1000) {
     heartBurstFired = true;
@@ -3097,6 +3143,7 @@ function updateBuildUp(diff){
 
   if (!colorPulseStartFired && diff <= BUILD_UP_SPAN) { colorPulseStartFired = true; triggerColorPulse(); }
   if (!colorPulseEndFired && diff <= DARK_FULL_AT) { colorPulseEndFired = true; triggerColorPulse(); }
+  if (!gardenFarewellFired && diff <= BUILD_UP_SPAN) fireGardenFarewell();
 
   // darkness/color: its own faster, mostly-linear timeline - fully there by 4 minutes,
   // held from there to zero
@@ -3111,6 +3158,26 @@ function updateBuildUp(diff){
   // background + text colors, animated together in HSL space
   document.getElementById('dark-wash').style.background =
     `radial-gradient(ellipse at 50% 38%, ${hslLerp(BG_INNER_START, BG_INNER_END, darkT)} 0%, ${hslLerp(BG_OUTER_START, BG_OUTER_END, darkT)} 65%)`;
+
+  // the daytime green ambient glow blobs clash with the darkening/galaxy look
+  // past this point, so fade them out over the same window the background
+  // takes to go dark (gone by 4:00)
+  const glowLayer = document.getElementById('glows');
+  if (glowLayer) glowLayer.style.opacity = 1 - darkT;
+
+  // once the brown wash is fully settled (4:00), spend the next minute fading
+  // into the galaxy nebula + starfield instead (reusing the same layers power
+  // hour uses) - fully in by 3:00, then held there the rest of the way to zero.
+  // Only touch these elements' inline style during the build-up window itself,
+  // so daily power hour's own class-based control of them the rest of the
+  // time is left alone.
+  if (diff <= BUILD_UP_SPAN) {
+    const galaxyT = clamp((DARK_FULL_AT - diff) / (DARK_FULL_AT - GALAXY_FULL_AT), 0, 1);
+    const galaxyDark = document.getElementById('power-hour-dark');
+    const galaxyStars = document.getElementById('power-hour-stars');
+    if (galaxyDark) { galaxyDark.style.opacity = galaxyT; galaxyDark.style.transform = `scale(${lerp(1.08, 1, galaxyT)})`; }
+    if (galaxyStars) { galaxyStars.style.opacity = galaxyT; galaxyStars.style.transform = `scale(${lerp(1.08, 1, galaxyT)})`; }
+  }
   document.querySelector('.brand').style.color = hslLerp(BRAND_START, BRAND_END, textT);
   document.querySelector('.lead').style.color = hslLerp(LEAD_START, LEAD_END, textT);
 
@@ -3290,6 +3357,12 @@ function triggerReveal(){
   fadeOutAndStopMusic();
   document.body.classList.remove('mega-zoom','stage-60','stage-30','stage-15','stage-10','stage-5');
   document.getElementById('dark-wash').style.opacity = '0';
+  const galaxyDark = document.getElementById('power-hour-dark');
+  const galaxyStars = document.getElementById('power-hour-stars');
+  if (galaxyDark) galaxyDark.style.opacity = '0';
+  if (galaxyStars) galaxyStars.style.opacity = '0';
+  const glowLayer = document.getElementById('glows');
+  if (glowLayer) glowLayer.style.opacity = '1';
   document.getElementById('spot-a').style.opacity = '0';
   document.getElementById('spot-b').style.opacity = '0';
   document.getElementById('spot-c').style.opacity = '0';
@@ -3380,6 +3453,7 @@ function launchRevealBurst(){
 //   - youtubeId is the bit after "v=" or "youtu.be/" in the video's URL
 //   - set ready:true once a video actually exists - until then it's auto-skipped
 const SCENES = [
+  { type: 'video', title: 'Lang zal ze leven', youtubeId: 'eYbuabrDNFE', ready: true },
   { type: 'message', text: "It's time! ♡", duration: 3000 },
   { type: 'message', text: "The Office of Bestie Affairs' Technical Department is putting the finishing touches on the site - please enjoy the entertainment while you wait.", duration: 6200 },
   { type: 'video', title: 'Trailer', youtubeId: 'GetcsmJ9U3o', ready: true },
