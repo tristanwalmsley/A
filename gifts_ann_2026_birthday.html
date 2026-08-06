@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Besties ♡</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#faf4e8;--warm:#f0ddb8;--tan:#d4b483;--brown:#7a5230;
+  --deep:#3a2010;--rose:#b86858;--gold:#c8943a;--sage:#7a9870;
+  --paper:#fffdf5;--ink:#2a1a08;--locked-bg:#eee8dc;--locked-text:#b0a898;
+}
+html{scroll-behavior:smooth}
+body{background:var(--cream);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.6}
+nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--tan);background:var(--paper);position:sticky;top:0;z-index:500;flex-wrap:wrap;gap:0.5rem}
+.nav-brand{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--rose);font-weight:700;text-decoration:none}
+.nav-links{display:flex;gap:1rem;flex-wrap:wrap}
+.nav-a{font-family:'Caveat',cursive;font-size:0.95rem;color:var(--brown);text-decoration:none;padding:0.3rem 0.6rem;border-radius:2px;transition:color 0.2s,background 0.2s;letter-spacing:0.5px;border:none;background:none;cursor:pointer}
+.nav-a:hover{color:var(--deep);background:var(--warm)}
+.nav-a.current{color:var(--deep);font-weight:700;border-bottom:2px solid var(--gold)}
+.nav-a.locked{color:var(--locked-text);cursor:not-allowed;pointer-events:none}
+.page-header{text-align:center;padding:3rem 2rem 1.5rem;animation:headerIn 0.7s ease both}
+@keyframes headerIn{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+.page-header h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:400;color:var(--deep)}
+.page-header p{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--brown);margin-top:0.4rem;letter-spacing:0.5px}
+.tutorial-pill-wrap{text-align:center;margin-top:0.7rem}
+.tutorial-pill{background:none;border:1.5px solid var(--tan);color:var(--brown);font-family:'Caveat',cursive;font-size:0.9rem;padding:0.3rem 0.9rem;cursor:pointer;transition:all 0.2s;letter-spacing:0.3px}
+.tutorial-pill:hover{background:var(--warm);border-color:var(--gold);color:var(--deep)}
+.progress-section{max-width:520px;margin:1rem auto 2.5rem;padding:0 2rem;animation:headerIn 0.7s ease 0.1s both}
+.progress-rail{height:5px;background:var(--warm);border-radius:999px;overflow:hidden;margin-bottom:0.5rem}
+.progress-fill{height:100%;background:var(--gold);border-radius:999px;transition:width 1s cubic-bezier(0.34,1.4,0.64,1)}
+.progress-label{font-family:'Caveat',cursive;font-size:1rem;color:var(--brown);text-align:center}
+.path-wrap{max-width:580px;margin:0 auto;padding:0 1.5rem 5rem;position:relative}
+.spine{position:absolute;left:calc(1.5rem + 27px);top:0;bottom:0;width:2px;z-index:0;overflow:hidden}
+.spine-bg{position:absolute;inset:0;border-left:2.5px dashed var(--warm)}
+.spine-fill{position:absolute;top:0;left:0;right:0;height:0;background:linear-gradient(to bottom,var(--sage),var(--gold));transition:height 0.8s cubic-bezier(0.22,1,0.36,1)}
+.spine-fill::after{content:'';position:absolute;left:50%;bottom:-3px;width:9px;height:9px;border-radius:50%;background:var(--gold);transform:translateX(-50%);box-shadow:0 0 10px 3px rgba(200,148,58,0.6);opacity:0;transition:opacity 0.4s}
+.spine-fill.has-progress::after{opacity:1;animation:spineGlowPulse 1.8s ease-in-out infinite}
+@keyframes spineGlowPulse{0%,100%{transform:translateX(-50%) scale(1);box-shadow:0 0 10px 3px rgba(200,148,58,0.6)}50%{transform:translateX(-50%) scale(1.35);box-shadow:0 0 16px 6px rgba(200,148,58,0.8)}}
+/* STOP */
+.stop{display:flex;align-items:flex-start;gap:1.2rem;margin-bottom:2rem;position:relative;z-index:1;opacity:0;transform:translateX(-30px);animation:stopSlide 0.6s cubic-bezier(0.22,1,0.36,1) forwards}
+@keyframes stopSlide{to{opacity:1;transform:translateX(0)}}
+/* DOT - now an icon */
+.stop-dot{flex-shrink:0;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;position:relative;transition:transform 0.4s cubic-bezier(0.34,1.6,0.64,1),box-shadow 0.3s}
+.stop.is-locked .stop-dot{background:var(--locked-bg);border:2.5px dashed var(--locked-text);font-size:0.9rem}
+.stop.is-unlocked .stop-dot{background:var(--warm);border:2.5px solid var(--gold);box-shadow:0 0 0 4px rgba(200,148,58,0.15);cursor:pointer}
+.stop.is-unlocked .stop-dot:hover{transform:scale(1.18) rotate(-6deg);box-shadow:0 0 0 10px rgba(200,148,58,0.2)}
+.stop.is-opened .stop-dot{background:var(--sage);border:2.5px solid var(--sage);box-shadow:0 0 0 4px rgba(122,152,112,0.2)}
+.stop.is-unlocked .stop-dot::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--gold);opacity:0;animation:pulseRing 2s ease-in-out infinite}
+@keyframes pulseRing{0%{opacity:0.8;transform:scale(1)}100%{opacity:0;transform:scale(1.7)}}
+.stop.kind-unlock.is-unlocked .stop-dot{border-style:double;border-width:4px}
+/* CARD */
+.stop-card{flex:1;background:var(--paper);border:1px solid var(--tan);padding:1.1rem 1.3rem 1.2rem;position:relative;overflow:hidden;transition:box-shadow 0.25s,transform 0.25s}
+.stop-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;transition:background 0.4s;background:var(--warm)}
+.stop.is-locked .stop-card{background:var(--locked-bg);border-color:#d0c8ba}
+.stop.is-locked .stop-card::before{background:#d0c8ba}
+.stop.is-unlocked .stop-card::before{background:var(--gold)}
+.stop.is-opened .stop-card::before{background:var(--sage)}
+.stop.is-unlocked:hover .stop-card{box-shadow:6px 6px 0 var(--tan);transform:translate(-3px,-3px)}
+.stop.just-opened .stop-card{animation:justOpenedGlow 1.4s ease}
+@keyframes justOpenedGlow{0%{box-shadow:0 0 0 0 rgba(122,152,112,0.7)}60%{box-shadow:0 0 0 14px rgba(122,152,112,0)}100%{box-shadow:0 0 0 0 rgba(122,152,112,0)}}
+.stop-label{font-family:'Caveat',cursive;font-size:0.78rem;letter-spacing:3px;text-transform:uppercase;color:var(--brown);margin-bottom:0.25rem}
+.stop.is-locked .stop-label{color:var(--locked-text)}
+.stop-title{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--deep);margin-bottom:0.3rem}
+.stop.is-locked .stop-title{color:var(--locked-text);filter:blur(5px);user-select:none}
+.stop-title-teaser{font-style:italic;color:var(--rose);font-weight:400}
+.stop-hint{font-size:0.9rem;color:var(--brown);font-style:italic;line-height:1.5}
+.stop-hint-group{font-size:0.8rem;color:var(--tan);margin-top:0.3rem}
+.stop.is-locked .stop-hint{display:none}
+.stop-locked-msg{font-family:'Caveat',cursive;font-size:0.95rem;color:var(--locked-text);margin-top:0.3rem}
+.btn-open{display:inline-block;margin-top:0.8rem;background:var(--deep);color:var(--cream);border:none;padding:0.45rem 1.2rem;font-family:'Caveat',cursive;font-size:1rem;cursor:pointer;letter-spacing:0.5px;transition:background 0.2s,transform 0.15s,box-shadow 0.15s;box-shadow:3px 3px 0 var(--brown)}
+.btn-open:hover{background:var(--brown);transform:translate(-2px,-2px);box-shadow:5px 5px 0 #5a3820}
+.btn-open:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--brown)}
+.btn-revisit{display:inline-block;margin-top:0.8rem;background:transparent;color:var(--brown);border:1px solid var(--tan);padding:0.4rem 1rem;font-family:'Caveat',cursive;font-size:0.95rem;cursor:pointer;transition:background 0.2s}
+.btn-revisit:hover{background:var(--warm)}
+#final-banner{max-width:460px;margin:0 auto 3rem;padding:1.5rem 2rem;background:var(--locked-bg);border:1.5px dashed var(--locked-text);text-align:center}
+#final-banner p{font-family:'Caveat',cursive;font-size:1.05rem;color:var(--locked-text);letter-spacing:0.5px}
+/* MODAL */
+#overlay{display:none;position:fixed;inset:0;z-index:900;align-items:center;justify-content:center;padding:1.5rem}
+#overlay.show{display:flex}
+.backdrop{position:absolute;inset:0;background:rgba(30,15,5,0);transition:background 0.4s ease}
+#overlay.show .backdrop{background:rgba(30,15,5,0.72)}
+.modal-wrap{position:relative;z-index:1;max-width:460px;width:100%;perspective:1000px}
+.gift-box-scene{position:relative;display:flex;justify-content:center;align-items:center;height:260px;margin-bottom:-20px}
+.gift-box{width:160px;height:130px;position:relative;transform-style:preserve-3d;cursor:default}
+.box-body{position:absolute;bottom:0;left:0;right:0;height:100px;background:var(--warm);border:2px solid var(--tan);border-radius:2px;overflow:hidden}
+.box-body::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:20px;height:100%;background:rgba(200,148,58,0.3)}
+.box-lid{position:absolute;top:0;left:-8px;right:-8px;height:36px;background:var(--rose);border:2px solid #8a4838;border-radius:2px;transform-origin:left center;z-index:2}
+.box-lid::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:100%;background:rgba(255,255,255,0.15)}
+.bow{position:absolute;top:-12px;left:50%;transform:translateX(-50%)}
+.bow-left,.bow-right{position:absolute;width:22px;height:16px;border:3px solid var(--gold);border-radius:50%;top:0}
+.bow-left{left:-22px;transform:rotate(-20deg)}
+.bow-right{right:-22px;transform:rotate(20deg) scaleX(-1)}
+.bow-knot{position:absolute;width:10px;height:10px;background:var(--gold);border-radius:50%;top:3px;left:50%;transform:translateX(-50%)}
+.box-shine{position:absolute;top:10px;left:15px;width:3px;height:70px;background:rgba(255,255,255,0.2);border-radius:2px}
+@keyframes lidFlyOff{0%{transform:translateY(0) rotate(0deg);opacity:1}30%{transform:translateY(-80px) rotate(-25deg) translateX(30px)}60%{transform:translateY(-200px) rotate(-60deg) translateX(80px);opacity:1}100%{transform:translateY(-400px) rotate(-120deg) translateX(160px);opacity:0}}
+.box-lid.fly-off{animation:lidFlyOff 0.7s cubic-bezier(0.4,0,0.6,1) forwards}
+@keyframes giftBurst{0%{opacity:0;transform:translateY(60px) scale(0.4)}50%{transform:translateY(-20px) scale(1.08)}75%{transform:translateY(8px) scale(0.97)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.gift-card{background:var(--paper);border:1px solid var(--tan);box-shadow:8px 8px 0 var(--tan),16px 16px 0 rgba(0,0,0,0.06);opacity:0;position:relative;overflow:hidden;transform:translateY(30px) scale(0.85);transition:none}
+.gift-card.burst{animation:giftBurst 0.65s cubic-bezier(0.22,1,0.36,1) forwards}
+.card-ribbon{height:6px;background:var(--rose);position:relative}
+.card-ribbon::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:30px;height:16px;background:var(--rose);top:-5px;border-radius:0 0 4px 4px}
+.card-body{padding:1.8rem 2rem 2rem}
+/* MYSTERY (hunt) STAGE */
+.gift-mystery{text-align:center;padding:0.6rem 0.4rem 1.4rem}
+.mystery-icon{font-size:3rem;margin-bottom:0.7rem;animation:mysteryFloat 2.4s ease-in-out infinite}
+@keyframes mysteryFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-8px) rotate(2deg)}}
+.mystery-eyebrow{font-family:'Caveat',cursive;font-size:0.85rem;letter-spacing:3px;text-transform:uppercase;color:var(--rose);margin-bottom:0.7rem}
+.mystery-hint{font-size:1.05rem;line-height:1.75;color:var(--deep);font-style:italic;margin-bottom:1.4rem;padding:0 0.3rem}
+.btn-reveal{background:var(--gold);color:var(--deep);border:none;padding:0.7rem 1.6rem;font-family:'Caveat',cursive;font-size:1.1rem;cursor:pointer;box-shadow:3px 3px 0 var(--brown);transition:all 0.15s;letter-spacing:0.4px}
+.btn-reveal:hover{background:#e0a840;transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown)}
+.btn-reveal:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--brown)}
+/* REVEALED STAGE */
+.gift-revealed{opacity:0}
+.gift-revealed.pop{animation:revealPop 0.5s cubic-bezier(0.22,1,0.36,1) forwards}
+@keyframes revealPop{0%{opacity:0;transform:scale(0.9) translateY(10px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+.modal-num{font-family:'Playfair Display',serif;font-size:5rem;font-weight:700;line-height:1;margin-bottom:0.2rem;color:var(--warm);transition:color 0.4s,text-shadow 0.4s}
+.modal-num.lit{color:var(--gold);text-shadow:0 0 30px rgba(200,148,58,0.5)}
+@keyframes numPop{0%{transform:scale(0.3) rotate(-15deg)}60%{transform:scale(1.15) rotate(3deg)}80%{transform:scale(0.95) rotate(-1deg)}100%{transform:scale(1) rotate(0deg)}}
+.modal-num.lit{animation:numPop 0.6s cubic-bezier(0.34,1.6,0.64,1) forwards}
+.modal-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--deep);margin-bottom:0.5rem;line-height:1.2}
+.modal-badge{display:inline-block;border:1.5px solid var(--tan);padding:0.2rem 0.9rem;font-family:'Caveat',cursive;font-size:0.8rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--rose);margin-bottom:1.1rem}
+/* GIFT PHOTO (polaroid) */
+.gift-photo-wrap{display:none;justify-content:center;margin-bottom:1.3rem}
+.gift-photo{background:#fff;padding:9px 9px 30px;box-shadow:0 6px 16px rgba(0,0,0,0.22);cursor:zoom-in;transition:transform 0.25s ease,box-shadow 0.25s ease;transform:rotate(var(--tilt,-2deg));opacity:0}
+.gift-photo.show{animation:photoDropIn 0.6s cubic-bezier(0.22,1,0.36,1) forwards}
+.gift-photo:hover{transform:rotate(0deg) scale(1.04);box-shadow:0 10px 26px rgba(0,0,0,0.28)}
+.gift-photo img{display:block;width:170px;height:170px;object-fit:cover;background:var(--warm)}
+.gift-photo-caption{font-family:'Caveat',cursive;font-size:0.8rem;color:var(--brown);text-align:center;margin-top:0.4rem;letter-spacing:0.3px;opacity:0.8}
+@keyframes photoDropIn{0%{opacity:0;transform:translateY(-36px) rotate(var(--tilt,-2deg)) scale(0.8)}60%{opacity:1;transform:translateY(5px) rotate(var(--tilt,-2deg)) scale(1.04)}100%{opacity:1;transform:translateY(0) rotate(var(--tilt,-2deg)) scale(1)}}
+#photo-lightbox{display:none;position:fixed;inset:0;z-index:1200;align-items:center;justify-content:center;padding:2rem;background:rgba(20,10,4,0.92);cursor:zoom-out}
+#photo-lightbox.show{display:flex}
+#photo-lightbox img{max-width:92vw;max-height:88vh;box-shadow:0 20px 60px rgba(0,0,0,0.5);border:6px solid #fff;opacity:0;transform:scale(0.92);transition:opacity 0.25s ease,transform 0.25s ease}
+#photo-lightbox.show img{opacity:1;transform:scale(1)}
+.lb-close{position:absolute;top:1.2rem;right:1.5rem;color:#fff;font-family:'Caveat',cursive;font-size:1.1rem;background:none;border:1px solid rgba(255,255,255,0.4);padding:0.4rem 1rem;cursor:pointer;transition:background 0.2s}
+.lb-close:hover{background:rgba(255,255,255,0.15)}
+.modal-desc{font-size:1rem;line-height:1.8;color:var(--brown);font-style:italic;margin-bottom:1.1rem}
+.modal-footer{display:flex;gap:0.7rem;margin-top:1.4rem;flex-wrap:wrap;align-items:center}
+.btn-modal-close{background:transparent;border:1px solid var(--tan);color:var(--brown);padding:0.5rem 1.1rem;font-family:'Caveat',cursive;font-size:1rem;cursor:pointer;transition:background 0.2s}
+.btn-modal-close:hover{background:var(--warm)}
+.btn-modal-next{background:var(--deep);border:none;color:var(--cream);padding:0.5rem 1.3rem;font-family:'Caveat',cursive;font-size:1rem;cursor:pointer;box-shadow:3px 3px 0 var(--brown);transition:all 0.15s;text-decoration:none;display:inline-block}
+.btn-modal-next:hover{background:var(--brown);transform:translate(-2px,-2px);box-shadow:5px 5px 0 #5a3820}
+#confetti-layer{position:fixed;inset:0;pointer-events:none;z-index:9998;overflow:hidden}
+.confetti-bit{position:absolute;opacity:0;animation:confettiFall var(--cd) ease-out var(--cdelay) forwards}
+@keyframes confettiFall{0%{opacity:1;transform:translateY(-20px) translateX(0) rotate(0deg) scale(1)}15%{opacity:1}100%{opacity:0;transform:translateY(105vh) translateX(var(--cx)) rotate(var(--cr)) scale(0.3)}}
+.sparkle{position:fixed;pointer-events:none;z-index:9997;width:6px;height:6px;border-radius:50%;opacity:0;animation:sparkleOut var(--sd) ease-out var(--sdelay) forwards}
+@keyframes sparkleOut{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--sx),var(--sy)) scale(0)}}
+/* TUTORIAL */
+#tutorial-overlay{display:none;position:fixed;inset:0;z-index:1300;align-items:center;justify-content:center;padding:1.5rem;background:rgba(30,15,5,0.72)}
+#tutorial-overlay.show{display:flex}
+.tutorial-card{background:var(--paper);border:1px solid var(--tan);box-shadow:8px 8px 0 var(--tan);max-width:420px;width:100%;padding:1.8rem 2rem;animation:giftBurst 0.5s cubic-bezier(0.22,1,0.36,1) forwards}
+.tutorial-card h2{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:400;font-style:italic;color:var(--deep);margin-bottom:1rem;text-align:center}
+.tutorial-card ol{padding-left:1.3rem;margin-bottom:1.4rem}
+.tutorial-card li{font-size:0.96rem;line-height:1.7;color:var(--brown);margin-bottom:0.6rem}
+.btn-tutorial-close{display:block;margin:0 auto;background:var(--gold);color:var(--deep);border:none;padding:0.7rem 1.8rem;font-family:'Caveat',cursive;font-size:1.1rem;cursor:pointer;box-shadow:3px 3px 0 var(--brown);transition:all 0.15s}
+.btn-tutorial-close:hover{background:#e0a840;transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown)}
+#reset-btn{position:fixed;bottom:1.2rem;left:1.2rem;background:rgba(58,32,16,0.2);color:rgba(58,32,16,0.25);border:1px solid rgba(58,32,16,0.1);padding:0.25rem 0.6rem;font-family:'Caveat',cursive;font-size:0.7rem;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;z-index:100}
+#reset-btn:hover{background:var(--warm);color:var(--brown);border-color:var(--tan)}
+</style>
+</head>
+<body>
+<nav id="site-nav">
+  <a href="index.html" class="nav-brand">Besties ♡</a>
+  <div class="nav-links"></div>
+</nav>
+<div class="page-header">
+  <h1>Your unboxing journey</h1>
+  <p id="subhead">read the clue, go find it for real, then tap it once it's in your hands</p>
+  <div class="tutorial-pill-wrap"><button class="tutorial-pill" onclick="showTutorial()">❓ how this works</button></div>
+</div>
+<div class="progress-section">
+  <div class="progress-rail"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  <div class="progress-label" id="prog-label">0 of 41 opened</div>
+</div>
+<div class="path-wrap">
+  <div class="spine"><div class="spine-bg"></div><div class="spine-fill" id="spine-fill"></div></div>
+  <div id="stops"></div>
+</div>
+<div id="final-banner"><p>✦ open everything to unlock the final message ✦</p></div>
+<div id="overlay">
+  <div class="backdrop" id="backdrop"></div>
+  <div class="modal-wrap">
+    <div class="gift-box-scene" id="box-scene">
+      <div class="gift-box" id="gift-box">
+        <div class="box-lid" id="box-lid"><div class="bow"><div class="bow-left"></div><div class="bow-right"></div><div class="bow-knot"></div></div></div>
+        <div class="box-body"><div class="box-shine"></div></div>
+      </div>
+    </div>
+    <div class="gift-card" id="gift-card">
+      <div class="card-ribbon"></div>
+      <div class="card-body">
+        <div id="gift-mystery" class="gift-mystery">
+          <div class="mystery-icon">🎁</div>
+          <p class="mystery-eyebrow">go find it...</p>
+          <p class="mystery-hint" id="mystery-hint"></p>
+          <button class="btn-reveal" id="btn-reveal" onclick="revealGift()">I've got it - show me →</button>
+        </div>
+        <div id="gift-revealed" class="gift-revealed">
+          <div class="modal-num" id="modal-num">1</div>
+          <div class="modal-title" id="modal-title"></div>
+          <div class="modal-badge" id="modal-badge"></div>
+          <div class="gift-photo-wrap" id="gift-photo-wrap">
+            <div>
+              <div class="gift-photo" id="gift-photo" onclick="openPhotoLightbox()">
+                <img id="gift-photo-img" src="" alt="Ann's photo of this gift">
+              </div>
+              <div class="gift-photo-caption">tap to enlarge ✦</div>
+            </div>
+          </div>
+          <div class="modal-desc" id="modal-desc"></div>
+        </div>
+        <div class="modal-footer" id="modal-footer"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="confetti-layer"></div>
+<div id="photo-lightbox" onclick="closePhotoLightbox()">
+  <button class="lb-close" onclick="event.stopPropagation();closePhotoLightbox()">✕ close</button>
+  <img id="photo-lightbox-img" src="" alt="">
+</div>
+<div id="tutorial-overlay" onclick="closeTutorial()">
+  <div class="tutorial-card" onclick="event.stopPropagation()">
+    <h2>How this works ✦</h2>
+    <ol>
+      <li>Each stop gives you a clue about where to find the actual gift - not what it is.</li>
+      <li>Go hunt for it for real, based on the clue.</li>
+      <li>Once you're holding it, tap "I've got it - show me" to reveal what it was.</li>
+      <li>Some stops unlock a new page on the site instead of a gift - same idea, just tap to open it.</li>
+      <li>A few gifts come as a bundle and unlock all together, so you're not waiting between them.</li>
+    </ol>
+    <button class="btn-tutorial-close" onclick="closeTutorial()">Let's go →</button>
+  </div>
+</div>
+<button id="reset-btn" onclick="if(confirm('Reset all gift progress?')){localStorage.removeItem(STORAGE_KEY);localStorage.removeItem(STORAGE_KEY+'_phase2');location.reload()}">reset</button>
+
+<script>
+const raf = (typeof requestAnimationFrame === 'function') ? requestAnimationFrame : (cb => setTimeout(cb, 16));
+
+const STOPS = [
+  {id:1, kind:'gift', icon:'🎉', title:'25th Birthday Card', type:'special ♡',
+   hint:'In a brown envelope, addressed to \u2728Annika Plaggenborg\u2728, which will have arrived separately to the rest of the package... oops...',
+   desc:'A birthday card to kick things off, Happy Birthday, Bestie! This one\'ll give you a proper intro to the whole experience :)'},
+
+  {id:2, kind:'unlock', icon:'✦', title:'Our Journey', type:'page unlock ✦',
+   page:'our_journey.html', pageLabel:'Our Journey', direct:true,
+   desc:'Our journey is the slamming screen door. Sneakin\' out late, tapping on your discord. When we\'re on the call and you talk real slow. \'Cause it\'s 10PM and you just took your meds.'},
+
+  {id:3, kind:'gift', icon:'📰', title:'WWI Postcard No. 1', type:'postcard 📰',
+   hint:'Wrapped in an envelope with a little gingerbread man on it, marked WII Postcard No.1',
+   desc:'The first WWI postcard of today\'s bunch, ofc you already have quite a few, but you will finish the set today! Hope you like my fab decoration skills :)'},
+
+  {id:4, kind:'gift', icon:'🏷️', title:'Home Bargains Sticker Pack No. 1', type:'sticker pack 🏷️',
+   hint:'There are three of these wrapped in red tissue paper bundled together with some black ribbon ✨. Unbundle them and find the first one!',
+   desc:'Mini sticker packs from Home Bargains - I sent some last year, and they had loads more to collect, so here is some more! Maybe one day this collection will be complete...'},
+
+  {id:5, kind:'gift', icon:'🍪', title:'Biscuits - Malted Milk', type:'biscuits 🍪',
+   hint:'In purple tissue paper, in the box together with the postcards. You probably already had to navigate past it :P',
+   desc:'This is one of what I would consider CLASSIC Bri\'ish biscuits. If the cow on it is not whimsical enough, they are so delish.'},
+
+  {id:6, kind:'unlock', icon:'✦', title:'Tier List', type:'page unlock ✦',
+   page:'tier_list.html', pageLabel:'Tier List', direct:true,
+   desc:'A new page just unlocked: the Tier List. Once you\'ve tried all the biscuits, come back here and rank them!'},
+
+  {id:7, kind:'gift', icon:'🇳🇱', title:'I\'ve Been Learning Dutch', type:'special ♡',
+   hint:'Obviously no packaging for this one xD',
+   desc:'This one doesn\'t fit in a box, but it might be your favourite gift of all: by the time you open this, I will have been learning Dutch for months (well, very very infrequently, but I started!) Hallo. Hoe gaat het? Ik ben een beste vriend.'},
+
+  {id:8, kind:'gift', icon:'📰', title:'Funny Food Sayings Postcard No. 1', type:'postcard 📰',
+   hint:'Bundled together with the other Funny Food Sayings postcard, wrapped in red and yellow tissue paper, tied with green ribbon.',
+   desc:'I don\'t remember which one is first, but these ones are just the embodiment of you.'},
+
+  {id:9, kind:'gift', icon:'🍪', title:'Biscuits - Ginger Nuts', type:'biscuits 🍪',
+   hint:'In orange tissue paper, in the larger box at the side.',
+   desc:'So originally this was gonna be the NICE biscuits, but they didn\'t have any when I bought all the biscuits, so I got this instead. Tbh though, this one is actually one of my favs, so I hope you enjoy! It\'s a very good Winter biscuit, but unfortunately for you it\'s not winter. I\'ll send you more at Christmas if you like \'em! Also, this photo was one of the last ones I took, you could tell I was starting to lose it. None of the photos were taken in the same order as this list, but ask me later and I\'ll show you.'},
+
+  {id:10, kind:'gift', icon:'📰', title:'WWI Postcard No. 2', type:'postcard 📰',
+   hint:'In another envelope, marked WII Postcard No.2.',
+   desc:'I\'m sure I wrote some words on this one. I really do hope the words meet the expectations that my words should be meeting. If not I don\'t care. I also sat in my cupboard in my laundry basket for this photo, yw.'},
+
+  {id:11, kind:'gift', icon:'🏷️', title:'Home Bargains Sticker Pack No. 2', type:'sticker pack 🏷️',
+   hint:'Should already be unbundled from before, just look for the second sticker pack wrapped in red tissue paper.',
+   desc:'More!!!!!! I actually don\'t even remember what these are, I bought them MONTHS ago and was one of the first wrapped items.'},
+
+  {id:12, kind:'gift', icon:'🧵', title:'Friendship Bracelet', type:'special ♡',
+   hint:'Wrapped in a little bit of pink tissue paper, and is very small, heehee...',
+   desc:'I\'m surprised we haven\'t done this sooner tbh! I ran out of letters for me, so I don\'t have one yet. Also, I\'ve been wearing the one you now have for about 3 months, so you have the ✨essence✨ of me. Maybe one day we will be matching.'},
+
+  {id:13, kind:'unlock', icon:'✦', title:'Us', type:'page unlock ✦',
+   page:'us.html', pageLabel:'Us', direct:true,
+   desc:'A new page just unlocked: Us. "Just a little corner of the site about the two of us."'},
+
+  {id:14, kind:'gift', icon:'📰', title:'Lancashire Postcard No. 1', type:'postcard 📰', group:'lancashire',
+   hint:'All four of these are in a plastic wallet, with a yellow card inside giving you the details.',
+   desc:'From a pack of vintage-style Lancashire photograph postcards! Also the photo was inspired by Taylor Swift\'s getting her masters photo, cuz why not.'},
+
+  {id:15, kind:'gift', icon:'📰', title:'Lancashire Postcard No. 2', type:'postcard 📰', group:'lancashire',
+   hint:'In the same place as the first.',
+   desc:'Now I\'m not sure if these are ACTUAL postcards from whenever they were written, or if they\'re copies, but either way, SUPER cool!'},
+
+  {id:16, kind:'gift', icon:'📰', title:'Lancashire Postcard No. 3', type:'postcard 📰', group:'lancashire',
+   hint:'In the same place as the others.',
+   desc:'I kept them in that plastic wallet as they feel old and not very stable.'},
+
+  {id:17, kind:'gift', icon:'📰', title:'Lancashire Postcard No. 4', type:'postcard 📰', group:'lancashire',
+   hint:'In the same place as the others.',
+   desc:'I also have more of these, so I\'ll be sending those next time, hehehe...'},
+
+  {id:18, kind:'gift', icon:'✏️', title:"University of Lancashire Pen & Stickers", type:'stationary ✏️',
+   hint:"Inside a custom-made pink envelope with a Lancashire sticker on it.",
+   desc:'A University of Lancashire pen and a set of Lancashire-themed stickers that I took from a stall I was running at the E-sports Cadet event I was working at :) Apologies that the pen is red at the end, I had my red pen explode in my pocket during my internship, and I couldn\'t get the red off the pen, still works though and I only really used the pen like once! '},
+
+  {id:19, kind:'gift', icon:'🍪', title:'Biscuits - Custard Cream: Coconut', type:'biscuits 🍪',
+   hint:'In blue tissue paper, in the larger box at the side.',
+   desc:'Now for the fun biscuits! You enjoyed the custard creams, so naturally you now have all the other flavours of custard creams! This is coconut, it\'s actually quite nice.'},
+
+  {id:20, kind:'gift', icon:'🏷️', title:'Home Bargains Sticker Pack No. 3', type:'sticker pack 🏷️',
+   hint:'The last of the three sticker packs wrapped in red tissue paper :)',
+   desc:'Gosh they have so many stickers it\'s overwhelming to decide what to get, because if I don\'t restrain myself, I WILL just send you one of every single one.'},
+
+  {id:21, kind:'unlock', icon:'✦', title:'Reasons', type:'page unlock ✦',
+   page:'reasons.html', pageLabel:'Reasons', direct:true,
+   desc:'A new page just unlocked: Reasons. For whenever you need reminding, or you\'re feeling perhaps down, just open the site and go to this page and read one of the reasons :)'},
+
+  {id:22, kind:'gift', icon:'📦', title:'MogSweep Package', type:'package 📦',
+   hint:'Right at the bottom, underneath everything else, in a separate box to most of the above - a box that looks very fancy, covered in stamps, addressed to me. The packaging was so good I was scared to unbox it.',
+   desc:'Last year\'s MogSweep parcel was the best thing - custom illustrated envelope, a letter, a free postcard, free stickers. So I went back for more. Genuinely one of the best things I\'ve ever ordered from Etsy, and if what you have is good, I will be ordering some for myself lmao.'},
+
+  {id:23, kind:'gift', icon:'🏷️', title:'Snail Mail Sticker Pack', type:'sticker pack 🏷️', group:'mogsweepbonus',
+   hint:'One of two things inside the MogSweep box. Look for the stickers. I haven\'t even looked inside myself, so I hope it\'s actually in there!',
+   desc:'Snail-mail-themed stickers from MogSweep on Etsy. I\'m obsessed with the snail mail they have going on, and I NEED to buy some of these for myself.'},
+
+  {id:24, kind:'gift', icon:'✏️', title:'Pigeon Post Washi Tape', type:'stationary ✏️', group:'mogsweepbonus',
+   hint:'The other of the two things inside the MogSweep box. Look for the tape.',
+   desc:'Custom illustrated pigeon post washi tape, also from MogSweep!'},
+
+  {id:25, kind:'gift', icon:'📰', title:'WWI Postcard No. 3', type:'postcard 📰',
+   hint:'In another envelope, marked WWI Postcard No.3.',
+   desc:'Now I and 100% sure I wrote words on this one, maybe even drew you a creature. I also discovered my coloured markers at this point...'},
+
+  {id:26, kind:'gift', icon:'🍪', title:'Biscuits - Custard Cream: Lemon', type:'biscuits 🍪',
+   hint:'In yellow tissue paper, in the larger box at the side.',
+   desc:'Now this one is probably my second fav custard cream, but I think you\'ll really like this one.'},
+
+  {id:27, kind:'gift', icon:'🏷️', title:'Cat Sticker Pack', type:'sticker pack 🏷️',
+   hint:'In a decorated orange paper sleeve.',
+   desc:'Unfortunately this is not the whole pack, but it\'s what I have left, I thought you might absolutely love these even if not a whole pack, so here you go! MORE STICKERS!'},
+
+  {id:28, kind:'gift', icon:'📦', title:'A Mysterious Tin', type:'package 📦',
+   hint:'A cylindrical object wrapped in gold tissue paper, marked fragile - sitting at the side, next to the biscuits box. Handle it gently! Please unwrap the OUTER tissue paper before clicking into this :)',
+   desc:'Unwrapped from its gold tissue paper: a Heinz Beans tin. Slightly battered, definitely not full of beans anymore. Something is clearly rattling around inside it though - go on, open the tin itself. Be careful, the edge is sharp maybe! I tried my best to sand it down...',
+   reveal2:{icon:'🧸', title:'Plushie In Beans Tin', type:'special ♡',
+     desc:'This is the start of a brand new tradition. This lil guy is going to live at yours for six months, then come back to me at Christmas - and keep making that trip forever and always. It arrives however we want, and I figured naturally it chose the Beans Meanz Heinz express route for its first trip. I did try my best to clean the tin out properly, and it is clean - though I think it\'s rusted very slightly, so don\'t feel bad if you\'d rather not keep the tin itself. Look after lil Tristan well!! (That\'s actually its name, look at the tag...)'}},
+
+  {id:29, kind:'unlock', icon:'✦', title:'Passport', type:'page unlock ✦',
+   page:'passport.html', pageLabel:'Passport', direct:true,
+   desc:'A new page just unlocked: Passport. Now that email you messaged me confused about probably makes sense xD'},
+
+  {id:30, kind:'gift', icon:'📰', title:'WWI Postcard No. 4', type:'postcard 📰',
+   hint:'In another envelope, and the very final WWI postcard!',
+   desc:'I defo didn\'t forget to take a proper picture of this one... But I do have A picture of it, so have that instead. Anyways, you have now finally completed the WII Planes collection! WOO!'},
+
+  {id:31, kind:'gift', icon:'🏷️', title:"Creatures 'n' Animals Sticker Pack", type:'sticker pack 🏷️',
+   hint:"Bundled together with 2 brown envelopes in green ribbon, this is the smallest of the lot, in plastic packaging.",
+   desc:'A creatures-and-animals themed sticker pack, a little bonus addition to the sticker collection. Idk why I look dead inside in the picture, but I am wearing my PJs, so it makes sense ig?'},
+
+  {id:32, kind:'gift', icon:'🍪', title:'Biscuits - Custard Cream: Strawberry', type:'biscuits 🍪',
+   hint:'In pink tissue paper, in the larger box at the side.',
+   desc:'NOW, this is my favourite of all the custard cream flavours, it\'s soo good! Hopefully you have liked all the biscuits so far :)'},
+
+  {id:33, kind:'gift', icon:'🏷️', title:'Stars Sticker Pack', type:'sticker pack 🏷️',
+   hint:"Bundled together with the Creatures 'n' Animals sticker pack in green ribbon, this one in a brown envelope, this is the Stars one.",
+   desc:'A star-themed sticker pack - one of a couple of last-minute extras that got added in :)'},
+
+  {id:34, kind:'gift', icon:'📰', title:'Funny Food Sayings Postcard No. 2', type:'postcard 📰',
+   hint:'Bundled together with the other Funny Food Sayings postcard, wrapped in red and yellow tissue paper, tied with green ribbon.',
+   desc:'Another one of these which I think you\'ll love. I\'ve got six of these, two of which i\'ve sent here. I tried to pick the best two that I think you\'d like the most, ig we will see when you have them all if I succeeded in that.'},
+
+  {id:35, kind:'gift', icon:'🏷️', title:'Reminded Me Of You Sticker Pack', type:'sticker pack 🏷️',
+   hint:"Bundled together with the Creatures 'n' Animals and Stars sticker packs in green ribbon, in a brown envelope.",
+   desc:'This stickers just immediately reminded me of you, so I couldn\'t NOT get them, so I did, and you are SO welcome Bestie.'},
+
+  {id:36, kind:'gift', icon:'📰', title:'Lesbian Birthday Ostrich Postcard', type:'postcard 📰',
+   hint:'Wrapped in orange tissue paper, because lesbian and door, with a purple card and super tidily wrapped white ribbon around it.',
+   desc:'I now realise that the photo of this one makes it seems like I\'m scared of Lesbians & / or Ostriches. I can assure you that is very much not the case lmao, dw. The idea is that I am in the shower with my towel and the Lesbian Ostrich just walked in? idk, I did not think that far. But anyways, I got this one in Manchester Piccadilly railway station when I went to the Alex Warren concert, and this is the one postcard you have already seen. Prob my fav postcard, and just seemed fitting with the lesbian colours, which the orange is also your door(ian).'},
+
+  {id:37, kind:'unlock', icon:'✦', title:'Postcards', type:'page unlock ✦',
+   page:'postcard_gallery.html', pageLabel:'Postcards', direct:true,
+   desc:'A new page just unlocked: the Postcards gallery. Every single one you\'ve been sent, as well as the one\'s i\'ve received. If you actually got around to checking the postcards I\'ve sent you, then they\'ll be there too. The idea of this page is simply just a way to imortalise the postcards, in case they get damaged, or we don\'t want to take them off the wall or out of a box. We can just easily check them, count them, see what they said, etc.'},
+
+  {id:38, kind:'gift', icon:'🍪', title:'Biscuits - Custard Cream: Digestive', type:'biscuits 🍪',
+   hint:'In red tissue paper, in the larger box at the side.',
+   desc:'I do\'nt actually remember how this one tastes, I just remember it being quite interesting! But this is the last pack of Biscuits now, so you\'ll now be able to do the tierlist! I\'d say finish opening the package before you do though. Also, I need you to appreciate that I have changed outfit for most of the photos to add ✨variety✨. All except two were taken within a two day period, one was a few weeks before, and the next one was 4 months earlier.'},
+
+  {id:39, kind:'gift', icon:'✉️', title:'Letter', type:'special ♡',
+   hint:'In an envelope at the very bottom of the box, you might find the envelope design familiar...',
+   desc:'A letter written just for you, with a bit of a throwback: the envelope has been decorated and addressed mimicking the way you wrote your envelope last year, because why not. I wrote this one impusively at like 2am one night a few months ago. I remember being up for HOURS every night for a few weeks, thinking about this letter and stuff that I wanted to say out loud, but I couldn\'t, so I got out of bed one day, switched off my brain and basically wrote my heart out for half an hour. I haven\'t even read this myself since I wrote it. But, I meant every single word. No take-backsies. Ever."'},
+
+  {id:40, kind:'unlock', icon:'✦', title:'Letters', type:'page unlock ✦',
+   page:'letters_archive.html', pageLabel:'Letters', direct:true,
+   desc:'A new page just unlocked: Letters.'},
+
+  {id:41, kind:'unlock', icon:'✦', title:'Quiz', type:'page unlock ✦',
+   page:'quiz.html', pageLabel:'Quiz', direct:true,
+   desc:'A new page just unlocked: Quiz. And that\'s everything! Go see the final message first - the quiz and everything else will still be here after.'},
+];
+
+const STORAGE_KEY = 'ann_bday_2025_v6';
+let opened;
+try {
+  const p = JSON.parse(localStorage.getItem(STORAGE_KEY));
+  opened = new Set(Array.isArray(p) ? p : []);
+} catch(e) { opened = new Set(); }
+
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify([...opened])); }
+
+// tracks which two-phase gifts (like the beans tin -> plushie) have had
+// their second phase opened
+const PHASE2_KEY = STORAGE_KEY + '_phase2';
+let phase2Done;
+try {
+  const p2 = JSON.parse(localStorage.getItem(PHASE2_KEY));
+  phase2Done = new Set(Array.isArray(p2) ? p2 : []);
+} catch(e) { phase2Done = new Set(); }
+
+function savePhase2() { localStorage.setItem(PHASE2_KEY, JSON.stringify([...phase2Done])); }
+function markPhase2(id) { phase2Done.add(id); savePhase2(); }
+
+let currentId = null;
+let modalOpen = false;
+let justOpenedId = null;
+
+// A stop unlocks once whatever comes before it (respecting bundles) is fully opened.
+function isUnlocked(i) {
+  const g = STOPS[i];
+  if (g.group) {
+    const groupIds = STOPS.filter(s => s.group === g.group).map(s => s.id);
+    const firstIdx = STOPS.findIndex(s => s.id === groupIds[0]);
+    return firstIdx === 0 || opened.has(STOPS[firstIdx - 1].id);
+  }
+  if (i === 0) return true;
+  const prev = STOPS[i - 1];
+  if (prev.group) {
+    const groupIds = STOPS.filter(s => s.group === prev.group).map(s => s.id);
+    return groupIds.every(id => opened.has(id));
+  }
+  return opened.has(prev.id);
+}
+
+function groupInfo(g) {
+  if (!g.group) return null;
+  const members = STOPS.filter(s => s.group === g.group);
+  return { pos: members.findIndex(s => s.id === g.id) + 1, total: members.length };
+}
+
+// Photo filenames only apply to physical gifts, numbered sequentially among gift-kind stops only
+function giftPhotoNumber(id) {
+  let n = 0;
+  for (const s of STOPS) {
+    if (s.kind === 'gift') n++;
+    if (s.id === id) break;
+  }
+  return n;
+}
+
+function renderAll() {
+  const container = document.getElementById('stops');
+  container.innerHTML = '';
+  const count = opened.size;
+  const total = STOPS.length;
+  document.getElementById('prog-fill').style.width = (count/total*100)+'%';
+  document.getElementById('prog-label').textContent = count+' of '+total+' opened';
+  document.getElementById('spine-fill').style.height = (count/total*100)+'%';
+  document.getElementById('spine-fill').classList.toggle('has-progress', count > 0 && count < total);
+  const allDone = count === total;
+  document.getElementById('final-banner').style.display = allDone ? 'none' : 'block';
+  if (allDone) launchSeasonalConfetti();
+  if (typeof buildNav === 'function') buildNav('gifts.html'); // keep the shared header nav in sync as pages unlock
+
+  STOPS.forEach((g,i) => {
+    const unlocked = isUnlocked(i);
+    const isOpen = opened.has(g.id);
+    const el = document.createElement('div');
+    el.className = 'stop kind-'+g.kind+' '+(isOpen?'is-opened':unlocked?'is-unlocked':'is-locked')+(g.id===justOpenedId?' just-opened':'');
+    el.style.animationDelay = (i*0.015)+'s';
+    const dotContent = isOpen ? '✓' : (unlocked ? g.icon : '✦');
+
+    let inner;
+    if (!unlocked) {
+      inner = `<div class="stop-title">${g.title}</div><div class="stop-locked-msg">✦ open the one before this first</div>`;
+    } else if (isOpen) {
+      inner = `<div class="stop-title">${g.title}</div><div class="stop-hint">${g.type}</div><button class="btn-revisit">Revisit →</button>`;
+    } else {
+      const teaser = g.kind === 'unlock' ? '✦ Something new has unlocked ✦' : '✦ A wrapped surprise ✦';
+      let clue = '';
+      if (g.kind === 'gift') {
+        clue = `<div class="stop-hint">${g.hint}</div>`;
+        const gi = groupInfo(g);
+        if (gi) clue += `<div class="stop-hint-group">✦ part of a bundle of ${gi.total} - all unlock together</div>`;
+      }
+      const btnLabel = g.kind === 'unlock' ? 'Unlock →' : 'Find it →';
+      inner = `<div class="stop-title stop-title-teaser">${teaser}</div>${clue}<button class="btn-open">${btnLabel}</button>`;
+    }
+
+    el.innerHTML = `<div class="stop-dot">${dotContent}</div><div class="stop-card"><div class="stop-label">Stop ${i+1}${g.kind==='unlock'?' · Page Unlock':''}</div>${inner}</div>`;
+
+    if (unlocked) {
+      const dot = el.querySelector('.stop-dot');
+      const btn = el.querySelector('.btn-open, .btn-revisit');
+      if (!isOpen && dot) dot.onclick = () => openGift(g.id);
+      if (btn) btn.onclick = () => openGift(g.id);
+    }
+    container.appendChild(el);
+  });
+  justOpenedId = null;
+}
+
+function populateRevealed(s, phase) {
+  phase = phase || 1;
+  const data = (phase === 2 && s.reveal2) ? s.reveal2 : s;
+
+  document.getElementById('modal-title').textContent = data.title || s.title;
+  document.getElementById('modal-badge').textContent = data.type;
+  document.getElementById('modal-desc').textContent = data.desc;
+  document.getElementById('modal-num').textContent = s.id;
+  document.getElementById('modal-num').className = 'modal-num';
+
+  const photoWrap = document.getElementById('gift-photo-wrap');
+  const photoImg = document.getElementById('gift-photo-img');
+  const photoEl = document.getElementById('gift-photo');
+  photoEl.classList.remove('show');
+  photoWrap.style.display = 'none';
+
+  if (s.kind === 'gift') {
+    const num = giftPhotoNumber(s.id);
+    const suffix = (phase === 2 && s.reveal2) ? 'b' : '';
+    photoImg.onload = () => {
+      const tilt = ((s.id * 37) % 9) - 4;
+      photoEl.style.setProperty('--tilt', tilt + 'deg');
+      photoWrap.style.display = 'flex';
+      raf(() => photoEl.classList.add('show'));
+    };
+    photoImg.onerror = () => { photoWrap.style.display = 'none'; };
+    photoImg.src = `gift_images/gift${String(num).padStart(2,'0')}${suffix}.jpg`;
+  } else {
+    photoImg.removeAttribute('src');
+  }
+}
+
+function buildFooterForStop(s, phase) {
+  phase = phase || 1;
+  const footer = document.getElementById('modal-footer');
+  footer.innerHTML = '';
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'btn-modal-close'; closeBtn.textContent = 'Close'; closeBtn.onclick = closeModal;
+  footer.appendChild(closeBtn);
+
+  const idx = STOPS.findIndex(x => x.id === s.id);
+  const isLastStop = idx === STOPS.length - 1;
+  const allDone = opened.size === STOPS.length;
+
+  // two-phase gifts (e.g. the beans tin -> plushie) show an in-between
+  // button instead of "next gift" until the second phase has been opened
+  if (s.reveal2 && phase === 1) {
+    const ob = document.createElement('button');
+    ob.className = 'btn-modal-next';
+    ob.textContent = 'Open the tin \u2192';
+    ob.onclick = openPhase2;
+    footer.appendChild(ob);
+    return;
+  }
+
+  if (isLastStop && allDone) {
+    const nb = document.createElement('a');
+    nb.href = 'the_end.html'; nb.className = 'btn-modal-next'; nb.textContent = 'See the final message →';
+    footer.appendChild(nb);
+    return;
+  }
+
+  if (s.kind === 'unlock' && s.direct && s.page) {
+    const gp = document.createElement('a');
+    gp.href = s.page; gp.className = 'btn-modal-next'; gp.textContent = `Go to ${s.pageLabel} →`;
+    footer.appendChild(gp);
+    return;
+  }
+
+  if (!isLastStop) {
+    const nb = document.createElement('button');
+    nb.className = 'btn-modal-next';
+    nb.textContent = s.kind === 'unlock' ? 'Continue →' : 'Next gift →';
+    nb.onclick = closeModal;
+    footer.appendChild(nb);
+  }
+}
+
+function openGift(id) {
+  if (modalOpen) return;
+  modalOpen = true;
+  currentId = id;
+  const s = STOPS.find(x => x.id === id);
+  const alreadyOpen = opened.has(id);
+  const needsHunt = s.kind === 'gift' && !alreadyOpen;
+
+  const mystery = document.getElementById('gift-mystery');
+  const revealed = document.getElementById('gift-revealed');
+  revealed.classList.remove('pop');
+
+  if (needsHunt) {
+    mystery.style.display = 'block';
+    revealed.style.display = 'none';
+    document.getElementById('mystery-hint').textContent = s.hint;
+    const footer = document.getElementById('modal-footer');
+    footer.innerHTML = '';
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'btn-modal-close'; closeBtn.textContent = 'Close'; closeBtn.onclick = closeModal;
+    footer.appendChild(closeBtn);
+  } else {
+    mystery.style.display = 'none';
+    revealed.style.display = 'block';
+    revealed.classList.add('pop');
+    const phase = (s.reveal2 && phase2Done.has(id)) ? 2 : 1;
+    populateRevealed(s, phase);
+    if (!alreadyOpen) markOpen(id);
+    buildFooterForStop(s, phase);
+  }
+
+  const boxScene = document.getElementById('box-scene');
+  const card = document.getElementById('gift-card');
+  const lid = document.getElementById('box-lid');
+  boxScene.style.display = 'flex';
+  boxScene.style.opacity = '1';
+  card.className = 'gift-card';
+  card.style.display = 'block';
+  lid.className = 'box-lid';
+  const overlay = document.getElementById('overlay');
+  overlay.classList.add('show');
+  const box = document.getElementById('gift-box');
+  box.style.animation = 'none';
+  setTimeout(() => { box.style.animation = 'boxShake 0.5s ease'; }, 100);
+  setTimeout(() => { lid.classList.add('fly-off'); spawnSparkles(); }, 350);
+  setTimeout(() => {
+    boxScene.style.transition = 'opacity 0.3s ease';
+    boxScene.style.opacity = '0';
+    setTimeout(() => { boxScene.style.display = 'none'; }, 150);
+    card.classList.add('burst');
+  }, 550);
+  if (!needsHunt) {
+    setTimeout(() => { document.getElementById('modal-num').classList.add('lit'); }, 775);
+  }
+}
+
+function revealGift() {
+  const s = STOPS.find(x => x.id === currentId);
+  populateRevealed(s);
+  document.getElementById('gift-mystery').style.display = 'none';
+  const revealed = document.getElementById('gift-revealed');
+  revealed.style.display = 'block';
+  revealed.classList.remove('pop');
+  raf(() => revealed.classList.add('pop'));
+  markOpen(currentId);
+  buildFooterForStop(s);
+  setTimeout(() => { document.getElementById('modal-num').classList.add('lit'); }, 300);
+}
+
+function openPhase2() {
+  const s = STOPS.find(x => x.id === currentId);
+  if (!s || !s.reveal2) return;
+  const revealed = document.getElementById('gift-revealed');
+  revealed.classList.remove('pop');
+  populateRevealed(s, 2);
+  raf(() => revealed.classList.add('pop'));
+  markPhase2(currentId);
+  buildFooterForStop(s, 2);
+  spawnSparkles();
+}
+
+function spawnSparkles() {
+  const overlay = document.getElementById('overlay');
+  const rect = overlay.getBoundingClientRect();
+  const cx = rect.width / 2, cy = rect.height * 0.35;
+  const cols = ['#c8943a','#b86858','#d4b483','#7a9870','#f0ddb8'];
+  for (let i = 0; i < 24; i++) {
+    const s = document.createElement('div');
+    s.className = 'sparkle';
+    const angle = (Math.PI * 2 / 24) * i;
+    const dist = 80 + Math.random() * 120;
+    s.style.cssText = `left:${cx}px;top:${cy}px;background:${cols[i%cols.length]};--sx:${Math.cos(angle)*dist}px;--sy:${Math.sin(angle)*dist}px;--sd:${0.5+Math.random()*0.4}s;--sdelay:${Math.random()*0.15}s;width:${4+Math.random()*6}px;height:${4+Math.random()*6}px`;
+    overlay.appendChild(s);
+    setTimeout(() => s.remove(), 900);
+  }
+}
+
+function closeModal() {
+  document.getElementById('overlay').classList.remove('show');
+  modalOpen = false;
+}
+
+document.getElementById('backdrop').addEventListener('click', closeModal);
+
+function openPhotoLightbox() {
+  const src = document.getElementById('gift-photo-img').src;
+  if (!src) return;
+  document.getElementById('photo-lightbox-img').src = src;
+  document.getElementById('photo-lightbox').classList.add('show');
+}
+
+function closePhotoLightbox() {
+  document.getElementById('photo-lightbox').classList.remove('show');
+}
+
+const TUTORIAL_KEY = 'ann_bday_tutorial_seen_v1';
+function showTutorial() { document.getElementById('tutorial-overlay').classList.add('show'); }
+function closeTutorial() {
+  document.getElementById('tutorial-overlay').classList.remove('show');
+  localStorage.setItem(TUTORIAL_KEY, '1');
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape') return;
+  if (document.getElementById('tutorial-overlay').classList.contains('show')) closeTutorial();
+  else if (document.getElementById('photo-lightbox').classList.contains('show')) closePhotoLightbox();
+  else if (modalOpen) closeModal();
+});
+
+function markOpen(id) {
+  opened.add(id); save(); justOpenedId = id; bigBurst();
+  if (opened.size === STOPS.length) launchSeasonalConfetti();
+  setTimeout(renderAll, 500);
+}
+
+function bigBurst() {
+  const layer = document.getElementById('confetti-layer');
+  const month = new Date().getMonth();
+  let cols;
+  if (month === 6) cols = ['#c8943a','#b86858','#d4b483','#7a9870','#f0ddb8','#3a2010','#e8c4a0'];
+  else if (month === 7) cols = ['#c8943a','#b86858','#d4b483','#7a9870','#f0ddb8','#3a2010','#e8c4a0'];
+  else if (month === 8) cols = ['#c8943a','#b86858','#d4b483','#7a9870','#f0ddb8','#3a2010','#e8c4a0'];
+  else if (month === 11) cols = ['#c8943a','#2d6e30','#b86858','#fffdf5','#d4b483','#ffffff'];
+  else if (month === 12) cols = ['#c8943a','#2d6e30','#b86858','#fffdf5','#d4b483','#ffffff'];
+  else if (month === 1) cols = ['#c8943a','#2d6e30','#b86858','#fffdf5','#d4b483','#ffffff'];
+  else if (2) cols = ['#c8943a','#2d6e30','#b86858','#fffdf5','#d4b483','#ffffff'];
+  else cols = ['#c8943a','#b86858','#d4b483','#7a9870','#f0ddb8','#3a2010','#e8c4a0'];
+  const shapes = ['50%','2px','4px','0'];
+  for (let i = 0; i < 90; i++) {
+    const b = document.createElement('div');
+    b.className = 'confetti-bit';
+    const size = 6+Math.random()*12;
+    b.style.cssText = `left:${5+Math.random()*90}%;top:-10px;width:${size}px;height:${size}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${shapes[Math.floor(Math.random()*shapes.length)]};--cd:${1.2+Math.random()*1.8}s;--cdelay:${Math.random()*0.5}s;--cx:${(Math.random()-0.5)*400}px;--cr:${(Math.random()-0.5)*900}deg`;
+    layer.appendChild(b);
+    setTimeout(() => b.remove(), 3000);
+  }
+}
+
+function launchSeasonalConfetti() {
+  const month = new Date().getMonth();
+  let cols;
+  if (month === 6) cols = ['#c8943a','#b86858','#faf4e8','#d4b483'];
+  else if (month === 7) cols = ['#c8943a','#b86858','#faf4e8','#d4b483'];
+  else if (month === 8) cols = ['#c8943a','#b86858','#faf4e8','#d4b483'];
+  else if (month === 11) cols = ['#c8943a','#2d6e30','#b86858','#d4b483'];
+  else if (month === 12) cols = ['#c8943a','#2d6e30','#b86858','#d4b483'];
+  else if (month === 1) cols = ['#c8943a','#2d6e30','#b86858','#d4b483'];
+  else if (month === 2) cols = ['#c8943a','#2d6e30','#b86858','#d4b483'];
+  else cols = ['#c8943a','#b86858','#d4b483','#7a9870'];
+  const layer = document.getElementById('confetti-layer');
+  const shapes = ['50%','2px','4px','0'];
+  for (let i = 0; i < 120; i++) {
+    const b = document.createElement('div');
+    b.className = 'confetti-bit';
+    const size = 5+Math.random()*10;
+    b.style.cssText = `left:${Math.random()*100}%;top:-10px;width:${size}px;height:${size}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${shapes[Math.floor(Math.random()*shapes.length)]};--cd:${2+Math.random()*2.5}s;--cdelay:${Math.random()*1}s;--cx:${(Math.random()-0.5)*400}px;--cr:${(Math.random()-0.5)*900}deg`;
+    layer.appendChild(b);
+    setTimeout(() => b.remove(), 4000);
+  }
+}
+
+// inject box shake keyframe
+const styleEl = document.createElement('style');
+styleEl.textContent = `@keyframes boxShake{0%,100%{transform:translateX(0) rotate(0)}15%{transform:translateX(-8px) rotate(-4deg)}30%{transform:translateX(10px) rotate(5deg)}45%{transform:translateX(-8px) rotate(-3deg)}60%{transform:translateX(8px) rotate(3deg)}75%{transform:translateX(-4px) rotate(-2deg)}90%{transform:translateX(4px) rotate(1deg)}}`;
+document.head.appendChild(styleEl);
+
+// contract gate check
+const CONTRACT_KEY = 'ann_contract_signed_2026';
+if (!localStorage.getItem(CONTRACT_KEY)) {
+  // Redirect to contract if they haven't signed
+  window.location.href = 'contract.html';
+}
+
+// check if arriving from contract
+const params = new URLSearchParams(window.location.search);
+if (params.get('signed') === '1') {
+  launchSeasonalConfetti();
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  buildNav('gifts.html');
+  renderAll();
+  if (!localStorage.getItem(TUTORIAL_KEY)) showTutorial();
+});
+</script>
+<script src="nav.js"></script>
+</body>
+</html>
