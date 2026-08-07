@@ -1,15 +1,15 @@
 /* ══════════════════════════════════════════════════════════
-   BESTIE SYNC — login gate + GitHub-backed storage
+   login gate + GitHub-backed storage
    Include this ONE file on every page, as the very FIRST
    script in <head>, before any other script (including nav.js).
 
    What it does:
-   1. Shows a "Tristan / Ann" picker + "beans" password gate
+   1. Shows a "Tristan / Ann" picker + password gate
       the first time on a device (remembered after that).
    2. Pulls that person's saved data down from GitHub and loads
       it into localStorage BEFORE the rest of the page runs.
    3. From then on, any localStorage.setItem/removeItem anywhere
-      on the site (your existing code, unchanged) is mirrored up
+      on the site is mirrored up
       to GitHub automatically, debounced by 3s.
    ══════════════════════════════════════════════════════════ */
 
@@ -18,13 +18,13 @@
 
   // ── 1. CONFIG — fill these in ──────────────────────────────
   const CONFIG = {
-    owner: "YOUR_GITHUB_USERNAME",   // e.g. "tristanwalmsley"
-    repo: "YOUR_REPO_NAME",          // e.g. "A"
-    branch: "main",                  // or "master" — check your repo
-    dataPath: "data",                // folder inside the repo to store JSON in
+    owner: "tristanwalmsley",
+    repo: "A",
+    branch: "main",
+    dataPath: "data",
     // Fine-grained PAT, scoped ONLY to this repo, Contents: Read & write.
     // github.com/settings/tokens -> Fine-grained tokens -> Generate new token
-    token: "YOUR_GITHUB_TOKEN_HERE",
+    token: "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",
     password: "beans"
   };
   // ────────────────────────────────────────────────────────────
