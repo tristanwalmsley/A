@@ -240,6 +240,17 @@ const TIERLISTS = {
   },
 };
 
+// Some lists (e.g. tea) have multiple items sharing the same id, which breaks
+// drag/drop because card lookups and placement tracking are keyed by id.
+// Make every id unique in-place before anything else uses it.
+Object.values(TIERLISTS).forEach(def => {
+  const seen = {};
+  def.items.forEach(item => {
+    seen[item.id] = (seen[item.id] || 0) + 1;
+    if (seen[item.id] > 1) item.id = item.id + '-' + seen[item.id];
+  });
+});
+
 let activeList = 'biscuits';
 const state = {};
 Object.keys(TIERLISTS).forEach(k => state[k] = { placement: {} });
