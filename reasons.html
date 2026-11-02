@@ -31,8 +31,6 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .reason-card:hover{background:rgba(255,253,245,0.1);border-color:rgba(200,148,58,0.3)}
 .reason-card.revealed{background:var(--paper);border-color:var(--tan);cursor:default}
 .reason-card.revealed:hover{transform:none}
-.reason-card.locked{opacity:0.35;cursor:not-allowed;pointer-events:none}
-.reason-card.locked .reason-hidden{letter-spacing:2px}
 .reason-hidden{font-family:'Caveat',cursive;font-size:0.9rem;color:rgba(255,255,255,0.25);letter-spacing:2px;text-align:center;padding:0.3rem 0}
 .reason-text{font-size:1.02rem;line-height:1.8;color:var(--deep);display:none}
 .reason-card.revealed .reason-hidden{display:none}
@@ -69,14 +67,16 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 </nav>
 <div class="page-header">
   <h1>For when you're feeling down</h1>
-  <p>pick one and let it be the one you needed ♡</p>
+  <p>reasons you're my favourite person - open one, or a few, whenever you need them ♡</p>
 </div>
 
 <div class="reasons-wrap">
   <div id="reasons-list"></div>
+  <div class="reveal-all-wrap">
+    <button class="btn-reveal-all" id="btn-reveal-all" onclick="revealAll()">Reveal all at once →</button>
+  </div>
   <div class="ending-note" id="ending-note">
-    <p>There are so many more. This list could go on for pages.<br>Whenever you need reminding, pick another. They'll all be waiting as many times as you need.</p>
-    <button class="btn-reveal-all" id="btn-another" onclick="pickAnother()" style="margin-top:1rem">Pick another ✦</button>
+    <p>There are so many more. This list could go on for pages.<br>Whenever you need reminding, come back and they'll all be waiting as many times as you need.</p>
     <span class="sig">Bestie Tristan xo</span>
   </div>
 </div>
@@ -137,7 +137,7 @@ function shuffle(arr) {
 }
 
 // Re-shuffled on every page load - nothing is remembered between visits
-let order = shuffle(REASONS.map((_, i) => i));
+const order = shuffle(REASONS.map((_, i) => i));
 
 function buildList() {
   const list = document.getElementById('reasons-list');
@@ -157,37 +157,29 @@ function buildList() {
     list.appendChild(item);
     setTimeout(() => item.classList.add('visible'), 50 + i * 50);
   });
+  checkAllRevealed();
 }
 
 function revealOne(idx, card) {
-  // only ONE reason per page load - everything else locks until a refresh
-  if (revealed.size >= 1) return;
+  if (revealed.has(idx)) return;
   card.classList.add('revealed');
   revealed.add(idx);
-  document.querySelectorAll('.reason-card:not(.revealed)').forEach(el => {
-    el.classList.add('locked');
-    const h = el.querySelector('.reason-hidden');
-    if (h) h.textContent = '✦ ✦ ✦';
-  });
-  // slot the note (and its button) right under the card that was opened
-  const note = document.getElementById('ending-note');
-  const item = card.closest('.reason-item');
-  if (item) item.after(note);
-  setTimeout(() => {
-    note.classList.add('show');
-    note.scrollIntoView({behavior:'smooth', block:'nearest'});
-  }, 600);
+  checkAllRevealed();
 }
 
-// no refresh needed: reshuffle, forget the opened one, and start fresh
-function pickAnother() {
-  const note = document.getElementById('ending-note');
-  note.classList.remove('show');
-  document.querySelector('.reasons-wrap').appendChild(note);
-  revealed.clear();
-  order = shuffle(REASONS.map((_, i) => i));
-  buildList();
-  window.scrollTo({top: 0, behavior: 'smooth'});
+function revealAll() {
+  document.querySelectorAll('.reason-card:not(.revealed)').forEach((card, i) => {
+    setTimeout(() => card.classList.add('revealed'), i * 80);
+  });
+  REASONS.forEach((_,i) => revealed.add(i));
+  setTimeout(checkAllRevealed, REASONS.length * 80 + 200);
+}
+
+function checkAllRevealed() {
+  if (revealed.size >= REASONS.length) {
+    document.getElementById('btn-reveal-all').style.display = 'none';
+    setTimeout(() => document.getElementById('ending-note').classList.add('show'), 300);
+  }
 }
 
 // stars
