@@ -68,7 +68,7 @@ nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-be
 .stamp-img{width:100%;height:100%;object-fit:cover;pointer-events:none}
 .stamp:hover{transform:rotate(-2deg) scale(1.05)}
 .stamp::before{content:'';position:absolute;inset:5px;border:1px dashed var(--rose);opacity:0.5}
-.postmark{position:absolute;top:-20px;right:90px;width:80px;height:80px;border:2px solid var(--brown);border-radius:50%;display:flex;align-items:center;justify-content:center;transform:rotate(18deg);background:transparent;opacity:0;animation:postmarkIn 0.5s ease 1.1s forwards;cursor:pointer;transition:opacity 0.3s}
+.postmark{position:absolute;top:-20px;right:-100px;width:80px;height:80px;border:2px solid var(--brown);border-radius:50%;display:flex;align-items:center;justify-content:center;transform:rotate(18deg);background:transparent;opacity:0;animation:postmarkIn 0.5s ease 1.1s forwards;cursor:pointer;transition:opacity 0.3s}
 @keyframes postmarkIn{to{opacity:0.7}}
 .postmark:hover{opacity:1!important}
 .postmark-text{font-family:'Caveat',cursive;font-size:0.62rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--brown);text-align:center;line-height:1.3;pointer-events:none}
