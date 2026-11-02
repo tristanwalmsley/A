@@ -352,8 +352,8 @@ window.addEventListener('DOMContentLoaded', () => {
   buildNav('index.html');
   setTimeout(() => {
     document.getElementById('loading-screen').classList.add('hide');
-    setTimeout(() => { document.getElementById('loading-screen').style.display='none'; launchConfetti(); }, 800);
-  }, 2200);
+    setTimeout(() => { document.getElementById('loading-screen').style.display='none'; launchConfetti(); }, 300);
+  }, 900);
   checkPressPlay();
   initAmbientWash();
   initVisitStreak();
@@ -1080,7 +1080,7 @@ function renderLedger(months, newlyAdded){
 
 // ---------- WEEKLY CORKBOARD: a sticker for every new ISO week ----------
 const CORK_KEY = 'ann_weekly_corkboard_v1'; // array of {week, glyph, x, y, rot}
-const CORK_STICKERS = ['♡','✉','★','✦','🌿','🍯','🎀','🕊️','🧸','🍁','☕','🎈','🍪','🌙','🦋','✨'];
+const CORK_STICKERS = ['♡','✉','★','✦','🌿','🍯','🎀','🕊️','🧸','🍁','☕','🎈','🍪','🌙','🦋','✨','💅','🎃','🍂','🔥','🌹','💖','😀','🎉','🥭','🥚','💲','🎄'];
 function isoWeekKey(d){
   const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
   const dayNum = (date.getUTCDay() + 6) % 7;
