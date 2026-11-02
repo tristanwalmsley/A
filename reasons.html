@@ -75,7 +75,8 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 <div class="reasons-wrap">
   <div id="reasons-list"></div>
   <div class="ending-note" id="ending-note">
-    <p>There are so many more. This list could go on for pages.<br>Whenever you need reminding, refresh the page and pick another. They'll all be waiting as many times as you need.</p>
+    <p>There are so many more. This list could go on for pages.<br>Whenever you need reminding, pick another. They'll all be waiting as many times as you need.</p>
+    <button class="btn-reveal-all" id="btn-another" onclick="pickAnother()" style="margin-top:1rem">Pick another ✦</button>
     <span class="sig">Bestie Tristan xo</span>
   </div>
 </div>
@@ -135,7 +136,7 @@ function shuffle(arr) {
 }
 
 // Re-shuffled on every page load - nothing is remembered between visits
-const order = shuffle(REASONS.map((_, i) => i));
+let order = shuffle(REASONS.map((_, i) => i));
 
 function buildList() {
   const list = document.getElementById('reasons-list');
@@ -167,7 +168,25 @@ function revealOne(idx, card) {
     const h = el.querySelector('.reason-hidden');
     if (h) h.textContent = '✦ ✦ ✦';
   });
-  setTimeout(() => document.getElementById('ending-note').classList.add('show'), 600);
+  // slot the note (and its button) right under the card that was opened
+  const note = document.getElementById('ending-note');
+  const item = card.closest('.reason-item');
+  if (item) item.after(note);
+  setTimeout(() => {
+    note.classList.add('show');
+    note.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }, 600);
+}
+
+// no refresh needed: reshuffle, forget the opened one, and start fresh
+function pickAnother() {
+  const note = document.getElementById('ending-note');
+  note.classList.remove('show');
+  document.querySelector('.reasons-wrap').appendChild(note);
+  revealed.clear();
+  order = shuffle(REASONS.map((_, i) => i));
+  buildList();
+  window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
 // stars
