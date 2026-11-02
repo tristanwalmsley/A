@@ -1,0 +1,84 @@
+/* Shared styles: variables, reset, nav, buttons, cards, modals, effects.
+   Every page links this first, then its own page stylesheet. */
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --cream:#faf4e8; --warm:#f0ddb8; --tan:#d4b483; --brown:#7a5230; --deep:#3a2010;
+  --rose:#b86858; --gold:#c8943a; --sage:#7a9870; --paper:#fffdf5; --ink:#2a1a08;
+  --gold-hover:#e0a840;
+  --font-display:'Playfair Display',serif;
+  --font-hand:'Caveat',cursive;
+  --font-body:'EB Garamond',Georgia,serif;
+}
+
+html{scroll-behavior:smooth}
+body{background:var(--cream);font-family:var(--font-body);color:var(--ink);min-height:100vh;overflow-x:hidden}
+
+/* paper grain over the whole page */
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:0.6;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E")}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ---------- Nav (links are injected by nav.js) ---------- */
+.site-nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;
+  border-bottom:1px solid var(--tan);background:var(--paper);position:sticky;top:0;z-index:500}
+.nav-brand{font-family:var(--font-hand);font-size:1.3rem;font-weight:700;color:var(--rose);text-decoration:none}
+.nav-links{display:flex;gap:0.8rem;flex-wrap:wrap}
+.nav-a{font-family:var(--font-hand);font-size:0.9rem;letter-spacing:0.5px;white-space:nowrap;color:var(--brown);
+  text-decoration:none;padding:0.25rem 0.6rem;border-radius:2px;transition:color 0.2s,background 0.2s}
+.nav-a:hover{color:var(--deep);background:var(--warm)}
+.nav-a.current{color:var(--deep);font-weight:700;border-bottom:2px solid var(--gold)}
+.nav-a.locked{color:rgba(58,32,16,0.25);cursor:not-allowed;pointer-events:none;position:relative}
+.nav-a.locked::after{content:'✦';font-size:0.5rem;position:absolute;top:-2px;right:-2px;color:var(--tan)}
+
+/* ---------- Paper card ---------- */
+.card{background:var(--paper);border:1px solid var(--tan);box-shadow:var(--card-shadow,3px 3px 0 var(--warm))}
+.card-stitched{position:relative}
+.card-stitched::before{content:'';position:absolute;inset:-6px;border:1px dashed var(--warm);pointer-events:none}
+
+/* ---------- Section headings ---------- */
+.section-title{font-family:var(--font-display);font-size:1.3rem;font-weight:400;font-style:italic;text-align:center;color:var(--deep);margin-bottom:0.4rem}
+.section-sub{text-align:center;font-size:0.88rem;color:var(--tan);margin-bottom:1.6rem}
+
+/* ---------- Buttons ----------
+   Colour variants set the face; --btn-shadow changes the offset shadow colour. */
+.btn{font-family:var(--font-hand);border:none;cursor:pointer;letter-spacing:0.5px;
+  box-shadow:3px 3px 0 var(--btn-shadow,var(--brown));transition:background 0.15s,transform 0.15s,box-shadow 0.15s}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--btn-shadow,var(--brown))}
+.btn-dark{background:var(--deep);color:var(--cream)}
+.btn-dark:hover{background:var(--brown)}
+.btn-brown{background:var(--brown);color:var(--cream);--btn-shadow:var(--tan)}
+.btn-brown:hover{background:var(--deep)}
+.btn-gold{background:var(--gold);color:var(--deep)}
+.btn-gold:hover{background:var(--gold-hover)}
+.btn-ghost{background:transparent;color:var(--brown);border:1px solid var(--tan);box-shadow:none}
+.btn-ghost:hover{background:var(--warm);transform:none;box-shadow:none}
+
+/* ---------- Modals ---------- */
+.modal{display:none;position:fixed;inset:0;z-index:900;align-items:center;justify-content:center;padding:1.5rem}
+.modal.show{display:flex}
+.modal-backdrop{position:absolute;inset:0;background:rgba(30,15,5,0.75)}
+.modal-card{position:relative;z-index:1;width:100%;background:var(--paper);border:1px solid var(--tan)}
+
+/* ---------- Tiny fixed corner buttons (reset, etc.) ---------- */
+.corner-btn{position:fixed;bottom:1rem;z-index:100;background:rgba(58,32,16,0.08);color:rgba(58,32,16,0.2);
+  border:1px solid rgba(58,32,16,0.08);padding:0.2rem 0.55rem;font-family:var(--font-hand);font-size:0.65rem;
+  letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s}
+.corner-btn:hover{background:var(--warm);color:var(--brown);border-color:var(--tan)}
+.corner-btn-left{left:1rem}
+.corner-btn-right{right:1rem}
+
+/* ---------- Confetti and hearts (see js/effects.js) ---------- */
+#confetti-layer{position:fixed;inset:0;pointer-events:none;z-index:9998;overflow:hidden}
+.confetti-bit{position:absolute;opacity:0;animation:confettiFall var(--cd) ease-out var(--cdelay) forwards}
+@keyframes confettiFall{
+  0%{opacity:1;transform:translateY(-10px) translateX(0) rotate(0deg)}
+  15%{opacity:1}
+  100%{opacity:0;transform:translateY(105vh) translateX(var(--cx)) rotate(var(--cr))}}
+.heart-burst{position:absolute;top:50%;color:var(--rose);pointer-events:none;animation:heartPop var(--hd) ease-out forwards}
+@keyframes heartPop{
+  0%{opacity:0;transform:translate(0,0) scale(0.5)}
+  15%{opacity:1}
+  100%{opacity:0;transform:translate(var(--hx),-160px) scale(1.2)}}
