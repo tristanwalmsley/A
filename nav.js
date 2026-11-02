@@ -42,9 +42,6 @@ function isPageUnlocked(page) {
 
 // All pages in the nav, in the order they unlock
 const ALL_PAGES = [
-  { href: 'gifts_ann_2026_birthday.html', label: 'Birthday 2026 Gifts' },
-  { href: 'quiz.html',            label: 'Birthday 2026 Quiz' },
-  { href: 'the_end.html',         label: 'Thank You' },
   { href: 'our_journey.html',     label: 'Our Journey' },
   { href: 'us.html',              label: 'Us' },
   { href: 'reasons.html',         label: 'Reasons ♡' },
@@ -52,7 +49,10 @@ const ALL_PAGES = [
   { href: 'postcard_gallery.html',label: 'Postcard Gallery' },
   { href: 'letters_archive.html', label: 'Letters Archive' },
   { href: 'tier_list.html',       label: 'Tier Lists' },
-  { href: 'contract.html?view=1', label: 'Contract', matchHref: 'contract.html' },
+  { href: 'gifts_ann_2026_birthday.html', label: 'Birthday 2026 Gifts' },
+  { href: 'quiz.html',            label: 'Birthday 2026 Quiz' },
+  { href: 'the_end.html',         label: 'Birthday 2026 Thank You' },
+  { href: 'contract.html?view=1', label: '2026-27 Contract', matchHref: 'contract.html' },
 ];
 
 function buildNav(currentPage) {
