@@ -31,6 +31,8 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .reason-card:hover{background:rgba(255,253,245,0.1);border-color:rgba(200,148,58,0.3)}
 .reason-card.revealed{background:var(--paper);border-color:var(--tan);cursor:default}
 .reason-card.revealed:hover{transform:none}
+.reason-card.locked{opacity:0.35;cursor:not-allowed;pointer-events:none}
+.reason-card.locked .reason-hidden{letter-spacing:2px}
 .reason-hidden{font-family:'Caveat',cursive;font-size:0.9rem;color:rgba(255,255,255,0.25);letter-spacing:2px;text-align:center;padding:0.3rem 0}
 .reason-text{font-size:1.02rem;line-height:1.8;color:var(--deep);display:none}
 .reason-card.revealed .reason-hidden{display:none}
@@ -44,6 +46,19 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .ending-note.show{display:block;animation:textReveal 0.6s ease}
 .ending-note p{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--tan);line-height:1.7;letter-spacing:0.5px}
 .ending-note .sig{font-family:'Playfair Display',serif;font-size:1.5rem;font-style:italic;color:var(--rose);display:block;margin-top:0.8rem}
+/* SECRET: thank-you-song player */
+#secret-player{position:fixed;left:50%;bottom:1.2rem;z-index:60;display:flex;align-items:center;gap:0.6rem;padding:0.55rem 1rem;border-radius:999px;background:rgba(58,32,16,0.78);backdrop-filter:blur(6px);box-shadow:0 3px 16px rgba(0,0,0,0.35);border:1px solid rgba(200,148,58,0.35);color:var(--cream);font-family:'Caveat',cursive;font-size:1.05rem;opacity:0;transform:translate(-50%,140%);transition:opacity 0.7s ease,transform 0.7s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none}
+#secret-player.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+#secret-player .sp-note{display:inline-block;animation:spBob 1.2s ease-in-out infinite}
+#secret-player.paused .sp-note{animation:none;opacity:0.5}
+@keyframes spBob{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-3px) rotate(6deg)}}
+#secret-player button{background:none;border:none;color:var(--gold);font-size:1.1rem;cursor:pointer;line-height:1;padding:0 0.1rem}
+#secret-player input[type="range"]{-webkit-appearance:none;appearance:none;width:90px;height:4px;border-radius:999px;background:rgba(255,255,255,0.35);outline:none;cursor:pointer}
+#secret-player input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 2px rgba(255,255,255,0.7)}
+#secret-player input[type="range"]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;border:none;background:var(--gold)}
+.secret-toast{position:fixed;left:50%;top:1.2rem;transform:translate(-50%,-30px);z-index:61;padding:0.6rem 1.2rem;border-radius:999px;background:var(--gold);color:var(--deep);font-family:'Caveat',cursive;font-size:1.2rem;box-shadow:4px 4px 0 var(--brown);opacity:0;transition:opacity 0.5s ease,transform 0.6s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none}
+.secret-toast.show{opacity:1;transform:translate(-50%,0)}
+.page-header h1{cursor:default;user-select:none;-webkit-user-select:none}
 </style>
 </head>
 <body>
@@ -54,16 +69,13 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 </nav>
 <div class="page-header">
   <h1>For when you're feeling down</h1>
-  <p>reasons you're my favourite person - open one, or a few, whenever you need them ♡</p>
+  <p>pick one and let it be the one you needed ♡</p>
 </div>
 
 <div class="reasons-wrap">
   <div id="reasons-list"></div>
-  <div class="reveal-all-wrap">
-    <button class="btn-reveal-all" id="btn-reveal-all" onclick="revealAll()">Reveal all at once →</button>
-  </div>
   <div class="ending-note" id="ending-note">
-    <p>There are so many more. This list could go on for pages.<br>Whenever you need reminding, come back and they'll all be waiting as many times as you need.</p>
+    <p>There are so many more. This list could go on for pages.<br>Whenever you need reminding, refresh the page and pick another. They'll all be waiting as many times as you need.</p>
     <span class="sig">Bestie Tristan xo</span>
   </div>
 </div>
@@ -75,7 +87,7 @@ const REASONS = [
   {text:"You take care of the people you love."},
   {text:"You've never made me feel stupid for caring about things. Not once."},
   {text:"The way we get excited about things and we can then spend hours talking about it."},
-  {text:"You are kind without being soft. You will call someone out when they deserve it and still be so kind."},
+  {text:"You are kind but firm, and you will call someone out when they deserve it."},
   {text:"You have never once made me feel like a burden. When I'm struggling, you make space"},
   {text:"You remember things. The small things I've said in passing, things I've mentioned once, and then you bring them back up later even when i've forgotten them."},
   {text:"You are so funny without trying to be. The best kind of funny."},
@@ -84,8 +96,31 @@ const REASONS = [
   {text:"You gave me the kind of friendship where we can not talk for a few days, weeks, or even months and pick up exactly where we left off."},
   {text:"Beans Means Heinz."},
   {text:"You have good taste in everything! Well, men exist..."},
-  {text:"You make ordinary (phas) Monday evenings feel like something to look forward to."},
-];
+  {text:"You make phas Monday evenings feel like something to look forward to."},
+  {text:"You make me more me. Not by pushing, just by being someone I know will be there whatever happens."},
+  {text:"You hype me up like it's your job."},
+  {text:"I can send you a random thought at 2am and know it'll get exactly the right amount of enthusiasm."},
+  {text:"You're the first person I want to tell when something good (or even bad) happens."},
+  {text:"You're honest with me even when it'd be easier not to be."},
+  {text:"Your messages can fix a rubbish day in about four seconds."},
+  {text:"You let me be weird. Fully, completely, unapologetically weird."},
+  {text:"You're proud of me out loud."},
+  {text:"Even when we're miles apart, you never feel far away."},
+  {text:"You make hard things feel survivable."},
+  {text:"bing bong, bing bong"},
+  {text:"You're the same person with everyone. Nothing put on, nothing hidden, and that includes with me. Welll actually, you're better with me :)"},
+  {text:"You make me a better person without ever trying to. Just by being around."},
+  {text:"You're allowed to have bad days. You never have to be 'on' for me, and I'll be here for every single one."},
+  {text:"Whatever happens, wherever life takes us, I know I've got a friend for life in you."},
+  {text:"These adventures have been so much fun"},
+  {text:"I believe this journey has only just begun, And there's no way we’re stopping now"},
+  {text:"Keep moving forward, I feel so proud today"},
+  {text:"Looking through the story books we’ve read, It’s amazing seeing what has been said"},
+  {text:"I want to say, Thank You"},
+  {text:"Yes memories can fade away, So let’s make new ones together evеryday"},
+  {text:"I wanted to give something in return, Something for everything I have learnt, Together we will stand"},
+  {text:"Love you Bestie"},
+]
 
 let revealed = new Set();
 
@@ -119,29 +154,19 @@ function buildList() {
     list.appendChild(item);
     setTimeout(() => item.classList.add('visible'), 50 + i * 50);
   });
-  checkAllRevealed();
 }
 
 function revealOne(idx, card) {
-  if (revealed.has(idx)) return;
+  // only ONE reason per page load - everything else locks until a refresh
+  if (revealed.size >= 1) return;
   card.classList.add('revealed');
   revealed.add(idx);
-  checkAllRevealed();
-}
-
-function revealAll() {
-  document.querySelectorAll('.reason-card:not(.revealed)').forEach((card, i) => {
-    setTimeout(() => card.classList.add('revealed'), i * 80);
+  document.querySelectorAll('.reason-card:not(.revealed)').forEach(el => {
+    el.classList.add('locked');
+    const h = el.querySelector('.reason-hidden');
+    if (h) h.textContent = '✦ ✦ ✦';
   });
-  REASONS.forEach((_,i) => revealed.add(i));
-  setTimeout(checkAllRevealed, REASONS.length * 80 + 200);
-}
-
-function checkAllRevealed() {
-  if (revealed.size >= REASONS.length) {
-    document.getElementById('btn-reveal-all').style.display = 'none';
-    setTimeout(() => document.getElementById('ending-note').classList.add('show'), 300);
-  }
+  setTimeout(() => document.getElementById('ending-note').classList.add('show'), 600);
 }
 
 // stars
@@ -158,5 +183,59 @@ buildList();
 </script>
 <script src="nav.js"></script>
 <script>window.addEventListener('DOMContentLoaded',()=>buildNav('reasons.html'));</script>
+<audio id="secret-audio" preload="none">
+  <source src="thank-you-song.mp3" type="audio/mpeg">
+  <source src="thank-you-song.m4a" type="audio/mp4">
+  <source src="thank-you-song.ogg" type="audio/ogg">
+  <source src="thank-you-song.wav" type="audio/wav">
+</audio>
+<div id="secret-player">
+  <span class="sp-note">♪</span>
+  <button id="sp-toggle" aria-label="Pause or play">❚❚</button>
+  <input type="range" id="sp-vol" min="0" max="1" step="0.01" value="0.7" aria-label="Volume">
+</div>
+<div class="secret-toast" id="secret-toast">you found a secret ♡</div>
+
+<script>
+// SECRET: tap the page title 5 times (within 3s) - or type "thankyou" - to
+// start the thank-you song. One-time per page load; slider appears with it.
+(function(){
+  const audio = document.getElementById('secret-audio');
+  const player = document.getElementById('secret-player');
+  const vol = document.getElementById('sp-vol');
+  const toggle = document.getElementById('sp-toggle');
+  const toast = document.getElementById('secret-toast');
+  let found = false, taps = [], typed = '';
+
+  audio.volume = parseFloat(vol.value);
+  vol.addEventListener('input', () => { audio.volume = parseFloat(vol.value); });
+  toggle.addEventListener('click', () => {
+    if (audio.paused) audio.play().catch(()=>{}); else audio.pause();
+  });
+  audio.addEventListener('play',  () => { player.classList.remove('paused'); toggle.textContent = '❚❚'; });
+  audio.addEventListener('pause', () => { player.classList.add('paused');    toggle.textContent = '▶'; });
+  audio.addEventListener('ended', () => { setTimeout(() => player.classList.remove('show'), 1500); });
+
+  function unlock(){
+    if (found) return;
+    found = true;
+    audio.play().then(() => {
+      player.classList.add('show');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3200);
+    }).catch(() => { found = false; }); // e.g. file missing - let it be retried
+  }
+
+  document.querySelector('.page-header h1').addEventListener('click', () => {
+    const now = Date.now();
+    taps = taps.filter(t => now - t < 3000); taps.push(now);
+    if (taps.length >= 5) unlock();
+  });
+  document.addEventListener('keydown', e => {
+    typed = (typed + e.key.toLowerCase()).slice(-8);
+    if (typed === 'thankyou') unlock();
+  });
+})();
+</script>
 </body>
 </html>
