@@ -7,9 +7,7 @@
 <link rel="icon" type="image/x-icon" href="images/site_icon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/besties.css">
-<style>
-/* ---- carried over from the old home page: secrets, wax seal, keepsakes ---- */
-/* EASTER EGG MODAL */
+<style>/* EASTER EGG MODAL */
 #egg-modal{display:none;position:fixed;inset:0;z-index:5000;align-items:center;justify-content:center;padding:1.5rem}
 #egg-modal.show{display:flex}
 .egg-backdrop{position:absolute;inset:0;background:rgba(20,8,2,0.8)}
@@ -21,22 +19,6 @@
 .egg-sig{font-family:'Caveat',cursive;font-size:1.6rem;font-weight:700;color:var(--rose);margin-top:1rem;display:block}
 .egg-close{position:absolute;top:-1rem;right:-1rem;background:var(--deep);color:var(--cream);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-family:'Caveat',cursive;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background 0.2s}
 .egg-close:hover{background:var(--brown)}
-
-/* RESET */
-#reset-btn{position:fixed;bottom:1rem;left:1rem;background:rgba(171, 123, 85, 0.7);color:rgba(255, 255, 255, 1.0);border:1px solid rgba(171, 123, 85, 0.7);padding:0.2rem 0.55rem;font-family:'Caveat',cursive;font-size:0.65rem;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;z-index:100}
-#reset-btn:hover{background:var(--warm);color:var(--brown);border-color:var(--tan)}
-#reset-secrets-btn{position:fixed;bottom:1rem;right:1rem;background:rgba(171, 123, 85, 0.7);color:rgba(255, 255, 255, 1.0);border:1px solid rgba(171, 123, 85, 0.7);padding:0.2rem 0.55rem;font-family:'Caveat',cursive;font-size:0.65rem;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;z-index:100}
-#reset-secrets-btn:hover{background:var(--warm);color:var(--brown);border-color:var(--tan)}
-
-/* SECRETS BADGE (top set dynamically via JS, just below the nav) */
-#secrets-badge{position:fixed;right:1rem;top:5rem;background:rgba(171, 123, 85, 0.7);color:rgba(255, 255, 255, 1.0);border:1px solid rgba(171, 123, 85, 0.7);padding:0.2rem 0.65rem;font-family:'Caveat',cursive;font-size:0.82rem;letter-spacing:1px;z-index:600;transition:top 0.2s ease;border-radius:2px;cursor:default;white-space:nowrap}
-
-/* COMPLETION BADGE (appears once all secrets are found) */
-#completion-badge{position:fixed;right:1rem;top:8rem;background:var(--gold);color:var(--deep);padding:0.3rem 0.8rem;font-family:'Caveat',cursive;font-size:0.9rem;font-weight:700;letter-spacing:0.5px;border-radius:2px;box-shadow:2px 2px 0 var(--brown);z-index:600;opacity:0;transform:scale(0.4);transition:opacity 0.3s ease,transform 0.3s ease;pointer-events:none;white-space:nowrap}
-#completion-badge.show{opacity:1;transform:scale(1);pointer-events:auto;cursor:pointer}
-#completion-badge.show:hover{background:#e0a840}
-#completion-badge.celebrate{animation:badgeCelebrate 1.4s cubic-bezier(0.34,1.6,0.64,1)}
-@keyframes badgeCelebrate{0%{transform:scale(0.3) rotate(-15deg);opacity:0}40%{transform:scale(1.35) rotate(6deg);opacity:1}60%{transform:scale(0.9) rotate(-3deg)}80%{transform:scale(1.08) rotate(2deg)}100%{transform:scale(1) rotate(0deg)}}
 
 /* GRAND CELEBRATION (long, focused, dims the page) */
 .celebration-overlay{position:fixed;inset:0;background:rgba(20,8,2,0);z-index:6900;display:flex;align-items:center;justify-content:center;transition:background 0.7s ease;pointer-events:none}
@@ -72,20 +54,6 @@
 .stamp.stamp-dragging{cursor:grabbing;box-shadow:6px 10px 22px rgba(0,0,0,0.28);z-index:50}
 #postmark.drag-hint{box-shadow:0 0 0 6px rgba(200,148,58,0.4);transition:box-shadow 0.15s}
 
-/* ---------- WAX SEAL: visit-streak counter ----------
-   a small quiet wax-seal badge, mirroring the secrets-badge on the opposite
-   side of the nav - tracks consecutive-day visits. Deepens in color and
-   gains a thin gold rim at 7 days, and an extra flourish ring at 30. */
-#wax-seal{position:fixed;left:1rem;top:5rem;z-index:600;display:flex;align-items:center;gap:0.5rem;background:rgba(58,32,16,0.07);border:1px solid rgba(58,32,16,0.08);padding:0.25rem 0.7rem 0.25rem 0.4rem;border-radius:2px;transition:top 0.2s ease;cursor:default}
-.wax-seal-icon{position:relative;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 30%, #c47862 0%, var(--rose) 55%, #8a4838 100%);box-shadow:inset 0 -2px 4px rgba(0,0,0,0.25),inset 0 2px 3px rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
-.wax-seal-icon::before{content:'♡';font-size:0.65rem;color:rgba(255,250,240,0.85);line-height:1}
-.wax-seal-icon.milestone-7{box-shadow:inset 0 -2px 4px rgba(0,0,0,0.25),inset 0 2px 3px rgba(255,255,255,0.25),0 0 0 2px var(--gold)}
-.wax-seal-icon.milestone-30{box-shadow:inset 0 -2px 4px rgba(0,0,0,0.25),inset 0 2px 3px rgba(255,255,255,0.25),0 0 0 2px var(--gold),0 0 8px 2px rgba(200,148,58,0.55)}
-.wax-seal-text{font-family:'Caveat',cursive;font-size:0.82rem;color:rgba(58,32,16,0.65);letter-spacing:0.3px;line-height:1.15;white-space:nowrap}
-.wax-seal-text b{color:var(--brown);font-weight:700}
-#wax-seal.bump .wax-seal-icon{animation:waxSealBump 0.6s ease}
-@keyframes waxSealBump{0%,100%{transform:scale(1)}45%{transform:scale(1.28) rotate(-6deg)}}
-
 /* ---------- KEEPSAKES SECTION: monthly ledger + weekly corkboard ----------
    the two other "living" collections - unlike the wax seal (a quiet number)
    these are meant to actually be looked at and grow visibly over months, so
@@ -117,106 +85,80 @@
 @keyframes corkStickerNew{0%{opacity:0;transform:translate(-50%,-50%) rotate(var(--sr,0deg)) scale(0)}55%{opacity:1;transform:translate(-50%,-50%) rotate(var(--sr,0deg)) scale(1.4)}100%{opacity:0.95;transform:translate(-50%,-50%) rotate(var(--sr,0deg)) scale(1)}}
 .corkboard-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'EB Garamond',Georgia,serif;font-style:italic;font-size:0.85rem;color:var(--brown);opacity:0.5;text-align:center;padding:0 1rem}
 
-/* ---- new home page ---- */
+
 html.skip-intro #loading-screen{display:none}
-
-.hero{min-height:auto;padding:3.5rem 2rem 2rem}
-.hero .stamp-wrap{margin-bottom:2.2rem}
-.hero .sub-line{margin-bottom:1rem}
-.hero .letter{margin-bottom:1rem}
-.since{font-family:'Caveat',cursive;font-size:1.25rem;color:var(--rose);margin-bottom:1rem;letter-spacing:.5px;opacity:0;animation:fadeUp .7s ease 1.4s forwards}
-.since[hidden]{display:none}
-
-.band{position:relative;z-index:2;width:100%;max-width:1040px;margin:0 auto;padding:0 2rem 3.5rem}
-.band-head{text-align:center;margin-bottom:2rem}
-.band-eyebrow{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--rose);letter-spacing:2px;text-transform:uppercase}
-.band-title{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:clamp(1.9rem,4.5vw,2.8rem);color:var(--deep);line-height:1.1}
-.band-sub{font-style:italic;color:var(--brown);opacity:.8;margin-top:.4rem}
-
-/* pick up where you left off */
-.resume{display:flex;align-items:center;justify-content:center;gap:.6rem;flex-wrap:wrap;max-width:560px;margin:0 auto;padding:.8rem 1.2rem;background:var(--paper);border:1px dashed var(--tan);text-decoration:none;color:var(--brown);font-family:'Caveat',cursive;font-size:1.2rem;box-shadow:3px 3px 0 var(--warm);transition:transform .15s,box-shadow .15s}
-.resume[hidden]{display:none}
-.resume:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--warm)}
-.resume b{color:var(--rose)}
-.resume small{font-size:.95rem;opacity:.7}
-
-/* the doors: one scrapbook postcard per nav category */
-.doors{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2.2rem 1.8rem}
-.door{position:relative;background:var(--paper);border:1px solid var(--tan);padding:1.7rem 1.5rem 1.3rem;box-shadow:4px 4px 0 var(--warm);transform:rotate(var(--tilt,0deg));transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column;gap:.55rem}
-.door::before{content:'';position:absolute;inset:-5px;border:1px dashed var(--warm);pointer-events:none}
-.door::after{content:'';position:absolute;top:-11px;left:50%;width:72px;height:22px;margin-left:-36px;background:rgba(200,148,58,.32);transform:rotate(var(--tape,-3deg));pointer-events:none}
-.door:hover{transform:rotate(0deg) translateY(-3px);box-shadow:7px 7px 0 var(--warm)}
-.door-stamp{position:absolute;top:1rem;right:1rem;width:34px;height:42px;border:2px solid var(--warm);outline:1px dashed var(--tan);outline-offset:-4px;display:flex;align-items:center;justify-content:center;color:var(--rose);font-size:1.05rem}
-.door-title{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:1.55rem;color:var(--rose);padding-right:2.8rem;line-height:1.15}
-.door-blurb{font-style:italic;font-size:.95rem;color:var(--brown);opacity:.8;line-height:1.5}
-.door-links{list-style:none;display:flex;flex-direction:column;gap:.15rem;margin-top:.3rem}
-.door-links a{font-family:'Caveat',cursive;font-size:1.2rem;color:var(--deep);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .15s,color .15s}
-.door-links a:hover{color:var(--rose);border-bottom-color:var(--gold)}
-.chip-new{display:inline-block;margin-left:.45rem;padding:0 .45rem;background:var(--gold);color:var(--deep);font-family:'Caveat',cursive;font-size:.8rem;font-weight:700;letter-spacing:.5px;transform:rotate(-4deg);box-shadow:1px 1px 0 var(--brown)}
-.door-sealed-line{font-family:'Caveat',cursive;font-size:1.05rem;color:var(--brown);opacity:.55}
-.door-count{margin-top:auto;padding-top:.5rem;font-family:'Caveat',cursive;font-size:.95rem;color:var(--brown);opacity:.65;letter-spacing:.5px}
-.door.sealed{background:rgba(255,253,245,.55);border-style:dashed;box-shadow:none}
-.door.sealed .door-title{color:var(--tan);font-size:1.3rem}
-.door.sealed:hover{transform:rotate(var(--tilt,0deg))}
-
-/* scrapbook */
+.letterhead{display:block;text-align:center;padding:1.4rem 0 0;position:relative;z-index:3}
+.hero{min-height:auto;padding:1.5rem 2rem 1rem}
+.hero .stamp-wrap{margin-bottom:2.2rem}.hero .sub-line{margin-bottom:1rem}.hero .letter{margin-bottom:1rem}
+.since{font-family:'Caveat',cursive;font-size:1.25rem;color:var(--rose);margin-bottom:1rem;opacity:0;animation:fadeUp .7s ease 1.4s forwards}
+.since[hidden],.resume[hidden]{display:none}
+.band{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:2.5rem 1.5rem 3rem}
+.head{text-align:center;margin-bottom:1.8rem}
+.eyebrow{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--rose);letter-spacing:2px;text-transform:uppercase}
+.title{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:clamp(2rem,5vw,3rem);color:var(--deep);line-height:1.1}
+.sub{font-style:italic;color:var(--brown);opacity:.8;margin-top:.4rem}
+.resume{display:flex;justify-content:center;gap:.6rem;flex-wrap:wrap;max-width:560px;margin:0 auto 1rem;padding:.8rem 1.2rem;background:var(--paper);border:1px dashed var(--tan);text-decoration:none;color:var(--brown);font-family:'Caveat',cursive;font-size:1.2rem;box-shadow:3px 3px 0 var(--warm)}
+.resume b{color:var(--rose)}.resume small{opacity:.7}
+.mat{background:repeating-linear-gradient(0deg,transparent 0 31px,rgba(122,82,48,.08) 31px 32px),repeating-linear-gradient(90deg,transparent 0 31px,rgba(122,82,48,.08) 31px 32px),#ecdab3;border:1px solid var(--tan);border-radius:14px;padding:2rem 1.6rem 2.2rem;box-shadow:inset 0 0 0 6px rgba(255,253,245,.4),6px 6px 0 var(--warm);display:flex;flex-direction:column;gap:2.4rem}
+.cluster-name{font-family:'Caveat',cursive;font-size:1.45rem;color:var(--brown);display:flex;align-items:center;gap:.8rem;font-weight:700}
+.cluster-name::after{content:'';flex:1;border-bottom:2px dashed rgba(122,82,48,.3)}
+.cluster-name small{font-size:.95rem;font-weight:400;opacity:.6;order:2}
+.shelf{display:flex;flex-wrap:wrap;gap:2rem 1.8rem;margin-top:1.1rem;padding:0 .4rem}
+.art{position:relative;width:150px;text-decoration:none;color:var(--deep);display:flex;flex-direction:column;align-items:center;gap:.65rem;transform:rotate(var(--tilt,0deg));transition:transform .2s}
+a.art:hover{transform:rotate(0) translateY(-7px) scale(1.05)}
+.obj{width:150px;height:104px;display:flex;align-items:center;justify-content:center;font-size:2.1rem;background:var(--paper);border:1px solid var(--tan);box-shadow:3px 4px 0 rgba(58,32,16,.2);position:relative}
+.lbl{font-family:'Caveat',cursive;font-size:1.25rem;background:var(--paper);border:1px solid var(--tan);padding:0 .7rem;box-shadow:2px 2px 0 var(--warm);white-space:nowrap}
+.art .tag{position:absolute;top:-8px;right:-8px;z-index:2;background:var(--gold);color:var(--deep);font-family:'Caveat',cursive;font-weight:700;font-size:.85rem;padding:0 .5rem;transform:rotate(8deg);box-shadow:1px 1px 0 var(--brown)}
+.k-passport .obj{background:var(--rose);border-color:#8a4838;color:var(--gold);box-shadow:inset 0 0 0 5px rgba(200,148,58,.55),3px 4px 0 rgba(58,32,16,.2)}
+.k-postcard .obj{background:linear-gradient(90deg,transparent calc(58% - 1px),rgba(122,82,48,.3) 58% calc(58% + 1px),transparent 0),var(--paper)}
+.k-envelope .obj{background:linear-gradient(170deg,transparent 48%,rgba(122,82,48,.22) 49% 50%,transparent 0),var(--warm)}
+.k-polaroid .obj{background:#e9dcc0;border:8px solid #fff;border-bottom-width:28px;outline:1px solid var(--tan)}
+.k-note .obj{background:#f6e7a6;border-color:#dcc873}
+.k-tiers .obj{background:linear-gradient(var(--rose) 0 25%,var(--gold) 0 50%,#a9bf8f 0 75%,var(--tan) 0);color:#fff}
+.k-gift .obj{background:linear-gradient(90deg,transparent 44%,var(--gold) 0 56%,transparent 0),linear-gradient(0deg,transparent 40%,var(--gold) 0 56%,transparent 0),#ecc2b6}
+.k-quiz .obj{background:var(--deep);border-color:var(--brown);color:var(--cream)}
+.k-contract .obj{background:repeating-linear-gradient(0deg,transparent 0 13px,rgba(122,82,48,.16) 13px 14px),var(--paper)}
+.art.sealed{opacity:.75}
+.art.sealed .obj{background:repeating-linear-gradient(45deg,var(--warm) 0 9px,#e6d0a2 9px 18px);border-style:dashed;color:var(--tan)}
+.art.sealed .obj::after{content:'';position:absolute;left:-8px;right:-8px;top:42%;height:20px;background:rgba(200,148,58,.4);transform:rotate(-4deg)}
+.art.sealed .lbl{opacity:.55;border-style:dashed;box-shadow:none}
+.shelf-card{background:var(--paper);border:1px solid var(--tan);box-shadow:4px 4px 0 var(--warm);padding:1.6rem;max-width:640px;margin:0 auto;text-align:center}
+.meter{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--brown)}.meter b{color:var(--rose);font-size:1.6rem}
+.pips{display:flex;justify-content:center;gap:.5rem;margin:.6rem 0 1.4rem}
+.pips i{width:14px;height:18px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;border:2px solid var(--tan)}.pips i.on{background:var(--gold);border-color:var(--gold)}
+.badge-shelf{display:flex;flex-wrap:wrap;justify-content:center;gap:1.5rem}
+.badge{width:160px}
+.rosette{width:84px;height:84px;margin:0 auto .5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;background:var(--warm);border:3px dashed var(--tan);color:var(--tan)}
+.badge.earned{cursor:pointer}
+.badge.earned .rosette{background:radial-gradient(circle at 35% 30%,#e8b95a,var(--gold) 60%,#a8741f);border:3px solid #a8741f;color:var(--deep);box-shadow:0 0 0 4px rgba(200,148,58,.25),3px 3px 0 var(--brown)}
+.badge-name{font-family:'Caveat',cursive;font-size:1.25rem;font-weight:700;color:var(--deep)}.badge-desc{font-style:italic;font-size:.9rem;color:var(--brown);opacity:.8}
 .scrap-grid{display:grid;grid-template-columns:1fr;gap:1.8rem}
-@media (min-width:940px){.scrap-grid{grid-template-columns:1fr 1.5fr;align-items:start}}
-.scrap-col{display:flex;flex-direction:column;gap:1.8rem}
-.keepsake-card::after{content:'';position:absolute;top:-11px;left:22%;width:64px;height:20px;background:rgba(200,148,58,.3);transform:rotate(-4deg);pointer-events:none}
-.scrap-grid .corkboard{height:260px}
-.tally{list-style:none;display:flex;flex-direction:column;gap:.45rem}
-.tally li{display:flex;align-items:baseline;gap:.5rem;font-family:'Caveat',cursive;font-size:1.1rem;color:var(--brown)}
-.tally li::after{content:'';order:2;flex:1;border-bottom:1px dotted var(--tan);transform:translateY(-3px)}
-.tally li span{order:1}
-.tally li b{order:3;color:var(--rose);font-size:1.25rem}
-.tally li[hidden]{display:none}
-
-.foot{position:relative;z-index:2;text-align:center;font-family:'Caveat',cursive;color:var(--brown);opacity:.6;padding:0 1rem 4.5rem;font-size:1.1rem}
+@media (min-width:900px){.scrap-grid{grid-template-columns:1fr 1.4fr;align-items:start}}
+.scrap-grid .corkboard{height:240px}
+#settings{position:fixed;right:1rem;bottom:1rem;z-index:700}
+#settings-btn{width:42px;height:42px;border-radius:50%;background:var(--paper);border:1px solid var(--tan);box-shadow:2px 2px 0 var(--warm);cursor:pointer;font-size:1.25rem;color:var(--brown);line-height:1}
+#settings-btn:hover{background:var(--warm)}
+#settings-menu{display:none;position:absolute;right:0;bottom:calc(100% + .5rem);min-width:11rem;background:var(--paper);border:1px solid var(--tan);box-shadow:4px 4px 0 var(--warm);padding:.3rem;flex-direction:column}
+#settings.open #settings-menu{display:flex}
+#settings-menu button{font-family:'Caveat',cursive;font-size:1.1rem;text-align:left;background:none;border:0;padding:.4rem .7rem;color:var(--brown);cursor:pointer}
+#settings-menu button:hover{background:var(--warm)}#settings-menu button.danger{color:var(--rose)}
 </style>
 </head>
 <body>
 <script>try{if(sessionStorage.getItem('besties_intro_seen'))document.documentElement.classList.add('skip-intro')}catch(e){}</script>
-<div id="secrets-badge" title="there are secrets scattered through this page... happy hunting ♡">✦ 0/9 secrets found</div>
-<div id="wax-seal" title="days you've visited in a row"><span class="wax-seal-icon" id="wax-seal-icon"></span><span class="wax-seal-text" id="wax-seal-text"></span></div>
-<div id="completion-badge">★ all secrets found ♡</div>
-
-<div id="loading-screen">
-  <div class="env-wrap">
-    <div class="env-body"></div>
-    <div class="env-flap"></div>
-    <div class="env-letter-out">♡</div>
-  </div>
-  <div class="loading-text">opening…</div>
-</div>
-
-<nav id="site-nav">
-  <a href="index.html" class="nav-brand">Besties ♡</a>
-  <div class="nav-links"></div>
-</nav>
-
+<div id="loading-screen"><div class="env-wrap"><div class="env-body"></div><div class="env-flap"></div><div class="env-letter-out">♡</div></div><div class="loading-text">opening…</div></div>
 <div class="stamps-bg" id="stamps-bg"></div>
 <div id="confetti-layer"></div>
-
 <main>
-  <!-- HERO -->
+  <a href="index.html" class="nav-brand letterhead">Besties ♡</a>
   <section class="hero">
     <div class="hero-grid">
       <div class="hero-left">
         <div class="stamp-wrap">
-          <div class="stamp">
-            <img src="images/stamp_picture.png" alt="a little stamp" class="stamp-img">
-          </div>
-          <div class="postmark" id="postmark">
-            <div class="pm-flash"></div>
-            <div class="postmark-text">From<br>the UK<br>with love</div>
-            <div class="pm-count" id="pm-count"></div>
-          </div>
+          <div class="stamp"><img src="images/stamp_picture.png" alt="a little stamp" class="stamp-img"></div>
+          <div class="postmark" id="postmark"><div class="pm-flash"></div><div class="postmark-text">From<br>the UK<br>with love</div><div class="pm-count" id="pm-count"></div></div>
         </div>
-        <h1 class="headline">
-          <span class="headline-line">Besties</span>
-          <span class="headline-line">Tristan &amp; Ann</span>
-        </h1>
+        <h1 class="headline"><span class="headline-line">Besties</span><span class="headline-line">Tristan &amp; Ann</span></h1>
         <p class="sub-line">a little record of our lives ♡</p>
         <p class="since" id="since" hidden></p>
       </div>
@@ -232,70 +174,39 @@ html.skip-intro #loading-screen{display:none}
     </div>
   </section>
 
-  <!-- PICK UP WHERE YOU LEFT OFF -->
-  <div class="band" style="padding-bottom:2.5rem"><a class="resume" id="resume" href="#" hidden></a></div>
-
-  <!-- THE DOORS (generated from NAV in nav.js) -->
-  <section class="band" aria-labelledby="doors-title">
-    <div class="band-head">
-      <div class="band-eyebrow">wander</div>
-      <h2 class="band-title" id="doors-title">All the doors</h2>
-      <p class="band-sub">new ones appear as you go</p>
-    </div>
-    <div class="doors" id="doors"></div>
+  <section class="band" aria-labelledby="desk-title">
+    <a class="resume" id="resume" href="#" hidden></a>
+    <div class="head"><div class="eyebrow">the desk</div><h2 class="title" id="desk-title">Everywhere to go</h2><p class="sub" id="desk-count"></p></div>
+    <div class="mat" id="mat"></div>
   </section>
 
-  <!-- THE SCRAPBOOK -->
   <section class="band" aria-labelledby="scrap-title">
-    <div class="band-head">
-      <div class="band-eyebrow">keepsakes</div>
-      <h2 class="band-title" id="scrap-title">The scrapbook</h2>
-      <p class="band-sub">it fills up a little every time you visit</p>
-    </div>
+    <div class="head"><div class="eyebrow">keepsakes</div><h2 class="title" id="scrap-title">The scrapbook</h2><p class="sub">it fills up a little every time you visit</p></div>
     <div class="scrap-grid">
-      <div class="scrap-col">
-        <div class="keepsake-card">
-          <div class="keepsake-title">The Ledger</div>
-          <div class="keepsake-sub">a new postmark, stamped the first time you visit each month</div>
-          <div class="ledger-row" id="ledger-row"><span class="ledger-empty" id="ledger-empty">nothing stamped yet - come back to start it</span></div>
-        </div>
-        <div class="keepsake-card">
-          <div class="keepsake-title">The Tally</div>
-          <div class="keepsake-sub">a few numbers, kept for fun</div>
-          <ul class="tally" id="tally"></ul>
-        </div>
-      </div>
-      <div class="keepsake-card">
-        <div class="keepsake-title">The Corkboard</div>
-        <div class="keepsake-sub">one little sticker unlocks each week you drop by</div>
-        <div class="corkboard" id="corkboard"><span class="corkboard-empty" id="corkboard-empty">it's bare for now - check back next week ♡</span></div>
-      </div>
+      <div class="keepsake-card"><div class="keepsake-title">The Ledger</div><div class="keepsake-sub">a new postmark, stamped the first time you visit each month</div><div class="ledger-row" id="ledger-row"><span class="ledger-empty" id="ledger-empty">nothing stamped yet - come back to start it</span></div></div>
+      <div class="keepsake-card"><div class="keepsake-title">The Corkboard</div><div class="keepsake-sub">one little sticker unlocks each week you drop by</div><div class="corkboard" id="corkboard"><span class="corkboard-empty" id="corkboard-empty">it's bare for now - check back next week ♡</span></div></div>
     </div>
   </section>
 
-  <p class="foot">✦ there are 9 secrets hiding on this page ✦</p>
+  <section class="band" aria-labelledby="badge-title">
+    <div class="head"><div class="eyebrow">collection</div><h2 class="title" id="badge-title">Badges</h2><p class="sub">there are secrets hiding all over this page ✦</p></div>
+    <div class="shelf-card">
+      <div class="meter">secrets found <b id="secrets-count">0 / 9</b></div>
+      <div class="pips" id="pips"></div>
+      <div class="badge-shelf" id="badge-shelf"></div>
+    </div>
+  </section>
 </main>
 
-<!-- EASTER EGG -->
-<div id="egg-modal">
-  <div class="egg-backdrop" onclick="closeEgg()"></div>
-  <div class="egg-card">
-    <button class="egg-close" onclick="closeEgg()">✕</button>
-    <div class="egg-title" id="egg-title">You found the secret ♡</div>
-    <p class="egg-text" id="egg-text"></p>
-    <span class="egg-sig" id="egg-sig">Bestie Tristan xo</span>
-  </div>
-</div>
+<div id="egg-modal"><div class="egg-backdrop" onclick="closeEgg()"></div><div class="egg-card"><button class="egg-close" onclick="closeEgg()">✕</button><div class="egg-title" id="egg-title"></div><p class="egg-text" id="egg-text"></p><span class="egg-sig" id="egg-sig">Bestie Tristan xo</span></div></div>
 
-<button id="reset-btn" onclick="if(confirm('Reset ALL progress? This clears everything.')){localStorage.clear();location.reload()}">reset</button>
-<button id="reset-secrets-btn" onclick="if(confirm('Reset just the hidden secrets progress? Your gifts/letters stay untouched.')){localStorage.removeItem('ann_eggs_found');location.reload()}">reset secrets</button>
+<div id="settings"><div id="settings-menu"></div><button id="settings-btn" aria-label="Settings" aria-haspopup="true" aria-expanded="false">⚙︎</button></div>
 
 <script src="js/bestie_storage.js"></script>
 <script src="js/nav.js"></script>
 <script src="js/ambient.js"></script>
 <script>
-   
-const MET_DATE = '2023-01-15';
+const MET_DATE = '2023-01-15';   // the day you two met (YYYY-MM-DD)
 
 // ---------- FLOATING STAMPS ----------
 const stampsBg = document.getElementById('stamps-bg');
@@ -428,46 +339,33 @@ function playEggHatch(callback){
   setTimeout(() => { egg.remove(); callback(); }, 950);
 }
 
-// keeps the counter pinned just below the nav bar (fixes it sitting hidden behind it)
-function positionSecretsBadges(){
-  const navEl = document.getElementById('site-nav');
-  const badge = document.getElementById('secrets-badge');
-  const comp = document.getElementById('completion-badge');
-  const seal = document.getElementById('wax-seal');
-  if(!navEl || !badge) return;
-  const navBottom = navEl.getBoundingClientRect().bottom;
-  badge.style.top = (navBottom + 10) + 'px';
-  if(seal) seal.style.top = (navBottom + 10) + 'px';
-  if(comp){
-    const badgeBottom = badge.getBoundingClientRect().bottom;
-    comp.style.top = (badgeBottom + 8) + 'px';
-  }
-}
-window.addEventListener('resize', positionSecretsBadges);
-if('ResizeObserver' in window){
-  new ResizeObserver(positionSecretsBadges).observe(document.getElementById('site-nav'));
-}
-
+const BADGES = [   // add more here: { id, name, glyph, desc, earned(), progress() }
+  { id:'secrets', name:'Secret Keeper', glyph:'★', desc:'found every secret hiding around here',
+    earned:() => eggsFound.length >= EGG_KEYS.length, progress:() => eggsFound.length + ' / ' + EGG_KEYS.length + ' secrets' }
+];
+function positionSecretsBadges(){}
 function updateSecretsBadge(justCompleted){
-  const badge = document.getElementById('secrets-badge');
-  badge.textContent = `✦ ${eggsFound.length}/${EGG_KEYS.length} secrets found`;
-  const comp = document.getElementById('completion-badge');
-  if(eggsFound.length >= EGG_KEYS.length){
-    comp.classList.add('show');
-    if(justCompleted){
-      comp.classList.add('celebrate');
-      launchAllFoundCelebration();
-      setTimeout(() => comp.classList.remove('celebrate'), 1500);
-    }
-  }
-  positionSecretsBadges();
-  renderTally();
+  renderBadges();
+  if(justCompleted) launchAllFoundCelebration();
 }
-
-// click the gold badge any time afterwards to replay the celebration
-document.getElementById('completion-badge').addEventListener('click', () => {
-  if(eggsFound.length >= EGG_KEYS.length) launchAllFoundCelebration();
-});
+function renderBadges(){
+  const pips = document.getElementById('pips'), shelf = document.getElementById('badge-shelf');
+  if(!pips || !shelf) return;
+  document.getElementById('secrets-count').textContent = eggsFound.length + ' / ' + EGG_KEYS.length;
+  pips.innerHTML = EGG_KEYS.map(k => '<i class="' + (eggsFound.includes(k) ? 'on' : '') + '"></i>').join('');
+  shelf.innerHTML = '';
+  BADGES.forEach(bd => {
+    const got = bd.earned();
+    const el = document.createElement('div');
+    el.className = 'badge' + (got ? ' earned' : '');
+    el.innerHTML = '<div class="rosette"></div><div class="badge-name"></div><div class="badge-desc"></div>';
+    el.querySelector('.rosette').textContent = got ? bd.glyph : '?';
+    el.querySelector('.badge-name').textContent = got ? bd.name : 'Locked badge';
+    el.querySelector('.badge-desc').textContent = got ? bd.desc : bd.progress();
+    if(got && bd.id === 'secrets') el.onclick = launchAllFoundCelebration;
+    shelf.appendChild(el);
+  });
+}
 
 // long, focused, dims the whole page - this is the "you found everything" moment
 function launchAllFoundCelebration(){
@@ -647,7 +545,6 @@ function spawnChaseHeart(){
 }
 setTimeout(spawnChaseHeart, 15000);
 
-positionSecretsBadges();
 updateSecretsBadge(false);
 
 // a little something for anyone curious enough to open the console
@@ -771,145 +668,90 @@ function renderCorkboard(stickers, newestWeek){
   });
 }
 
-// ---------- HUB: doors, resume strip, tally ----------
-function renderDoors(){
-  const grid = document.getElementById('doors');
-  if(!grid) return;
-  const seen = getSeenPages();            // null on the very first visit -> no "new" flags
-  const tilts = [-1.2, 0.9, -0.6, 1.3, -0.9];
-  grid.innerHTML = '';
-  getNavCategories().forEach((cat, i) => {
-    const open = cat.items.filter(x => x.unlocked);
-    const sealedCount = cat.items.length - open.length;
-    const door = document.createElement('article');
-    door.className = 'door' + (open.length ? '' : ' sealed');
-    door.style.setProperty('--tilt', tilts[i % tilts.length] + 'deg');
-    door.style.setProperty('--tape', (i % 2 ? 3 : -3) + 'deg');
 
-    const stamp = document.createElement('div');
-    stamp.className = 'door-stamp';
-    stamp.textContent = open.length ? cat.glyph : '✦';
-    door.appendChild(stamp);
-
-    const title = document.createElement('h3');
-    title.className = 'door-title';
-    title.textContent = open.length ? cat.label : 'Still sealed';
-    door.appendChild(title);
-
-    const blurb = document.createElement('p');
-    blurb.className = 'door-blurb';
-    blurb.textContent = open.length ? cat.blurb : 'this one opens a little later ♡';
-    door.appendChild(blurb);
-
-    if(open.length){
-      const ul = document.createElement('ul');
-      ul.className = 'door-links';
-      open.forEach(item => {
-        const li = document.createElement('li');
-        const a = document.createElement('a');
-        a.href = item.href;
-        a.textContent = item.label;
-        li.appendChild(a);
-        if(seen && !seen.has(item.key)){
-          const tag = document.createElement('span');
-          tag.className = 'chip-new';
-          tag.textContent = 'new';
-          li.appendChild(tag);
-        }
-        ul.appendChild(li);
-      });
-      if(sealedCount){
-        const li = document.createElement('li');
-        li.className = 'door-sealed-line';
-        li.textContent = '✦ ' + sealedCount + ' more still sealed';
-        ul.appendChild(li);
-      }
-      door.appendChild(ul);
+// ---------- THE DESK: every page in NAV, drawn as a paper object ----------
+const $ = id => document.getElementById(id);
+const LOOK = {   // page -> [object style, glyph]
+  'our_journey.html':['polaroid','🗺'], 'us.html':['polaroid','♡'], 'reasons.html':['note','💌'],
+  'passport.html':['passport','✈'], 'postcard_gallery.html':['postcard','🏞'], 'letters_archive.html':['envelope','✉'],
+  'tier_list.html':['tiers','🏆'], 'birthday_2026.html':['gift','🎈'], 'gifts_ann_2026_birthday.html':['gift','🎁'],
+  'quiz.html':['quiz','❓'], 'the_end.html':['note','💛'], 'contract.html':['contract','✎']
+};
+function renderDesk(){
+  const mat = $('mat'), seen = getSeenPages(); let n = 0, total = 0, open = 0, hidden = 0;
+  mat.innerHTML = '';
+  const art = (item) => {
+    const el = document.createElement(item && item.unlocked ? 'a' : 'div');
+    const [kind, glyph] = (item && LOOK[item.key]) || ['note', '✦'];
+    el.className = 'art ' + (item && item.unlocked ? 'k-' + kind : 'sealed');
+    el.style.setProperty('--tilt', (((n++ * 37) % 9) - 4) * 0.8 + 'deg');
+    el.innerHTML = '<div class="obj"></div><div class="lbl"></div>';
+    el.querySelector('.obj').textContent = item && item.unlocked ? glyph : '✦';
+    el.querySelector('.lbl').textContent = item && item.unlocked ? item.label : 'sealed';
+    if(item && item.unlocked){
+      el.href = item.href;
+      if(seen && !seen.has(item.key)){ const t = document.createElement('span'); t.className = 'tag'; t.textContent = 'new'; el.appendChild(t); }
     }
-    grid.appendChild(door);
+    return el;
+  };
+  const cluster = (name, count, els) => {
+    const s = document.createElement('section');
+    s.innerHTML = '<h3 class="cluster-name"><span></span><small></small></h3><div class="shelf"></div>';
+    s.querySelector('span').textContent = name; s.querySelector('small').textContent = count;
+    els.forEach(e => s.querySelector('.shelf').appendChild(e)); mat.appendChild(s);
+  };
+  getNavCategories().forEach(cat => {
+    const o = cat.items.filter(i => i.unlocked).length; total += cat.items.length; open += o;
+    if(!o){ hidden += cat.items.length; return; }
+    cluster(cat.label, o + ' of ' + cat.items.length + ' open', cat.items.map(art));
   });
+  if(hidden) cluster('Still sealed ✦', hidden + ' to find', Array.from({length: hidden}, () => art(null)));
+  $('desk-count').textContent = open + ' of ' + total + ' places open - new ones appear as you go';
 }
-
 function renderResume(){
-  const el = document.getElementById('resume');
-  const last = getLastPage();
-  if(!el || !last) return;
-  const stillOpen = getNavCategories().flatMap(c => c.items).some(i => i.href === last.href && i.unlocked);
-  if(!stillOpen) return;
-  el.href = last.href;
-  el.innerHTML = '';
-  el.append('✉ pick up where you left off: ');
+  const el = $('resume'), last = getLastPage();
+  if(!last || !getNavCategories().flatMap(c => c.items).some(i => i.href === last.href && i.unlocked)) return;
+  el.href = last.href; el.innerHTML = '';
   const b = document.createElement('b'); b.textContent = last.label;
   const s = document.createElement('small'); s.textContent = 'in ' + last.cat + ' →';
-  el.append(b, s);
-  el.hidden = false;
+  el.append('✉ pick up where you left off: ', b, s); el.hidden = false;
 }
-
 function daysSinceMet(){
   if(!MET_DATE) return null;
-  const t = new Date(MET_DATE + 'T00:00:00');
-  if(isNaN(t)) return null;
+  const t = new Date(MET_DATE + 'T00:00:00'); if(isNaN(t)) return null;
   return Math.max(0, Math.floor((Date.now() - t.getTime()) / 86400000));
 }
-function renderSince(){
-  const el = document.getElementById('since');
-  const d = daysSinceMet();
-  if(!el || d === null) return;
-  el.textContent = d.toLocaleString() + ' days of being besties ♡';
-  el.hidden = false;
-}
-
-function getStreakData(){
-  try{ return JSON.parse(localStorage.getItem('ann_visit_streak_v1')) || null; }catch(e){ return null; }
-}
-function renderTally(){
-  const ul = document.getElementById('tally');
-  if(!ul) return;
-  const rows = [];
-  const d = daysSinceMet();
-  if(d !== null) rows.push(['days as besties', d.toLocaleString()]);
-  const st = getStreakData();
-  rows.push(['longest visit streak', st ? (st.longest || st.streak || 1) + ' day' + ((st.longest || st.streak || 1) === 1 ? '' : 's') : '-']);
-  rows.push(['secrets found', eggsFound.length + ' of ' + EGG_KEYS.length]);
-  const all = getNavCategories().flatMap(c => c.items);
-  rows.push(['pages open', all.filter(i => i.unlocked).length + ' of ' + all.length]);
-  ul.innerHTML = '';
-  rows.forEach(([label, val]) => {
-    const li = document.createElement('li');
-    const s = document.createElement('span'); s.textContent = label;
-    const b = document.createElement('b'); b.textContent = val;
-    li.append(s, b);
-    ul.appendChild(li);
+// ---------- SETTINGS (drop-up). Add an entry to SETTINGS to add a menu item ----------
+const SETTINGS = [
+  { label:'Reset data', danger:true, run(){ if(confirm('Reset ALL progress? This clears everything.')){ localStorage.clear(); location.reload(); } } },
+  { label:'Reset secrets', run(){ if(confirm('Reset just the hidden secrets progress? Your gifts/letters stay untouched.')){ localStorage.removeItem('ann_eggs_found'); location.reload(); } } }
+];
+function initSettings(){
+  const wrap = $('settings'), btn = $('settings-btn'), menu = $('settings-menu');
+  SETTINGS.forEach(s => {
+    const b = document.createElement('button'); b.textContent = s.label; if(s.danger) b.className = 'danger';
+    b.onclick = () => { wrap.classList.remove('open'); s.run(); }; menu.appendChild(b);
   });
+  const set = o => { wrap.classList.toggle('open', o); btn.setAttribute('aria-expanded', String(o)); };
+  btn.onclick = e => { e.stopPropagation(); set(!wrap.classList.contains('open')); };
+  document.addEventListener('click', e => { if(!wrap.contains(e.target)) set(false); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') set(false); });
 }
-
 // ---------- INIT ----------
 window.addEventListener('DOMContentLoaded', () => {
-  buildNav('index.html');
   initAmbientWash();
-
-  // the envelope intro plays once per browser session, not on every trip home
-  let introSeen = false;
-  try{ introSeen = !!sessionStorage.getItem('besties_intro_seen'); }catch(e){}
-  const ls = document.getElementById('loading-screen');
-  if(introSeen){
-    ls.style.display = 'none';
-  }else{
-    setTimeout(() => {
-      ls.classList.add('hide');
-      setTimeout(() => { ls.style.display = 'none'; launchConfetti(); }, 300);
-    }, 900);
+  let introSeen = false; try{ introSeen = !!sessionStorage.getItem('besties_intro_seen'); }catch(e){}
+  const ls = $('loading-screen');
+  if(introSeen){ ls.style.display = 'none'; }
+  else{
+    setTimeout(() => { ls.classList.add('hide'); setTimeout(() => { ls.style.display = 'none'; launchConfetti(); }, 300); }, 900);
     try{ sessionStorage.setItem('besties_intro_seen', '1'); }catch(e){}
   }
-
-  renderSince();
-  renderResume();
-  renderDoors();
-  markAllUnlockedPagesSeen();   // "new" tags show once, then count as seen
-  initVisitStreak();
-  initMonthlyLedger();
-  initWeeklyCorkboard();
-  renderTally();
+  const d = daysSinceMet();
+  if(d !== null){ $('since').textContent = d.toLocaleString() + ' days of being besties ♡'; $('since').hidden = false; }
+  renderResume(); renderDesk(); markAllUnlockedPagesSeen();
+  initVisitStreak();   // still recorded quietly so a streak badge can be added later
+  initMonthlyLedger(); initWeeklyCorkboard(); renderBadges(); initSettings();
 });
 </script>
 </body>
