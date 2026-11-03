@@ -76,7 +76,8 @@ const NAV = [
     glyph: '✦',
     blurb: 'the whole experience',
     items: [
-      { href: 'birthday_2026.html',           label: 'Start here' },
+      { href: 'countdown.html',           label: 'The Showcase' },
+      { href: 'birthday_2026.html',           label: 'Gift Box Entry' },
       { href: 'gifts_ann_2026_birthday.html', label: 'Gifts' },
       { href: 'quiz.html',                    label: 'Quiz' },
       { href: 'the_end.html',                 label: 'Thank You' },
