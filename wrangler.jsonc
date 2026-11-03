@@ -1,0 +1,13 @@
+{
+  "name": "besties",
+  "main": "src/index.js",
+  "compatibility_date": "2025-06-01",
+  "assets": { "directory": "./", "binding": "ASSETS", "run_worker_first": ["/api/*"] },
+  "kv_namespaces": [{ "binding": "BESTIES_KV", "id": "PASTE_KV_NAMESPACE_ID_HERE" }],
+  "vars": {
+    "TEAM_DOMAIN": "YOUR-TEAM-NAME.cloudflareaccess.com",
+    "POLICY_AUD": "PASTE_APPLICATION_AUD_TAG_HERE",
+    "TRISTAN_EMAIL": "your-email@example.com",
+    "ANN_EMAIL": "anns-email@example.com"
+  }
+}
