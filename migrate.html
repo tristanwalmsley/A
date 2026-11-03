@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Move progress</title>
+<style>
+body{font-family:Georgia,serif;background:#faf4e8;color:#3a2010;max-width:640px;margin:2rem auto;padding:0 1.2rem;line-height:1.5}
+h1{font-style:italic}h2{margin-top:2rem}
+.card{background:#fffdf5;border:1px solid #d4b483;box-shadow:4px 4px 0 #f0ddb8;padding:1.2rem;margin:1rem 0}
+button{font:inherit;padding:.5rem 1rem;border:1px solid #7a5230;background:#3a2010;color:#faf4e8;cursor:pointer;margin:.3rem .3rem .3rem 0}
+textarea{width:100%;height:7rem;font:12px monospace;box-sizing:border-box}
+.sum{background:#f0ddb8;padding:.6rem .8rem;margin:.6rem 0;font-size:.95rem;white-space:pre-line}
+.msg{font-weight:bold;margin-top:.6rem}
+</style>
+<script>if(location.hostname.endsWith('workers.dev'))document.write('<script src="js/bestie_storage.js"><\/script>')</script>
+</head><body>
+<h1>Move our progress</h1>
+<p id="where"></p>
+
+<h2>1. Export (do this on the OLD site)</h2>
+<div class="card">
+  <p>Open this page on the old address, in the same browser you normally use, then press Export.</p>
+  <button id="exp">Export this browser's progress</button>
+  <div id="expOut" hidden>
+    <div class="sum" id="expSum"></div>
+    <button id="dl">Download file</button><button id="cp">Copy text</button>
+    <textarea id="expTxt" readonly></textarea>
+  </div>
+</div>
+
+<h2>2. Import (do this on the NEW site, signed in as yourself)</h2>
+<div class="card">
+  <p>Choose the file you exported, or paste its text. Only import <b>your own</b> file.</p>
+  <input type="file" id="file" accept=".json,application/json"><br>
+  <textarea id="impTxt" placeholder="…or paste the exported text here"></textarea><br>
+  <button id="imp">Import</button>
+  <div class="sum" id="impSum" hidden></div>
+  <div class="msg" id="impMsg"></div>
+</div>
+
+<script>
+const SKIP=new Set(['bestie_current_user']);
+const $=id=>document.getElementById(id);
+$('where').textContent=location.hostname.endsWith('workers.dev')
+  ?'You are on the NEW site: use section 2 to import.'
+  :'You are on the OLD site: use section 1 to export.';
+function snap(){const o={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!SKIP.has(k))o[k]=localStorage.getItem(k)}return o}
+function summary(d){
+  const lines=[Object.keys(d).length+' saved items'];
+  try{const g=JSON.parse(d['ann_bday_2025_v6']);lines.push('Gifts opened: '+(Array.isArray(g)?g.length:'?'))}catch(e){lines.push('Gifts opened: none found')}
+  lines.push('Contract signed: '+(d['ann_contract_signed_2025']?'yes':'no'));
+  try{const s=JSON.parse(d['ann_eggs_found']);lines.push('Secrets found: '+(Array.isArray(s)?s.length:Object.keys(s).length))}catch(e){lines.push('Secrets found: none found')}
+  return lines.join('\n');
+}
+$('exp').onclick=()=>{
+  const d=snap(),t=JSON.stringify(d,null,2);
+  $('expTxt').value=t;$('expSum').textContent='Check this looks right:\n'+summary(d);$('expOut').hidden=false;
+};
+$('dl').onclick=()=>{
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([$('expTxt').value],{type:'application/json'}));
+  a.download='besties-progress.json';a.click();
+};
+$('cp').onclick=()=>{$('expTxt').select();navigator.clipboard?.writeText($('expTxt').value).catch(()=>document.execCommand('copy'))};
+$('file').onchange=e=>{const f=e.target.files[0];if(f)f.text().then(t=>$('impTxt').value=t)};
+$('imp').onclick=()=>{
+  let d;try{d=JSON.parse($('impTxt').value)}catch(e){$('impMsg').textContent='That is not valid exported text.';return}
+  if(!d||typeof d!=='object'||Array.isArray(d)||!Object.values(d).every(v=>typeof v==='string')){$('impMsg').textContent='That file is not in the right format.';return}
+  $('impSum').textContent='About to import:\n'+summary(d);$('impSum').hidden=false;
+  if(!confirm('Import this into the account you are signed in as? Matching items will be overwritten.'))return;
+  Object.keys(d).forEach(k=>{if(!SKIP.has(k))localStorage.setItem(k,d[k])});
+  $('impMsg').textContent='Imported. Saving to the server…';
+  setTimeout(()=>{$('impMsg').textContent=(window.BestieSync&&!BestieSync.isSyncing())?'Done and saved. Check the home page.':'Imported here. Wait a few seconds, then reload this page to confirm it saved.'},3500);
+};
+</script></body></html>
