@@ -6,104 +6,9 @@
 <title>Besties ♡</title>
 <link rel="icon" type="image/x-icon" href="images/site_icon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="besties.css">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--cream:#faf4e8;--warm:#f0ddb8;--tan:#d4b483;--brown:#7a5230;--deep:#3a2010;--rose:#b86858;--gold:#c8943a;--sage:#7a9870;--paper:#fffdf5;--ink:#2a1a08}
-html{scroll-behavior:smooth}
-body{background:
-radial-gradient(ellipse 60% 40% at 15% 0%, rgba(200,148,58,0.16) 0%, transparent 60%),
-radial-gradient(ellipse 55% 45% at 100% 15%, rgba(184,104,88,0.14) 0%, transparent 62%),
-radial-gradient(ellipse 65% 50% at 85% 100%, rgba(122,152,112,0.13) 0%, transparent 65%),
-linear-gradient(160deg, #fdf7ea 0%, var(--cream) 45%, var(--warm) 100%);
-font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden}
-body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.6}
-
-/* NAV */
-nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--tan);background:var(--paper);position:sticky;top:0;z-index:500;flex-wrap:wrap;gap:0.5rem}
-.nav-brand{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--rose);font-weight:700;text-decoration:none}
-.nav-links{display:flex;gap:0.8rem;flex-wrap:wrap}
-.nav-a{font-family:'Caveat',cursive;font-size:0.9rem;color:var(--brown);text-decoration:none;padding:0.25rem 0.6rem;border-radius:2px;transition:color 0.2s,background 0.2s;letter-spacing:0.5px;white-space:nowrap}
-.nav-a:hover{color:var(--deep);background:var(--warm)}
-.nav-a.current{color:var(--deep);font-weight:700;border-bottom:2px solid var(--gold)}
-.nav-a.locked{color:rgba(58,32,16,0.25);cursor:not-allowed;pointer-events:none;position:relative}
-.nav-a.locked::after{content:'✦';font-size:0.5rem;position:absolute;top:-2px;right:-2px;color:var(--tan)}
-
-/* LOADING SCREEN */
-#loading-screen{position:fixed;inset:0;background:var(--deep);z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1.5rem;transition:opacity 0.8s ease}
-#loading-screen.hide{opacity:0;pointer-events:none}
-.env-wrap{position:relative;width:140px;height:100px}
-.env-body{width:140px;height:100px;background:var(--warm);border:2.5px solid var(--tan);border-radius:2px;position:absolute;bottom:0;left:0}
-.env-body::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 49%,var(--cream) 49%)}
-.env-flap{width:144px;height:72px;background:var(--rose);border:2.5px solid #8a4838;position:absolute;top:-2px;left:-2px;transform-origin:top center;clip-path:polygon(0 0,100% 0,50% 100%);animation:flapOpen 0.8s cubic-bezier(0.22,1,0.36,1) 0.6s forwards}
-@keyframes flapOpen{0%{transform:rotateX(0deg)}100%{transform:rotateX(-180deg)}}
-.env-letter-out{width:110px;height:70px;background:var(--paper);border:1px solid var(--tan);position:absolute;bottom:10px;left:50%;transform:translateX(-50%);animation:letterPop 0.6s cubic-bezier(0.22,1,0.36,1) 1.3s forwards;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--rose)}
-@keyframes letterPop{to{transform:translateX(-50%) translateY(-50px)}}
-.loading-text{font-family:'Caveat',cursive;font-size:1.2rem;color:var(--tan);letter-spacing:2px;animation:ldpulse 1.5s ease-in-out infinite}
-@keyframes ldpulse{0%,100%{opacity:0.5}50%{opacity:1}}
-
-/* FLOATING STAMPS */
-.stamps-bg{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
-.float-stamp{position:absolute;opacity:0;animation:stampFloat var(--dur) ease-in-out var(--delay) infinite}
-@keyframes stampFloat{0%{opacity:0;transform:translateY(105vh) rotate(var(--rot-start)) scale(0.8)}10%{opacity:var(--op)}88%{opacity:var(--op)}100%{opacity:0;transform:translateY(-12vh) translateX(var(--drift)) rotate(var(--rot-end)) scale(1)}}
-.float-stamp-inner{width:44px;height:52px;background:var(--paper);border:2px solid var(--rose);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;box-shadow:2px 2px 5px rgba(0,0,0,0.08)}
-.float-stamp-inner::before{content:'';position:absolute;inset:4px;border:1px dashed rgba(184,104,88,0.3)}
-.float-stamp-inner .sv{font-family:'Playfair Display',serif;font-weight:700;color:var(--rose);font-size:1rem;line-height:1}
-.float-stamp-inner .sl{font-family:'Caveat',cursive;font-size:0.42rem;color:var(--rose);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
-
-/* CONFETTI */
-#confetti-layer{position:fixed;inset:0;pointer-events:none;z-index:9998;overflow:hidden}
-.confetti-bit{position:absolute;opacity:0;animation:confettiFall var(--cd) ease-out var(--cdelay) forwards}
-@keyframes confettiFall{0%{opacity:1;transform:translateY(-10px) translateX(0) rotate(0deg)}15%{opacity:1}100%{opacity:0;transform:translateY(105vh) translateX(var(--cx)) rotate(var(--cr))}}
-
-/* HERO */
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem 2rem 5rem;position:relative;text-align:center;z-index:2}
-.hero-grid{display:grid;grid-template-columns:1fr;gap:2.2rem;width:100%;max-width:640px;margin:0 auto 2.6rem;align-items:center}
-@media (min-width:940px){
-  .hero-grid{grid-template-columns:1.05fr 1fr;max-width:1040px;gap:4.5rem;margin-bottom:3rem}
-  .hero-left{display:flex;flex-direction:column;align-items:center}
-}
-.stamp-wrap{position:relative;margin-bottom:3rem;opacity:0;animation:stampDrop 0.9s cubic-bezier(0.34,1.6,0.64,1) 0.3s forwards}
-@keyframes stampDrop{0%{opacity:0;transform:translateY(-80px) rotate(-12deg) scale(0.6)}55%{transform:translateY(8px) rotate(3deg) scale(1.08)}75%{transform:translateY(-3px) rotate(-1deg) scale(0.98)}100%{opacity:1;transform:translateY(0) rotate(-2deg) scale(1)}}
-.stamp{width:220px;height:260px;background:var(--paper);border:3px solid var(--rose);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;box-shadow:3px 3px 0 var(--tan),6px 6px 0 rgba(0,0,0,0.1);cursor:pointer;transition:transform 0.2s;overflow:hidden;padding:5px}
-.stamp-img{width:100%;height:100%;object-fit:cover;pointer-events:none}
-.stamp:hover{transform:rotate(-2deg) scale(1.05)}
-.stamp::before{content:'';position:absolute;inset:5px;border:1px dashed var(--rose);opacity:0.5}
-.postmark{position:absolute;top:-20px;right:-100px;width:80px;height:80px;border:2px solid var(--brown);border-radius:50%;display:flex;align-items:center;justify-content:center;transform:rotate(18deg);background:transparent;opacity:0;animation:postmarkIn 0.5s ease 1.1s forwards;cursor:pointer;transition:opacity 0.3s}
-@keyframes postmarkIn{to{opacity:0.7}}
-.postmark:hover{opacity:1!important}
-.postmark-text{font-family:'Caveat',cursive;font-size:0.62rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--brown);text-align:center;line-height:1.3;pointer-events:none}
-.pm-flash{position:absolute;inset:0;border-radius:50%;border:3px solid var(--gold);opacity:0}
-.postmark.clicked .pm-flash{animation:pmBurst 0.5s ease forwards}
-@keyframes pmBurst{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(2.5)}}
-.pm-count{position:absolute;top:-5px;right:-5px;background:var(--gold);color:var(--deep);width:18px;height:18px;border-radius:50%;font-family:'Caveat',cursive;font-size:0.7rem;display:none;align-items:center;justify-content:center;font-weight:700}
-.pm-count.show{display:flex}
-
-.headline{font-family:'Playfair Display',serif;font-size:clamp(3rem,8vw,6rem);font-weight:400;color:var(--deep);line-height:1.05;margin-bottom:0.5rem;overflow:hidden}
-.headline-line{display:block;opacity:0;transform:translateY(110%);animation:lineReveal 0.75s cubic-bezier(0.22,1,0.36,1) forwards}
-.headline-line:nth-child(1){animation-delay:0.6s}
-.headline-line:nth-child(2){animation-delay:0.82s;font-style:italic;font-size:clamp(1rem,4vw,3rem);color:var(--rose)}
-@keyframes lineReveal{to{opacity:1;transform:translateY(0)}}
-.sub-line{font-family:'Caveat',cursive;font-size:1.4rem;color:var(--brown);opacity:0;animation:fadeUp 0.7s ease 1.1s forwards;margin-bottom:3rem;letter-spacing:1px}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-
-.letter{max-width:480px;width:100%;background:var(--paper);border:1px solid var(--tan);padding:2.5rem 2.5rem 2rem;position:relative;opacity:0;animation:letterUnfold 1s cubic-bezier(0.22,1,0.36,1) 1.3s forwards;transform-origin:top center;margin-bottom:3rem;box-shadow:5px 5px 0 var(--warm)}
-@keyframes letterUnfold{0%{opacity:0;transform:scaleY(0.2) translateY(-30px)}55%{opacity:1;transform:scaleY(1.04) translateY(3px)}75%{transform:scaleY(0.98) translateY(-1px)}100%{opacity:1;transform:scaleY(1) translateY(0)}}
-.letter::before{content:'';position:absolute;inset:-6px;border:1px dashed var(--warm);pointer-events:none}
-.letter p{font-size:1.05rem;line-height:1.9;color:var(--deep);margin-bottom:1rem}
-.letter p:last-child{margin-bottom:0}
-.letter-sig{font-family:'Caveat',cursive;font-size:2rem;font-weight:700;color:var(--rose);margin-top:1.2rem;display:block}
-.letter-corner{position:absolute;bottom:1.2rem;right:1.5rem;width:48px;height:62px;border:2px solid var(--warm);outline:1px dashed var(--tan);outline-offset:-5px;display:flex;align-items:center;justify-content:center}
-.letter-corner span{font-family:'Caveat',cursive;font-size:0.6rem;color:var(--rose);letter-spacing:1px;text-transform:uppercase;text-align:center;line-height:1.4}
-
-.cta-wrap{opacity:0;animation:fadeUp 0.7s ease 2.1s forwards;display:flex;flex-direction:column;align-items:center;gap:0.7rem}
-.btn-cta{display:inline-block;background:var(--deep);color:var(--cream);border:none;padding:1.1rem 3rem;font-family:'Caveat',cursive;font-size:1.4rem;letter-spacing:1.5px;cursor:pointer;text-decoration:none;transition:transform 0.15s,box-shadow 0.15s;box-shadow:5px 5px 0 var(--brown);position:relative}
-.btn-cta::after{content:'';position:absolute;inset:0;border:1px solid rgba(255,255,255,0.1)}
-.btn-cta:hover{transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--brown)}
-.btn-cta:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--brown)}
-.btn-play{display:none;background:var(--gold);color:var(--deep);border:none;padding:0.7rem 2rem;font-family:'Caveat',cursive;font-size:1.1rem;cursor:pointer;box-shadow:3px 3px 0 var(--brown);letter-spacing:0.5px;transition:all 0.15s}
-.btn-play:hover{background:#e0a840;transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown)}
-.btn-play.show{display:inline-block}
-
+/* ---- carried over from the old home page: secrets, wax seal, keepsakes ---- */
 /* EASTER EGG MODAL */
 #egg-modal{display:none;position:fixed;inset:0;z-index:5000;align-items:center;justify-content:center;padding:1.5rem}
 #egg-modal.show{display:flex}
@@ -116,11 +21,6 @@ nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-be
 .egg-sig{font-family:'Caveat',cursive;font-size:1.6rem;font-weight:700;color:var(--rose);margin-top:1rem;display:block}
 .egg-close{position:absolute;top:-1rem;right:-1rem;background:var(--deep);color:var(--cream);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-family:'Caveat',cursive;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background 0.2s}
 .egg-close:hover{background:var(--brown)}
-
-/* ORNAMENTS */
-.ornament{position:fixed;width:80px;height:80px;opacity:0.1;pointer-events:none}
-.ornament-tl{top:20px;left:20px;border-top:2px solid var(--brown);border-left:2px solid var(--brown)}
-.ornament-br{bottom:20px;right:20px;border-bottom:2px solid var(--brown);border-right:2px solid var(--brown)}
 
 /* RESET */
 #reset-btn{position:fixed;bottom:1rem;left:1rem;background:rgba(171, 123, 85, 0.7);color:rgba(255, 255, 255, 1.0);border:1px solid rgba(171, 123, 85, 0.7);padding:0.2rem 0.55rem;font-family:'Caveat',cursive;font-size:0.65rem;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;z-index:100}
@@ -172,33 +72,6 @@ nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-be
 .stamp.stamp-dragging{cursor:grabbing;box-shadow:6px 10px 22px rgba(0,0,0,0.28);z-index:50}
 #postmark.drag-hint{box-shadow:0 0 0 6px rgba(200,148,58,0.4);transition:box-shadow 0.15s}
 
-/* ---------- AMBIENT WASH: 12 hand-crafted time-of-day scenes ----------
-   a soft full-page scene that shifts with the real time of day - each of
-   the 12 two-hour windows (midnight through late evening) is its own small
-   composition (a layered gradient "wash" plus four drifting glow blobs,
-   individually positioned, sized and coloured for that scene, and for the
-   night-leaning scenes a scattering of twinkling stars) rather than one
-   flat tint - the same layered-bloom approach used for the countdown
-   page's power-hour galaxy, just carried through every hour of the day.
-   Sits behind absolutely everything (z-index -1), never blocks interaction,
-   and crossfades over a full minute (see JS) so the change is never a snap. */
-#ambient-wash{position:fixed;inset:0;z-index:-1;pointer-events:none;transition:background 60s linear,opacity 60s linear;overflow:hidden}
-.ambient-blob{position:absolute;border-radius:50%;filter:blur(65px);opacity:0.45;animation:ambientDrift ease-in-out infinite alternate;transition:background 30s linear}
-@keyframes ambientDrift{from{transform:translate(0,0) scale(1)}to{transform:translate(var(--abx),var(--aby)) scale(1.15)}}
-/* accent blobs - position, size AND colour are all set per-scene by JS, so
-   each of the 12 scenes is a genuinely distinct composition rather than the
-   same four circles being recoloured */
-.accent-blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:0.55;top:10%;left:10%;width:400px;height:400px;transition:background 60s linear,top 60s linear,left 60s linear,width 60s linear,height 60s linear;animation:ambientDrift ease-in-out infinite alternate}
-.accent-blob-1{--abx:70px;--aby:50px;animation-duration:34s}
-.accent-blob-2{--abx:-90px;--aby:-40px;animation-duration:29s}
-.accent-blob-3{--abx:60px;--aby:-70px;animation-duration:25s}
-.accent-blob-4{--abx:-50px;--aby:65px;animation-duration:31s}
-/* star field - built once, reused by every night-leaning scene; each
-   scene just dials the container's opacity up or down (0 by day) */
-#ambient-stars{position:absolute;inset:0;opacity:0;transition:opacity 60s linear}
-.amb-star{position:absolute;border-radius:50%;background:#fff;animation:ambStarTwinkle ease-in-out infinite}
-@keyframes ambStarTwinkle{0%,100%{opacity:var(--s-min,0.15)}50%{opacity:var(--s-max,0.85)}}
-
 /* ---------- WAX SEAL: visit-streak counter ----------
    a small quiet wax-seal badge, mirroring the secrets-badge on the opposite
    side of the nav - tracks consecutive-day visits. Deepens in color and
@@ -243,18 +116,67 @@ nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-be
 .cork-sticker.newest{animation:corkStickerNew 0.9s cubic-bezier(0.34,1.56,0.64,1)}
 @keyframes corkStickerNew{0%{opacity:0;transform:translate(-50%,-50%) rotate(var(--sr,0deg)) scale(0)}55%{opacity:1;transform:translate(-50%,-50%) rotate(var(--sr,0deg)) scale(1.4)}100%{opacity:0.95;transform:translate(-50%,-50%) rotate(var(--sr,0deg)) scale(1)}}
 .corkboard-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'EB Garamond',Georgia,serif;font-style:italic;font-size:0.85rem;color:var(--brown);opacity:0.5;text-align:center;padding:0 1rem}
+
+/* ---- new home page ---- */
+html.skip-intro #loading-screen{display:none}
+
+.hero{min-height:auto;padding:3.5rem 2rem 2rem}
+.hero .stamp-wrap{margin-bottom:2.2rem}
+.hero .sub-line{margin-bottom:1rem}
+.hero .letter{margin-bottom:1rem}
+.since{font-family:'Caveat',cursive;font-size:1.25rem;color:var(--rose);margin-bottom:1rem;letter-spacing:.5px;opacity:0;animation:fadeUp .7s ease 1.4s forwards}
+.since[hidden]{display:none}
+
+.band{position:relative;z-index:2;width:100%;max-width:1040px;margin:0 auto;padding:0 2rem 3.5rem}
+.band-head{text-align:center;margin-bottom:2rem}
+.band-eyebrow{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--rose);letter-spacing:2px;text-transform:uppercase}
+.band-title{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:clamp(1.9rem,4.5vw,2.8rem);color:var(--deep);line-height:1.1}
+.band-sub{font-style:italic;color:var(--brown);opacity:.8;margin-top:.4rem}
+
+/* pick up where you left off */
+.resume{display:flex;align-items:center;justify-content:center;gap:.6rem;flex-wrap:wrap;max-width:560px;margin:0 auto;padding:.8rem 1.2rem;background:var(--paper);border:1px dashed var(--tan);text-decoration:none;color:var(--brown);font-family:'Caveat',cursive;font-size:1.2rem;box-shadow:3px 3px 0 var(--warm);transition:transform .15s,box-shadow .15s}
+.resume[hidden]{display:none}
+.resume:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--warm)}
+.resume b{color:var(--rose)}
+.resume small{font-size:.95rem;opacity:.7}
+
+/* the doors: one scrapbook postcard per nav category */
+.doors{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2.2rem 1.8rem}
+.door{position:relative;background:var(--paper);border:1px solid var(--tan);padding:1.7rem 1.5rem 1.3rem;box-shadow:4px 4px 0 var(--warm);transform:rotate(var(--tilt,0deg));transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column;gap:.55rem}
+.door::before{content:'';position:absolute;inset:-5px;border:1px dashed var(--warm);pointer-events:none}
+.door::after{content:'';position:absolute;top:-11px;left:50%;width:72px;height:22px;margin-left:-36px;background:rgba(200,148,58,.32);transform:rotate(var(--tape,-3deg));pointer-events:none}
+.door:hover{transform:rotate(0deg) translateY(-3px);box-shadow:7px 7px 0 var(--warm)}
+.door-stamp{position:absolute;top:1rem;right:1rem;width:34px;height:42px;border:2px solid var(--warm);outline:1px dashed var(--tan);outline-offset:-4px;display:flex;align-items:center;justify-content:center;color:var(--rose);font-size:1.05rem}
+.door-title{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:1.55rem;color:var(--rose);padding-right:2.8rem;line-height:1.15}
+.door-blurb{font-style:italic;font-size:.95rem;color:var(--brown);opacity:.8;line-height:1.5}
+.door-links{list-style:none;display:flex;flex-direction:column;gap:.15rem;margin-top:.3rem}
+.door-links a{font-family:'Caveat',cursive;font-size:1.2rem;color:var(--deep);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .15s,color .15s}
+.door-links a:hover{color:var(--rose);border-bottom-color:var(--gold)}
+.chip-new{display:inline-block;margin-left:.45rem;padding:0 .45rem;background:var(--gold);color:var(--deep);font-family:'Caveat',cursive;font-size:.8rem;font-weight:700;letter-spacing:.5px;transform:rotate(-4deg);box-shadow:1px 1px 0 var(--brown)}
+.door-sealed-line{font-family:'Caveat',cursive;font-size:1.05rem;color:var(--brown);opacity:.55}
+.door-count{margin-top:auto;padding-top:.5rem;font-family:'Caveat',cursive;font-size:.95rem;color:var(--brown);opacity:.65;letter-spacing:.5px}
+.door.sealed{background:rgba(255,253,245,.55);border-style:dashed;box-shadow:none}
+.door.sealed .door-title{color:var(--tan);font-size:1.3rem}
+.door.sealed:hover{transform:rotate(var(--tilt,0deg))}
+
+/* scrapbook */
+.scrap-grid{display:grid;grid-template-columns:1fr;gap:1.8rem}
+@media (min-width:940px){.scrap-grid{grid-template-columns:1fr 1.5fr;align-items:start}}
+.scrap-col{display:flex;flex-direction:column;gap:1.8rem}
+.keepsake-card::after{content:'';position:absolute;top:-11px;left:22%;width:64px;height:20px;background:rgba(200,148,58,.3);transform:rotate(-4deg);pointer-events:none}
+.scrap-grid .corkboard{height:260px}
+.tally{list-style:none;display:flex;flex-direction:column;gap:.45rem}
+.tally li{display:flex;align-items:baseline;gap:.5rem;font-family:'Caveat',cursive;font-size:1.1rem;color:var(--brown)}
+.tally li::after{content:'';order:2;flex:1;border-bottom:1px dotted var(--tan);transform:translateY(-3px)}
+.tally li span{order:1}
+.tally li b{order:3;color:var(--rose);font-size:1.25rem}
+.tally li[hidden]{display:none}
+
+.foot{position:relative;z-index:2;text-align:center;font-family:'Caveat',cursive;color:var(--brown);opacity:.6;padding:0 1rem 4.5rem;font-size:1.1rem}
 </style>
 </head>
 <body>
-<div id="ambient-wash">
-  <div id="ambient-stars"></div>
-  <div class="accent-blob accent-blob-1"></div>
-  <div class="accent-blob accent-blob-2"></div>
-  <div class="accent-blob accent-blob-3"></div>
-  <div class="accent-blob accent-blob-4"></div>
-</div>
-<!-- <div class="ornament ornament-tl"></div>
-<div class="ornament ornament-br"></div> -->
+<script>try{if(sessionStorage.getItem('besties_intro_seen'))document.documentElement.classList.add('skip-intro')}catch(e){}</script>
 <div id="secrets-badge" title="there are secrets scattered through this page... happy hunting ♡">✦ 0/9 secrets found</div>
 <div id="wax-seal" title="days you've visited in a row"><span class="wax-seal-icon" id="wax-seal-icon"></span><span class="wax-seal-text" id="wax-seal-text"></span></div>
 <div id="completion-badge">★ all secrets found ♡</div>
@@ -276,58 +198,82 @@ nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-be
 <div class="stamps-bg" id="stamps-bg"></div>
 <div id="confetti-layer"></div>
 
-<main class="hero">
-  <div class="hero-grid">
-    <div class="hero-left">
-      <div class="stamp-wrap">
-        <div class="stamp">
-          <img src="images/stamp_picture.png" alt="a little stamp" class="stamp-img">
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-grid">
+      <div class="hero-left">
+        <div class="stamp-wrap">
+          <div class="stamp">
+            <img src="images/stamp_picture.png" alt="a little stamp" class="stamp-img">
+          </div>
+          <div class="postmark" id="postmark">
+            <div class="pm-flash"></div>
+            <div class="postmark-text">From<br>the UK<br>with love</div>
+            <div class="pm-count" id="pm-count"></div>
+          </div>
         </div>
-        <div class="postmark" id="postmark">
-          <div class="pm-flash"></div>
-          <div class="postmark-text">From<br>the UK<br>with love</div>
-          <div class="pm-count" id="pm-count"></div>
+        <h1 class="headline">
+          <span class="headline-line">Besties</span>
+          <span class="headline-line">Tristan &amp; Ann</span>
+        </h1>
+        <p class="sub-line">a little record of our lives ♡</p>
+        <p class="since" id="since" hidden></p>
+      </div>
+      <div class="hero-right">
+        <div class="letter">
+          <p>Hello, Bestie Ann.</p>
+          <p>Welcome home. This is our little corner of the internet - everything I've made for you lives here, and it keeps growing.</p>
+          <p>Wander around. Some doors open with a click, some open with a little time, and a few things are hidden if you poke around enough.</p>
+          <span class="letter-sig">Bestie Tristan</span>
+          <div class="letter-corner"><span>First<br>class<br>friend</span></div>
         </div>
       </div>
-      <h1 class="headline">
-        <span class="headline-line">Besties</span>
-        <span class="headline-line">Tristan & Ann</span>
-      </h1>
-      <p class="sub-line">a little record of our lives ♡</p>
-      <!-- <h1 class="headline">
-        <span class="headline-line">Happy Birthday,</span>
-        <span class="headline-line">Bestie Ann.</span>
-      </h1>
-      <p class="sub-line">a little journey through your box ♡</p>
-      <div class="cta-wrap">
-        <a href="membership.html" class="btn-cta">Open the box →</a> -->
-        <!-- <button class="btn-play" id="btn-play" onclick="startCinematicTour()">▶ Cinematic tour</button> -->
-      <!-- </div> -->
     </div>
-    <div class="hero-right">
-      <div class="letter">
-        <p>Hello, Bestie Ann.</p>
-        <p>In the Netherlands right now, you're holding a box with our whole story drawn on the outside of it. Inside is a journey I put together just for you.</p>
-        <p>This little site is your guide to going through the box and much more. Open each gift in order - there's a note for every single one. I'll be on the call the whole time too.</p>
-        <p>I can't believe it's been over three and a half years. You're my favourite person on this entire earth.</p>
-        <span class="letter-sig">Bestie Tristan</span>
-        <div class="letter-corner"><span>First<br>class<br>friend</span></div>
-      </div>
-    </div>
-  </div>
+  </section>
 
-  <div class="keepsakes">
-    <div class="keepsake-card">
-      <div class="keepsake-title">The Ledger</div>
-      <div class="keepsake-sub">a new postmark, stamped the first time you visit each month</div>
-      <div class="ledger-row" id="ledger-row"><span class="ledger-empty" id="ledger-empty">nothing stamped yet - come back to start it</span></div>
+  <!-- PICK UP WHERE YOU LEFT OFF -->
+  <div class="band" style="padding-bottom:2.5rem"><a class="resume" id="resume" href="#" hidden></a></div>
+
+  <!-- THE DOORS (generated from NAV in nav.js) -->
+  <section class="band" aria-labelledby="doors-title">
+    <div class="band-head">
+      <div class="band-eyebrow">wander</div>
+      <h2 class="band-title" id="doors-title">All the doors</h2>
+      <p class="band-sub">new ones appear as you go</p>
     </div>
-    <div class="keepsake-card">
-      <div class="keepsake-title">The Corkboard</div>
-      <div class="keepsake-sub">one little sticker unlocks each week you drop by</div>
-      <div class="corkboard" id="corkboard"><span class="corkboard-empty" id="corkboard-empty">it's bare for now - check back next week ♡</span></div>
+    <div class="doors" id="doors"></div>
+  </section>
+
+  <!-- THE SCRAPBOOK -->
+  <section class="band" aria-labelledby="scrap-title">
+    <div class="band-head">
+      <div class="band-eyebrow">keepsakes</div>
+      <h2 class="band-title" id="scrap-title">The scrapbook</h2>
+      <p class="band-sub">it fills up a little every time you visit</p>
     </div>
-  </div>
+    <div class="scrap-grid">
+      <div class="scrap-col">
+        <div class="keepsake-card">
+          <div class="keepsake-title">The Ledger</div>
+          <div class="keepsake-sub">a new postmark, stamped the first time you visit each month</div>
+          <div class="ledger-row" id="ledger-row"><span class="ledger-empty" id="ledger-empty">nothing stamped yet - come back to start it</span></div>
+        </div>
+        <div class="keepsake-card">
+          <div class="keepsake-title">The Tally</div>
+          <div class="keepsake-sub">a few numbers, kept for fun</div>
+          <ul class="tally" id="tally"></ul>
+        </div>
+      </div>
+      <div class="keepsake-card">
+        <div class="keepsake-title">The Corkboard</div>
+        <div class="keepsake-sub">one little sticker unlocks each week you drop by</div>
+        <div class="corkboard" id="corkboard"><span class="corkboard-empty" id="corkboard-empty">it's bare for now - check back next week ♡</span></div>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot">there are 9 secrets hiding on this page ✦</p>
 </main>
 
 <!-- EASTER EGG -->
@@ -336,7 +282,7 @@ nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-be
   <div class="egg-card">
     <button class="egg-close" onclick="closeEgg()">✕</button>
     <div class="egg-title" id="egg-title">You found the secret ♡</div>
-    <p class="egg-text" id="egg-text">You clicked the postmark five times. Of course you did. I made a whole website for you and you found the easter egg immediately. I'm proud and entirely unsurprised.<br><br>Here's the hidden message: I think you're really, really brilliant, and I'm so glad you're my best friend. That's it. It's just more feelings.<br><br>You're welcome.</p>
+    <p class="egg-text" id="egg-text"></p>
     <span class="egg-sig" id="egg-sig">Bestie Tristan xo</span>
   </div>
 </div>
@@ -346,22 +292,13 @@ nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-be
 
 <script src="bestie_storage.js"></script>
 <script src="nav.js"></script>
+<script src="ambient.js"></script>
 <script>
-// LOADING SCREEN
-window.addEventListener('DOMContentLoaded', () => {
-  buildNav('index.html');
-  setTimeout(() => {
-    document.getElementById('loading-screen').classList.add('hide');
-    setTimeout(() => { document.getElementById('loading-screen').style.display='none'; launchConfetti(); }, 300);
-  }, 900);
-  checkPressPlay();
-  initAmbientWash();
-  initVisitStreak();
-  initMonthlyLedger();
-  initWeeklyCorkboard();
-});
+// Set this to the day you two met (YYYY-MM-DD) to switch on the "days as besties"
+// counter in the hero and the tally. Leave null to hide it.
+const MET_DATE = null;   // e.g. '2023-02-14'
 
-// FLOATING STAMPS
+// ---------- FLOATING STAMPS ----------
 const stampsBg = document.getElementById('stamps-bg');
 const stampVals = ['♡','✉','★','✦','♡','✉'];
 const stampLbls = ['First Class','Air Mail','Friend','Special','Love','Bestie'];
@@ -374,7 +311,7 @@ for (let i=0;i<16;i++){
   stampsBg.appendChild(sw);
 }
 
-// SEASONAL CONFETTI
+// ---------- SEASONAL CONFETTI ----------
 function launchConfetti() {
   const m=new Date().getMonth();
   const cols = m===7  ? ['#c8943a','#b86858','#faf4e8','#d4b483','#e8c4a0']
@@ -391,7 +328,7 @@ function launchConfetti() {
   }
 }
 
-// POSTMARK EASTER EGG (click 5×)
+// ---------- POSTMARK EASTER EGG (click 5x) ----------
 let pmClicks=0;
 document.getElementById('postmark').addEventListener('click', function(){
   pmClicks++;
@@ -424,7 +361,7 @@ const EGGS = {
   },
   name: {
     title: "Someone said your name",
-    text: "You typed your own name into a birthday website. I love that for you.<br><br>Somewhere out there, the world is a slightly better place because you're in it.",
+    text: "You typed your own name into a website I built for you. I love that for you.<br><br>Somewhere out there, the world is a slightly better place because you're in it.",
     sig: "Bestie Tristan"
   },
   signature: {
@@ -525,6 +462,7 @@ function updateSecretsBadge(justCompleted){
     }
   }
   positionSecretsBadges();
+  renderTally();
 }
 
 // click the gold badge any time afterwards to replay the celebration
@@ -717,298 +655,6 @@ updateSecretsBadge(false);
 console.log('%c✉ psst.', 'font-size:20px;color:#b86858;font-family:cursive;');
 console.log('If you\'re reading this, you\'re exactly the kind of curious person this whole site was made for. There are 9 secrets hidden around this page - happy hunting.');
 
-// ---------- AMBIENT WASH: 12 hand-crafted scenes, one per 2-hour block ----------
-// Each scene is a small composition, not a colour swatch: a multi-layer
-// "wash" (several stacked gradients - a light source, a horizon/sky band,
-// a base tone - the same technique the countdown page uses for its
-// power-hour galaxy) plus four glow blobs that each scene places and sizes
-// individually, plus (for the night-leaning scenes) a twinkling star field.
-// Held for its full 2-hour window, then crossfades (60s, see CSS) into the
-// next scene rather than interpolating through an undesigned midpoint.
-function blobE(top,left,w,h,c1,c2){
-  // c1 = bright core colour, c2 = outer colour it fades through before
-  // transparency - a 3-stop radial reads as a glow, not a flat disc.
-  // w/h independent lets a blob read as a stretched ribbon (aurora, a
-  // horizon band) rather than always being a plain circle.
-  return { top, left, width:w, height:h, fill: `radial-gradient(ellipse, ${c1} 0%, ${c2} 45%, rgba(0,0,0,0) 72%)` };
-}
-function blob(top,left,size,c1,c2){ return blobE(top,left,size,size,c1,c2); }
-// Scenes are written as a loose night -> day -> night story so neighbouring
-// scenes share a family of hues (no scene should feel like a hard left turn
-// from the one before it) while still each having their own character -
-// some quiet and pale, some punchier and more saturated, on purpose.
-const SCENES = [
-  { // 00:00-02:00 midnight - deep indigo sky, a low violet moonglow, quiet embers
-    name: 'midnight',
-    wash: `radial-gradient(ellipse 50% 35% at 50% 8%, rgba(190,170,255,0.22) 0%, rgba(190,170,255,0) 60%),
-           radial-gradient(ellipse 90% 60% at 50% 100%, rgba(40,20,60,0.5) 0%, rgba(40,20,60,0) 70%),
-           radial-gradient(ellipse 120% 90% at 50% 50%, hsl(238,48%,15%) 0%, hsl(242,58%,7%) 100%)`,
-    opacity: 0.74, stars: 0.9,
-    blobs: [
-      blob('4%','20%',420,'rgba(170,150,255,0.5)','rgba(120,90,210,0.3)'),
-      blob('58%','72%',520,'rgba(150,70,170,0.4)','rgba(90,50,130,0.22)'),
-      blob('78%','10%',380,'rgba(90,110,220,0.34)','rgba(60,70,160,0.18)'),
-      blob('18%','82%',300,'rgba(255,214,170,0.16)','rgba(200,148,58,0.08)')
-    ]
-  },
-  { // 02:00-04:00 deep night - the witching hour. Same indigo-violet family
-    // as midnight (so the handoff is gentle) but darker and quieter, with
-    // one playful surprise: a faint ribbon of aurora-teal drifting through
-    name: 'witching-hour',
-    wash: `radial-gradient(ellipse 45% 30% at 50% 4%, rgba(170,150,255,0.14) 0%, rgba(170,150,255,0) 58%),
-           radial-gradient(ellipse 90% 55% at 50% 100%, rgba(30,16,50,0.5) 0%, rgba(30,16,50,0) 68%),
-           radial-gradient(ellipse 120% 90% at 50% 50%, hsl(240,46%,12%) 0%, hsl(244,56%,6%) 100%)`,
-    opacity: 0.78, stars: 1,
-    blobs: [
-      blobE('14%','8%',640,220,'rgba(110,220,190,0.26)','rgba(70,160,180,0.14)'), // aurora ribbon
-      blob('62%','70%',480,'rgba(130,90,200,0.4)','rgba(80,55,150,0.2)'),
-      blob('80%','14%',360,'rgba(80,70,170,0.32)','rgba(50,45,120,0.16)'),
-      blob('26%','86%',260,'rgba(200,180,255,0.14)','rgba(140,120,210,0.07)')
-    ]
-  },
-  { // 04:00-06:00 pre-dawn - still in the same indigo family as the witching
-    // hour (the jump out of deep night used to be jarring; this keeps the
-    // base tone continuous) while a warm seam slowly grows along the horizon
-    name: 'pre-dawn',
-    wash: `radial-gradient(ellipse 75% 22% at 50% 96%, rgba(255,190,150,0.32) 0%, rgba(255,190,150,0) 65%),
-           radial-gradient(ellipse 50% 32% at 50% 8%, rgba(190,170,245,0.16) 0%, rgba(190,170,245,0) 58%),
-           radial-gradient(ellipse 120% 90% at 50% 48%, hsl(243,40%,20%) 0%, hsl(240,44%,10%) 100%)`,
-    opacity: 0.68, stars: 0.3,
-    blobs: [
-      blob('6%','16%',380,'rgba(170,150,230,0.36)','rgba(110,95,180,0.18)'),
-      blob('82%','58%',460,'rgba(255,180,150,0.42)','rgba(225,130,120,0.2)'),
-      blobE('48%','78%',420,200,'rgba(255,205,180,0.24)','rgba(220,150,140,0.12)'), // horizon band
-      blob('66%','4%',260,'rgba(130,110,200,0.26)','rgba(90,75,160,0.12)')
-    ]
-  },
-  { // 06:00-08:00 dawn - full painterly sunrise, lavender easing into pink,
-    // peach and gold - more banded and alive than a plain two-tone blend
-    name: 'dawn',
-    wash: `radial-gradient(ellipse 70% 30% at 50% 100%, rgba(255,214,150,0.6) 0%, rgba(255,214,150,0) 62%),
-           radial-gradient(ellipse 60% 35% at 15% 15%, rgba(220,195,235,0.3) 0%, rgba(220,195,235,0) 58%),
-           radial-gradient(ellipse 75% 50% at 50% 0%, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 55%),
-           linear-gradient(185deg, #fdeef0 0%, #ffe1d6 40%, #ffd3b8 72%, #f9c9a0 100%)`,
-    opacity: 0.6, stars: 0,
-    blobs: [
-      blob('68%','50%',500,'rgba(255,210,160,0.6)','rgba(255,170,110,0.3)'),
-      blob('8%','12%',360,'rgba(230,205,245,0.44)','rgba(200,170,225,0.2)'),
-      blob('30%','82%',320,'rgba(255,170,170,0.36)','rgba(220,130,140,0.18)'),
-      blob('88%','86%',280,'rgba(200,148,58,0.26)','rgba(184,104,88,0.14)')
-    ]
-  },
-  { // 08:00-10:00 morning - dewy, green-gold, fresh. a tiny pastel glint
-    // (like dew catching light) gives it its own playful signature
-    name: 'morning',
-    wash: `radial-gradient(ellipse 60% 42% at 25% 0%, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0) 55%),
-           radial-gradient(ellipse 45% 30% at 88% 78%, rgba(255,200,220,0.16) 0%, rgba(255,200,220,0) 55%),
-           radial-gradient(ellipse 55% 38% at 82% 18%, rgba(200,148,58,0.16) 0%, rgba(200,148,58,0) 58%),
-           linear-gradient(160deg, #fbfbe8 0%, #eef6de 45%, #dff0d2 100%)`,
-    opacity: 0.56, stars: 0,
-    blobs: [
-      blob('-2%','14%',440,'rgba(255,255,255,0.56)','rgba(235,240,205,0.22)'),
-      blob('64%','76%',520,'rgba(122,165,110,0.34)','rgba(85,125,80,0.16)'),
-      blob('80%','10%',340,'rgba(200,148,58,0.26)','rgba(184,104,88,0.12)'),
-      blob('22%','90%',240,'rgba(255,205,225,0.3)','rgba(220,170,195,0.14)') // dew glint
-    ]
-  },
-  { // 10:00-12:00 late morning - brighter, livelier, a warm citrus lift that
-    // distinguishes it from both morning's green and midday's blue
-    name: 'late-morning',
-    wash: `radial-gradient(ellipse 58% 40% at 50% 0%, rgba(255,255,255,0.72) 0%, rgba(255,255,255,0) 56%),
-           radial-gradient(ellipse 50% 34% at 85% 75%, rgba(122,152,112,0.14) 0%, rgba(122,152,112,0) 58%),
-           radial-gradient(ellipse 45% 30% at 10% 70%, rgba(255,200,90,0.16) 0%, rgba(255,200,90,0) 58%),
-           linear-gradient(155deg, #fffbea 0%, #fdefc2 50%, #f8dd96 100%)`,
-    opacity: 0.56, stars: 0,
-    blobs: [
-      blob('0%','55%',460,'rgba(255,255,255,0.52)','rgba(250,224,150,0.22)'),
-      blob('58%','6%',440,'rgba(255,196,64,0.4)','rgba(220,150,40,0.2)'), // citrus
-      blob('78%','74%',380,'rgba(122,152,112,0.26)','rgba(90,120,85,0.12)'),
-      blob('26%','90%',260,'rgba(255,255,255,0.4)','rgba(246,222,160,0.16)')
-    ]
-  },
-  { // 12:00-14:00 midday - proper cheerful blue sky, sun straight overhead,
-    // the most saturated and airy scene of the set
-    name: 'midday',
-    wash: `radial-gradient(ellipse 65% 45% at 50% -8%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 50%),
-           radial-gradient(ellipse 80% 55% at 50% 30%, rgba(120,180,225,0.3) 0%, rgba(120,180,225,0) 62%),
-           radial-gradient(ellipse 120% 90% at 50% 70%, #fdfdfb 0%, #d9ecf4 100%)`,
-    opacity: 0.56, stars: 0,
-    blobs: [
-      blob('-4%','32%',500,'rgba(255,255,255,0.65)','rgba(190,225,245,0.26)'),
-      blob('52%','78%',460,'rgba(100,175,220,0.4)','rgba(70,140,190,0.18)'),
-      blob('74%','6%',360,'rgba(122,152,112,0.24)','rgba(90,120,85,0.1)'),
-      blob('14%','86%',260,'rgba(255,255,255,0.4)','rgba(210,235,245,0.18)')
-    ]
-  },
-  { // 14:00-16:00 afternoon - the brand's resting warm gold, kept close to
-    // home but with a honeyed sage accent so it reads distinct either side
-    name: 'afternoon',
-    wash: `radial-gradient(ellipse 55% 38% at 18% 0%, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0) 55%),
-           radial-gradient(ellipse 50% 34% at 85% 85%, rgba(122,152,112,0.16) 0%, rgba(122,152,112,0) 60%),
-           radial-gradient(ellipse 45% 30% at 65% 20%, rgba(255,214,150,0.18) 0%, rgba(255,214,150,0) 58%),
-           linear-gradient(160deg, #fdf7ea 0%, #faf4e8 45%, #f0ddb8 100%)`,
-    opacity: 0.56, stars: 0,
-    blobs: [
-      blob('6%','8%',440,'rgba(200,148,58,0.34)','rgba(184,104,88,0.16)'),
-      blob('58%','75%',480,'rgba(184,104,88,0.26)','rgba(150,80,70,0.12)'),
-      blob('78%','14%',360,'rgba(255,255,255,0.3)','rgba(240,220,180,0.14)'),
-      blob('22%','85%',280,'rgba(166,186,110,0.26)','rgba(122,152,112,0.12)') // honeyed sage
-    ]
-  },
-  { // 16:00-18:00 late afternoon - golden hour proper: deep honeyed amber,
-    // long dramatic light, a first blush of pink starting to creep in
-    name: 'golden-hour',
-    wash: `radial-gradient(ellipse 65% 32% at 50% 98%, rgba(255,190,140,0.4) 0%, rgba(255,190,140,0) 62%),
-           radial-gradient(ellipse 50% 34% at 12% 8%, rgba(255,255,255,0.32) 0%, rgba(255,255,255,0) 55%),
-           radial-gradient(ellipse 45% 28% at 85% 90%, rgba(230,120,130,0.2) 0%, rgba(230,120,130,0) 58%),
-           linear-gradient(160deg, #fcefd6 0%, #f3d5a0 48%, #e0ab6c 100%)`,
-    opacity: 0.62, stars: 0,
-    blobs: [
-      blob('66%','58%',560,'rgba(210,150,58,0.5)','rgba(184,104,88,0.24)'),
-      blob('4%','14%',380,'rgba(255,255,255,0.3)','rgba(250,222,180,0.14)'),
-      blob('44%','88%',340,'rgba(220,110,110,0.3)','rgba(170,70,75,0.14)'),
-      blob('86%','8%',280,'rgba(122,152,112,0.18)','rgba(90,120,85,0.08)')
-    ]
-  },
-  { // 18:00-20:00 sunset - the big, vivid, painterly one: gold low through
-    // orange, rose and a hint of plum climbing into the upper sky
-    name: 'sunset',
-    wash: `radial-gradient(ellipse 60% 28% at 50% 102%, rgba(255,232,170,0.75) 0%, rgba(255,232,170,0) 55%),
-           radial-gradient(ellipse 85% 48% at 50% 92%, rgba(244,150,90,0.55) 0%, rgba(244,150,90,0) 62%),
-           radial-gradient(ellipse 60% 35% at 50% 8%, rgba(120,70,110,0.22) 0%, rgba(120,70,110,0) 60%),
-           linear-gradient(180deg, #7a5a86 0%, #d97a7a 32%, #f2a878 62%, #fbd9a8 100%)`,
-    opacity: 0.66, stars: 0.1,
-    blobs: [
-      blob('66%','50%',580,'rgba(255,214,150,0.56)','rgba(242,130,90,0.3)'),
-      blob('10%','14%',340,'rgba(150,90,160,0.3)','rgba(100,55,110,0.16)'),
-      blob('80%','78%',380,'rgba(210,80,100,0.4)','rgba(150,55,70,0.2)'),
-      blob('36%','84%',300,'rgba(200,148,58,0.3)','rgba(184,104,88,0.16)')
-    ]
-  },
-  { // 20:00-22:00 dusk - magical twilight: deep blue-purple with the last
-    // warm seam of sunset still glowing low, plus a scatter of firefly-gold
-    // glows for a touch of whimsy instead of a plain cool wash
-    name: 'dusk',
-    wash: `radial-gradient(ellipse 55% 24% at 50% 100%, rgba(240,140,110,0.28) 0%, rgba(240,140,110,0) 60%),
-           radial-gradient(ellipse 50% 32% at 50% 6%, rgba(170,150,230,0.16) 0%, rgba(170,150,230,0) 58%),
-           radial-gradient(ellipse 120% 90% at 50% 50%, hsl(248,38%,24%) 0%, hsl(244,46%,10%) 100%)`,
-    opacity: 0.7, stars: 0.55,
-    blobs: [
-      blob('10%','68%',420,'rgba(140,110,210,0.34)','rgba(90,70,160,0.16)'),
-      blob('56%','10%',400,'rgba(110,90,190,0.3)','rgba(70,60,150,0.14)'),
-      blob('78%','56%',320,'rgba(230,140,110,0.3)','rgba(184,104,88,0.14)'),
-      blobE('30%','86%',220,120,'rgba(255,210,120,0.3)','rgba(220,170,70,0.12)') // firefly cluster
-    ]
-  },
-  { // 22:00-00:00 evening - settling back into the midnight family (same
-    // indigo base as scene 0, for a smooth wrap-around) with a cosy
-    // candlelit-window glow low in the frame as its own little signature
-    name: 'evening',
-    wash: `radial-gradient(ellipse 48% 30% at 50% 6%, rgba(190,170,255,0.2) 0%, rgba(190,170,255,0) 58%),
-           radial-gradient(ellipse 85% 52% at 50% 100%, rgba(40,25,65,0.42) 0%, rgba(40,25,65,0) 66%),
-           radial-gradient(ellipse 120% 90% at 50% 46%, hsl(240,44%,18%) 0%, hsl(242,54%,8%) 100%)`,
-    opacity: 0.72, stars: 0.78,
-    blobs: [
-      blob('6%','65%',440,'rgba(150,120,230,0.4)','rgba(100,80,180,0.2)'),
-      blob('58%','10%',480,'rgba(80,90,200,0.34)','rgba(45,50,140,0.18)'),
-      blob('80%','72%',340,'rgba(150,60,140,0.26)','rgba(100,40,100,0.14)'),
-      blob('72%','30%',240,'rgba(255,196,120,0.26)','rgba(220,150,70,0.12)') // candlelit window
-    ]
-  },
-];
-let currentSceneIdx = null;
-let starsBuilt = false;
-function buildAmbientStars(){
-  if(starsBuilt) return;
-  const field = document.getElementById('ambient-stars');
-  if(!field) return;
-  for(let i=0;i<46;i++){
-    const s = document.createElement('div');
-    s.className = 'amb-star';
-    const sz = 1 + Math.random()*2.2;
-    s.style.cssText = `top:${Math.random()*100}%;left:${Math.random()*100}%;width:${sz}px;height:${sz}px;animation-duration:${2+Math.random()*3.5}s;--s-min:${0.1+Math.random()*0.15};--s-max:${0.6+Math.random()*0.4}`;
-    field.appendChild(s);
-  }
-  starsBuilt = true;
-}
-function applyScene(idx){
-  const el = document.getElementById('ambient-wash');
-  if(!el) return;
-  const scene = SCENES[idx];
-  el.style.background = scene.wash;
-  el.style.opacity = String(scene.opacity);
-  ['1','2','3','4'].forEach((n, i) => {
-    const blobEl = el.querySelector('.accent-blob-' + n);
-    const b = scene.blobs[i];
-    if(!blobEl || !b) return;
-    blobEl.style.top = b.top;
-    blobEl.style.left = b.left;
-    blobEl.style.width = b.size + 'px';
-    blobEl.style.height = b.size + 'px';
-    blobEl.style.background = b.fill;
-  });
-  const starField = document.getElementById('ambient-stars');
-  if(starField) starField.style.opacity = String(scene.stars);
-  currentSceneIdx = idx;
-}
-function updateAmbientWash(){
-  if(window.__ambientLocked) return; // a manual preview is active - leave it alone
-  const hour = new Date().getHours();
-  const idx = Math.floor(hour / 2) % SCENES.length;
-  if(idx !== currentSceneIdx) applyScene(idx); // background/blob/star changes crossfade via the 60s CSS transition
-}
-function initAmbientWash(){
-  buildAmbientStars();
-  // ?scene=14 (or any hour 0-23) in the URL jumps straight to that scene on
-  // load, for testing - e.g. index.html?scene=14 for the midday one
-  const urlHour = new URLSearchParams(location.search).get('scene');
-  if(urlHour !== null && !isNaN(urlHour)){
-    applyScene(Math.floor(Number(urlHour) / 2) % SCENES.length);
-    window.__ambientLocked = true;
-  } else {
-    updateAmbientWash();
-  }
-  setInterval(updateAmbientWash, 60000); // check every minute for the 2-hourly scene change
-}
-// ---------- console helpers for previewing scenes without waiting ----------
-// open devtools console and run e.g. previewScene(6) for the dawn scene, or
-// cycleScenes() to step through all 12 one at a time (press again to advance,
-// or pass a number of seconds to auto-advance). unlockAmbient() hands control
-// back to the real clock.
-window.previewScene = function(hour){
-  window.__ambientLocked = true;
-  applyScene(Math.floor(hour / 2) % SCENES.length);
-  console.log(`scene ${Math.floor(hour/2)%SCENES.length}: "${SCENES[Math.floor(hour/2)%SCENES.length].name}" (covers ${Math.floor(hour/2)*2}:00-${Math.floor(hour/2)*2+2}:00)`);
-};
-window.cycleScenes = function(seconds){
-  window.__ambientLocked = true;
-  let i = 0;
-  applyScene(i);
-  console.log(`scene ${i}: "${SCENES[i].name}"`);
-  if(seconds){
-    clearInterval(window.__cycleTimer);
-    window.__cycleTimer = setInterval(() => {
-      i = (i + 1) % SCENES.length;
-      applyScene(i);
-      console.log(`scene ${i}: "${SCENES[i].name}"`);
-    }, seconds * 1000);
-  } else {
-    window.nextScene = function(){
-      i = (i + 1) % SCENES.length;
-      applyScene(i);
-      console.log(`scene ${i}: "${SCENES[i].name}"`);
-    };
-    console.log('call nextScene() to step forward');
-  }
-};
-window.unlockAmbient = function(){
-  clearInterval(window.__cycleTimer);
-  window.__ambientLocked = false;
-  updateAmbientWash();
-  console.log('back to the real clock');
-};
-
-
 // ---------- WAX SEAL: consecutive-day visit streak ----------
 const STREAK_KEY = 'ann_visit_streak_v1'; // { lastDate: 'YYYY-MM-DD', streak: n, longest: n }
 function todayStr(d){ return d.toISOString().slice(0,10); }
@@ -1126,16 +772,146 @@ function renderCorkboard(stickers, newestWeek){
   });
 }
 
-// PRESS PLAY (shows after all gifts opened)
-function checkPressPlay(){
-  try{
-    const opened = getOpenedGifts(); // from nav.js - reads the current gifts key, not a stale one
-    if(opened.size >= TOTAL_GIFTS) document.getElementById('btn-play').classList.add('show');
-  }catch(e){}
+// ---------- HUB: doors, resume strip, tally ----------
+function renderDoors(){
+  const grid = document.getElementById('doors');
+  if(!grid) return;
+  const seen = getSeenPages();            // null on the very first visit -> no "new" flags
+  const tilts = [-1.2, 0.9, -0.6, 1.3, -0.9];
+  grid.innerHTML = '';
+  getNavCategories().forEach((cat, i) => {
+    const open = cat.items.filter(x => x.unlocked);
+    const sealedCount = cat.items.length - open.length;
+    const door = document.createElement('article');
+    door.className = 'door' + (open.length ? '' : ' sealed');
+    door.style.setProperty('--tilt', tilts[i % tilts.length] + 'deg');
+    door.style.setProperty('--tape', (i % 2 ? 3 : -3) + 'deg');
+
+    const stamp = document.createElement('div');
+    stamp.className = 'door-stamp';
+    stamp.textContent = open.length ? cat.glyph : '✦';
+    door.appendChild(stamp);
+
+    const title = document.createElement('h3');
+    title.className = 'door-title';
+    title.textContent = open.length ? cat.label : 'Still sealed';
+    door.appendChild(title);
+
+    const blurb = document.createElement('p');
+    blurb.className = 'door-blurb';
+    blurb.textContent = open.length ? cat.blurb : 'this one opens a little later ♡';
+    door.appendChild(blurb);
+
+    if(open.length){
+      const ul = document.createElement('ul');
+      ul.className = 'door-links';
+      open.forEach(item => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = item.href;
+        a.textContent = item.label;
+        li.appendChild(a);
+        if(seen && !seen.has(item.key)){
+          const tag = document.createElement('span');
+          tag.className = 'chip-new';
+          tag.textContent = 'new';
+          li.appendChild(tag);
+        }
+        ul.appendChild(li);
+      });
+      if(sealedCount){
+        const li = document.createElement('li');
+        li.className = 'door-sealed-line';
+        li.textContent = '✦ ' + sealedCount + ' more still sealed';
+        ul.appendChild(li);
+      }
+      door.appendChild(ul);
+    }
+    grid.appendChild(door);
+  });
 }
-function startCinematicTour(){
-  location.href='gifts.html?autoplay=1';
+
+function renderResume(){
+  const el = document.getElementById('resume');
+  const last = getLastPage();
+  if(!el || !last) return;
+  const stillOpen = getNavCategories().flatMap(c => c.items).some(i => i.href === last.href && i.unlocked);
+  if(!stillOpen) return;
+  el.href = last.href;
+  el.innerHTML = '';
+  el.append('✉ pick up where you left off: ');
+  const b = document.createElement('b'); b.textContent = last.label;
+  const s = document.createElement('small'); s.textContent = 'in ' + last.cat + ' →';
+  el.append(b, s);
+  el.hidden = false;
 }
+
+function daysSinceMet(){
+  if(!MET_DATE) return null;
+  const t = new Date(MET_DATE + 'T00:00:00');
+  if(isNaN(t)) return null;
+  return Math.max(0, Math.floor((Date.now() - t.getTime()) / 86400000));
+}
+function renderSince(){
+  const el = document.getElementById('since');
+  const d = daysSinceMet();
+  if(!el || d === null) return;
+  el.textContent = d.toLocaleString() + ' days of being besties ♡';
+  el.hidden = false;
+}
+
+function getStreakData(){
+  try{ return JSON.parse(localStorage.getItem('ann_visit_streak_v1')) || null; }catch(e){ return null; }
+}
+function renderTally(){
+  const ul = document.getElementById('tally');
+  if(!ul) return;
+  const rows = [];
+  const d = daysSinceMet();
+  if(d !== null) rows.push(['days as besties', d.toLocaleString()]);
+  const st = getStreakData();
+  rows.push(['longest visit streak', st ? (st.longest || st.streak || 1) + ' day' + ((st.longest || st.streak || 1) === 1 ? '' : 's') : '-']);
+  rows.push(['secrets found', eggsFound.length + ' of ' + EGG_KEYS.length]);
+  const all = getNavCategories().flatMap(c => c.items);
+  rows.push(['pages open', all.filter(i => i.unlocked).length + ' of ' + all.length]);
+  ul.innerHTML = '';
+  rows.forEach(([label, val]) => {
+    const li = document.createElement('li');
+    const s = document.createElement('span'); s.textContent = label;
+    const b = document.createElement('b'); b.textContent = val;
+    li.append(s, b);
+    ul.appendChild(li);
+  });
+}
+
+// ---------- INIT ----------
+window.addEventListener('DOMContentLoaded', () => {
+  buildNav('index.html');
+  initAmbientWash();
+
+  // the envelope intro plays once per browser session, not on every trip home
+  let introSeen = false;
+  try{ introSeen = !!sessionStorage.getItem('besties_intro_seen'); }catch(e){}
+  const ls = document.getElementById('loading-screen');
+  if(introSeen){
+    ls.style.display = 'none';
+  }else{
+    setTimeout(() => {
+      ls.classList.add('hide');
+      setTimeout(() => { ls.style.display = 'none'; launchConfetti(); }, 300);
+    }, 900);
+    try{ sessionStorage.setItem('besties_intro_seen', '1'); }catch(e){}
+  }
+
+  renderSince();
+  renderResume();
+  renderDoors();
+  markAllUnlockedPagesSeen();   // "new" tags show once, then count as seen
+  initVisitStreak();
+  initMonthlyLedger();
+  initWeeklyCorkboard();
+  renderTally();
+});
 </script>
 </body>
 </html>
