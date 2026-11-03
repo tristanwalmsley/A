@@ -42,7 +42,7 @@ const NAV = [
     id: 'story',
     label: 'Our Story',
     glyph: '♡',
-    blurb: 'how we got to where we are',
+    blurb: 'our journey of how we got here',
     items: [
       { href: 'our_journey.html', label: 'Our Journey' },
       { href: 'us.html',          label: 'Us' },
@@ -53,7 +53,7 @@ const NAV = [
     id: 'media',
     label: 'Media',
     glyph: '✉',
-    blurb: 'all of our creative outlets',
+    blurb: 'our creative outlets',
     items: [
       { href: 'passport.html',         label: 'Passport' },
       { href: 'postcard_gallery.html', label: 'Postcard Gallery' },
@@ -64,7 +64,7 @@ const NAV = [
     id: 'fun',
     label: 'Fun',
     glyph: '★',
-    blurb: 'just silliness',
+    blurb: 'lots of silliness',
     items: [
       { href: 'tier_list.html', label: 'Tier Lists' },
     ],
