@@ -113,7 +113,9 @@ function isContractSigned() {
 
 function isPageUnlocked(page) {
   if (page === 'index.html') return true;
-  if (CONTRACT_GATED.includes(page)) return isContractSigned();
+  // contract-gated pages also open if she has already reached the final gift
+  // (anyone who got to Thank You must have done the contract + gifts)
+  if (CONTRACT_GATED.includes(page)) return isContractSigned() || getOpenedGifts().has(PAGE_UNLOCKS['the_end.html']);
   const threshold = PAGE_UNLOCKS[page];
   if (!threshold) return true; // unknown pages default open
   return getOpenedGifts().has(threshold);
