@@ -42,7 +42,7 @@ const NAV = [
     id: 'story',
     label: 'Our Story',
     glyph: '♡',
-    blurb: 'how we got here, and why I like you',
+    blurb: 'how we got to where we are',
     items: [
       { href: 'our_journey.html', label: 'Our Journey' },
       { href: 'us.html',          label: 'Us' },
@@ -53,7 +53,7 @@ const NAV = [
     id: 'media',
     label: 'Media',
     glyph: '✉',
-    blurb: 'passport stamps, postcards and letters',
+    blurb: 'all of our creative outlets',
     items: [
       { href: 'passport.html',         label: 'Passport' },
       { href: 'postcard_gallery.html', label: 'Postcard Gallery' },
@@ -64,7 +64,7 @@ const NAV = [
     id: 'fun',
     label: 'Fun',
     glyph: '★',
-    blurb: 'opinions, rankings and silliness',
+    blurb: 'just silliness',
     items: [
       { href: 'tier_list.html', label: 'Tier Lists' },
     ],
@@ -74,7 +74,7 @@ const NAV = [
     label: 'Birthday 2026',
     soloLabel: 'Birthday 2026',   // label used when only "Start here" is unlocked
     glyph: '✦',
-    blurb: 'the box, the gifts, the quiz',
+    blurb: 'the whole experience',
     items: [
       { href: 'birthday_2026.html',           label: 'Start here' },
       { href: 'gifts_ann_2026_birthday.html', label: 'Gifts' },
@@ -84,9 +84,9 @@ const NAV = [
   },
   {
     id: 'contract',
-    label: 'Contract',
+    label: 'Contracts',
     glyph: '✎',
-    blurb: 'the 2026-27 agreement',
+    blurb: 'the yearly agreements',
     items: [
       { href: 'contract.html?view=1', label: '2026-27 Contract', matchHref: 'contract.html' },
     ],
