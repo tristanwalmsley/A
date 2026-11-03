@@ -8,7 +8,7 @@
    ========================================================================== */
 
 const NAV_KEYS = {
-  contract: 'ann_contract_signed_2025',
+  contract: 'ann_contract_signed_2026',
   gifts: 'ann_bday_2025_v6',
 };
 
@@ -32,6 +32,7 @@ const CONTRACT_GATED = ['contract.html', 'gifts.html', 'gifts_ann_2026_birthday.
 
 /* --------------------------------------------------------------------------
    THE NAV. Order here = order on screen.
+   category: { id, label, glyph?, blurb?, soloLabel?, items }  (glyph/blurb feed the home page doors)
    item: { href, label, matchHref? }
      matchHref = the bare page name used for unlock checks / "current" state
                  (needed when href has a query string)
@@ -40,6 +41,8 @@ const NAV = [
   {
     id: 'story',
     label: 'Our Story',
+    glyph: '♡',
+    blurb: 'our journey of how we got here',
     items: [
       { href: 'our_journey.html', label: 'Our Journey' },
       { href: 'us.html',          label: 'Us' },
@@ -49,6 +52,8 @@ const NAV = [
   {
     id: 'media',
     label: 'Media',
+    glyph: '✉',
+    blurb: 'our creative outlets',
     items: [
       { href: 'passport.html',         label: 'Passport' },
       { href: 'postcard_gallery.html', label: 'Postcard Gallery' },
@@ -58,6 +63,8 @@ const NAV = [
   {
     id: 'fun',
     label: 'Fun',
+    glyph: '★',
+    blurb: 'lots of silliness',
     items: [
       { href: 'tier_list.html', label: 'Tier Lists' },
     ],
@@ -65,7 +72,11 @@ const NAV = [
   {
     id: 'bday26',
     label: 'Birthday 2026',
+    soloLabel: 'Birthday 2026',   // label used when only "Start here" is unlocked
+    glyph: '✦',
+    blurb: 'the whole experience',
     items: [
+      { href: 'birthday_2026.html',           label: 'Start here' },
       { href: 'gifts_ann_2026_birthday.html', label: 'Gifts' },
       { href: 'quiz.html',                    label: 'Quiz' },
       { href: 'the_end.html',                 label: 'Thank You' },
@@ -73,7 +84,9 @@ const NAV = [
   },
   {
     id: 'contract',
-    label: 'Contract',
+    label: 'Contracts',
+    glyph: '✎',
+    blurb: 'the yearly agreements',
     items: [
       { href: 'contract.html?view=1', label: '2026-27 Contract', matchHref: 'contract.html' },
     ],
@@ -94,16 +107,63 @@ function getOpenedGifts() {
 }
 
 function isContractSigned() {
-  try { return !!localStorage.getItem(NAV_KEYS.contract); }
-  catch (e) { return false; }
+  // any year's signed flag counts (ann_contract_signed_2025, _2026, ...)
+  try {
+    if (localStorage.getItem(NAV_KEYS.contract)) return true;
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i) || '';
+      if (/^ann_contract_signed/i.test(k) && localStorage.getItem(k)) return true;
+    }
+    return false;
+  } catch (e) { return false; }
 }
 
 function isPageUnlocked(page) {
   if (page === 'index.html') return true;
-  if (CONTRACT_GATED.includes(page)) return isContractSigned();
+  // contract-gated pages also open if she has already reached the final gift
+  // (anyone who got to Thank You must have done the contract + gifts)
+  if (CONTRACT_GATED.includes(page)) return isContractSigned() || getOpenedGifts().has(PAGE_UNLOCKS['the_end.html']);
   const threshold = PAGE_UNLOCKS[page];
   if (!threshold) return true; // unknown pages default open
   return getOpenedGifts().has(threshold);
+}
+
+/* ------------------------- helpers used by the home page ------------------------- */
+
+const NAV_SEEN_KEY = 'besties_nav_seen_v1';   // pages she has seen (so we can flag new ones)
+const NAV_LAST_KEY = 'besties_last_page_v1';  // last nav page visited ("pick up where you left off")
+
+// every category with each item flagged unlocked/locked (locked items are only
+// ever shown as "sealed" on the home page - their names are never exposed)
+function getNavCategories() {
+  return NAV.map(cat => ({
+    id: cat.id,
+    label: cat.label,
+    glyph: cat.glyph || '♡',
+    blurb: cat.blurb || '',
+    items: cat.items.map(i => {
+      const key = i.matchHref || i.href;
+      return { href: i.href, label: i.label, key, unlocked: isPageUnlocked(key) };
+    }),
+  }));
+}
+
+function getSeenPages() {
+  try {
+    const p = JSON.parse(localStorage.getItem(NAV_SEEN_KEY));
+    return Array.isArray(p) ? new Set(p) : null;   // null = never recorded
+  } catch (e) { return null; }
+}
+function saveSeenPages(set) {
+  try { localStorage.setItem(NAV_SEEN_KEY, JSON.stringify([...set])); } catch (e) {}
+}
+// call from the home page AFTER it has rendered its "new" flags
+function markAllUnlockedPagesSeen() {
+  const keys = getNavCategories().flatMap(c => c.items).filter(i => i.unlocked).map(i => i.key);
+  saveSeenPages(new Set(keys));
+}
+function getLastPage() {
+  try { return JSON.parse(localStorage.getItem(NAV_LAST_KEY)); } catch (e) { return null; }
 }
 
 /* ---------------------------------- styles ---------------------------------- */
@@ -116,7 +176,10 @@ function injectNavStyles() {
   const css = `
     #site-nav .nav-links { display:flex; flex-wrap:wrap; align-items:center; gap:.25rem .5rem; }
     #site-nav .nav-group { position:relative; }
-    #site-nav .nav-group-btn {
+
+    /* :where() = zero specificity, so the page's own .nav-a rules (font, colour,
+       hover background, current underline) still win over these button resets */
+    :where(#site-nav .nav-group-btn) {
       font:inherit; color:inherit; background:none; border:0; cursor:pointer;
       display:inline-flex; align-items:center; gap:.35em;
     }
@@ -126,24 +189,29 @@ function injectNavStyles() {
       transform:rotate(45deg); transition:transform .15s ease;
     }
     #site-nav .nav-group.open .nav-group-btn::after { transform:rotate(225deg); margin-top:.15em; }
+
     #site-nav .nav-menu {
       display:none; position:absolute; top:calc(100% + .35rem); left:0; z-index:50;
       min-width:12rem; padding:.35rem; flex-direction:column; gap:.1rem;
       background:var(--nav-menu-bg, #fff); color:var(--nav-menu-fg, inherit);
-      border:1px solid var(--nav-menu-border, rgba(0,0,0,.15)); border-radius:10px;
+      border:1px solid var(--nav-menu-border, rgba(0,0,0,.15)); border-radius:6px;
       box-shadow:0 8px 24px rgba(0,0,0,.15);
     }
+    #site-nav .nav-menu.align-right { left:auto; right:0; }
     #site-nav .nav-group.open .nav-menu { display:flex; }
-    #site-nav .nav-menu .nav-a { display:block; padding:.5rem .75rem; border-radius:6px; white-space:nowrap; }
+    #site-nav .nav-menu .nav-a { display:block; padding:.5rem .75rem; white-space:nowrap; }
     #site-nav .nav-menu .nav-a:hover,
     #site-nav .nav-menu .nav-a:focus-visible { background:var(--nav-menu-hover, rgba(0,0,0,.07)); }
+    #site-nav .nav-menu .nav-a.current {
+      border-bottom:0; box-shadow:inset 3px 0 0 var(--nav-accent, currentColor);
+    }
     #site-nav .nav-group-btn:focus-visible,
     #site-nav .nav-a:focus-visible { outline:2px solid currentColor; outline-offset:2px; }
 
     @media (max-width:700px) {
-      #site-nav .nav-links { flex-direction:column; align-items:stretch; }
+      #site-nav .nav-links { flex-direction:column; align-items:stretch; width:100%; }
       #site-nav .nav-group-btn { width:100%; justify-content:space-between; }
-      #site-nav .nav-menu {
+      #site-nav .nav-menu, #site-nav .nav-menu.align-right {
         position:static; box-shadow:none; border:0; background:transparent;
         padding:0 0 0 1rem; min-width:0;
       }
@@ -178,6 +246,20 @@ function makeNavLink(item, currentPage) {
   return el;
 }
 
+/* remember the last nav page visited, and mark it as seen */
+function recordVisit(currentPage) {
+  const hit = NAV.flatMap(c => c.items.map(i => ({ cat: c, item: i })))
+    .find(x => currentPage === (x.item.matchHref || x.item.href) || currentPage === x.item.href);
+  if (!hit) return;
+  try {
+    localStorage.setItem(NAV_LAST_KEY, JSON.stringify({
+      href: hit.item.href, label: hit.item.label, cat: hit.cat.label,
+    }));
+    const seen = getSeenPages();
+    if (seen) { seen.add(hit.item.matchHref || hit.item.href); saveSeenPages(seen); }
+  } catch (e) {}
+}
+
 function buildNav(currentPage) {
   const nav = document.getElementById('site-nav');
   if (!nav) return;
@@ -186,6 +268,7 @@ function buildNav(currentPage) {
 
   injectNavStyles();
   linksDiv.innerHTML = '';
+  recordVisit(currentPage);
 
   NAV.forEach(cat => {
     // Locked pages are never rendered; empty categories disappear entirely.
@@ -194,7 +277,8 @@ function buildNav(currentPage) {
 
     // One unlocked page -> plain link, no dropdown
     if (items.length === 1 && COLLAPSE_SINGLE_ITEM_CATEGORIES) {
-      linksDiv.appendChild(makeNavLink(items[0], currentPage));
+      linksDiv.appendChild(makeNavLink(
+        { ...items[0], label: cat.soloLabel || items[0].label }, currentPage));
       return;
     }
 
@@ -222,6 +306,10 @@ function buildNav(currentPage) {
       closeAllNavGroups(group);
       group.classList.toggle('open', open);
       btn.setAttribute('aria-expanded', String(open));
+      if (open) {   // keep the menu on-screen near the right edge
+        menu.classList.remove('align-right');
+        if (menu.getBoundingClientRect().right > window.innerWidth - 8) menu.classList.add('align-right');
+      }
     });
 
     group.append(btn, menu);
