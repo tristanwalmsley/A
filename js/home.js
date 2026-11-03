@@ -303,7 +303,7 @@ function spawnChaseHeart(){
     y = Math.max(24, Math.min(window.innerHeight-24, y+vy));
     h.style.left = x+'px'; h.style.top = y+'px';
     const sh = $('sheet'), edge = sh ? sh.getBoundingClientRect().right : window.innerWidth;
-    if(x > edge - 140 && x < edge + 60 && y < 150){
+    if(x > edge - 260 && y < 230){   // generous top-right zone, measured from the content column
       window.removeEventListener('mousemove', onMove);
       unlockEgg('chase'); h.remove();
       return;
