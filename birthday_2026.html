@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday, Ann ♡</title>
+<link rel="icon" type="image/x-icon" href="images/site_icon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="besties.css">
+</head>
+<body>
+
+<div id="loading-screen">
+  <div class="env-wrap">
+    <div class="env-body"></div>
+    <div class="env-flap"></div>
+    <div class="env-letter-out">♡</div>
+  </div>
+  <div class="loading-text">opening…</div>
+</div>
+
+<nav id="site-nav">
+  <a href="index.html" class="nav-brand">Besties ♡</a>
+  <div class="nav-links"></div>
+</nav>
+
+<div class="stamps-bg" id="stamps-bg"></div>
+<div id="confetti-layer"></div>
+
+<!-- BIRTHDAY 2026 ENTRANCE: the front door to the box -> contract -> gifts -> quiz -> thank you -->
+<main class="hero">
+  <div class="hero-grid">
+    <div class="hero-left">
+      <div class="stamp-wrap">
+        <div class="stamp">
+          <img src="images/stamp_picture.png" alt="a little stamp" class="stamp-img">
+        </div>
+        <div class="postmark" id="postmark">
+          <div class="postmark-text">From<br>the UK<br>with love</div>
+        </div>
+      </div>
+      <h1 class="headline">
+        <span class="headline-line">Happy Birthday,</span>
+        <span class="headline-line">Bestie Ann.</span>
+      </h1>
+      <p class="sub-line">a little journey through your box ♡</p>
+      <div class="cta-wrap">
+        <a href="contract.html" class="btn-cta" id="btn-open">Open the box →</a>
+        <button class="btn-play" id="btn-play" onclick="startCinematicTour()">▶ Cinematic tour</button>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="letter">
+        <p>Hello, Bestie Ann.</p>
+        <p>In the Netherlands right now, you're holding a box with our whole story drawn on the outside of it. Inside is a journey I put together just for you.</p>
+        <p>This little site is your guide to going through the box and much more. Open each gift in order - there's a note for every single one. I'll be on the call the whole time too.</p>
+        <p>I can't believe it's been over three and a half years. You're my favourite person on this entire earth.</p>
+        <span class="letter-sig">Bestie Tristan</span>
+        <div class="letter-corner"><span>First<br>class<br>friend</span></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="bestie_storage.js"></script>
+<script src="nav.js"></script>
+<script src="ambient.js"></script>
+<script>
+// Where the big button goes: contract first, then straight to the gifts once it's signed
+const GIFTS_PAGE = 'gifts_ann_2026_birthday.html';
+
+window.addEventListener('DOMContentLoaded', () => {
+  buildNav('birthday_2026.html');
+  initAmbientWash();
+  if (isContractSigned()) document.getElementById('btn-open').href = GIFTS_PAGE;
+
+  setTimeout(() => {
+    const ls = document.getElementById('loading-screen');
+    ls.classList.add('hide');
+    setTimeout(() => { ls.style.display = 'none'; launchConfetti(); }, 300);
+  }, 900);
+
+  // the cinematic-tour button appears once every gift has been opened
+  try { if (getOpenedGifts().size >= TOTAL_GIFTS) document.getElementById('btn-play').classList.add('show'); } catch (e) {}
+});
+
+function startCinematicTour() { location.href = GIFTS_PAGE + '?autoplay=1'; }
+
+// FLOATING STAMPS
+(function () {
+  const bg = document.getElementById('stamps-bg');
+  const vals = ['♡','✉','★','✦','♡','✉'];
+  const lbls = ['First Class','Air Mail','Friend','Special','Love','Bestie'];
+  for (let i = 0; i < 16; i++) {
+    const sw = document.createElement('div'); sw.className = 'float-stamp';
+    const ri = Math.floor(Math.random() * vals.length);
+    const rot1 = (Math.random() - 0.5) * 30, rot2 = rot1 + (Math.random() - 0.5) * 20;
+    sw.style.cssText = `left:${Math.random()*100}%;--dur:${16+Math.random()*18}s;--delay:${Math.random()*22}s;--drift:${(Math.random()-0.5)*100}px;--rot-start:${rot1}deg;--rot-end:${rot2}deg;--op:${0.07+Math.random()*0.12}`;
+    sw.innerHTML = `<div class="float-stamp-inner"><div class="sv">${vals[ri]}</div><div class="sl">${lbls[ri]}</div></div>`;
+    bg.appendChild(sw);
+  }
+})();
+
+// BIRTHDAY CONFETTI
+function launchConfetti() {
+  const cols = ['#c8943a','#b86858','#faf4e8','#d4b483','#e8c4a0'];
+  const layer = document.getElementById('confetti-layer');
+  const shapes = ['50%','2px','4px','0'];
+  for (let i = 0; i < 55; i++) {
+    const b = document.createElement('div'); b.className = 'confetti-bit';
+    const sz = 5 + Math.random() * 9;
+    b.style.cssText = `left:${5+Math.random()*90}%;top:-10px;width:${sz}px;height:${sz}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${shapes[Math.floor(Math.random()*shapes.length)]};--cd:${1.5+Math.random()*2}s;--cdelay:${Math.random()*1.2}s;--cx:${(Math.random()-0.5)*280}px;--cr:${(Math.random()-0.5)*720}deg`;
+    layer.appendChild(b);
+    setTimeout(() => b.remove(), 4000);
+  }
+}
+</script>
+</body>
+</html>
