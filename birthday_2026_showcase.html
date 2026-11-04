@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Besties ♡</title>
-<link rel="icon" type="image/x-icon" href="images/site_icon.ico">
+<link rel="icon" type="image/x-icon" href="media/shared/images/site_icon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -372,6 +372,9 @@ body.timer-grow .timer{transform:scale(1.4);transition:transform 15s cubic-bezie
 #entry-gate.hide{opacity:0;pointer-events:none}
 .entry-card{text-align:center}
 .entry-title{font-family:'Caveat',cursive;font-size:2.1rem;color:var(--gold);margin-bottom:0.6rem}
+.entry-start{display:inline-block;margin-top:1.1rem;padding:0.7rem 2.2rem;font-family:'Caveat',cursive;font-size:1.7rem;color:#140a04;background:var(--gold);border:none;border-radius:999px;cursor:pointer;opacity:0;transition:opacity 0.6s ease,transform 0.2s ease;pointer-events:none}
+.entry-start.ready{opacity:1;pointer-events:auto}
+.entry-start:hover{transform:scale(1.05)}
 .entry-sub{font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:var(--warm);opacity:0;transition:opacity 0.6s ease;pointer-events:none}
 .entry-sub.ready{opacity:0.75;animation:entryPulse 1.8s ease-in-out infinite}
 .entry-spinner{width:26px;height:26px;margin:0.9rem auto 1rem;border-radius:50%;border:2.5px solid rgba(200,148,58,0.25);border-top-color:var(--gold);animation:entrySpin 0.8s linear infinite;opacity:1;transition:opacity 0.4s ease}
@@ -468,7 +471,7 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 .scene-message{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.3rem;font-style:italic;color:var(--deep);line-height:1.7;text-align:center;padding:1rem 8vw;opacity:0;transform:translateY(10px);transition:opacity 1s ease,transform 1s ease}
 .scene-message.in{opacity:1;transform:translateY(0)}
 
-/* fills the entire scene-stage area edge to edge - YouTube's own player
+/* fills the entire scene-stage area edge to edge - the video player
    handles internal letterboxing, so no aspect-ratio math needed here */
 .cinema-stage{position:absolute;inset:0;z-index:2;background:#000;border:10px solid var(--deep);border-radius:4px;box-shadow:0 20px 50px rgba(0,0,0,0.4),0 0 0 3px var(--gold) inset;overflow:hidden;opacity:0;transition:opacity 1s ease}
 .cinema-stage.in{opacity:1}
@@ -653,7 +656,8 @@ body.stage-garden-enchanted .brand{color:#8a5a1f}
   <div class="entry-card">
     <div class="entry-title">Besties ♡</div>
     <div class="entry-spinner" id="entry-spinner" aria-hidden="true"></div>
-    <div class="entry-sub" id="entry-sub">tap anywhere to begin - it may take a moment to load</div>
+    <div class="entry-sub" id="entry-sub">relive the countdown to the reveal</div>
+    <button class="entry-start" id="entry-start" type="button">Start</button>
   </div>
 </div>
 
@@ -683,7 +687,7 @@ body.stage-garden-enchanted .brand{color:#8a5a1f}
 <div class="breeze-layer" id="breezes"></div>
 <div class="sparkle-layer" id="sparkles"></div>
 <div class="leaf-border-layer" id="leaf-border-layer"></div>
-<img class="leaf-border-image" id="leaf-border-image" src="images/leaf_border.png" alt="" />
+<img class="leaf-border-image" id="leaf-border-image" src="media/birthday_2026/images/leaf_border.png" alt="" />
 
 <div id="light-counter" aria-hidden="true"><span id="light-counter-dot"></span><span id="light-counter-num">0</span><span id="light-counter-next">/ 18</span></div>
 <div id="streak-counter" aria-hidden="true"><span>🔥</span><span id="streak-counter-num">0</span><span id="streak-counter-label">in a row</span></div>
@@ -753,7 +757,6 @@ body.stage-garden-enchanted .brand{color:#8a5a1f}
 </div>
 <video id="bgm-player" style="display:none" playsinline></video>
 <video id="power-hour-bgm-player" style="display:none" playsinline loop></video>
-<div id="power-hour-yt-target" style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden" aria-hidden="true"></div>
 <div id="color-pulse"></div>
 <div id="color-pulse-ring"></div>
 <div id="flash-overlay"></div>
@@ -788,6 +791,24 @@ body.stage-garden-enchanted .brand{color:#8a5a1f}
 </section>
 
 <script>
+// ---------- REPLAY MODE ----------
+// This page is a replay of the real countdown. Pressing Start shifts the page's
+// clock (Date.now) so it begins just before the build-up music starts, and every
+// existing schedule in the file then runs untouched against that shifted clock.
+// Storage is namespaced ("replay:") so replaying never touches Ann's real data.
+const REPLAY_LEAD_IN_MS = 5000; // start this long BEFORE the music kicks in
+const _realNow = Date.now.bind(Date);
+let replayOffsetMs = 0;
+Date.now = () => _realNow() + replayOffsetMs;
+(function(){
+  const P = 'replay:', g = Storage.prototype.getItem, s = Storage.prototype.setItem, r = Storage.prototype.removeItem;
+  Storage.prototype.getItem = function(k){ return g.call(this, P + k); };
+  Storage.prototype.setItem = function(k, v){ return s.call(this, P + k, v); };
+  Storage.prototype.removeItem = function(k){ return r.call(this, P + k); };
+  try { Object.keys(localStorage).filter(k => k.startsWith(P)).forEach(k => localStorage.removeItem(k.slice(P.length))); } catch(e) {}
+})();
+</script>
+<script>
 // ---------- ENTRY GATE ----------
 // one tap anywhere here satisfies the browser's "user gesture" requirement,
 // so videos later in the automatic sequence are allowed to autoplay WITH sound.
@@ -807,6 +828,7 @@ function unlockEntry(){
   // "did that even register?" rather than "loading".
   entrySpinner.classList.remove('done');
   entrySub.classList.remove('ready');
+  entryStart.classList.remove('ready');
   entrySub.textContent = 'just a moment...';
 
   // let the browser actually paint the spinner before doing the (synchronous,
@@ -814,14 +836,15 @@ function unlockEntry(){
   // setup would land in the same frame and never visibly show up at all
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
+      replayOffsetMs = (TARGET - MUSIC_START_AT - REPLAY_LEAD_IN_MS) - _realNow();
       startCountdown();
       // small minimum so the spinner reads as "loading" rather than a flicker
       setTimeout(() => { entryGate.classList.add('hide'); }, 300);
     });
   });
 }
-entryGate.addEventListener('click', unlockEntry);
-entryGate.addEventListener('touchstart', unlockEntry, {passive: true});
+const entryStart = document.getElementById('entry-start');
+entryStart.addEventListener('click', e => { e.stopPropagation(); unlockEntry(); });
 
 // small loading state on the entry screen itself - fonts (Caveat/Playfair)
 // need to be fetched before the card looks right, so show a spinner instead
@@ -834,6 +857,7 @@ Promise.all([
   entryReady = true;
   entrySpinner.classList.add('done');
   entrySub.classList.add('ready');
+  entryStart.classList.add('ready');
 });
 
 // ---------- MUSIC ----------
@@ -845,17 +869,17 @@ Promise.all([
 // as the finale track begins, and the finale finishes exactly at zero. This
 // only works if the "duration" values below are accurate to the real files -
 // update them if you swap any track out.
-const MUSIC_FOLDER = 'countdown_music/';
+const MUSIC_FOLDER = 'media/birthday_2026/buildup_music/';
 const TRACKS = [
-  { file: 'music (1).mp4', duration: 274 }, // 04:34
-  { file: 'music (2).mp4', duration: 363 }, // 06:03
-  { file: 'music (3).mp4', duration: 230 }, // 03:50
-  { file: 'music (4).mp4', duration: 303 }, // 05:03
-  { file: 'music (5).mp4', duration: 294 }, // 04:54
-  { file: 'music (6).mp4', duration: 183 }, // 03:03
-  { file: 'music (7).mp4', duration: 193 }  // 03:13
+  { file: 'track_01.mp3', duration: 274 }, // 04:34
+  { file: 'track_02.mp3', duration: 363 }, // 06:03
+  { file: 'track_03.mp3', duration: 230 }, // 03:50
+  { file: 'track_04.mp3', duration: 303 }, // 05:03
+  { file: 'track_05.mp3', duration: 294 }, // 04:54
+  { file: 'track_06.mp3', duration: 183 }, // 03:03
+  { file: 'track_07.mp3', duration: 193 }  // 03:13
 ];
-const FINALE_TRACK = 'final_music.mp4';
+const FINALE_TRACK = 'track_08.mp3';
 const FINALE_DURATION = 299; // 04:59 - NOT looped; starts a second "late" on purpose (299s
                              // in vs a flat 300s/5:00) so it lands exactly on zero instead
                              // of finishing a second early
@@ -932,94 +956,53 @@ function loadAndPlay(file, offset, mode, loop, fadeMs){
   if (fadeMs) fadeVolume(bgm, 0, buUserVolume, fadeMs);
 }
 
-// ---------- POWER HOUR MUSIC ----------
-// a separate hidden player just for the power hour window - ducks the
-// regular countdown music down low rather than killing it, and plays these
-// tracks instead, shuffling back through the list for as long as power hour
-// stays active. EDIT the filenames below to match whatever's actually
-// dropped in the power_hour folder next to this file.
-const POWER_HOUR_MUSIC_FOLDER = 'power_hour/';
-// each entry is either:
-//   - a plain string  -> a local file dropped in the power_hour/ folder, e.g. 'track (1).mp4'
-//   - { youtube: '…' } -> a YouTube video/URL to play instead. Accepts a full link
-//     (youtube.com/watch?v=…, youtu.be/…, youtube.com/embed/…) or just the bare 11-char video ID.
-// the two kinds can be freely mixed in the same list, e.g.:
-//   'track (1).mp4',
-//   { youtube: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' },
-//   { youtube: 'dQw4w9WgXcQ' },
+// power hour playlist: media/birthday_2026/power_hour/track_01.mp3 ... track_43.mp3
 const POWER_HOUR_TRACKS = [
-  'track (2).mp4',
-  'track (3).mp4',
-  'track (4).mp4',
-  'track (5).mp4',
-  'track (6).mp4',
-  'track (7).mp4',
-  'track (8).mp4',
-  'track (9).mp4',
-  'track (10).mp4',
-  'track (11).mp4',
-  'track (12).mp4',
-  'track (13).mp4',
-  'track (14).mp4',
-  'track (15).mp4',
-  'track (16).mp4',
-  'track (17).mp4',
-  'track (19).mp4',
-  'track (20).mp4',
-  'track (21).mp4',
-  'track (22).mp4',
-  { youtube: 'LJTZXZWxEAY' },
-  { youtube: 'uMshgHF9Gso' },
-  { youtube: '898fwnkHoHg' },
-  { youtube: '6kZVtF8iaWw' },
-  { youtube: '2ntuD3snxvo' },
-  { youtube: 'xAWDqdpOlu8' },
-  { youtube: 'xAWDqdpOlu8' },
-  { youtube: 'JCJKq2-l0Z0' },
-  { youtube: 'UTcPyEOQfUA' },
-  { youtube: 'yzc6nrWesYY' },
-  { youtube: 'YSdTPdMGtss' },
-  { youtube: 'GEsU4IcUh2o' },
-  { youtube: 'f3WK9Gb1ox0' },
-  { youtube: '8WVx85dUJeQ' },
-  { youtube: '26fv4kpS1Lg' },
-  { youtube: '-qXLEglsd8w' },
-  { youtube: 'RGq8HhCxYrM' },
-  { youtube: 'TgPEV9QsbYw' },
-  { youtube: 'ptlsli-QXXc' },
-  { youtube: 'ptlsli-QXXc' },
-  { youtube: '523Vk5VC5Eg' },
-  { youtube: 'UO0N7j9yI10' },
-  { youtube: 'BEaIRfBZk00' },
-  { youtube: '0nkwuZFSXfM' },
-  { youtube: 'RSc6RM6lvEU' },
-  { youtube: 'AMPQQL57AnY' },
-  { youtube: 'x1Vbu5YpU5M' },
+  'track_01.mp3',
+  'track_02.mp3',
+  'track_03.mp3',
+  'track_04.mp3',
+  'track_05.mp3',
+  'track_06.mp3',
+  'track_07.mp3',
+  'track_08.mp3',
+  'track_09.mp3',
+  'track_10.mp3',
+  'track_11.mp3',
+  'track_12.mp3',
+  'track_13.mp3',
+  'track_14.mp3',
+  'track_15.mp3',
+  'track_16.mp3',
+  'track_17.mp3',
+  'track_18.mp3',
+  'track_19.mp3',
+  'track_20.mp3',
+  'track_21.mp3',
+  'track_22.mp3',
+  'track_23.mp3',
+  'track_24.mp3',
+  'track_25.mp3',
+  'track_26.mp3',
+  'track_27.mp3',
+  'track_28.mp3',
+  'track_29.mp3',
+  'track_30.mp3',
+  'track_31.mp3',
+  'track_32.mp3',
+  'track_33.mp3',
+  'track_34.mp3',
+  'track_35.mp3',
+  'track_36.mp3',
+  'track_37.mp3',
+  'track_38.mp3',
+  'track_39.mp3',
+  'track_40.mp3',
+  'track_41.mp3',
+  'track_42.mp3',
+  'track_43.mp3',
 ];
 
-// pulls an 11-char YouTube video ID out of a full URL, or passes a bare ID through as-is
-function extractYouTubeId(input){
-  if (!input) return null;
-  input = String(input).trim();
-  if (/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
-  try {
-    const url = new URL(input);
-    if (url.hostname.includes('youtu.be')) return url.pathname.slice(1).split('/')[0] || null;
-    const v = url.searchParams.get('v');
-    if (v) return v;
-    const embedMatch = url.pathname.match(/\/embed\/([a-zA-Z0-9_-]{11})/);
-    if (embedMatch) return embedMatch[1];
-    const shortsMatch = url.pathname.match(/\/shorts\/([a-zA-Z0-9_-]{11})/);
-    if (shortsMatch) return shortsMatch[1];
-  } catch (e) {}
-  return null;
-}
-
-// returns the YouTube ID for a track entry, or null if it's a local file entry
-function getPowerHourYouTubeId(track){
-  if (track && typeof track === 'object' && track.youtube) return extractYouTubeId(track.youtube);
-  return null;
-}
 const POWER_HOUR_MUSIC_VOLUME = 0.6;
 const phBgm = document.getElementById('power-hour-bgm-player');
 const phVolSlider = document.getElementById('power-hour-volume-slider');
@@ -1029,35 +1012,12 @@ if (phVolSlider) {
   phVolSlider.addEventListener('input', () => {
     phUserVolume = phVolSlider.value / 100;
     phBgm.volume = phUserVolume;
-    if (phYtPlayer && phYtPlayer.setVolume) { try { phYtPlayer.setVolume(Math.round(phUserVolume * 100)); } catch(e) {} }
     const icon = document.querySelector('#power-hour-volume .ph-vol-icon');
     if (icon) icon.textContent = phUserVolume === 0 ? '🔇' : (phUserVolume < 0.4 ? '🔉' : '🔊');
   });
 }
 let phMusicQueue = [];
 let phMusicPlaying = false;
-let phYtPlayer = null; // lazily-created YT.Player reused for every youtube power hour track
-
-// same fade shape as fadeVolume() above, but drives a YT.Player's 0-100 setVolume()
-// instead of an HTMLMediaElement's 0-1 .volume property
-function fadeYouTubeVolume(player, from, to, duration, onDone){
-  const steps = 24;
-  const stepTime = duration / steps;
-  let i = 0;
-  const apply = v => { try { player.setVolume(Math.max(0, Math.min(100, Math.round(v * 100)))); } catch(e) {} };
-  apply(from);
-  const id = setInterval(() => {
-    i++;
-    const v = from + (to - from) * (i / steps);
-    apply(v);
-    if (i >= steps) { clearInterval(id); apply(to); if (onDone) onDone(); }
-  }, stepTime);
-}
-
-function stopPowerHourYouTube(){
-  if (phYtPlayer && phYtPlayer.stopVideo) { try { phYtPlayer.stopVideo(); } catch(e) {} }
-}
-
 function shufflePowerHourQueue(){
   phMusicQueue = [...POWER_HOUR_TRACKS];
   for (let i = phMusicQueue.length - 1; i > 0; i--) {
@@ -1070,16 +1030,10 @@ function playNextPowerHourTrack(){
   if (!phMusicPlaying) return;
   if (!phMusicQueue.length) shufflePowerHourQueue();
   const track = phMusicQueue.shift();
-  const ytId = getPowerHourYouTubeId(track);
-  if (ytId) {
-    playPowerHourYouTubeTrack(ytId);
-  } else {
-    playPowerHourFileTrack(track);
-  }
+  playPowerHourFileTrack(track);
 }
 
 function playPowerHourFileTrack(file){
-  stopPowerHourYouTube();
   phBgm.loop = false;
   phBgm.src = POWER_HOUR_MUSIC_FOLDER + file;
   phBgm.volume = 0;
@@ -1088,33 +1042,6 @@ function playPowerHourFileTrack(file){
   fadeVolume(phBgm, 0, phUserVolume, 1500);
 }
 
-function playPowerHourYouTubeTrack(videoId){
-  try { phBgm.pause(); } catch(e) {}
-  loadYouTubeAPI();
-  (function startYt(){
-    if (!window.YT || !window.YT.Player) { setTimeout(startYt, 200); return; }
-    if (!phMusicPlaying) return; // power hour may have ended while we were waiting on the API
-    if (!phYtPlayer) {
-      phYtPlayer = new YT.Player('power-hour-yt-target', {
-        videoId: videoId,
-        host: 'https://www.youtube-nocookie.com',
-        playerVars: { autoplay: 1, controls: 0, rel: 0, playsinline: 1, mute: gestureUnlocked ? 0 : 1 },
-        events: {
-          onReady: e => {
-            e.target.setVolume(0);
-            e.target.playVideo();
-            fadeYouTubeVolume(e.target, 0, phUserVolume, 1500);
-          },
-          onStateChange: e => { if (e.data === YT.PlayerState.ENDED) playNextPowerHourTrack(); }
-        }
-      });
-    } else {
-      phYtPlayer.setVolume(0);
-      phYtPlayer.loadVideoById(videoId);
-      fadeYouTubeVolume(phYtPlayer, 0, phUserVolume, 1500);
-    }
-  })();
-}
 phBgm.addEventListener('ended', playNextPowerHourTrack);
 
 // manual skip - jumps straight to the next queued track without waiting for
@@ -1124,7 +1051,6 @@ if (phSkipBtn) {
   phSkipBtn.addEventListener('click', () => {
     if (!phMusicPlaying) return;
     phBgm.pause();
-    stopPowerHourYouTube();
     playNextPowerHourTrack();
   });
 }
@@ -1143,9 +1069,6 @@ function stopPowerHourMusic(){
   if (!phMusicPlaying) return;
   phMusicPlaying = false;
   fadeVolume(phBgm, phBgm.volume, 0, 1200, () => { phBgm.pause(); });
-  if (phYtPlayer && phYtPlayer.getVolume) {
-    fadeYouTubeVolume(phYtPlayer, phUserVolume, 0, 1200, () => { try { phYtPlayer.pauseVideo(); } catch(e) {} });
-  }
   fadeVolume(bgm, bgm.volume, buUserVolume, 1500);
 }
 
@@ -1576,28 +1499,28 @@ function updateFinalLeadText(diff){
 // the chip; spotifyTrackUrl is optional per-track, spotifyPlaylistUrl below
 // is the fallback used if a track doesn't have its own link.
 const BIRTHDAY_PLAYLIST = [
-  { title: 'Style', file: '1.mp3', duration: 231 },
-  { title: 'The Fate of Ophelia', file: '2.mp3', duration: 226 },
-  { title: 'Busy Woman', file: '3.mp3', duration: 187 },
-  { title: 'The Giver', file: '4.mp3', duration: 203 },
-  { title: 'Guess featuring billie eilish', file: '5.mp3', duration: 143 },
-  { title: 'When Did You Get Hot?', file: '6.mp3', duration: 145 },
-  { title: 'evermore (feat. Bon Iver)', file: '7.mp3', duration: 304 },
-  { title: '22 (Taylor\'s Version)', file: '8.mp3', duration: 231 },
-  { title: 'I Kissed A Girl', file: '9.mp3', duration: 180 },
-  { title: 'Casual', file: '10.mp3', duration: 233 },
-  { title: 'Fast Times', file: '11.mp3', duration: 175 },
-  { title: 'the 1', file: '12.mp3', duration: 210 },
-  { title: 'Vanish Into You', file: '13.mp3', duration: 245 },
-  { title: 'u + me = <3', file: '14.mp3', duration: 248 },
-  { title: 'Never Grow Up (Taylor\'s Version)', file: '15.mp3', duration: 293 },
-  { title: 'When Emma Falls In Love (Taylor\'s Version)', file: '16.mp3', duration: 252 },
-  { title: 'I\'m Only Me When I\'m With You', file: '17.mp3', duration: 213 },
-  { title: 'Bejeweled', file: '18.mp3', duration: 194 },
-  { title: 'The Best Day (Taylor\'s Version)', file: '19.mp3', duration: 245 },
-  { title: 'Daylight', file: '20.mp3', duration: 293 }
+  { title: 'Style', file: 'track_01.mp3', duration: 231 },
+  { title: 'The Fate of Ophelia', file: 'track_02.mp3', duration: 226 },
+  { title: 'Busy Woman', file: 'track_03.mp3', duration: 187 },
+  { title: 'The Giver', file: 'track_04.mp3', duration: 203 },
+  { title: 'Guess featuring billie eilish', file: 'track_05.mp3', duration: 143 },
+  { title: 'When Did You Get Hot?', file: 'track_06.mp3', duration: 145 },
+  { title: 'evermore (feat. Bon Iver)', file: 'track_07.mp3', duration: 304 },
+  { title: '22 (Taylor\'s Version)', file: 'track_08.mp3', duration: 231 },
+  { title: 'I Kissed A Girl', file: 'track_09.mp3', duration: 180 },
+  { title: 'Casual', file: 'track_10.mp3', duration: 233 },
+  { title: 'Fast Times', file: 'track_11.mp3', duration: 175 },
+  { title: 'the 1', file: 'track_12.mp3', duration: 210 },
+  { title: 'Vanish Into You', file: 'track_13.mp3', duration: 245 },
+  { title: 'u + me = <3', file: 'track_14.mp3', duration: 248 },
+  { title: 'Never Grow Up (Taylor\'s Version)', file: 'track_15.mp3', duration: 293 },
+  { title: 'When Emma Falls In Love (Taylor\'s Version)', file: 'track_16.mp3', duration: 252 },
+  { title: 'I\'m Only Me When I\'m With You', file: 'track_17.mp3', duration: 213 },
+  { title: 'Bejeweled', file: 'track_18.mp3', duration: 194 },
+  { title: 'The Best Day (Taylor\'s Version)', file: 'track_19.mp3', duration: 245 },
+  { title: 'Daylight', file: 'track_20.mp3', duration: 293 }
 ];
-const BIRTHDAY_PLAYLIST_FOLDER = 'birthday_playlist/';
+const BIRTHDAY_PLAYLIST_FOLDER = 'media/birthday_2026/birthday_playlist/';
 const BIRTHDAY_SPOTIFY_PLAYLIST_URL = 'https://open.spotify.com/playlist/2JSScTVqFSxlMwt6LysNM0?si=df15fa3266904ba7'; // TODO: paste the Spotify playlist link here
 
 let birthdayPlaylistIndex = -1;
@@ -2257,7 +2180,7 @@ let powerHourWasActive = false;
 // galaxy/clock/music side of things (see checkPowerHour)
 function isDailyPowerHourWindowActive(){
   if (!leafEventActive()) return false;
-  const now = new Date();
+  const now = new Date(Date.now());
   const minutesNow = now.getUTCHours() * 60 + now.getUTCMinutes();
   const start = POWER_HOUR_START_HOUR_UTC * 60 + POWER_HOUR_START_MINUTE_UTC;
   const end = start + POWER_HOUR_DURATION_MINUTES;
@@ -2293,7 +2216,7 @@ function currentSpawnMult(){ return finalDayLockoutActive ? FINAL_DAY_SPAWN_MULT
 })();
 
 function updatePowerHourClock(){
-  const now = new Date();
+  const now = new Date(Date.now());
   const minutesNow = now.getUTCHours() * 60 + now.getUTCMinutes() + now.getUTCSeconds() / 60;
   const start = POWER_HOUR_START_HOUR_UTC * 60 + POWER_HOUR_START_MINUTE_UTC;
   const end = start + POWER_HOUR_DURATION_MINUTES;
@@ -3450,32 +3373,30 @@ function launchRevealBurst(){
 // loops back to the start once it reaches the end.
 //
 // message scenes: { type:'message', text, duration }
-// video scenes:   { type:'video', title, youtubeId, ready }
-//   - youtubeId is the bit after "v=" or "youtu.be/" in the video's URL
+// video scenes:   { type:'video', title, src, ready }
+//   - src is the mp4 path in media/birthday_2026/trailers/
 //   - set ready:true once a video actually exists - until then it's auto-skipped
+// video scenes use src (an mp4 in media/birthday_2026/trailers/); ready:false slots play the comment reel instead
 const SCENES = [
   { type: 'message', text: "It's time! ♡", duration: 3000 },
-  { type: 'video', title: 'Lang zal ze leven', youtubeId: 'eYbuabrDNFE', ready: true },
-  { type: 'video', title: 'Happy Birthday!', youtubeId: 'vnuP0lyXZ_I', ready: true },
+  { type: 'video', title: 'Trailer', src: 'media/birthday_2026/trailers/trailer_01.mp4', ready: true },
+  { type: 'video', title: 'Trailer', src: 'media/birthday_2026/trailers/trailer_02.mp4', ready: true },
   { type: 'message', text: "The Office of Bestie Affairs' Technical Department is putting the finishing touches on the site - please enjoy the entertainment while you wait.", duration: 6200 },
-  { type: 'video', title: 'Trailer', youtubeId: 'GetcsmJ9U3o', ready: true },
-  { type: 'video', title: 'Trailer', youtubeId: 'S1Suq_FhgaA', ready: true },
+  { type: 'video', title: 'Trailer', src: 'media/birthday_2026/trailers/trailer_03.mp4', ready: true },
+  { type: 'video', title: 'Trailer', src: 'media/birthday_2026/trailers/trailer_04.mp4', ready: true },
   { type: 'message', text: "more on the way soon...", duration: 3000 },
-  { type: 'video', title: 'Trailer', youtubeId: '', ready: false },
+  { type: 'video', title: 'Comments', src: '', ready: false },
   { type: 'message', text: "We sincerely hope your experience today is top notch.", duration: 3000 },
-  { type: 'video', title: 'Teaser Trailer', youtubeId: 'S3ss23jqeJs', ready: true },
+  { type: 'video', title: 'Trailer', src: 'media/birthday_2026/trailers/trailer_05.mp4', ready: true },
   { type: 'message', text: "in the meantime: yes, we are still on call. no, you may not peek behind the curtain early.", duration: 3000 },
-  { type: 'video', title: 'Trailer', youtubeId: '', ready: false },
+  { type: 'video', title: 'Comments', src: '', ready: false },
   { type: 'message', text: "thank you for your patience - The Office of Bestie Affairs appreciates your continued cooperation.", duration: 3000 },
-  { type: 'video', title: 'Trailer', youtubeId: '', ready: false },
+  { type: 'video', title: 'Comments', src: '', ready: false },
   { type: 'message', text: "If you have any complaints about today, please redirect them to our Bin Division, and they will not take care of them, many thanks.", duration: 3000 },
-  { type: 'video', title: 'Teaser Trailer', youtubeId: 'F4QBhh8Z5Os', ready: true },
+  { type: 'video', title: 'Trailer', src: 'media/birthday_2026/trailers/trailer_06.mp4', ready: true },
   { type: 'message', text: "more on the way soon...", duration: 3000 },
-  { type: 'video', title: 'Teaser Trailer', youtubeId: 'udybD6grIUI', ready: true },
-  { type: 'video', title: 'Trailer', youtubeId: '', ready: true },
-  { type: 'video', title: 'Application', youtubeId: 'hgFDoLYA2vg', ready: true },
+  { type: 'video', title: 'Comments', src: '', ready: false },
   { type: 'message', text: "What\'s the saying? Bing Chilling Innit. We sure hope you are.", duration: 3000 },
-  { type: 'video', title: 'Bloopers', youtubeId: 'PJseh9UWnVg', ready: true }
 ];
 
 // when a video isn't ready yet, instead of skipping silently, a handful of
@@ -3548,27 +3469,15 @@ const COMMENT_POOL = [
 
 let sceneIndex = -1;
 let sceneTimer = null;
-let ytApiRequested = false;
-
 function startScenes(){
-  loadYouTubeAPI();
   nextScene();
-}
-
-function loadYouTubeAPI(){
-  if (ytApiRequested) return;
-  ytApiRequested = true;
-  if (window.YT && window.YT.Player) return;
-  const tag = document.createElement('script');
-  tag.src = 'https://www.youtube.com/iframe_api';
-  document.head.appendChild(tag);
 }
 
 function nextScene(){
   clearTimeout(sceneTimer);
   sceneIndex = (sceneIndex + 1) % SCENES.length;
   const scene = SCENES[sceneIndex];
-  if (scene.type === 'video' && (!scene.ready || !scene.youtubeId)) {
+  if (scene.type === 'video' && (!scene.ready || !scene.src)) {
     playCommentReel();
     return;
   }
@@ -3576,14 +3485,19 @@ function nextScene(){
 }
 
 // fills a not-ready video's slot with 5-10 quick scrolling "comments" instead of nothing
+// every comment in COMMENT_POOL appears exactly once per loop of the show:
+// the pool is shuffled at the start of each loop and dealt out evenly across
+// the comment-reel slots in SCENES
+let commentDeck = [], reelsLeftInLoop = 0;
 function playCommentReel(){
   playRandomFillerMusic();
-  const count = 10;
-  const pool = [...COMMENT_POOL];
-  const picks = [];
-  for (let i = 0; i < count && pool.length; i++) {
-    picks.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+  if (reelsLeftInLoop <= 0 || commentDeck.length === 0) {
+    commentDeck = [...COMMENT_POOL].sort(() => Math.random() - 0.5);
+    reelsLeftInLoop = SCENES.filter(sc => sc.type === 'video' && (!sc.ready || !sc.src)).length || 1;
   }
+  const take = Math.ceil(commentDeck.length / reelsLeftInLoop);
+  const picks = commentDeck.splice(0, take);
+  reelsLeftInLoop--;
   let i = 0;
   function showNext(){
     if (i >= picks.length) { nextScene(); return; }
@@ -3627,25 +3541,19 @@ function playVideoScene(scene){
 
   const slot = document.getElementById('video-slot');
   slot.innerHTML = '';
-  const playerDiv = document.createElement('div');
-  playerDiv.id = 'yt-player-target';
-  slot.appendChild(playerDiv);
+  const vid = document.createElement('video');
+  vid.src = scene.src;
+  vid.autoplay = true;
+  vid.playsInline = true;
+  vid.controls = true;
+  vid.muted = !gestureUnlocked;
+  vid.addEventListener('ended', nextScene);
+  vid.addEventListener('error', nextScene); // missing/broken file: skip instead of stalling the show
+  slot.appendChild(vid);
+  const p = vid.play(); if (p && p.catch) p.catch(() => {});
 
   // safety net: if "ended" never fires for some reason, move on anyway
   sceneTimer = setTimeout(nextScene, 240000);
-
-  (function startPlayer(){
-    if (!window.YT || !window.YT.Player) { setTimeout(startPlayer, 200); return; }
-    new YT.Player('yt-player-target', {
-      videoId: scene.youtubeId,
-      host: 'https://www.youtube-nocookie.com',
-      playerVars: { autoplay: 1, rel: 0, modestbranding: 1, playsinline: 1, mute: gestureUnlocked ? 0 : 1 },
-      events: {
-        onReady: e => e.target.playVideo(),
-        onStateChange: e => { if (e.data === YT.PlayerState.ENDED) nextScene(); }
-      }
-    });
-  })();
 }
 
 // gentle floating sparkles, purely decorative
