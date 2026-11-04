@@ -123,8 +123,11 @@ function playEggHatch(callback){
 }
 
 // ---------- BADGES ----------
-// each badge: { id, name, glyph, hint, earned(), info, play(done) }
-//   play(done) = that badge's own animation; call done() when it has finished
+// each badge: { id, name, glyph, hint, level() (or earned()), info(level), play(done) }
+//   level()    = 0 when not earned, 1+ when earned. Upgradeable badges also set tiered:true (shows a level pill),
+//                title(level) (name per level) and next(level) (hint at the next level, shown on hover)
+//   celebrateOnVisit:true = its animation plays on the home page the first time a new level is reached
+//   play(done) = that badge's own animation; call done() when it has finished (bdgMedal() is a shared ending)
 //   info       = what the popup says after the animation
 function dimOverlay(){
   const o = document.createElement('div');
@@ -137,6 +140,53 @@ function endOverlay(o, cb){
   o.classList.remove('dim');
   setTimeout(() => { o.remove(); if(cb) cb(); }, 700);
 }
+// ---- badge helpers (prefixed bdg* so they can't clash with other scripts) ----
+// localStorage keys + the dates some badges care about. All of it syncs to Cloudflare like everything else.
+const BK = {
+  streak:      'ann_visit_streak_v1',      // { lastDate, streak, longest }
+  ledger:      'ann_monthly_ledger_v1',    // ['YYYY-MM', ...]
+  cork:        'ann_weekly_corkboard_v1',  // [{ week, glyph, ... }]
+  special:     'ann_special_visits_v1',    // { met:[years], ann:[years], tristan:[years] } - years she visited on that day
+  carto:       'ann_cartographer_v1',      // { level, covered:[page keys] }
+  celebrated:  'ann_badges_celebrated_v1', // { badgeId: level that has already been celebrated }
+  annBday:     '08-05',                    // MM-DD  Ann's birthday
+  tristanBday: '06-27',                    // MM-DD  Tristan's birthday
+};
+const BDG_STREAK_STEPS = [7, 30, 100];       // days in a row  -> levels 1, 2, 3
+const BDG_LEDGER_STEPS = [6, 12, 24];        // months stamped -> levels 1, 2, 3
+const bdgCorkSteps = () => [10, CORK_STICKERS.length, 52];   // weekly stickers (middle one = the full set)
+
+const bdgEl = (tag, cls, text) => {
+  const e = document.createElement(tag);
+  if(cls) e.className = cls;
+  if(text != null) e.textContent = text;
+  return e;
+};
+function bdgJSON(key, fallback){
+  try{ const v = JSON.parse(localStorage.getItem(key)); return v == null ? fallback : v; }
+  catch(e){ return fallback; }
+}
+function bdgArr(key){ const v = bdgJSON(key, []); return Array.isArray(v) ? v : []; }
+const bdgTier = (value, steps) => steps.filter(s => value >= s).length;
+// today as YYYY-MM-DD in the visitor's OWN timezone (toISOString would use UTC and be off near midnight)
+function bdgLocalDate(d){
+  d = d || new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+const bdgDayLabel = md => parseInt(md.slice(3), 10) + ' ' + MONTH_ABBR[parseInt(md.slice(0, 2), 10) - 1];
+function bdgBestStreak(){ const d = bdgJSON(BK.streak, {}); return Math.max(d.longest || 0, d.streak || 0); }
+function bdgSpecialYears(k){ const d = bdgJSON(BK.special, {}); return Array.isArray(d[k]) ? d[k] : []; }
+function bdgBothBirthdayYears(){ const t = bdgSpecialYears('tristan'); return bdgSpecialYears('ann').filter(y => t.includes(y)); }
+
+// shared ending for the newer badge animations: the gold medal pops, then the overlay closes and the popup follows
+function bdgMedal(o, glyph, at, done){
+  const core = bdgEl('div', 'sk-core', glyph);
+  o.appendChild(core);
+  setTimeout(() => { core.classList.add('in'); launchConfetti(); launchHeartBurst(); }, at);
+  setTimeout(launchHeartBurst, at + 800);
+  setTimeout(() => endOverlay(o, done), at + 1900);
+}
+
 const BADGES = [
   { id:'secrets', name:'Secret Keeper', glyph:'★',
     hint:'find all the secrets hiding on this page',
@@ -189,7 +239,195 @@ const BADGES = [
       setTimeout(() => { core.classList.add('in'); launchHeartBurst(); }, 2250);
       setTimeout(launchHeartBurst, 3200);
       setTimeout(() => endOverlay(o, done), 4900);
-    } }
+    } },
+
+  // ---- Signed & Sealed: contract signed (earned on the contract page, celebrated when she's back here) ----
+  { id:'signed', name:'Signed & Sealed', glyph:'🖋️', celebrateOnVisit:true,
+    hint:'sign the contract',
+    level: () => isContractSigned() ? 1 : 0,
+    info: () => 'Signed, sealed, and (hopefully) delivered. The contract is officially binding: no take-backs, no refunds on bestie.<br><br>Welcome to another year of us.',
+    // a quill signs the contract, then a wax seal stamps down
+    play(done){
+      const o = dimOverlay();
+      const card = bdgEl('div', 'ss-card');
+      card.append(bdgEl('div', 'ss-title', 'the yearly contract'), bdgEl('div', 'ss-line'));
+      card.insertAdjacentHTML('beforeend', '<svg class="ss-sig" viewBox="0 0 220 80" aria-hidden="true"><path pathLength="1" d="M6 52 C14 10 30 8 32 34 C33 52 22 58 26 44 C32 24 52 20 56 40 C59 54 66 54 72 38 C78 22 88 22 90 40 C92 54 104 52 112 36 C118 24 128 26 128 40 C128 52 140 54 150 40 C160 26 172 40 170 52 C168 62 186 44 214 30"/></svg>');
+      card.append(bdgEl('span', 'ss-quill', '✒️'), bdgEl('div', 'ss-seal', '♡'));
+      o.appendChild(card);
+      setTimeout(() => card.classList.add('out'), 3500);
+      bdgMedal(o, '🖋️', 3700, done);
+    } },
+
+  // ---- Creature of Habit: visit streak (7 / 30 / 100 days in a row) ----
+  { id:'habit', name:'Creature of Habit', glyph:'📅', tiered:true, celebrateOnVisit:true,
+    hint:'visit seven days in a row',
+    level: () => bdgTier(bdgBestStreak(), BDG_STREAK_STEPS),
+    title: lv => ['Creature of Habit', 'Devoted', 'Unshakeable'][lv - 1],
+    next: lv => BDG_STREAK_STEPS[lv] ? BDG_STREAK_STEPS[lv] + ' days in a row' : null,
+    info: lv => [
+      'Seven days in a row. You kept coming back to this little corner of the internet, and I will never get over how nice that is.<br><br>Keep the streak warm.',
+      'Thirty days running. A whole month of dropping by, no matter what else was going on.<br><br>That is devotion. I am calling it.',
+      'One hundred days in a row. At this point I think you live here.<br><br>I am so, so glad you do.'
+    ][lv - 1],
+    // a habit tracker ticks off the days one by one
+    play(done){
+      const o = dimOverlay();
+      const card = bdgEl('div', 'hb-card');
+      card.appendChild(bdgEl('div', 'hb-cap', bdgBestStreak() + ' days in a row'));
+      const days = bdgEl('div', 'hb-days');
+      'MTWTFSS'.split('').forEach((d, i) => {
+        const t = bdgEl('span', 'hb-day', d);
+        t.style.setProperty('--d', (0.8 + i * 0.3) + 's');
+        days.appendChild(t);
+      });
+      card.appendChild(days);
+      o.appendChild(card);
+      setTimeout(() => card.classList.add('out'), 3100);
+      bdgMedal(o, '📅', 3300, done);
+    } },
+
+  // ---- Pen Pal: months stamped in the ledger (6 / 12 / 24) ----
+  { id:'penpal', name:'Pen Pal', glyph:'📮', tiered:true, celebrateOnVisit:true,
+    hint:'keep coming back, month after month',
+    level: () => bdgTier(bdgArr(BK.ledger).length, BDG_LEDGER_STEPS),
+    title: lv => ['Pen Pal', 'Postmaster', 'Postmaster General'][lv - 1],
+    next: lv => BDG_LEDGER_STEPS[lv] ? BDG_LEDGER_STEPS[lv] + ' months stamped' : null,
+    info: lv => [
+      'Six different months stamped in the ledger. You keep turning up, month after month, like a proper pen pal.<br><br>Letters are better when they keep arriving.',
+      'Twelve months. A whole year of postmarks, and every single one is you showing up.<br><br>I am officially promoting you to Postmaster.',
+      'Twenty-four months of postmarks. Two whole years of you turning up.<br><br>Postmaster General, with all the honour and absolutely no extra pay.'
+    ][lv - 1],
+    // her real postmarks slam down across the screen
+    play(done){
+      const o = dimOverlay();
+      const stage = bdgEl('div', 'pm-stage');
+      bdgArr(BK.ledger).slice(-9).forEach((key, i) => {
+        const [y, m] = key.split('-');
+        const st = bdgEl('div', 'pm-stamp');
+        st.append(bdgEl('span', 'pm-m', MONTH_ABBR[parseInt(m, 10) - 1]), bdgEl('span', 'pm-y', "'" + y.slice(2)));
+        st.style.left = (16 + (i % 3) * 34 + Math.random() * 6) + '%';
+        st.style.top = (20 + Math.floor(i / 3) * 28 + Math.random() * 6) + '%';
+        st.style.setProperty('--r', ((Math.random() - 0.5) * 40) + 'deg');
+        st.style.setProperty('--d', (i * 0.2) + 's');
+        stage.appendChild(st);
+      });
+      o.appendChild(stage);
+      setTimeout(() => stage.classList.add('out'), 2700);
+      bdgMedal(o, '📮', 2900, done);
+    } },
+
+  // ---- Sticker Collector: weekly corkboard stickers (10 / the full set / 52) ----
+  { id:'stickers', name:'Sticker Collector', glyph:'📌', tiered:true, celebrateOnVisit:true,
+    hint:'keep dropping by and the corkboard fills up',
+    level: () => bdgTier(bdgArr(BK.cork).length, bdgCorkSteps()),
+    title: lv => ['Sticker Collector', 'Sticker Hoarder', 'Corkboard Royalty'][lv - 1],
+    next: lv => bdgCorkSteps()[lv] ? bdgCorkSteps()[lv] + ' weeks of stickers' : null,
+    info: lv => [
+      'Ten weeks, ten stickers on the corkboard. You keep dropping by, and the board keeps getting prettier because of it.',
+      'The whole set. You have collected every single sticker there is, and the board has never looked better.',
+      'Fifty-two weeks of stickers. A whole year of the corkboard filling up, one visit at a time.<br><br>Royalty. Obviously.'
+    ][lv - 1],
+    // her own stickers slap onto the screen at random angles
+    play(done){
+      const o = dimOverlay();
+      const mine = bdgArr(BK.cork).map(s => s && s.glyph).filter(Boolean);
+      const pool = (mine.length ? mine : CORK_STICKERS).slice();
+      for(let i = pool.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+      const stage = bdgEl('div', 'sc-stage');
+      pool.slice(0, 14).forEach((g, i) => {
+        const s = bdgEl('span', 'sc-sticker', g);
+        s.style.left = (8 + Math.random() * 84) + '%';
+        s.style.top = (12 + Math.random() * 76) + '%';
+        s.style.fontSize = (2.2 + Math.random() * 1.6) + 'rem';
+        s.style.setProperty('--r', ((Math.random() - 0.5) * 70) + 'deg');
+        s.style.setProperty('--d', (i * 0.13) + 's');
+        stage.appendChild(s);
+      });
+      o.appendChild(stage);
+      setTimeout(() => stage.classList.add('out'), 2500);
+      bdgMedal(o, '📌', 2700, done);
+    } },
+
+  // ---- Cartographer: every page unlocked. Never retracts: each time pages are added, completing the new set levels it up ----
+  { id:'cartographer', name:'Cartographer', glyph:'🧭', tiered:true, celebrateOnVisit:true,
+    hint:'unlock every page on the site',
+    level: () => bdgJSON(BK.carto, {}).level || 0,
+    next: () => 'unlock whatever gets added next',
+    info: lv => lv > 1
+      ? 'Level ' + lv + '. I added more to explore and you went and found all of it anyway.<br><br>The map is bigger now, and you have covered every inch.'
+      : 'Every door on this site is open to you. Every single stamp on the sheet is filled in.<br><br>You are officially the best-travelled person in this entire corner of the internet.',
+    // her real page stamps fly in from all sides and fill the sheet
+    play(done){
+      const o = dimOverlay();
+      const tiles = getNavCategories().flatMap(c => c.items).filter(i => i.unlocked).slice(0, 12);
+      const sheet = bdgEl('div', 'cg-sheet'), grid = bdgEl('div', 'cg-grid');
+      tiles.forEach((it, i) => {
+        const t = bdgEl('div', 'cg-tile', GLYPH[it.key] || '✦');
+        const ang = Math.random() * Math.PI * 2, dist = 500 + Math.random() * 300;
+        t.style.setProperty('--fx', Math.round(Math.cos(ang) * dist) + 'px');
+        t.style.setProperty('--fy', Math.round(Math.sin(ang) * dist) + 'px');
+        t.style.setProperty('--fr', Math.round((Math.random() - 0.5) * 360) + 'deg');
+        t.style.setProperty('--d', (0.5 + i * 0.14) + 's');
+        grid.appendChild(t);
+      });
+      sheet.appendChild(grid);
+      o.appendChild(sheet);
+      setTimeout(() => sheet.classList.add('out'), 3000);
+      bdgMedal(o, '🧭', 3200, done);
+    } },
+
+  // ---- Friendiversary: visiting on the day you met (one level per year) ----
+  { id:'friendiversary', name:'Friendiversary', glyph:'🥂', tiered:true, celebrateOnVisit:true,
+    hint:'there is one day a year worth turning up for',
+    level: () => bdgSpecialYears('met').length,
+    next: () => 'come by on the same day next year',
+    info: lv => lv > 1
+      ? 'That is ' + lv + ' anniversaries you have come by for. Every one of them makes me ridiculously happy.<br><br>Here is to the next one.'
+      : 'You showed up on the anniversary of the day we met. I could not have planned a better way to mark it.<br><br>Cheers, bestie.',
+    // a calendar leaf flips down on the day you met
+    play(done){
+      const o = dimOverlay();
+      const [my, mm, md] = MET_DATE.split('-').map(Number);
+      const yrs = new Date().getFullYear() - my;
+      const leaf = bdgEl('div', 'an-leaf');
+      leaf.append(bdgEl('div', 'an-top', MONTH_ABBR[mm - 1]), bdgEl('div', 'an-day', String(md)), bdgEl('div', 'an-year', yrs > 0 ? 'year ' + yrs : '♡'));
+      o.appendChild(leaf);
+      setTimeout(launchHeartBurst, 1000);
+      setTimeout(launchHeartBurst, 1900);
+      setTimeout(() => leaf.classList.add('out'), 3000);
+      bdgMedal(o, '🥂', 3200, done);
+    } },
+
+  // ---- Two Candles: visiting on BOTH birthdays in the same year (one level per year) ----
+  { id:'candles', name:'Two Candles', glyph:'🎂', tiered:true, celebrateOnVisit:true,
+    hint:'some days are worth showing up for',
+    level: () => bdgBothBirthdayYears().length,
+    next: () => 'visit on both birthdays again next year',
+    info: lv => lv > 1
+      ? 'That is ' + lv + ' years you have turned up for both birthdays. I do not take a single one of them for granted.'
+      : 'Your birthday and mine, both in the same year, and you came by for each one. Two candles, one very happy me.<br><br>Thank you for showing up for both.',
+    // two candles get lit, one after the other
+    play(done){
+      const o = dimOverlay();
+      const stage = bdgEl('div', 'tc-stage');
+      stage.appendChild(bdgEl('div', 'tc-glow'));
+      const ones = [[BK.tristanBday, '#c97a68'], [BK.annBday, '#e8b95a']].map(([md, color]) => {
+        const one = bdgEl('div', 'tc-one');
+        const c = bdgEl('div', 'tc-candle');
+        c.style.setProperty('--cc', color);
+        c.appendChild(bdgEl('div', 'tc-flame'));
+        one.append(c, bdgEl('div', 'tc-date', bdgDayLabel(md)));
+        stage.appendChild(one);
+        return one;
+      });
+      o.appendChild(stage);
+      setTimeout(() => ones[0].classList.add('lit'), 700);
+      setTimeout(() => ones[1].classList.add('lit'), 1500);
+      setTimeout(() => stage.classList.add('glow'), 1700);
+      setTimeout(() => stage.classList.add('flare'), 2500);
+      setTimeout(() => stage.classList.add('out'), 3000);
+      bdgMedal(o, '🎂', 3200, done);
+    } },
 ];
 
 // true once every gift stop (1..TOTAL_GIFTS) is opened AND every Birthday 2026 page is unlocked.
@@ -201,45 +439,96 @@ function birthday2026Complete(){
   return !!cat && cat.items.every(i => isPageUnlocked(i.matchHref || i.href));
 }
 
-// Plays the animation once for any celebrateOnVisit badge earned elsewhere on the site.
-// Which ones have been celebrated is remembered in localStorage (so it syncs to Cloudflare too).
-const CELEBRATED_KEY = 'ann_badges_celebrated_v1';
+// ---- badge data: recorded once per home-page visit, before the badges render ----
+
+// remembers the years she visited on the day you met / each birthday
+function recordSpecialVisits(){
+  const days = { met: MET_DATE.slice(5), ann: BK.annBday, tristan: BK.tristanBday };
+  const now = new Date(), md = bdgLocalDate(now).slice(5), yr = now.getFullYear();
+  const data = bdgJSON(BK.special, {});
+  let changed = false;
+  Object.keys(days).forEach(k => {
+    if(!Array.isArray(data[k])) data[k] = [];
+    if(md === days[k] && !data[k].includes(yr)){ data[k].push(yr); changed = true; }
+  });
+  if(changed){ try{ localStorage.setItem(BK.special, JSON.stringify(data)); }catch(e){} }
+}
+
+// Cartographer never goes down. Once every page is unlocked it levels up, and again each later time
+// every page (including any added since) is unlocked.
+function updateCartographer(){
+  const c = bdgJSON(BK.carto, {});
+  const covered = Array.isArray(c.covered) ? c.covered : [];
+  const items = getNavCategories().flatMap(cat => cat.items);
+  if(!items.length || !items.every(i => i.unlocked)) return;   // not everything open yet - keep what she has
+  if(!items.some(i => !covered.includes(i.key))) return;       // nothing new since the last level
+  const next = { level: (c.level || 0) + 1, covered: [...new Set([...covered, ...items.map(i => i.key)])] };
+  try{ localStorage.setItem(BK.carto, JSON.stringify(next)); }catch(e){}
+}
+
+// ---- badge levels, titles, popups ----
+const badgeLevel = bd => bd.level ? bd.level() : (bd.earned() ? 1 : 0);
+const badgeTitle = (bd, lv) => (lv > 0 && bd.title) ? bd.title(lv) : bd.name;
+
+// Plays the animation for any celebrateOnVisit badge that has reached a level she hasn't been shown yet.
+// If several are waiting (e.g. the first visit after an update) they play one after another, each
+// starting when she closes the previous popup. She can click any earned badge to replay it.
 function celebrateNewBadges(delay){
-  let done = [];
-  try{ done = JSON.parse(localStorage.getItem(CELEBRATED_KEY)) || []; }catch(e){}
-  if(!Array.isArray(done)) done = [];
-  const queue = BADGES.filter(b => b.celebrateOnVisit && b.earned() && !done.includes(b.id)).map(b => b.id);
+  let seen = bdgJSON(BK.celebrated, {});
+  if(Array.isArray(seen)) seen = Object.fromEntries(seen.map(id => [id, 1]));   // older format
+  const queue = BADGES.filter(b => b.celebrateOnVisit && badgeLevel(b) > (seen[b.id] || 0));
   if(!queue.length) return;
-  try{ localStorage.setItem(CELEBRATED_KEY, JSON.stringify([...done, ...queue])); }catch(e){}
+  queue.forEach(b => { seen[b.id] = badgeLevel(b); });
+  try{ localStorage.setItem(BK.celebrated, JSON.stringify(seen)); }catch(e){}
+  const ids = queue.map(b => b.id);
   const run = () => {
-    const id = queue.shift(); if(!id) return;
-    if(queue.length) afterClose = run;   // chain several if more than one is waiting
+    const id = ids.shift(); if(!id) return;
+    if(ids.length) afterClose = run;
     openBadge(id);
   };
   setTimeout(run, delay);
 }
+
 function openBadge(id){
   const bd = BADGES.find(b => b.id === id);
   if(!bd) return;
-  bd.play(() => showModal(bd.name, bd.info(), 'Bestie Tristan'));
+  const lv = badgeLevel(bd);
+  bd.play(() => showModal(badgeTitle(bd, lv), bd.info(lv), 'Bestie Tristan'), lv);
 }
+
 function renderBadges(){
   const row = $('badge-row');
   if(!row) return;
   $('secrets-count').textContent = eggsFound.length + ' / ' + EGG_KEYS.length;
   row.innerHTML = '';
+  // badges she hasn't earned yet are not shown at all
   BADGES.forEach(bd => {
-    const got = bd.earned();
+    const lv = badgeLevel(bd);
+    if(lv < 1) return;
+    const title = badgeTitle(bd, lv);
+    const nextHint = bd.next ? bd.next(lv) : null;
     const el = document.createElement('button');
     el.type = 'button';
-    el.className = 'bdg' + (got ? ' earned' : '');
-    el.title = got ? bd.name : bd.hint;
+    el.className = 'bdg earned';
+    el.title = title + (nextHint ? ' - next: ' + nextHint : '');
     el.innerHTML = '<span class="ro"></span><span class="bdg-name"></span>';
-    el.querySelector('.ro').textContent = got ? bd.glyph : '?';
-    el.querySelector('.bdg-name').textContent = bd.name;
-    if(got) el.onclick = () => openBadge(bd.id);
+    const ro = el.querySelector('.ro');
+    ro.textContent = bd.glyph;
+    if(bd.tiered){
+      const pill = document.createElement('span');
+      pill.className = 'bdg-lv'; pill.textContent = lv;
+      ro.appendChild(pill);
+    }
+    el.querySelector('.bdg-name').textContent = title;
+    el.onclick = () => openBadge(bd.id);
     row.appendChild(el);
   });
+  if(!row.children.length){
+    const none = document.createElement('span');
+    none.className = 'ledger-empty';
+    none.textContent = 'none yet - they turn up on their own as you explore';
+    row.appendChild(none);
+  }
 }
 
 // ---------- THE EGGS THEMSELVES ----------
@@ -377,7 +666,7 @@ console.log("If you're reading this, you're exactly the kind of curious person t
 // ---------- QUIET VISIT STREAK (recorded only, so a streak badge can be added later) ----------
 function recordVisitStreak(){
   const KEY = 'ann_visit_streak_v1';
-  const today = new Date().toISOString().slice(0,10);
+  const today = bdgLocalDate();
   let data = null;
   try{ data = JSON.parse(localStorage.getItem(KEY)); }catch(e){}
   if(!data){ data = { lastDate: today, streak: 1, longest: 1 }; }
@@ -557,7 +846,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const d = daysSinceMet();
   if(d !== null) $('since-days').textContent = ' for ' + d.toLocaleString() + ' days';
   renderResume(); renderSheet(); markAllUnlockedPagesSeen();
-  recordVisitStreak();
-  initMonthlyLedger(); initWeeklyCorkboard(); renderBadges(); initSettings();
+  recordVisitStreak(); recordSpecialVisits();
+  initMonthlyLedger(); initWeeklyCorkboard(); updateCartographer(); renderBadges(); initSettings();
   celebrateNewBadges(introSeen ? 900 : 2800);
 });
