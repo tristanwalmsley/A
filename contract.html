@@ -83,6 +83,7 @@ nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-be
 .btn-proceed:hover{background:#e0a840;transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--brown)}
 .proceed-sub{font-family:'Caveat',cursive;font-size:0.85rem;color:rgba(250,244,232,0.6);margin-top:0.5rem;letter-spacing:0.5px}
 </style>
+<script src="js/bestie_storage.js"></script>
 </head>
 <body>
 <div class="bg-pattern"></div>
@@ -104,6 +105,7 @@ nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-be
     <div class="doc-title">The <em>Bestie Contract</em></div>
     <div class="doc-subtitle">Year Three - Annual Renewal</div>
     <div class="doc-ref">Binding Across: United Kingdom & Netherlands</div>
+    <div class="doc-ref" id="doc-membership"></div>
   </div>
 
   <div class="doc-body">
@@ -197,18 +199,15 @@ nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-be
 
     <div class="sig-section">
       <div class="sig-row">
-        <div class="sig-block">
+        <div class="sig-block" data-who="tristan">
           <div class="sig-label">Signed by the Giver</div>
-          <div class="sig-line"><span class="sig-pre">Tristan</span></div>
-          <div class="sig-date">5 Aug 2026</div>
+          <div class="sig-line"><input class="sig-input" type="text" placeholder="sign your name here…" autocomplete="off" spellcheck="false" style="display:none"><span class="sig-pre" style="display:none"></span></div>
+          <div class="sig-date">awaiting signature…</div>
         </div>
-        <div class="sig-block">
+        <div class="sig-block" data-who="ann">
           <div class="sig-label">Signed by the Bestie</div>
-          <div class="sig-line">
-            <input id="ann-signature" class="sig-input" type="text" placeholder="sign your name here…" autocomplete="off" spellcheck="false">
-            <span id="ann-sig-display" class="sig-pre" style="display:none"></span>
-          </div>
-          <div class="sig-date" id="ann-date">awaiting signature…</div>
+          <div class="sig-line"><input class="sig-input" type="text" placeholder="sign your name here…" autocomplete="off" spellcheck="false" style="display:none"><span class="sig-pre" style="display:none"></span></div>
+          <div class="sig-date">awaiting signature…</div>
         </div>
         <div class="wax-seal-wrap">
           <div class="wax-seal">♡</div>
@@ -223,7 +222,7 @@ nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-be
 
   <div class="doc-footer">
     <p class="footer-text" id="footer-text">By signing, you confirm that you are the Bestie Ann - and that you accept everything above in the spirit in which it was written: with complete sincerity, quite a lot of love, and an absolute refusal to take any of it back.</p>
-    <button class="btn-sign" id="btn-sign" onclick="signContract()">I, Ann, hereby sign this contract ♡</button>
+    <button class="btn-sign" id="btn-sign" onclick="signContract()">Sign this contract ♡</button>
     <p id="sign-error-footer" class="sign-error"></p>
   </div>
 
@@ -241,84 +240,73 @@ nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-be
 
 <script src="js/nav.js"></script>
 <script>
-const SIGNED_KEY = 'ann_contract_signed_2026';
-const SIGNED_NAME_KEY = 'ann_contract_name_2026';
-const SIGNED_DATE_KEY = 'ann_contract_date_2026';
+const NAMES = { tristan: 'Tristan', ann: 'Ann' };
+const PLAN_NAMES = { annual: 'Annual' };
+const $ = id => document.getElementById(id);
+let ME = null, SHARED = null;
+const isViewMode = () => new URLSearchParams(location.search).get('view') === '1';
+const nextPage = () => ME === 'ann' ? 'gifts_ann_2026_birthday.html' : 'index.html';
+const block = who => document.querySelector('.sig-block[data-who="' + who + '"]');
 
-function isViewMode() {
-  return new URLSearchParams(window.location.search).get('view') === '1';
+function paintSide(who) {
+  const b = block(who), input = b.querySelector('.sig-input'), disp = b.querySelector('.sig-pre'), date = b.querySelector('.sig-date');
+  const sig = SHARED.contract[who];
+  input.style.display = 'none'; disp.style.display = 'none'; date.textContent = 'awaiting signature…';
+  if (sig) { disp.textContent = sig.name + ' ♡'; disp.style.display = ''; date.textContent = sig.date || 'Signed with love'; }
+  else if (who === ME && !isViewMode()) input.style.display = '';
 }
+function render() {
+  ['tristan', 'ann'].forEach(paintSide);
+  const m = SHARED.membership;
+  $('doc-membership').textContent = 'Membership: ' + ['tristan', 'ann'].map(w =>
+    NAMES[w] + ' - ' + (m[w] ? (PLAN_NAMES[m[w].plan] || m[w].plan) : 'not chosen yet')).join('  ·  ');
+  const btn = $('btn-sign'), mine = SHARED.contract[ME];
+  if (isViewMode()) { btn.style.display = 'none'; if (mine) $('footer-text').textContent = 'Signed, sealed, and on record. ♡'; return; }
+  if (mine) {
+    btn.style.display = '';
+    btn.textContent = ME === 'ann' ? 'Already signed - open the box →' : 'Already signed - back home →';
+    btn.onclick = () => location.href = nextPage();
+  } else {
+    btn.style.display = ''; btn.textContent = 'I, ' + NAMES[ME] + ', hereby sign this contract ♡'; btn.onclick = signContract;
+    if (ME === 'tristan') $('footer-text').textContent = $('footer-text').textContent.replace('the Bestie Ann', 'Tristan, the Giver');
+  }
+}
+const clearErrors = () => { $('sign-error').classList.remove('show'); $('sign-error-footer').classList.remove('show'); };
 
-function signContract() {
-  const input = document.getElementById('ann-signature');
-  const name = (input ? input.value : '').trim();
+async function signContract() {
+  const input = block(ME).querySelector('.sig-input'), name = (input.value || '').trim();
   if (!name) {
-    document.getElementById('sign-error').classList.add('show');
-    document.getElementById('sign-error-footer').textContent = '✦ please sign your name above first ✦';
-    document.getElementById('sign-error-footer').classList.add('show');
-    input && input.focus();
-    return;
+    $('sign-error').classList.add('show');
+    $('sign-error-footer').textContent = '✦ please sign your name above first ✦'; $('sign-error-footer').classList.add('show');
+    input.focus(); return;
   }
-
-  const dateStr = new Date().toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
-  localStorage.setItem(SIGNED_KEY, '1');
-  localStorage.setItem(SIGNED_NAME_KEY, name);
-  localStorage.setItem(SIGNED_DATE_KEY, dateStr);
-
-  input.style.display = 'none';
-  const display = document.getElementById('ann-sig-display');
-  display.textContent = name + ' ♡';
-  display.style.display = '';
-  document.getElementById('ann-date').textContent = dateStr;
-  document.getElementById('btn-sign').style.display = 'none';
-  document.getElementById('sign-error').classList.remove('show');
-  document.getElementById('sign-error-footer').classList.remove('show');
-
-  document.getElementById('signed-overlay').classList.add('show');
-  setTimeout(() => document.getElementById('proceed-wrap').classList.add('show'), 500);
+  $('btn-sign').disabled = true;
+  try { SHARED = (await BestieSync.post('/api/contract', { name })).shared; }
+  catch (e) {
+    $('btn-sign').disabled = false;
+    $('sign-error-footer').textContent = e.status === 403 ? '✦ choose a membership first ✦' : '✦ could not save - please try again ✦';
+    $('sign-error-footer').classList.add('show'); return;
+  }
+  clearErrors(); render();
+  $('btn-sign').disabled = false;
+  const go = $('proceed-wrap').querySelector('button');
+  go.textContent = ME === 'ann' ? 'Open the box →' : 'Back home →';
+  go.onclick = () => location.href = nextPage();
+  $('signed-overlay').classList.add('show');
+  setTimeout(() => $('proceed-wrap').classList.add('show'), 500);
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
   buildNav('contract.html');
-
-  const viewMode = isViewMode();
-  if (viewMode) {
-    document.getElementById('view-banner').classList.add('show');
-  }
-
-  const savedName = localStorage.getItem(SIGNED_NAME_KEY);
-  const savedDate = localStorage.getItem(SIGNED_DATE_KEY);
-  const alreadySigned = !!localStorage.getItem(SIGNED_KEY);
-
-  if (alreadySigned && savedName) {
-    const input = document.getElementById('ann-signature');
-    if (input) input.style.display = 'none';
-    const display = document.getElementById('ann-sig-display');
-    display.textContent = savedName + ' ♡';
-    display.style.display = '';
-    document.getElementById('ann-date').textContent = savedDate || 'Signed with love';
-  }
-
-  if (viewMode) {
-    document.getElementById('btn-sign').style.display = 'none';
-    document.getElementById('footer-text').textContent = 'Signed, sealed, and on record. ♡';
-    return;
-  }
-
-  if (alreadySigned) {
-    const btn = document.getElementById('btn-sign');
-    btn.textContent = 'Already signed - open the box →';
-    btn.onclick = () => location.href = 'gifts_ann_2026_birthday.html';
-  }
-
-  const input = document.getElementById('ann-signature');
-  if (input) {
-    input.addEventListener('input', () => {
-      document.getElementById('sign-error').classList.remove('show');
-      document.getElementById('sign-error-footer').classList.remove('show');
-    });
-    input.addEventListener('keydown', e => { if (e.key === 'Enter') signContract(); });
-  }
+  if (isViewMode()) $('view-banner').classList.add('show');
+  try { SHARED = await BestieSync.refreshShared(); ME = BestieSync.user; }
+  catch (e) { $('footer-text').textContent = 'Could not load the contract - please refresh.'; $('btn-sign').style.display = 'none'; return; }
+  if (!SHARED.membership[ME]) { location.replace('membership.html'); return; }
+  document.querySelectorAll('.sig-input').forEach(i => {
+    i.addEventListener('input', clearErrors);
+    i.addEventListener('keydown', e => { if (e.key === 'Enter') signContract(); });
+  });
+  render();
 });
 </script>
 </body>
