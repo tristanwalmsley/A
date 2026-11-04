@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Besties ♡</title>
+<link rel="icon" type="image/x-icon" href="media/shared/images/site_icon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -81,7 +82,7 @@ function launchBurst(x,y){for(let i=0;i<80;i++){const angle=(Math.PI*2/80)*i+(Ma
 function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);particles=particles.filter(p=>p.life>0);particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=p.gravity;p.vx*=0.98;p.life-=p.decay;ctx.globalAlpha=Math.max(0,p.life);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.size*p.life,0,Math.PI*2);ctx.fill()});ctx.globalAlpha=1;if(particles.length>0)requestAnimationFrame(animate)}
 setTimeout(()=>{const w=window.innerWidth,h=window.innerHeight;launchBurst(w*0.3,h*0.4);setTimeout(()=>launchBurst(w*0.7,h*0.35),300);setTimeout(()=>launchBurst(w*0.5,h*0.2),600);setTimeout(()=>launchBurst(w*0.15,h*0.5),900);setTimeout(()=>launchBurst(w*0.85,h*0.45),1100);animate()},1400);
 </script>
-<script src="nav.js"></script>
+<script src="js/nav.js"></script>
 <script>window.addEventListener('DOMContentLoaded',()=>buildNav('the_end.html'));</script>
 </body>
 </html>
