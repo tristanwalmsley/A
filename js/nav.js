@@ -8,14 +8,15 @@
    ========================================================================== */
 
 const NAV_KEYS = {
-  contract: 'ann_contract_signed_2025',
+  contract: 'ann_contract_signed_2026',
   gifts: 'ann_bday_2025_v6',
 };
 
 const TOTAL_GIFTS = 41;
 
-// Which gift-stop IDs unlock which pages (matches STOPS in gifts.html)
+// Which gift-stop IDs unlock which pages (matches STOPS in gifts_ann_2026_birthday.html)
 const PAGE_UNLOCKS = {
+  'gifts_ann_2026_birthday.html': 0,
   'our_journey.html':      2,
   'tier_list.html':        6,
   'us.html':               13,
@@ -28,7 +29,7 @@ const PAGE_UNLOCKS = {
 };
 
 // Pages that unlock once the contract is signed (rather than via a gift stop)
-const CONTRACT_GATED = ['contract.html', 'gifts.html', 'gifts_ann_2026_birthday.html'];
+const CONTRACT_GATED = ['contract.html', 'gifts_ann_2026_birthday.html'];
 
 /* --------------------------------------------------------------------------
    THE NAV. Order here = order on screen.
