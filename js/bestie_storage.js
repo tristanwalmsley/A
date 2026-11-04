@@ -37,7 +37,10 @@
       user = r.user; loaded = true;
       if (r.data) Object.keys(r.data).forEach((k) => { if (!LOCAL_ONLY.has(k)) localStorage.setItem(k, r.data[k]); });
       else if (localStorage.length) dirty = true;   // first ever sync: upload what's here
-    } else if (x.status === 401) { location.reload(); }
+    } else if (x.status === 401 || x.status === 403) {
+      // never reload here: a persistent refusal would loop forever
+      console.error('[bestie-storage] /api/data refused (' + x.status + '). Check the values in wrangler.jsonc.');
+    }
   } catch (e) { console.warn('[bestie-storage] offline, running on local data only', e); }
 
   // 2. mirror writes
