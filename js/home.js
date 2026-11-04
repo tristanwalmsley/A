@@ -158,8 +158,60 @@ const BADGES = [
       setTimeout(() => { core.classList.add('in'); launchConfetti(); launchHeartBurst(); }, 2300);
       setTimeout(launchHeartBurst, 3000);
       setTimeout(() => endOverlay(o, done), 4200);
+    } },
+
+  // Earned on the gifts page, so it can't pop up in the moment like the secrets one.
+  // celebrateOnVisit = play its animation the first time she lands on the home page after earning it.
+  { id:'birthday26', name:'Birthday Bestie', glyph:'🎁', celebrateOnVisit:true,
+    hint:'open every gift and every page of the Birthday 2026 adventure',
+    earned: () => birthday2026Complete(),
+    info: () => 'All ' + TOTAL_GIFTS + ' stops opened, every page of the birthday adventure unlocked, start to finish.<br><br>Thank you for letting me spoil you rotten, and for being the kind of person who is worth the extra hours. Happy 25th, Bestie Ann.',
+    // same ring-and-collapse as Secret Keeper, but with presents
+    play(done){
+      const o = dimOverlay();
+      const ring = document.createElement('div'); ring.className = 'sk-ring';
+      const bits = ['🎁','🎈','✉','🎂'];
+      for(let i=0;i<EGG_KEYS.length;i++){          // same count as Secret Keeper so the ring CSS fits
+        const s = document.createElement('span');
+        s.textContent = bits[i % bits.length];
+        s.style.setProperty('--a', (i*360/EGG_KEYS.length) + 'deg');
+        ring.appendChild(s);
+      }
+      const core = document.createElement('div'); core.className = 'sk-core'; core.textContent = '🎁';
+      o.append(ring, core);
+      setTimeout(() => ring.classList.add('collapse'), 1900);
+      setTimeout(() => { core.classList.add('in'); launchConfetti(); launchHeartBurst(); }, 2300);
+      setTimeout(launchHeartBurst, 3000);
+      setTimeout(() => endOverlay(o, done), 4200);
     } }
 ];
+
+// true once every gift stop (1..TOTAL_GIFTS) is opened AND every Birthday 2026 page is unlocked.
+// getOpenedGifts / isPageUnlocked / NAV / TOTAL_GIFTS all come from nav.js.
+function birthday2026Complete(){
+  const opened = getOpenedGifts();
+  for(let id = 1; id <= TOTAL_GIFTS; id++) if(!opened.has(id)) return false;
+  const cat = NAV.find(c => c.id === 'bday26');
+  return !!cat && cat.items.every(i => isPageUnlocked(i.matchHref || i.href));
+}
+
+// Plays the animation once for any celebrateOnVisit badge earned elsewhere on the site.
+// Which ones have been celebrated is remembered in localStorage (so it syncs to Cloudflare too).
+const CELEBRATED_KEY = 'ann_badges_celebrated_v1';
+function celebrateNewBadges(delay){
+  let done = [];
+  try{ done = JSON.parse(localStorage.getItem(CELEBRATED_KEY)) || []; }catch(e){}
+  if(!Array.isArray(done)) done = [];
+  const queue = BADGES.filter(b => b.celebrateOnVisit && b.earned() && !done.includes(b.id)).map(b => b.id);
+  if(!queue.length) return;
+  try{ localStorage.setItem(CELEBRATED_KEY, JSON.stringify([...done, ...queue])); }catch(e){}
+  const run = () => {
+    const id = queue.shift(); if(!id) return;
+    if(queue.length) afterClose = run;   // chain several if more than one is waiting
+    openBadge(id);
+  };
+  setTimeout(run, delay);
+}
 function openBadge(id){
   const bd = BADGES.find(b => b.id === id);
   if(!bd) return;
@@ -501,4 +553,5 @@ window.addEventListener('DOMContentLoaded', () => {
   renderResume(); renderSheet(); markAllUnlockedPagesSeen();
   recordVisitStreak();
   initMonthlyLedger(); initWeeklyCorkboard(); renderBadges(); initSettings();
+  celebrateNewBadges(introSeen ? 900 : 2800);
 });
