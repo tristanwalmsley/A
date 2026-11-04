@@ -118,7 +118,6 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .const-label.in{opacity:1}
 .const-label.out{opacity:0}
 /* ---- MORE EASTER EGGS ---- */
-.reason-card[data-fx][data-tap].revealed{touch-action:auto}
 .fx-big{position:fixed;left:50%;top:42%;z-index:59;transform:translate(-50%,-50%);font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(2.4rem,11vw,6rem);color:#fff;text-shadow:0 0 24px rgba(160,220,255,.9);pointer-events:none;white-space:nowrap;text-align:center;animation:fxBig 3.2s ease forwards}
 @keyframes fxBig{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}12%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}22%{transform:translate(-50%,-50%) scale(1)}85%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.1)}}
 .frost{position:fixed;inset:0;z-index:57;pointer-events:none;background:radial-gradient(ellipse at center,rgba(170,225,255,0) 30%,rgba(140,205,255,.55) 100%);animation:frostIn 4s ease forwards}
@@ -166,6 +165,37 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .trail-h{position:fixed;z-index:58;pointer-events:none;color:var(--rose);font-size:1.1rem;animation:trailH 1.6s ease-out forwards}
 @keyframes trailH{to{opacity:0;transform:translateY(24px) scale(.4)}}
 .plane{position:fixed;z-index:59;pointer-events:none;font-size:2.4rem;left:0;top:0}
+/* ---- MORE EGGS v2: gesture feedback ---- */
+.reason-card[data-fx][data-tap].revealed{touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.reason-card.chilling{border-color:#9fd6ff;box-shadow:0 0 22px rgba(150,215,255,.55)}
+.chill-frost{position:absolute;left:0;right:0;bottom:0;height:0;z-index:3;pointer-events:none;background:linear-gradient(0deg,rgba(150,215,255,.9),rgba(215,242,255,.45));box-shadow:inset 0 0 18px rgba(255,255,255,.8)}
+.heart-cv{position:fixed;inset:0;z-index:58;pointer-events:none}
+.heart-pop{position:fixed;z-index:59;pointer-events:none;line-height:1;transform:translate(-50%,-50%);filter:drop-shadow(0 0 24px rgba(232,120,110,.9));animation:heartBeat 3s ease forwards}
+@keyframes heartBeat{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}12%{opacity:1;transform:translate(-50%,-50%) scale(1)}25%{transform:translate(-50%,-50%) scale(1.25)}38%{transform:translate(-50%,-50%) scale(1)}51%{transform:translate(-50%,-50%) scale(1.25)}64%{transform:translate(-50%,-50%) scale(1)}85%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.5)}}
+.swipe-stamp{position:absolute;top:.5rem;z-index:4;font-family:'Playfair Display',serif;font-weight:700;letter-spacing:3px;font-size:1.3rem;padding:0 .5rem;border:3px solid;border-radius:4px;pointer-events:none;opacity:0}
+.swipe-stamp.nope{right:.7rem;color:#d63a3a;transform:rotate(12deg)}
+.swipe-stamp.like{left:.7rem;color:#4caf6a;transform:rotate(-12deg)}
+.fan-hand{position:fixed;left:0;top:0;z-index:59;pointer-events:none;font-size:3.4rem;line-height:1;filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))}
+.sea-band{position:fixed;left:0;right:0;bottom:0;height:13vh;z-index:56;overflow:hidden;white-space:nowrap;font-size:3rem;line-height:1;pointer-events:none;background:linear-gradient(0deg,rgba(60,130,190,.65),rgba(60,130,190,0));animation:seaIn .5s ease forwards}
+@keyframes seaIn{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+.hunt-ghost{position:fixed;left:0;top:0;z-index:59;pointer-events:none;font-size:2.6rem;opacity:.7;transition:transform 3.4s ease-in-out;filter:grayscale(.3) drop-shadow(0 0 14px rgba(180,230,255,.8))}
+.en-half{position:absolute;top:0;bottom:0;width:50%;z-index:4;pointer-events:none;transition:background .1s}
+.en-l{left:0;border-radius:0}
+.en-r{right:0}
+.en-half::after{content:attr(data-w);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Caveat',cursive;font-weight:700;font-size:1.7rem;color:var(--deep);opacity:0}
+.en-half.on{background:rgba(243,210,122,.7)}
+.en-half.on::after{opacity:1}
+.sq-wrap.pop{bottom:auto;transform-origin:50% 100%;animation:sqPop 4.4s ease forwards}
+.sq-wrap.pop .sq-sign{animation-delay:.9s}
+@keyframes sqPop{0%{opacity:0;transform:translateY(70px) scale(.1)}10%{opacity:1;transform:translateY(-40px) scale(1.2)}18%{transform:translateY(0) scale(1)}85%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(70px) scale(.1)}}
+/* ---- bing chilling: Croydon bus ---- */
+.bus-road{position:fixed;left:0;right:0;bottom:16vh;height:64px;z-index:56;background:#2b2b2e;border-top:3px solid #555;border-bottom:3px solid #555;pointer-events:none;animation:seaIn .4s ease forwards}
+.bus-road::after{content:'';position:absolute;left:0;right:0;top:50%;border-top:3px dashed rgba(255,230,160,.7)}
+.bus-zone{position:fixed;bottom:16vh;height:64px;width:110px;z-index:56;pointer-events:none;border:3px dashed rgba(255,120,110,.9);border-radius:4px;transition:background .15s,border-color .15s}
+.bus-zone.in{background:rgba(120,220,120,.35);border-color:#7ae07a}
+.bus-stop{position:fixed;bottom:calc(16vh + 62px);z-index:57;pointer-events:none;font-size:2.4rem;line-height:1;transform:translateX(-50%)}
+.bus{position:fixed;left:0;bottom:calc(16vh + 10px);z-index:58;pointer-events:none;font-size:3rem;line-height:1;will-change:transform}
+.bus-hint{position:fixed;left:0;right:0;bottom:6vh;z-index:57;text-align:center;font-family:'Caveat',cursive;font-size:1.3rem;letter-spacing:1px;color:var(--cream);text-shadow:0 2px 8px rgba(0,0,0,.7);pointer-events:none}
 @media (prefers-reduced-motion:reduce){.muscle-ov .arm,.scare svg,.fan-f{animation-duration:.01s}}
 </style>
 </head>
@@ -570,16 +600,16 @@ buildList();
   // MORE EGGS (tap a revealed card, or hold one for the hug). Sounds live in media/reasons/.
   // =====================================================================
   Object.assign(EGG, {
-    bingchill:{ title:'Bing chilling', text:"You woke up the ice cream. 冰淇淋.<br><br>The rules are simple: you have to go and get an ice cream now. It's the law. I don't make the laws." },
-    yeah:     { title:'Yeah.', text:"Yeah.<br><br>That's it. That's the whole egg. I had nothing to add, and honestly neither do you." },
-    muscle:   { title:'BIG MUSCLE BADDIE', text:"Three pumps and the whole screen couldn't hold it. That's roughly the scale of your power, for the record.<br><br>Please do not lift anything heavy because of this message." },
-    loveyou:  { title:'Squeeze', text:"You held on and it hugged you back. That's all I've got, really.<br><br>Love you bestie. Properly. Hugs from the UK, sent at the speed of the internet." },
-    phas:     { title:'Phas Monday', text:"Sorry. Not sorry.<br><br>I'd say it won't happen again, but we both know it'll happen again next Monday, probably when you least expect it. See you there, and please keep the sanity up." },
-    thanks:   { title:'A special delivery', text:"Squaishey was told to deliver this personally, and did so with great professionalism.<br><br>She's asked me to confirm it was meant, every word, and that she gets paid in snacks." },
-    wellmen:  { title:'Fatal error', text:"taste.exe ran perfectly on everything, then hit one small problem and fell over in a spectacular fashion.<br><br>It's fine. The rest of your taste is flawless, and I stand by every word of that. (Men are a known bug.)" },
-    fan:      { title:'Number one fan', text:"The foam finger has been presented. The crowd went wild. There is no number two. I have checked, and there is simply a gap where the number two would go.<br><br>Ann Fan Club, membership: one (1), president: me." },
-    sea:      { title:'Across the sea', text:"One tiny plane, a lot of hearts, and no baggage allowance problems for once.<br><br>The sea doesn't count for much, honestly. It never has." },
-    energy:   { title:'That is your energy', text:"The scale only goes to 100%. You went further, and it broke, which is the usual result.<br><br>Please enjoy the lightning. Replacement meters are on order." }
+    bingchill:{ title:'Bing chilling', text:"You pulled up right inside the stop, doors hissing, engine ticking over. Ayup, we be bing chillin', innit.<br><br>Croydon London Bus Simulator has never had a finer driver. Ta-ra." },
+    yeah:     { title:'Yeah.', text:"You nodded along like you were agreeing with something. You were. Yeah.<br><br>That's the whole egg. I had nothing to add, and honestly, neither do you." },
+    muscle:   { title:'BIG MUSCLE BADDIE', text:"You clicked that card until it couldn't be contained by the screen, and you did it before it could deflate. Impressive stamina. My finger hurts just thinking about it.<br><br>Please do not lift anything heavy because of this message." },
+    loveyou:  { title:'Love you too', text:"You drew me a heart. It was very good and I'm keeping it, so don't argue.<br><br>Love you bestie. Properly. Hugs from the UK, sent at the speed of the internet." },
+    phas:     { title:'Phas Monday', text:"You knocked three times, something answered, and then you went looking for it. That's a terrible decision and it's also exactly what we do every Monday.<br><br>Sorry. Not sorry. See you there, and keep your sanity up." },
+    thanks:   { title:'A special delivery', text:"You squished a card flat and a small creature burst out with a sign. Squaishey was told to deliver this personally and did so with great professionalism.<br><br>She'd like it noted that it was meant, every word, and that she's paid in snacks." },
+    wellmen:  { title:'Fatal error', text:"You swiped left. Correctly, instantly, and with no regrets.<br><br>taste.exe is running perfectly again. The rest of your taste is flawless, and I stand by every word of that. (Men are a known bug.)" },
+    fan:      { title:'Number one fan', text:"You waved that foam finger around like you meant it, and the crowd lost its mind. There is no number two. I've checked, and there's just a gap where the number two would go.<br><br>Ann Fan Club: membership, one (1). President: me." },
+    sea:      { title:'Across the sea', text:"You flew a plane the whole way across the screen with no delays, no lost luggage and nobody sat in your seat. Rare.<br><br>The sea doesn't count for much, honestly. It never has." },
+    energy:   { title:'That is your energy', text:"You copied the gbing and the gbong without a single wrong note, and the meter promptly broke. It only goes to 100%. You went further, which is the usual result.<br><br>Please enjoy the lightning. Replacement meters are on order." }
   });
   const wait = (ms, fn) => setTimeout(fn, ms);
   function noise(dur, vol, f0, f1){
@@ -595,161 +625,365 @@ buildList();
   const place = (el, parent) => { (parent || document.body).appendChild(el); return el; };
   const popAt = (card, glyph) => { const r = card.getBoundingClientRect(), e = mk('note-pop', glyph); e.style.left = (r.left + Math.random() * r.width) + 'px'; e.style.top = (r.top + r.height / 2) + 'px'; e.style.setProperty('--nx', ((Math.random() - 0.5) * 120) + 'px'); e.style.setProperty('--nr', ((Math.random() - 0.5) * 50) + 'deg'); place(e); wait(1700, () => e.remove()); };
 
-  const TAP = {
-    // BING CHILLING: plays the mp3, frosts the screen, rains ice cream
-    bingchill(card){
-      guard(5200, () => {
-        playFile('media/reasons/bing_chilling.mp3', 1);
-        const f = place(mk('frost')), t = place(mk('fx-big', '🚌🚌🚌'));
-        rain(['🚌', '🚇', '🚋', '🧑'], 38);
-        wait(4200, () => { f.remove(); t.remove(); });
-        wait(3000, () => win('bingchill'));
-      });
-    },
-    // YEAH: plays the mp3, slams the word across the page
-    yeah(card){
-      guard(2600, () => {
-        playFile('media/reasons/yeah.mp3', 1);
-        const t = place(mk('fx-yeah', 'YEAH.')), s = place(mk('fx-shades', '😎'));
-        const w = document.querySelector('.reasons-wrap'); wait(150, () => { w.classList.add('quake'); wait(450, () => w.classList.remove('quake')); });
-        wait(2000, () => { t.remove(); s.remove(); win('yeah'); });
-      });
-    },
-    // MUSCLE: pump it three times quickly and a giant arm fills the whole screen
-    muscle(card){
-      const now = Date.now(); flex = flex.filter(t => now - t < 2000); flex.push(now);
-      const n = flex.length;
-      card.style.transition = 'transform .12s'; card.style.transform = 'scale(' + (1 + n * 0.07) + ')'; wait(200, () => { card.style.transform = ''; wait(160, () => { card.style.transition = ''; }); });
-      tone(160 + n * 70, 0, 0.22, 'square', 0.1); popAt(card, '💪');
-      if(n < 3) return;
-      flex = [];
-      guard(5000, () => {
-        const ov = place(mk('muscle-ov')); ov.append(mk('arm', '💪'), mk('mus-txt', 'BIG MUSCLE BADDIE'));
-        tone(70, 0, 1.2, 'sawtooth', 0.22, 40);
-        [392, 523, 659, 784].forEach((f, i) => tone(f, 0.5 + i * 0.18, 0.5, 'triangle', 0.16));
-        const w = document.querySelector('.reasons-wrap'); [700, 1300, 1900].forEach(a => wait(a, () => { w.classList.add('quake'); tone(90, 0, 0.3, 'sine', 0.35, 40); wait(420, () => w.classList.remove('quake')); }));
-        wait(3300, () => { ov.remove(); win('muscle'); });
-      });
-    },
-    // PHAS MONDAY: lights go out, you get a torch, the EMF reader starts beeping faster... then the jumpscare
-    phas(card){
-      guard(14000, () => {
-        const dark = place(mk('flash-dark')); dark.append(mk('fl-msg', '...is anyone there?'));
-        const mv = ev => { dark.style.setProperty('--x', ev.clientX + 'px'); dark.style.setProperty('--y', ev.clientY + 'px'); };
-        const r = card.getBoundingClientRect(); dark.style.setProperty('--x', (r.left + r.width / 2) + 'px'); dark.style.setProperty('--y', (r.top + r.height / 2) + 'px');
-        addEventListener('pointermove', mv);
-        const scareAt = Date.now() + 4600 + Math.random() * 2600; let n = 0;
-        const beep = () => {
-          if(Date.now() >= scareAt) return scare();
-          tone(700 + n * 45, 0, 0.07, 'square', 0.05); n++;
-          wait(Math.max(110, 800 - n * 85), beep);
-        };
-        wait(1100, beep);
-        function scare(){
-          removeEventListener('pointermove', mv); dark.remove();
-          const ov = place(mk('scare'));
-          ov.innerHTML = '<svg viewBox="0 0 200 240"><defs><radialGradient id="gh" cx="50%" cy="35%"><stop offset="0" stop-color="#f4fbff"/><stop offset="1" stop-color="#9fb4c2"/></radialGradient></defs><path d="M18 232 V92 C18 38 58 8 100 8 C142 8 182 38 182 92 V232 L156 206 L128 232 L100 206 L72 232 L44 206 Z" fill="url(#gh)"/><ellipse cx="68" cy="92" rx="17" ry="30" fill="#000"/><ellipse cx="132" cy="92" rx="17" ry="30" fill="#000"/><ellipse cx="100" cy="164" rx="24" ry="44" fill="#000"/></svg>';
-          noise(1.1, 0.5, 1800, 3200); tone(1200, 0, 0.9, 'sawtooth', 0.22, 2800); tone(95, 0, 1, 'sawtooth', 0.3, 60);
-          try{ if(navigator.vibrate) navigator.vibrate([180, 60, 180]); }catch(_){}
-          wait(1250, () => { ov.remove(); PageEggs.toast('sorry ♡ see you on Monday', 2600); wait(1400, () => win('phas')); });
-        }
-      });
-    },
-    // THANK YOU: Squaishey waddles in with a sign, delivers it, and waddles out
-    thanks(card){
-      guard(7000, () => {
-        const wrap = place(mk('sq-wrap')), body = mk('sq-body'), sign = mk('sq-sign');
-        sign.innerHTML = 'Thank you!<small>- delivered by Squaishey</small>';
-        const img = new Image(); img.alt = 'Squaishey'; img.src = 'media/reasons/squaishey.png';   // swap this for whatever Squaishey image you have
-        img.onerror = () => { const d = document.createElement('div'); d.innerHTML = '<svg viewBox="0 0 200 180"><ellipse cx="100" cy="108" rx="78" ry="62" fill="#f6b8c8" stroke="#c97a92" stroke-width="4"/><ellipse cx="72" cy="96" rx="7" ry="10" fill="#3a2010"/><ellipse cx="128" cy="96" rx="7" ry="10" fill="#3a2010"/><ellipse cx="56" cy="118" rx="12" ry="7" fill="#ee8fa8" opacity=".7"/><ellipse cx="144" cy="118" rx="12" ry="7" fill="#ee8fa8" opacity=".7"/><path d="M88 118 Q100 132 112 118" stroke="#3a2010" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="28" cy="100" rx="12" ry="20" fill="#f6b8c8" stroke="#c97a92" stroke-width="4" transform="rotate(-20 28 100)"/><ellipse cx="172" cy="100" rx="12" ry="20" fill="#f6b8c8" stroke="#c97a92" stroke-width="4" transform="rotate(20 172 100)"/></svg>'; img.replaceWith(d.firstChild); };
-        body.append(img); wrap.append(sign, body);
-        [0, 260, 520, 780, 1040, 1300].forEach((a, i) => wait(a, () => tone(640 + (i % 2) * 120, 0, 0.12, 'triangle', 0.08)));
-        wait(1700, () => { tone(784, 0, 0.3, 'triangle', 0.14); tone(988, 0.12, 0.5, 'triangle', 0.14); rain(['♡', '💌', '✨'], 18); });
-        wait(6600, () => { wrap.remove(); win('thanks'); });
-      });
-    },
-    // WELL, MEN EXIST: a very 2003 cascade of error boxes
-    wellmen(card){
-      guard(7800, () => {
-        const mkDlg = (title, icon, msg, btn, x, y) => {
-          const d = mk('dlg'); d.style.left = x + 'px'; d.style.top = y + 'px';
-          d.innerHTML = '<div class="dlg-t"><span>' + title + '</span><span>✕</span></div><div class="dlg-b"><span class="dlg-i">' + icon + '</span><span>' + msg + '</span></div><div class="dlg-btn">' + btn + '</div>';
-          return place(d);
-        };
-        const w = innerWidth, h = innerHeight, bw = Math.min(w * 0.78, 300), x0 = Math.max(8, w / 2 - bw / 2 - 50), y0 = Math.max(60, h * 0.2);
-        const all = [];
-        noise(0.35, 0.3, 4000, 300); tone(900, 0, 0.35, 'sawtooth', 0.14, 110);   // record scratch
-        wait(500,  () => { all.push(mkDlg('taste.exe', 'ℹ️', 'Good taste detected in: food, music, shows, friends, everything.', 'OK', x0, y0)); tone(880, 0, 0.2, 'sine', 0.12); });
-        wait(1500, () => { all.push(mkDlg('men_exist.dll', '⚠️', 'Warning: men exist. This cannot be undone.', 'Ignore', x0 + 24, y0 + 40)); tone(660, 0, 0.2, 'sine', 0.12); });
-        wait(2600, () => {
-          tone(200, 0, 0.6, 'square', 0.12, 120);
-          for(let i = 0; i < 14; i++) wait(i * 70, () => all.push(mkDlg('Fatal Error', '❌', 'taste_in_men not found. Please contact Bestie Tristan.', 'Retry', x0 + 48 + i * 14, y0 + 80 + i * 18)));
-        });
-        wait(5600, () => { all.forEach(d => d.remove()); win('wellmen'); });
-      });
-    },
-    // NUMBER ONE FAN: spotlight, a foam finger, a roaring crowd
-    fan(card){
-      guard(3800, () => {
-        const ov = place(mk('fan-ov')); ov.append(mk('fan-f', '☝️'), mk('fan-t', '#1 ANN FAN'));
-        noise(1.8, 0.28, 1400, 2400); wait(500, () => noise(1.6, 0.22, 1000, 2000));
-        [523, 659, 784, 1046].forEach((f, i) => tone(f, i * 0.12, 0.35, 'triangle', 0.14));
-        rain(['🎉', '📣', '✨', '🎊'], 32);
-        wait(3400, () => { ov.remove(); win('fan'); });
-      });
-    },
-    // ACROSS THE SEA: a little plane crosses the screen, leaving hearts behind
-    sea(card){
-      guard(4200, () => {
-        const pl = place(mk('plane', '✈️')), w = innerWidth, h = innerHeight, T = 2800, t0 = performance.now();
-        const iv = setInterval(() => { const r = pl.getBoundingClientRect(), hh = mk('trail-h', '♡'); hh.style.left = (r.left + r.width) + 'px'; hh.style.top = (r.top + 20) + 'px'; place(hh); wait(1700, () => hh.remove()); }, 90);
-        const step = now => {
-          const k = Math.min(1, (now - t0) / T), x = w + 40 - (w + 120) * k, y = h * 0.62 - Math.sin(k * Math.PI) * h * 0.38;
-          pl.style.transform = 'translate(' + x + 'px,' + y + 'px) scaleX(-1)';
-          if(k < 1) requestAnimationFrame(step); else { clearInterval(iv); pl.remove(); }
-        };
-        requestAnimationFrame(step);
-        const lab = place(mk('fx-big', 'UK ✈ you ♡')); lab.style.color = '#fff3c4'; lab.style.animationDelay = '1.2s'; lab.style.opacity = 0;
-        wait(4200, () => { lab.remove(); win('sea'); });
-      });
-    },
-    // ENERGY: the meter climbs past 100% and breaks
-    energy(card){
-      guard(4600, () => {
-        const wrap = place(mk('en-wrap')), lab = mk('', 'ENERGY: 0%'), bar = mk('en-bar'), fill = mk('en-fill');
-        bar.append(fill); wrap.append(lab, bar);
-        requestAnimationFrame(() => requestAnimationFrame(() => { fill.style.width = '100%'; }));
-        let p = 0; const iv = setInterval(() => { p = Math.min(100, p + 5); lab.textContent = 'ENERGY: ' + p + '%'; tone(300 + p * 6, 0, 0.06, 'square', 0.05); if(p >= 100) clearInterval(iv); }, 80);
-        wait(1800, () => { lab.textContent = 'ENERGY: 9001%'; wrap.classList.add('shake'); tone(110, 0, 0.9, 'sawtooth', 0.25, 40); rain(['⚡', '✨', '💥'], 30); });
-        wait(3300, () => { lab.textContent = 'meter broke ⚡'; wrap.classList.add('boom'); });
-        wait(4000, () => { wrap.remove(); win('energy'); });
-      });
+  const TAP = {};
+  let busyKnock = [];
+
+  // ---------- shared finales ----------
+  const bump = (el, cls, ms) => { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); wait(ms || 800, () => el.classList.remove(cls)); };
+  function yeahFinale(){
+    guard(2600, () => {
+      playFile('media/reasons/yeah.mp3', 1);
+      const t = place(mk('fx-yeah', 'YEAH.')), s = place(mk('fx-shades', '😎'));
+      const w = document.querySelector('.reasons-wrap'); wait(150, () => { w.classList.add('quake'); wait(450, () => w.classList.remove('quake')); });
+      wait(2000, () => { t.remove(); s.remove(); win('yeah'); });
+    });
+  }
+  function muscleFinale(done){
+    if(!guard(5000, () => {
+      const ov = place(mk('muscle-ov')); ov.append(mk('arm', '💪'), mk('mus-txt', 'BIG MUSCLE BADDIE'));
+      tone(70, 0, 1.2, 'sawtooth', 0.22, 40);
+      [392, 523, 659, 784].forEach((f, i) => tone(f, 0.5 + i * 0.18, 0.5, 'triangle', 0.16));
+      const w = document.querySelector('.reasons-wrap'); [700, 1300, 1900].forEach(a => wait(a, () => { w.classList.add('quake'); tone(90, 0, 0.3, 'sine', 0.35, 40); wait(420, () => w.classList.remove('quake')); }));
+      wait(3300, () => { ov.remove(); done(true); win('muscle'); });
+    })) done(false);
+  }
+  function heartFinale(b){
+    guard(3600, () => {
+      const hp = place(mk('heart-pop', '❤️')); hp.style.left = b.cx + 'px'; hp.style.top = b.cy + 'px'; hp.style.fontSize = Math.max(70, b.size * 1.05) + 'px';
+      const t = place(mk('fx-big', 'love you too, bestie ♡')); t.style.top = '70%'; t.style.color = '#ffd9d0'; t.style.textShadow = '0 0 20px rgba(232,120,110,.9)'; t.style.fontSize = 'clamp(1.6rem,7vw,3rem)';
+      rain(['❤️', '🩷', '♡', '💕'], 30);
+      [523, 659, 784].forEach((f, i) => tone(f, i * 0.1, 1.2, 'sine', 0.14));
+      wait(3000, () => { hp.remove(); t.remove(); win('loveyou'); });
+    });
+  }
+  function jumpscare(){
+    const ov = place(mk('scare'));
+    ov.innerHTML = '<svg viewBox="0 0 200 240"><defs><radialGradient id="gh" cx="50%" cy="35%"><stop offset="0" stop-color="#f4fbff"/><stop offset="1" stop-color="#9fb4c2"/></radialGradient></defs><path d="M18 232 V92 C18 38 58 8 100 8 C142 8 182 38 182 92 V232 L156 206 L128 232 L100 206 L72 232 L44 206 Z" fill="url(#gh)"/><ellipse cx="68" cy="92" rx="17" ry="30" fill="#000"/><ellipse cx="132" cy="92" rx="17" ry="30" fill="#000"/><ellipse cx="100" cy="164" rx="24" ry="44" fill="#000"/></svg>';
+    noise(1.1, 0.5, 1800, 3200); tone(1200, 0, 0.9, 'sawtooth', 0.22, 2800); tone(95, 0, 1, 'sawtooth', 0.3, 60);
+    try{ if(navigator.vibrate) navigator.vibrate([180, 60, 180]); }catch(_){}
+    wait(1250, () => { ov.remove(); busy = false; PageEggs.toast('sorry ♡ see you on Monday', 2600); wait(1400, () => win('phas')); });
+  }
+  function squaishey(){
+    const body = mk('sq-body'), img = new Image(); img.alt = 'Squaishey'; img.src = 'media/reasons/squaishey.png';   // swap for your real Squaishey image
+    img.onerror = () => { const d = document.createElement('div'); d.innerHTML = '<svg viewBox="0 0 200 180"><ellipse cx="100" cy="108" rx="78" ry="62" fill="#f6b8c8" stroke="#c97a92" stroke-width="4"/><ellipse cx="72" cy="96" rx="7" ry="10" fill="#3a2010"/><ellipse cx="128" cy="96" rx="7" ry="10" fill="#3a2010"/><ellipse cx="56" cy="118" rx="12" ry="7" fill="#ee8fa8" opacity=".7"/><ellipse cx="144" cy="118" rx="12" ry="7" fill="#ee8fa8" opacity=".7"/><path d="M88 118 Q100 132 112 118" stroke="#3a2010" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="28" cy="100" rx="12" ry="20" fill="#f6b8c8" stroke="#c97a92" stroke-width="4" transform="rotate(-20 28 100)"/><ellipse cx="172" cy="100" rx="12" ry="20" fill="#f6b8c8" stroke="#c97a92" stroke-width="4" transform="rotate(20 172 100)"/></svg>'; img.replaceWith(d.firstChild); };
+    body.append(img); return body;
+  }
+  function deliver(card){
+    const go = () => guard(5200, () => {
+      const r = card.getBoundingClientRect(), wrap = place(mk('sq-wrap pop')), sign = mk('sq-sign');
+      sign.innerHTML = 'Thank you!<small>- delivered by Squaishey</small>';
+      wrap.style.left = (r.left + r.width / 2) + 'px'; wrap.style.top = Math.max(8, r.top - 190) + 'px';
+      wrap.append(sign, squaishey());
+      wait(80, () => { tone(500, 0, 0.12, 'triangle', 0.12, 900); });
+      wait(900, () => { tone(784, 0, 0.3, 'triangle', 0.14); tone(988, 0.12, 0.5, 'triangle', 0.14); rain(['♡', '💌', '✨'], 18); });
+      wait(4400, () => { wrap.remove(); win('thanks'); });
+    });
+    if(card.getBoundingClientRect().top < 360){ card.scrollIntoView({ block:'center', behavior:'smooth' }); wait(650, go); } else go();
+  }
+  function cascade(after){
+    guard(7800, () => {
+      const mkDlg = (title, icon, msg, btn, x, y) => {
+        const d = mk('dlg'); d.style.left = x + 'px'; d.style.top = y + 'px';
+        d.innerHTML = '<div class="dlg-t"><span>' + title + '</span><span>✕</span></div><div class="dlg-b"><span class="dlg-i">' + icon + '</span><span>' + msg + '</span></div><div class="dlg-btn">' + btn + '</div>';
+        return place(d);
+      };
+      const w = innerWidth, h = innerHeight, bw = Math.min(w * 0.78, 300), x0 = Math.max(8, w / 2 - bw / 2 - 50), y0 = Math.max(60, h * 0.2), all = [];
+      noise(0.35, 0.3, 4000, 300); tone(900, 0, 0.35, 'sawtooth', 0.14, 110);
+      wait(500,  () => { all.push(mkDlg('taste.exe', 'ℹ️', 'Good taste detected in: food, music, shows, friends, everything.', 'OK', x0, y0)); tone(880, 0, 0.2, 'sine', 0.12); });
+      wait(1500, () => { all.push(mkDlg('men_exist.dll', '⚠️', 'Warning: men exist. This cannot be undone.', 'Ignore', x0 + 24, y0 + 40)); tone(660, 0, 0.2, 'sine', 0.12); });
+      wait(2600, () => { tone(200, 0, 0.6, 'square', 0.12, 120); for(let i = 0; i < 14; i++) wait(i * 70, () => all.push(mkDlg('Fatal Error', '❌', 'taste_in_men not found. Please contact Bestie Tristan.', 'Retry', x0 + 48 + i * 14, y0 + 80 + i * 18))); });
+      wait(5600, () => { all.forEach(d => d.remove()); if(after) after(); win('wellmen'); });
+    });
+  }
+  function fanFinale(){
+    guard(3800, () => {
+      const ov = place(mk('fan-ov')); ov.append(mk('fan-f', '☝️'), mk('fan-t', '#1 ANN FAN'));
+      noise(1.8, 0.28, 1400, 2400); wait(500, () => noise(1.6, 0.22, 1000, 2000));
+      [523, 659, 784, 1046].forEach((f, i) => tone(f, i * 0.12, 0.35, 'triangle', 0.14));
+      rain(['🎉', '📣', '✨', '🎊'], 32);
+      wait(3400, () => { ov.remove(); win('fan'); });
+    });
+  }
+  function energyFinale(card, reset){
+    if(!guard(4600, () => {
+      const wrap = place(mk('en-wrap')), lab = mk('', 'ENERGY: 0%'), bar = mk('en-bar'), fill = mk('en-fill');
+      bar.append(fill); wrap.append(lab, bar);
+      requestAnimationFrame(() => requestAnimationFrame(() => { fill.style.width = '100%'; }));
+      let p = 0; const iv = setInterval(() => { p = Math.min(100, p + 5); lab.textContent = 'ENERGY: ' + p + '%'; tone(300 + p * 6, 0, 0.06, 'square', 0.05); if(p >= 100) clearInterval(iv); }, 80);
+      wait(1800, () => { lab.textContent = 'ENERGY: 9001%'; wrap.classList.add('shake'); tone(110, 0, 0.9, 'sawtooth', 0.25, 40); rain(['⚡', '✨', '💥'], 30); });
+      wait(3300, () => { lab.textContent = 'meter broke ⚡'; wrap.classList.add('boom'); });
+      wait(4000, () => { wrap.remove(); reset(); win('energy'); });
+    })) reset();
+  }
+
+  // =====================================================================
+  // 1. MUSCLE - CLICK A BUNCH. Every click pumps the card up; stop and it slowly deflates. Fill the bar and it takes over the screen.
+  // =====================================================================
+  const M = { n:0, max:32, iv:null, done:false, card:null };
+  function pumpStyle(card){
+    const p = M.n / M.max;
+    card.style.position = 'relative'; card.style.zIndex = p > 0 ? 5 : '';
+    card.style.transition = 'transform .1s, box-shadow .2s, border-color .2s';
+    card.style.transform = p > 0 ? 'scale(' + (1 + p * 0.75) + ') rotate(' + ((Math.random() - 0.5) * p * 3) + 'deg)' : '';
+    card.style.boxShadow = p > 0 ? '0 0 ' + (p * 50) + 'px ' + (p * 12) + 'px rgba(214,58,58,' + (p * 0.7) + ')' : '';
+    card.style.borderColor = p > 0.25 ? 'rgb(214,58,58)' : '';
+  }
+  TAP.muscle = card => {
+    if(M.done || PageEggs.isOpen()) return;
+    M.card = card; M.n = Math.min(M.max, M.n + 1); pumpStyle(card);
+    tone(150 + (M.n / M.max) * 500, 0, 0.15, 'square', 0.08);
+    if(M.n % 3 === 0) popAt(card, '💪');
+    if(!M.iv) M.iv = setInterval(() => {
+      if(M.done) return; M.n = Math.max(0, M.n - 1); pumpStyle(M.card);
+      if(M.n === 0){ clearInterval(M.iv); M.iv = null; }
+    }, 480);
+    if(M.n >= M.max){
+      M.done = true; clearInterval(M.iv); M.iv = null;
+      muscleFinale(ok => { M.n = 0; M.done = false; pumpStyle(card); card.style.transition = 'transform .6s ease, box-shadow .6s'; wait(700, () => { card.style.transition = ''; }); });
     }
   };
-  let flex = [];
 
-  // HUG: hold the "Love you Bestie" card; it squeezes back, then hugs you
-  DRAG.loveyou = (e, card) => {
-    const t0 = performance.now(); let done = false;
-    const iv = setInterval(() => {
-      const p = Math.min(1, (performance.now() - t0) / 1400);
-      card.style.transition = 'none'; card.style.transform = 'scale(' + (1 - p * 0.08) + ')';
-      card.style.boxShadow = '0 0 ' + (p * 40) + 'px ' + (p * 8) + 'px rgba(184,104,88,' + (p * 0.6) + ')';
-      if(Math.random() < 0.3) popAt(card, '♡');
-      if(p > 0.3 && Math.random() < 0.2){ try{ if(navigator.vibrate) navigator.vibrate(15); }catch(_){} }
-      if(p >= 1 && !done){
-        done = true; clearInterval(iv);
-        guard(3600, () => {
-          const hug = place(mk('fx-big', '🫂')); hug.style.fontSize = 'clamp(6rem,30vw,12rem)'; hug.style.fontStyle = 'normal';
-          const t = place(mk('fx-big', 'love you too, bestie ♡')); t.style.top = '68%'; t.style.color = '#ffd9d0'; t.style.textShadow = '0 0 20px rgba(232,120,110,.9)'; t.style.fontSize = 'clamp(1.6rem,7vw,3rem)';
-          rain(['❤️', '🩷', '♡', '💕'], 30);
-          [523, 659, 784].forEach((f, i) => tone(f, i * 0.1, 1.2, 'sine', 0.14));
-          wait(3000, () => { hug.remove(); t.remove(); win('loveyou'); });
-        });
-      }
-    }, 80);
-    track(e, card, () => {}, () => { clearInterval(iv); card.style.boxShadow = ''; spring(card, 500); });
+  // =====================================================================
+  // 2. BING CHILLING (Croydon London Bus Simulator) - DRIVE THE BUS. Hold the card for the accelerator, let go to brake, and pull up inside the bus stop.
+  // =====================================================================
+  const BUS = { run:false, held:false };
+  function busFinale(cleanup){
+    if(!guard(4200, () => {
+      playFile('media/reasons/bing_chilling.mp3', 1);
+      noise(0.7, 0.2, 5000, 1800); tone(660, 0.1, 0.4, 'sine', 0.12);
+      const t = place(mk('fx-big', 'ayup, ta-ra 🚌')); t.style.color = '#fff3c4'; t.style.textShadow = '0 0 24px rgba(200,148,58,.9)';
+      rain(['🚌', '🚏', '☕', '🇬🇧'], 30);
+      wait(3600, () => { t.remove(); cleanup(); win('bingchill'); });
+    })) cleanup();
+  }
+  DRAG.bingchill = (e, card) => {
+    if(busy || PageEggs.isOpen()) return;
+    BUS.held = true;
+    track(e, card, () => {}, () => { BUS.held = false; });
+    if(BUS.run) return;
+    BUS.run = true;
+    const w = innerWidth, stopX = w * 0.72;
+    const road = place(mk('bus-road')), zone = place(mk('bus-zone')), stop = place(mk('bus-stop', '🚏')), bus = place(mk('bus', '🚌')), hint = place(mk('bus-hint', 'hold to drive · let go to brake · stop at the 🚏'));
+    zone.style.left = (stopX - 55) + 'px'; stop.style.left = stopX + 'px';
+    let x = -30, v = 0, started = false, idle = null, last = performance.now(), lastTick = 0, over = false;
+    const cleanup = () => { over = true; [road, zone, stop, bus, hint].forEach(n => n.remove()); BUS.run = false; };
+    const loop = now => {
+      if(over) return;
+      const dt = Math.min(0.05, (now - last) / 1000); last = now;
+      if(BUS.held){ v = Math.min(520, v + 280 * dt); started = true; hint.style.opacity = 0; } else v = Math.max(0, v - 420 * dt);
+      x += v * dt; bus.style.transform = 'translateX(' + (x - 24) + 'px) scaleX(-1)';
+      zone.classList.toggle('in', Math.abs(x - stopX) <= 55);
+      if(v > 5 && now - lastTick > 110){ lastTick = now; tone(55 + v * 0.12, 0, 0.1, 'sawtooth', 0.04); }
+      if(started && v === 0 && !BUS.held){
+        if(Math.abs(x - stopX) <= 55){ over = true; return busFinale(cleanup); }
+        if(x > stopX + 55){ PageEggs.toast('you missed your stop ♡ back to the depot', 2800); tone(220, 0, 0.4, 'sawtooth', 0.1, 120); return cleanup(); }
+        if(!idle) idle = now; else if(now - idle > 6000) return cleanup();
+      } else idle = null;
+      if(x > w + 60){ PageEggs.toast('you missed your stop ♡ back to the depot', 2800); return cleanup(); }
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
   };
+
+  // =====================================================================
+  // 3. YEAH. - NOD ALONG. Drag the card up and down a few times, like you're agreeing with it.
+  // =====================================================================
+  DRAG.yeah = (e, card) => {
+    const sy = e.clientY; let last = sy, dir = 0, seg = 0, rev = 0, fired = false;
+    track(e, card, ev => {
+      const dy = ev.clientY - last; last = ev.clientY; const d = Math.sign(dy);
+      if(d && dir && d !== dir){ if(seg > 14){ rev++; tone(200 + rev * 40, 0, 0.14, 'sine', 0.2, 150); } seg = 0; }
+      if(d){ dir = d; seg += Math.abs(dy); }
+      card.style.transition = 'none'; card.style.transform = 'translateY(' + Math.max(-26, Math.min(26, (ev.clientY - sy) * 0.5)) + 'px)';
+      if(!fired && rev >= 4){ fired = true; yeahFinale(); }
+    }, () => spring(card, 400));
+  };
+
+  // =====================================================================
+  // 4. LOVE YOU BESTIE - DRAW A HEART anywhere on screen while holding the card. Any loop-ish heart shape counts.
+  // =====================================================================
+  function loopBox(pts){
+    if(pts.length < 12) return null;
+    let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9, len = 0;
+    pts.forEach((p, i) => { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); if(i) len += Math.hypot(p[0] - pts[i - 1][0], p[1] - pts[i - 1][1]); });
+    const W = x1 - x0, H = y1 - y0; if(W < 60 || H < 60 || len < 220) return null;
+    const asp = W / H; if(asp < 0.55 || asp > 1.9) return null;
+    const f = pts[0], l = pts[pts.length - 1]; if(Math.hypot(f[0] - l[0], f[1] - l[1]) > 0.4 * Math.max(W, H)) return null;
+    const s = [pts[0]]; pts.forEach(p => { const q = s[s.length - 1]; if(Math.hypot(p[0] - q[0], p[1] - q[1]) >= 10) s.push(p); });
+    let turn = 0;
+    for(let i = 2; i < s.length; i++){
+      const a1 = Math.atan2(s[i - 1][1] - s[i - 2][1], s[i - 1][0] - s[i - 2][0]), a2 = Math.atan2(s[i][1] - s[i - 1][1], s[i][0] - s[i - 1][0]);
+      let d = a2 - a1; while(d > Math.PI) d -= 2 * Math.PI; while(d < -Math.PI) d += 2 * Math.PI; turn += d;
+    }
+    if(Math.abs(turn) < 4.4 || Math.abs(turn) > 8.8) return null;
+    return { cx:(x0 + x1) / 2, cy:(y0 + y1) / 2, size:Math.max(W, H), len };
+  }
+  DRAG.loveyou = (e, card) => {
+    const cv = document.createElement('canvas'); cv.className = 'heart-cv'; cv.width = innerWidth; cv.height = innerHeight; place(cv);
+    const ctx = cv.getContext('2d'); ctx.strokeStyle = 'rgba(232,120,110,.95)'; ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.shadowColor = 'rgba(232,120,110,.9)'; ctx.shadowBlur = 14;
+    const pts = [[e.clientX, e.clientY]];
+    track(e, card, ev => {
+      const l = pts[pts.length - 1]; ctx.beginPath(); ctx.moveTo(l[0], l[1]); ctx.lineTo(ev.clientX, ev.clientY); ctx.stroke(); pts.push([ev.clientX, ev.clientY]);
+    }, () => {
+      const b = loopBox(pts);
+      if(b){ cv.remove(); heartFinale(b); return; }
+      cv.style.transition = 'opacity .5s'; cv.style.opacity = 0; wait(600, () => cv.remove());
+      let len = 0; pts.forEach((p, i) => { if(i) len += Math.hypot(p[0] - pts[i - 1][0], p[1] - pts[i - 1][1]); });
+      if(len > 200) PageEggs.toast('so close ♡ big loop, ends meeting up', 2600);
+    });
+  };
+
+  // =====================================================================
+  // 5. PHAS MONDAY - KNOCK THREE TIMES. Something answers and kills the lights. Hunt it with the torch: the EMF reader beeps faster the closer you get.
+  // =====================================================================
+  const knock = () => { tone(130, 0, 0.14, 'sine', 0.5, 60); noise(0.09, 0.35, 500, 200); };
+  TAP.phas = card => {
+    if(busy || PageEggs.isOpen()) return;
+    knock(); bump(card, 'shake', 500);
+    const now = Date.now(); busyKnock = busyKnock.filter(t => now - t < 2400); busyKnock.push(now);
+    if(busyKnock.length >= 3){ busyKnock = []; wait(800, () => hunt(card)); }
+  };
+  function hunt(card){
+    if(busy || PageEggs.isOpen()) return; busy = true;
+    const w = innerWidth, h = innerHeight, r = card.getBoundingClientRect();
+    let px = r.left + r.width / 2, py = r.top + r.height / 2, over = false, near = 0; const t0 = Date.now();
+    const dark = place(mk('flash-dark')); dark.append(mk('fl-msg', 'something answered... find it'));
+    const setLight = () => { dark.style.setProperty('--x', px + 'px'); dark.style.setProperty('--y', py + 'px'); }; setLight();
+    const ghost = place(mk('hunt-ghost', '👻'));
+    const moveGhost = () => ghost.style.transform = 'translate(' + (40 + Math.random() * (w - 120)) + 'px,' + (90 + Math.random() * (h - 200)) + 'px)';
+    ghost.style.transition = 'none'; moveGhost(); void ghost.offsetWidth; ghost.style.transition = '';
+    const gIv = setInterval(moveGhost, 3500);
+    const mv = ev => { px = ev.clientX; py = ev.clientY; setLight(); };
+    addEventListener('pointermove', mv); addEventListener('pointerdown', mv);
+    const dist = () => { const g = ghost.getBoundingClientRect(); return Math.hypot(px - (g.left + g.width / 2), py - (g.top + g.height / 2)); };
+    const beep = () => { if(over) return; const d = dist(); tone(500 + Math.max(0, 500 - d) * 1.4, 0, 0.07, 'square', 0.05); wait(Math.max(100, Math.min(1300, 110 + d * 1.6)), beep); };
+    wait(1000, beep);
+    const chk = setInterval(() => {
+      if(over) return; near = dist() < 60 ? near + 100 : 0;
+      if(near >= 600) end(true); else if(Date.now() - t0 > 30000) end(false);
+    }, 100);
+    function end(caught){
+      over = true; clearInterval(chk); clearInterval(gIv); removeEventListener('pointermove', mv); removeEventListener('pointerdown', mv); ghost.remove(); dark.remove();
+      if(caught) jumpscare(); else { busy = false; PageEggs.toast('it got bored and left ♡ knock again to retry', 3200); }
+    }
+  }
+
+  // =====================================================================
+  // 6. THANK YOU - SQUISH IT. Press and hold to squash the card flat, then let go and Squaishey springs out to deliver it.
+  // =====================================================================
+  DRAG.thanks = (e, card) => {
+    const t0 = performance.now(); let p = 0, lastSq = 0;
+    const iv = setInterval(() => {
+      p = Math.min(1, (performance.now() - t0) / 1000);
+      card.style.transition = 'none'; card.style.transform = 'scale(' + (1 + p * 0.1) + ',' + (1 - p * 0.45) + ')';
+      if(performance.now() - lastSq > 160){ lastSq = performance.now(); tone(300 + p * 500, 0, 0.1, 'sine', 0.07); }
+    }, 40);
+    track(e, card, () => {}, () => {
+      clearInterval(iv); spring(card, 700);
+      if(p >= 0.85){ tone(200, 0, 0.3, 'sine', 0.2, 900); wait(120, () => deliver(card)); } else tone(500, 0, 0.1, 'triangle', 0.06);
+    });
+  };
+
+  // =====================================================================
+  // 7. WELL, MEN EXIST - SWIPE LEFT. Dating-app style. Swipe it the wrong way and it questions you.
+  // =====================================================================
+  DRAG.wellmen = (e, card) => {
+    const sx = e.clientX; let dx = 0; const st = mk('swipe-stamp'); card.appendChild(st);
+    track(e, card, ev => {
+      dx = ev.clientX - sx; card.style.transition = 'none'; card.style.transform = 'translateX(' + dx + 'px) rotate(' + (dx * 0.04) + 'deg)';
+      if(dx < -30){ st.textContent = 'NOPE'; st.className = 'swipe-stamp nope'; st.style.opacity = Math.min(1, (-dx - 30) / 80); }
+      else if(dx > 30){ st.textContent = 'LIKE?'; st.className = 'swipe-stamp like'; st.style.opacity = Math.min(1, (dx - 30) / 80); }
+      else st.style.opacity = 0;
+    }, () => {
+      st.remove();
+      if(dx < -110){
+        card.style.transition = 'transform .45s ease-in, opacity .45s'; card.style.transform = 'translateX(-120vw) rotate(-30deg)'; card.style.opacity = 0;
+        cascade(() => { card.style.transition = 'transform .7s cubic-bezier(.34,1.5,.5,1), opacity .5s'; card.style.transform = ''; card.style.opacity = ''; wait(800, () => { card.style.transition = ''; }); });
+      } else if(dx > 110){
+        noise(0.3, 0.3, 4000, 300); tone(900, 0, 0.3, 'sawtooth', 0.12, 110); spring(card, 500);
+        PageEggs.toast('...are you sure? try the other way ♡', 2800);
+      } else spring(card, 500);
+    });
+  };
+
+  // =====================================================================
+  // 8. NUMBER ONE ANN FAN - WAVE THE FOAM FINGER. Hold the card and swirl your pointer in circles around it. Three full laps and the crowd erupts.
+  // =====================================================================
+  DRAG.fan = (e, card) => {
+    const r = card.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2, hand = place(mk('fan-hand', '☝️'));
+    let prev = null, total = 0, rots = 0, fired = false;
+    const upd = ev => { hand.style.transform = 'translate(' + (ev.clientX - 24) + 'px,' + (ev.clientY - 30) + 'px) rotate(' + Math.max(-40, Math.min(40, (ev.clientX - cx) * 0.2)) + 'deg)'; };
+    upd(e);
+    track(e, card, ev => {
+      upd(ev);
+      const dx = ev.clientX - cx, dy = ev.clientY - cy; if(Math.hypot(dx, dy) < 25) return;
+      const a = Math.atan2(dy, dx);
+      if(prev !== null){ let d = a - prev; if(d > Math.PI) d -= 2 * Math.PI; if(d < -Math.PI) d += 2 * Math.PI; total += d; }
+      prev = a;
+      const k = Math.floor(Math.abs(total) / (2 * Math.PI));
+      if(k > rots){ rots = k; noise(0.7, 0.1 + 0.07 * k, 1200, 2200); tone(440 + k * 110, 0, 0.25, 'triangle', 0.12); }
+      if(!fired && Math.abs(total) >= 6 * Math.PI){ fired = true; fanFinale(); }
+    }, () => hand.remove());
+  };
+
+  // =====================================================================
+  // 9. ACROSS THE SEA - FLY THE PLANE. Hold the card and drag a little plane clear across the screen over the sea. Let go early and it goes in the drink.
+  // =====================================================================
+  DRAG.sea = (e, card) => {
+    const sx = e.clientX, need = Math.max(260, innerWidth * 0.6), pl = place(mk('plane', '✈️')), band = place(mk('sea-band'));
+    band.textContent = '🌊'.repeat(14);
+    let cx = e.clientX, cy = e.clientY, fired = false, lastH = 0;
+    const put = (x, y, flip) => { pl.style.transform = 'translate(' + (x - 20) + 'px,' + (y - 20) + 'px) scaleX(' + (flip ? -1 : 1) + ')'; };
+    const heart = (x, y) => { const hh = mk('trail-h', '♡'); hh.style.left = x + 'px'; hh.style.top = y + 'px'; place(hh); wait(1700, () => hh.remove()); };
+    put(cx, cy, false);
+    track(e, card, ev => {
+      if(fired) return;
+      cx = ev.clientX; cy = ev.clientY; put(cx, cy, cx < sx);
+      if(performance.now() - lastH > 70){ lastH = performance.now(); heart(cx, cy + 10); }
+      if(Math.abs(cx - sx) >= need){
+        fired = true;
+        guard(4200, () => {
+          const dir = cx < sx ? -1 : 1;
+          pl.style.transition = 'transform 1.2s ease-in'; pl.style.transform = 'translate(' + (cx + dir * innerWidth) + 'px,' + (cy - 120) + 'px) scaleX(' + (dir < 0 ? -1 : 1) + ')';
+          const lab = place(mk('fx-big', 'UK ✈ you ♡')); lab.style.color = '#fff3c4';
+          [523, 659, 784, 1046].forEach((f, i) => tone(f, i * 0.1, 0.4, 'triangle', 0.13));
+          wait(1300, () => pl.remove()); wait(4200, () => { lab.remove(); band.remove(); win('sea'); });
+        });
+        if(!busy) { /* guard refused (busy); just tidy up */ }
+      }
+    }, () => {
+      if(fired) return;
+      pl.style.transition = 'transform .8s ease-in, opacity .8s'; pl.style.opacity = 0; pl.style.transform = 'translate(' + (cx - 20) + 'px,' + (cy + 420) + 'px) rotate(160deg)';
+      tone(500, 0, 0.5, 'sine', 0.12, 120); band.style.transition = 'opacity .6s'; band.style.opacity = 0;
+      wait(900, () => { pl.remove(); band.remove(); });
+    });
+  };
+
+  // =====================================================================
+  // 10. GBING GBONG ENERGY - COPY THE RHYTHM. The card plays a pattern (left half = gbing, right half = gbong). Tap it back. Wrong note and it starts over.
+  // =====================================================================
+  const EN = { mode:'idle', seq:[], i:0, timer:null };
+  const enHalves = card => { if(!card.querySelector('.en-l')){ const l = mk('en-half en-l'), r = mk('en-half en-r'); l.dataset.w = 'gbing'; r.dataset.w = 'gbong'; card.append(l, r); } return [card.querySelector('.en-l'), card.querySelector('.en-r')]; };
+  const enNote = (card, s) => { const h = enHalves(card)[s]; h.classList.add('on'); if(s){ tone(196, 0, 0.45, 'sine', 0.3, 150); } else { tone(880, 0, 0.35, 'triangle', 0.2); tone(1760, 0, 0.2, 'sine', 0.05); } wait(280, () => h.classList.remove('on')); };
+  function enDemo(card){
+    EN.mode = 'demo'; EN.i = 0; clearTimeout(EN.timer);
+    if(!EN.seq.length){ do{ EN.seq = Array.from({ length:5 }, () => Math.random() < 0.5 ? 0 : 1); }while(EN.seq.every(v => v === EN.seq[0])); }
+    EN.seq.forEach((s, i) => wait(500 + i * 650, () => enNote(card, s)));
+    wait(500 + EN.seq.length * 650, () => { EN.mode = 'input'; EN.i = 0; EN.timer = setTimeout(() => { EN.mode = 'idle'; }, 9000); });
+  }
+  DRAG.energy = (e, card) => {
+    if(EN.mode === 'idle'){ enDemo(card); return; }
+    if(EN.mode !== 'input') return;
+    const r = card.getBoundingClientRect(), s = (e.clientX - r.left) < r.width / 2 ? 0 : 1;
+    enNote(card, s); clearTimeout(EN.timer); EN.timer = setTimeout(() => { EN.mode = 'idle'; }, 9000);
+    if(s !== EN.seq[EN.i]){
+      EN.mode = 'demo'; tone(110, 0, 0.45, 'sawtooth', 0.15, 70); bump(card, 'shake', 800);
+      wait(900, () => enDemo(card)); return;
+    }
+    EN.i++;
+    if(EN.i >= EN.seq.length){ EN.mode = 'done'; clearTimeout(EN.timer); wait(500, () => energyFinale(card, () => { EN.mode = 'idle'; EN.seq = []; })); }
+  };
+
   document.querySelectorAll('.reason-card[data-fx]').forEach(c => { if(TAP[c.dataset.fx]) c.dataset.tap = '1'; });
 
   // ---- delegated pointer handling ----
