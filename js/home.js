@@ -293,6 +293,7 @@ const BADGES = [
     title: lv => ['Pen Pal', 'Postmaster', 'Postmaster General'][lv - 1],
     next: lv => BDG_LEDGER_STEPS[lv] ? BDG_LEDGER_STEPS[lv] + ' months stamped' : null,
     info: lv => [
+      'Three different months stamped in the ledger. Here`s to three more brilliant months of fun..',
       'Six different months stamped in the ledger. You keep turning up, month after month, like a proper pen pal.<br><br>Letters are better when they keep arriving.',
       'Twelve months. A whole year of postmarks, and every single one is you showing up.<br><br>I am officially promoting you to Postmaster.',
       'Twenty-four months of postmarks. Two whole years of you turning up.<br><br>Postmaster General, with all the honour and absolutely no extra pay.'
