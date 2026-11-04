@@ -16,21 +16,21 @@ const TOTAL_GIFTS = 41;
 
 // Which gift-stop IDs unlock which pages (matches STOPS in gifts_ann_2026_birthday.html)
 const PAGE_UNLOCKS = {
-  'gifts_ann_2026_birthday.html': 0,
-  'our_journey.html':      2,
-  'tier_list.html':        6,
-  'us.html':               13,
-  'reasons.html':          21,
-  'passport.html':         29,
-  'postcard_gallery.html': 37,
-  'letters_archive.html':  40,
-  'quiz.html':             41,
-  'the_end.html':          41,
+  'birthday_2026_gifts.html':     0,
+  'our_journey.html':             2,
+  'tier_list.html':               6,
+  'us.html':                      13,
+  'reasons.html':                 21,
+  'passport.html':                29,
+  'postcard_gallery.html':        37,
+  'letters_archive.html':         40,
+  'birthday_2026_quiz.html':      41,
+  'birthday_2026_thank_you.html': 41,
 };
 
 // ORDER OF THINGS: membership page (always open) -> contract (once a membership is chosen)
 // -> everything below (once YOUR half of the contract is signed).
-const CONTRACT_GATED = ['countdown.html', 'birthday_2026.html', 'gifts_ann_2026_birthday.html'];
+const CONTRACT_GATED = ['countdown.html', 'birthday_2026.html', 'birthday_2026_gifts.html'];
 
 /* --------------------------------------------------------------------------
    THE NAV. Order here = order on screen.
@@ -88,11 +88,11 @@ const NAV = [
     glyph: '✦',
     blurb: 'the whole experience',
     items: [
-      { href: 'countdown.html',           label: 'The Showcase' },
+      { href: 'birthday_2026_showcase.html',  label: 'The Showcase' },
       { href: 'birthday_2026.html',           label: 'Gift Box Entry' },
-      { href: 'gifts_ann_2026_birthday.html', label: 'Gifts' },
-      { href: 'quiz.html',                    label: 'Quiz' },
-      { href: 'the_end.html',                 label: 'Thank You' },
+      { href: 'birthday_2026_gifts.html',     label: 'Gifts' },
+      { href: 'birthday_2026_quiz.html',      label: 'Quiz' },
+      { href: 'birthday_2026_thank_you.html', label: 'Thank You' },
     ],
   },
 ];
