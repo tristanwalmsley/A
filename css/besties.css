@@ -15,16 +15,8 @@ linear-gradient(160deg, #fdf7ea 0%, var(--cream) 45%, var(--warm) 100%);
 font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden}
 body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.6}
 
-/* dropdown nav colours (read by nav.js) */
-:root{--nav-menu-bg:var(--paper);--nav-menu-fg:var(--brown);--nav-menu-border:var(--tan);--nav-menu-hover:var(--warm);--nav-accent:var(--gold)}
 
 /* NAV */
-nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--tan);background:var(--paper);position:sticky;top:0;z-index:500;flex-wrap:wrap;gap:0.5rem}
-.nav-brand{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--rose);font-weight:700;text-decoration:none}
-.nav-links{display:flex;gap:0.8rem;flex-wrap:wrap}
-.nav-a{font-family:'Caveat',cursive;font-size:0.9rem;color:var(--brown);text-decoration:none;padding:0.25rem 0.6rem;border-radius:2px;transition:color 0.2s,background 0.2s;letter-spacing:0.5px;white-space:nowrap}
-.nav-a:hover{color:var(--deep);background:var(--warm)}
-.nav-a.current{color:var(--deep);font-weight:700;border-bottom:2px solid var(--gold)}
 
 /* LOADING SCREEN */
 #loading-screen{position:fixed;inset:0;background:var(--deep);z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1.5rem;transition:opacity 0.8s ease}
