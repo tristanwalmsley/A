@@ -12,14 +12,6 @@
 html{scroll-behavior:smooth}
 body{background:var(--cream);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden}
 body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.6}
-nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--tan);background:var(--paper);position:sticky;top:0;z-index:500;flex-wrap:wrap;gap:0.5rem}
-.nav-brand{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--rose);font-weight:700;text-decoration:none}
-.nav-links{display:flex;gap:0.8rem;flex-wrap:wrap}
-.nav-a{font-family:'Caveat',cursive;font-size:0.9rem;color:var(--brown);text-decoration:none;padding:0.25rem 0.6rem;border-radius:2px;transition:color 0.2s,background 0.2s;letter-spacing:0.5px;white-space:nowrap}
-.nav-a:hover{color:var(--deep);background:var(--warm)}
-.nav-a.current{color:var(--deep);font-weight:700;border-bottom:2px solid var(--gold)}
-.nav-a.locked{color:rgba(58,32,16,0.25);cursor:not-allowed;pointer-events:none}
-.nav-a.locked::after{content:'✦';font-size:0.5rem;position:absolute;top:-2px;right:-2px;color:var(--tan)}
 .page-header{text-align:center;padding:3rem 2rem 0.5rem;animation:headerIn 0.7s ease both}
 @keyframes headerIn{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
 .page-header h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:400;font-style:italic;color:var(--deep)}
@@ -45,11 +37,13 @@ nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-be
 .pred-text{font-size:0.97rem;line-height:1.65;color:var(--deep)}
 .pred-text.checked-text{text-decoration:line-through;color:var(--brown);font-style:italic}
 .pred-note{font-family:'Caveat',cursive;font-size:0.82rem;color:var(--rose);margin-top:0.2rem;letter-spacing:0.3px}
+.pred-by{font-family:'Caveat',cursive;font-size:0.85rem;color:var(--sage);margin-top:0.15rem;letter-spacing:0.3px}
+.pred-checkbox.busy{opacity:0.5;pointer-events:none}
 .preds-note{font-family:'Caveat',cursive;font-size:0.9rem;color:var(--brown);margin-top:1.2rem;font-style:italic;text-align:center;letter-spacing:0.5px}
 </style>
 </head>
 <body>
-<nav id="site-nav">
+<nav id="site-nav" data-theme="light">
   <a href="index.html" class="nav-brand">Besties ♡</a>
   <div class="nav-links"></div>
 </nav>
@@ -71,9 +65,10 @@ nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-be
   <p class="preds-note">made Apr 2026 · check back throughout the year</p>
 </div>
 
+<script src="js/bestie_storage.js"></script>
 <script src="js/nav.js"></script>
 <script>
-window.addEventListener('DOMContentLoaded', () => { buildNav('extras.html'); buildFacts(); buildPredictions(); });
+window.addEventListener('DOMContentLoaded', () => { buildNav('us.html'); buildFacts(); buildPredictions(); });
 
 const FACTS = [
   {num:'3.6',  label:'years of bestieship'},
@@ -99,47 +94,68 @@ function buildFacts(){
   document.querySelectorAll('.fact-card').forEach(el=>obs.observe(el));
 }
 
-const PREDS_KEY='ann_predictions_2025';
+// Ticks are SHARED between you both (stored on the server via /api/prediction, same record for each of you).
+// Every prediction has a stable id, so you can reorder / add / edit the list later without shifting anyone's ticks.
+// (Keep the first 15 ids as they are - they match the old position-based ticks that were migrated across.)
 const PREDICTIONS=[
-  {text:'The plushie will make its first return journey at Christmas if Ann remembers', note:'mark this off when it arrives back!'},
-  {text:'We will have ten more calls that go on for 10+ hours, unplanned'},
-  {text:'Ann will master something new and impressive (because they always slay at everything they do)'},
-  {text:'The Dutch language learning will progress significantly by Ann\'s next birthday', note:'🇳🇱 evidence required'},
-  {text:'We will become even more inexplicably insync'},
-  {text:'We will start and maintain at least several new ongoing bits'},
-  {text:'Ann will use the biscuit tier list at least once more after today'},
-  {text:'The weekly schedule will live on another year... just about'},
-  {text:'Wren will still be missing, and probably MARRIED?'},
-  {text:'Phas Monday will continue to live on'},
-  {text:'Ours list of games to play will continue to grow'},
-  {text:'Ann will have watched the Mandalorian series'},
-  {text:'TRISTAN WILL GRADUATE FROM UNIVERSITY'},
-  {text:'The friendship will be measurably better in year four than year three'},
-  {text:'Tristan and Ann will meet for the first time IRL in The Netherlands'},
+  {id:'plushie_return', text:'The plushie will make its first return journey at Christmas if Ann remembers', note:'mark this off when it arrives back!'},
+  {id:'ten_long_calls', text:'We will have ten more calls that go on for 10+ hours, unplanned'},
+  {id:'ann_masters_something', text:'Ann will master something new and impressive (because they always slay at everything they do)'},
+  {id:'dutch_progress', text:'The Dutch language learning will progress significantly by Ann\'s next birthday', note:'🇳🇱 evidence required'},
+  {id:'more_insync', text:'We will become even more inexplicably insync'},
+  {id:'new_bits', text:'We will start and maintain at least several new ongoing bits'},
+  {id:'biscuit_tier_list', text:'Ann will use the biscuit tier list at least once more after today'},
+  {id:'weekly_schedule', text:'The weekly schedule will live on another year... just about'},
+  {id:'wren_married', text:'Wren will still be missing, and probably MARRIED?'},
+  {id:'phas_monday', text:'Phas Monday will continue to live on'},
+  {id:'games_list', text:'Ours list of games to play will continue to grow'},
+  {id:'mandalorian', text:'Ann will have watched the Mandalorian series'},
+  {id:'tristan_graduates', text:'TRISTAN WILL GRADUATE FROM UNIVERSITY'},
+  {id:'better_friendship', text:'The friendship will be measurably better in year four than year three'},
+  {id:'meet_irl', text:'Tristan and Ann will meet for the first time IRL in The Netherlands'},
 ];
+const WHO={tristan:'Tristan',ann:'Ann'};
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function sharedPreds(){
+  try{const s=JSON.parse(localStorage.getItem('besties_shared_v1'));return (s&&s.predictions)||{};}catch(e){return {};}
+}
 function buildPredictions(){
   const list=document.getElementById('pred-list');
-  let checked=[];
-  try{const p=JSON.parse(localStorage.getItem(PREDS_KEY));checked=Array.isArray(p)?p:[];}catch(e){}
   PREDICTIONS.forEach((p,i)=>{
-    const item=document.createElement('div'); item.className='prediction-item'; item.style.transitionDelay=i*0.06+'s';
-    const isChecked=checked.includes(i);
-    item.innerHTML=`<div class="pred-checkbox ${isChecked?'checked':''}" onclick="togglePred(${i},this)">${isChecked?'✓':''}</div>
-      <div><div class="pred-text ${isChecked?'checked-text':''}">${p.text}</div>${p.note?`<div class="pred-note">${p.note}</div>`:''}</div>`;
+    const item=document.createElement('div'); item.className='prediction-item'; item.dataset.id=p.id; item.style.transitionDelay=i*0.06+'s';
+    item.innerHTML=`<div class="pred-checkbox" role="checkbox" tabindex="0" aria-label="Mark as done"></div>
+      <div><div class="pred-text">${p.text}</div>${p.note?`<div class="pred-note">${p.note}</div>`:''}<div class="pred-by"></div></div>`;
+    const box=item.querySelector('.pred-checkbox');
+    box.addEventListener('click',()=>togglePred(p.id,box));
+    box.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();togglePred(p.id,box);}});
     list.appendChild(item);
   });
+  renderPreds();
   const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:0.1});
   document.querySelectorAll('.prediction-item').forEach(el=>obs.observe(el));
+  // pick up ticks the other person made while this page was open
+  const sync=()=>{if(window.BestieSync)BestieSync.refreshShared().then(renderPreds).catch(()=>{});};
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')sync();});
+  window.addEventListener('focus',sync);
+  sync();
 }
-function togglePred(idx,checkbox){
-  let checked=[];
-  try{const p=JSON.parse(localStorage.getItem(PREDS_KEY));checked=Array.isArray(p)?p:[];}catch(e){}
-  const was=checked.includes(idx);
-  if(was){checked=checked.filter(i=>i!==idx);}else{checked.push(idx);}
-  localStorage.setItem(PREDS_KEY,JSON.stringify(checked));
-  checkbox.classList.toggle('checked'); checkbox.textContent=!was?'✓':'';
-  const t=checkbox.nextElementSibling?.querySelector('.pred-text');
-  if(t)t.classList.toggle('checked-text');
+function renderPreds(){
+  const done=sharedPreds();
+  document.querySelectorAll('.prediction-item').forEach(item=>{
+    const rec=done[item.dataset.id], box=item.querySelector('.pred-checkbox');
+    box.classList.toggle('checked',!!rec); box.textContent=rec?'✓':''; box.setAttribute('aria-checked',rec?'true':'false');
+    item.querySelector('.pred-text').classList.toggle('checked-text',!!rec);
+    item.querySelector('.pred-by').textContent=rec?('✓ ticked by '+(WHO[rec.by]||esc(rec.by))):'';
+  });
+}
+async function togglePred(id,box){
+  if(!window.BestieSync){alert('Could not reach the server - try reloading the page.');return;}
+  const want=!box.classList.contains('checked');
+  box.classList.add('busy');
+  try{ await BestieSync.post('/api/prediction',{id,checked:want}); }   // post() refreshes the shared copy for us
+  catch(e){ alert('That tick didn\'t save - check your connection and try again.'); }
+  box.classList.remove('busy');
+  renderPreds();
 }
 </script>
 </body>
