@@ -131,6 +131,11 @@ h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;font-styl
 </style>
 </head>
 <body>
+<nav id="site-nav">
+  <a href="index.html" class="nav-brand">Besties ♡</a>
+  <div class="nav-links"></div>
+</nav>
+  
 <div class="wrap">
   <h1>Postcard Entry</h1>
   <p class="subtitle">add postcards one by one, then grab the code ♡</p>
@@ -324,6 +329,10 @@ h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;font-styl
 </div>
 
 <script>
+  
+<script src="js/nav.js"></script>
+<script>window.addEventListener('DOMContentLoaded',()=>buildNav('letters.html'));</script>
+  
 const EMOJIS = ['✉️','📜','🗺️','🪶','🏙️','🌉','🏘️','🌄','🍉','🍋','🐦','🐌','🌷','🌙','🕰️','🧸','👆','😂','🎨','🌸','🏰','📮','🌹','🎭','🖼️','🌿','🦋','⭐','🎪','🧡'];
 
 const COLORS = [
