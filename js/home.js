@@ -464,6 +464,7 @@ function renderResume(){
 const SETTINGS = [
   { label:'Reset data', danger:true, run(){ if(confirm('Reset ALL progress? This clears everything.')){ localStorage.clear(); location.reload(); } } },
   { label:'Reset secrets', run(){ if(confirm('Reset just the hidden secrets progress? Your gifts/letters stay untouched.')){ localStorage.removeItem('ann_eggs_found'); location.reload(); } } },
+  { label:'Migrate', run(){ location.href = '/migrate'; } },
   { label:'Log out', run(){ location.href = '/cdn-cgi/access/logout'; } },
 ];
 function initSettings(){
