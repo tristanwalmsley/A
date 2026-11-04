@@ -405,7 +405,7 @@ const STOPS = [
    desc:'A new page just unlocked: Letters.'},
 
   {id:41, kind:'unlock', icon:'✦', title:'Quiz', type:'page unlock ✦',
-   page:'quiz.html', pageLabel:'Quiz', direct:true,
+   page:'birthday_2026_quiz.html', pageLabel:'Quiz', direct:true,
    desc:'A new page just unlocked: Quiz. And that\'s everything! Go see the final message first - the quiz and everything else will still be here after.'},
 ];
 
@@ -576,7 +576,7 @@ function buildFooterForStop(s, phase) {
 
   if (isLastStop && allDone) {
     const nb = document.createElement('a');
-    nb.href = 'the_end.html'; nb.className = 'btn-modal-next'; nb.textContent = 'See the final message →';
+    nb.href = 'birthday_2026_thank_you.html'; nb.className = 'btn-modal-next'; nb.textContent = 'See the final message →';
     footer.appendChild(nb);
     return;
   }
