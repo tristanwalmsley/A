@@ -5,6 +5,29 @@
    - Any setItem/removeItem/clear is saved to the server ~2s later, and on leaving the page. */
 (function () {
   'use strict';
+  // ---- OLD SITE GUARD ----
+  // This repo also feeds the old github.io site. There, block every page except the migration page, so nobody
+  // clicks "Reset data" (or anything else) before their progress has been exported. Nothing below runs on the old site.
+  const OLD_HOST = /github\.io$/.test(location.hostname);
+  if (OLD_HOST) {
+    if (/\/migrate\.html$/.test(location.pathname)) return;
+    const show = () => {
+      document.body.inert = true;   // no clicks, no keyboard, nothing underneath
+      const o = document.createElement('div');
+      o.setAttribute('role', 'alertdialog'); o.setAttribute('aria-modal', 'true');
+      o.style.cssText = 'position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:1.5rem;background:rgba(30,10,4,.93);font-family:Georgia,serif';
+      o.innerHTML = '<div style="max-width:460px;background:#fffdf5;border:1px solid #d4b483;box-shadow:6px 6px 0 #c8943a;padding:2rem 2rem 1.6rem;text-align:center;color:#3a2010;line-height:1.55">'
+        + '<div style="font-size:2rem">⚠️</div>'
+        + '<h1 style="font-size:1.6rem;font-style:italic;font-weight:400;margin:.4rem 0 .8rem">This is the old website</h1>'
+        + '<p>The site has moved. Your progress is still saved in this browser, but only until you move it across.</p>'
+        + '<p style="margin-top:.8rem"><b>Please don\'t click around here.</b> Go to the migration page and follow the steps that were emailed to you.</p>'
+        + '<a href="migrate.html" style="display:inline-block;margin-top:1.3rem;padding:.8rem 1.6rem;background:#3a2010;color:#faf4e8;text-decoration:none;box-shadow:3px 3px 0 #c8943a">Go to the migration page →</a></div>';
+      document.documentElement.appendChild(o);
+    };
+    if (document.body) show(); else document.addEventListener('DOMContentLoaded', show);
+    return;
+  }
+
   const API = '/api/data';
   const LOCAL_ONLY = new Set(['bestie_current_user', 'besties_shared_v1']);
   let user = null, timer = null, dirty = false, loaded = false;
