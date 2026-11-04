@@ -11,7 +11,7 @@
   const KEY = 'ann_page_eggs_v1';   // { reasons:[eggIds], _order:[pageIds in the order they were completed] }
   const PAGES = {
     home:    { label:'Home',    total:9, legacyKey:'ann_eggs_found' },   // home.js sets the real total
-    reasons: { label:'Reasons', total:8 },
+    reasons: { label:'Reasons', total:11 },
   };
 
   const load = () => { try{ const d = JSON.parse(localStorage.getItem(KEY)); return (d && typeof d === 'object' && !Array.isArray(d)) ? d : {}; }catch(e){ return {}; } };
@@ -27,10 +27,11 @@
   const isDone  = page => !!PAGES[page] && count(page) >= PAGES[page].total;
   const has     = (page, id) => list(page).includes(id);
 
-  // pages that are complete, in the order they were completed (this is the order the badge animations play in)
+  // pages that are complete, in the order they were completed (this is the order the badge animations play in).
+  // Sticky on purpose: once a page has been completed it stays counted, even if more eggs are added to it later.
   function sync(){
     const d = load();
-    let o = Array.isArray(d._order) ? d._order.filter(p => PAGES[p] && isDone(p)) : [];
+    let o = Array.isArray(d._order) ? d._order.filter(p => PAGES[p]) : [];
     let changed = !Array.isArray(d._order) || o.length !== d._order.length;
     Object.keys(PAGES).forEach(p => { if(isDone(p) && !o.includes(p)){ o.push(p); changed = true; } });
     if(changed){ d._order = o; save(d); }
