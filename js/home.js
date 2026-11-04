@@ -89,23 +89,29 @@ const EGGS = {
     text:"That little heart didn't want to be caught - it's shy, same as I can be sometimes. But you cornered it anyway, patiently, until it had nowhere left to go but toward you.<br><br>That's a pretty good description of our bestieship." }
 };
 const EGG_KEYS = Object.keys(EGGS);
+PageEggs.PAGES.home.total = EGG_KEYS.length;   // keeps the shared tracker in step with this page's own eggs
 let eggsFound = [];
 try{ eggsFound = JSON.parse(localStorage.getItem('ann_eggs_found')) || []; }catch(e){ eggsFound = []; }
 
 function unlockEgg(key){
-  const wasComplete = eggsFound.length >= EGG_KEYS.length;
+  const before = PageEggs.sync().length;
   if(!eggsFound.includes(key)){
     eggsFound.push(key);
     try{ localStorage.setItem('ann_eggs_found', JSON.stringify(eggsFound)); }catch(e){}
   }
-  const justCompleted = !wasComplete && eggsFound.length >= EGG_KEYS.length;
-  // finishing the set: once she closes this last secret, the badge plays
-  if(justCompleted) afterClose = () => openBadge('secrets');
+  // finishing a page's set levels up Secret Keeper: once she closes this secret, the badge plays
+  if(PageEggs.sync().length > before) afterClose = () => { markSecretsCelebrated(); openBadge('secrets'); };
   playEggHatch(() => {
     showModal(EGGS[key].title, EGGS[key].text, EGGS[key].sig);
     launchHeartBurst();
   });
   renderBadges();
+}
+function markSecretsCelebrated(){
+  const seen = bdgJSON(BK.celebrated, {});
+  if(Array.isArray(seen)) return;
+  seen.secrets = PageEggs.sync().length;
+  try{ localStorage.setItem(BK.celebrated, JSON.stringify(seen)); }catch(e){}
 }
 // little egg-cracking flourish that plays BEFORE the message box appears
 function playEggHatch(callback){
@@ -187,27 +193,96 @@ function bdgMedal(o, glyph, at, done){
   setTimeout(() => endOverlay(o, done), at + 1900);
 }
 
-const BADGES = [
-  { id:'secrets', name:'Secret Keeper', glyph:'★',
-    hint:'find all the secrets hiding on this page',
-    earned: () => eggsFound.length >= EGG_KEYS.length,
-    info: () => 'This one is for finding every single secret hidden around this page - all ' + EGG_KEYS.length + ' of them. Poking, typing, chasing, dragging... you did it all.<br><br>Not many people would have the patience. You did.',
-    // nine eggs spin in a ring, collapse into the middle, and the badge pops out
-    play(done){
-      const o = dimOverlay();
-      const ring = document.createElement('div'); ring.className = 'sk-ring';
-      for(let i=0;i<EGG_KEYS.length;i++){
-        const s = document.createElement('span');
-        s.textContent = '🥚';
-        s.style.setProperty('--a', (i*360/EGG_KEYS.length) + 'deg');
-        ring.appendChild(s);
+
+// ---- Secret Keeper: one tier per page whose secrets are all found ----
+// Each page has its own animation. When the badge plays, EVERY completed page's animation plays in the order
+// the pages were finished, one after the other, and the newest one comes last before the medal.
+// To add a page: give it eggs (see js/eggs.js), then add an entry here with { info, anim(o, next) }.
+const SECRET_TIERS = {
+  // nine eggs spin in a ring and collapse into the middle
+  home: {
+    info: 'Every secret hiding on the home page, all ' + EGG_KEYS.length + ' of them. Poking, typing, chasing, dragging... you did it all.<br><br>Not many people would have the patience. You did.',
+    anim(o, next){
+      const ring = bdgEl('div', 'sk-ring');
+      for(let i = 0; i < EGG_KEYS.length; i++){
+        const sp = bdgEl('span', '', '🥚');
+        sp.style.setProperty('--a', (i * 360 / EGG_KEYS.length) + 'deg');
+        ring.appendChild(sp);
       }
-      const core = document.createElement('div'); core.className = 'sk-core'; core.textContent = '★';
-      o.append(ring, core);
+      o.appendChild(ring);
       setTimeout(() => ring.classList.add('collapse'), 1900);
-      setTimeout(() => { core.classList.add('in'); launchConfetti(); launchHeartBurst(); }, 2300);
-      setTimeout(launchHeartBurst, 3000);
-      setTimeout(() => endOverlay(o, done), 4200);
+      setTimeout(() => { ring.remove(); launchHeartBurst(); next(); }, 2500);
+    }
+  },
+  // a wall of reasons flips over, flies into a heart, beats three times, then bursts
+  reasons: {
+    info: 'Every secret on the reasons page: a song, a shooting star, a tin of beans, a doorbell, a 2am text and more. You read the small print of a list that was already meant to cheer you up.<br><br>There really are so many more reasons. I will keep adding them.',
+    anim(o, next){
+      const N = 48, cols = 8, rows = 6;
+      const stage = bdgEl('div', 'rw-stage');
+      const sc = Math.min(11, window.innerWidth / 38);
+      const gw = Math.min(40, window.innerWidth / 11), gh = gw * 1.3;
+      const cards = [];
+      for(let i = 0; i < N; i++){
+        const c = i % cols, r = Math.floor(i / cols);
+        const gx = (c - (cols - 1) / 2) * gw, gy = (r - (rows - 1) / 2) * gh;
+        const t = (i / N) * Math.PI * 2 + Math.PI;
+        const hx = 16 * Math.pow(Math.sin(t), 3) * sc;
+        const hy = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * sc;
+        const card = bdgEl('div', 'rw-card'), inn = bdgEl('div', 'rw-in');
+        inn.append(bdgEl('i', 'rw-b', '✦'), bdgEl('i', 'rw-f', '♡'));
+        card.appendChild(inn);
+        card.style.transform = 'translate(' + gx + 'px,' + gy + 'px) scale(0)';
+        stage.appendChild(card);
+        cards.push({ card, inn, gx, gy, hx, hy });
+      }
+      o.appendChild(stage);
+      // deal the cards in
+      requestAnimationFrame(() => requestAnimationFrame(() => cards.forEach((k, i) => {
+        k.card.style.transitionDelay = (i * 0.015) + 's';
+        k.card.style.transform = 'translate(' + k.gx + 'px,' + k.gy + 'px) scale(1) rotate(' + ((Math.random() - 0.5) * 8) + 'deg)';
+      })));
+      // a wave of flips across the wall
+      setTimeout(() => cards.forEach((k, i) => { k.inn.style.transitionDelay = ((i % cols) * 0.09 + Math.floor(i / cols) * 0.05) + 's'; k.inn.classList.add('flip'); }), 700);
+      // everything flies into a heart
+      setTimeout(() => cards.forEach((k, i) => {
+        k.card.style.transitionDuration = '1.3s'; k.card.style.transitionDelay = (i * 0.02) + 's';
+        k.card.style.transform = 'translate(' + k.hx + 'px,' + k.hy + 'px) scale(1) rotate(' + ((Math.random() - 0.5) * 30) + 'deg)';
+      }), 2100);
+      setTimeout(() => stage.classList.add('beat'), 3700);        // the heart beats
+      setTimeout(() => {                                           // and bursts
+        cards.forEach(k => {
+          const a = Math.atan2(k.hy, k.hx), d = 520 + Math.random() * 420;
+          k.card.style.transitionDuration = '.9s'; k.card.style.transitionDelay = '0s';
+          k.card.style.transform = 'translate(' + (Math.cos(a) * d) + 'px,' + (Math.sin(a) * d) + 'px) scale(.4) rotate(' + ((Math.random() - 0.5) * 900) + 'deg)';
+          k.card.style.opacity = '0';
+        });
+        launchConfetti(); launchHeartBurst();
+      }, 5100);
+      setTimeout(() => { stage.remove(); next(); }, 6000);
+    }
+  }
+};
+
+const BADGES = [
+  { id:'secrets', name:'Secret Keeper', glyph:'★', tiered:true, celebrateOnVisit:true,
+    hint:'find every secret hiding on a page',
+    level: () => PageEggs.sync().length,
+    title: lv => ['Secret Keeper', 'Secret Agent', 'Master of Mysteries', 'Keeper of Everything'][lv - 1] || ('Secret Keeper ' + lv),
+    next: lv => lv < Object.keys(PageEggs.PAGES).length ? 'find every secret on another page' : null,
+    info: lv => { const t = SECRET_TIERS[PageEggs.order()[lv - 1]]; return t ? t.info : 'Every secret on another page, found.'; },
+    // every completed page's animation plays in turn (oldest first); the newest is last, then the medal
+    play(done, lv){
+      const o = dimOverlay();
+      const pages = PageEggs.order().slice();
+      const step = () => {
+        const t = pages.length ? SECRET_TIERS[pages.shift()] : null;
+        if(t) return t.anim(o, step);
+        if(pages.length) return step();
+        if(lv > 1) o.appendChild(bdgEl('div', 'sk-lv', 'level ' + lv));
+        bdgMedal(o, '★', 200, done);
+      };
+      setTimeout(step, 500);
     } },
 
   // Earned on the gifts page, so it can't pop up in the moment like the secrets one.
@@ -500,7 +575,7 @@ function openBadge(id){
 function renderBadges(){
   const row = $('badge-row');
   if(!row) return;
-  $('secrets-count').textContent = eggsFound.length + ' / ' + EGG_KEYS.length;
+  $('secrets-count').textContent = PageEggs.foundTotal() + ' / ' + PageEggs.grandTotal();
   row.innerHTML = '';
   // badges she hasn't earned yet are not shown at all
   BADGES.forEach(bd => {
@@ -811,7 +886,7 @@ function renderResume(){
 // ---------- SETTINGS (drop-up). Add an entry to SETTINGS to add a menu item ----------
 const SETTINGS = [
   { label:'Reset data', danger:true, run(){ if(confirm('Reset ALL progress? This clears everything.')){ localStorage.clear(); location.reload(); } } },
-  { label:'Reset secrets', run(){ if(confirm('Reset just the hidden secrets progress? Your gifts/letters stay untouched.')){ localStorage.removeItem('ann_eggs_found'); location.reload(); } } },
+  { label:'Reset secrets', run(){ if(confirm('Reset just the hidden secrets progress? Your gifts/letters stay untouched.')){ localStorage.removeItem('ann_eggs_found'); localStorage.removeItem('ann_page_eggs_v1'); try{ const c = bdgJSON(BK.celebrated, {}); if(!Array.isArray(c)){ delete c.secrets; localStorage.setItem(BK.celebrated, JSON.stringify(c)); } }catch(e){} location.reload(); } } },
   { label:'Migrate', run(){ location.href = '/migrate'; } },
   { label:'Log out', run(){ location.href = '/cdn-cgi/access/logout'; } },
 ];
@@ -837,6 +912,13 @@ function daysSinceMet(){
 }
 window.addEventListener('DOMContentLoaded', () => {
   initAmbientWash();
+  PageEggs.sync();
+  (function(){   // anyone who already finished the home eggs has seen that animation: don't replay it as a 'new' level
+    const seen = bdgJSON(BK.celebrated, {});
+    if(!Array.isArray(seen) && seen.secrets === undefined && eggsFound.length >= EGG_KEYS.length){
+      seen.secrets = 1; try{ localStorage.setItem(BK.celebrated, JSON.stringify(seen)); }catch(e){}
+    }
+  })();
   let introSeen = false; try{ introSeen = !!sessionStorage.getItem('besties_intro_seen'); }catch(e){}
   const ls = $('loading-screen');
   if(introSeen){ ls.style.display = 'none'; }
