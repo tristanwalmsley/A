@@ -117,6 +117,56 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .const-label{position:fixed;left:50%;top:50%;z-index:58;transform:translate(-50%,-50%);font-family:'Caveat',cursive;font-size:2rem;color:#faf4e8;text-shadow:0 0 18px rgba(255,215,106,.9);opacity:0;transition:opacity 1.2s;pointer-events:none;text-align:center;white-space:nowrap}
 .const-label.in{opacity:1}
 .const-label.out{opacity:0}
+/* ---- MORE EASTER EGGS ---- */
+.reason-card[data-fx][data-tap].revealed{touch-action:auto}
+.fx-big{position:fixed;left:50%;top:42%;z-index:59;transform:translate(-50%,-50%);font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(2.4rem,11vw,6rem);color:#fff;text-shadow:0 0 24px rgba(160,220,255,.9);pointer-events:none;white-space:nowrap;text-align:center;animation:fxBig 3.2s ease forwards}
+@keyframes fxBig{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}12%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}22%{transform:translate(-50%,-50%) scale(1)}85%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.1)}}
+.frost{position:fixed;inset:0;z-index:57;pointer-events:none;background:radial-gradient(ellipse at center,rgba(170,225,255,0) 30%,rgba(140,205,255,.55) 100%);animation:frostIn 4s ease forwards}
+@keyframes frostIn{0%{opacity:0}20%{opacity:1}80%{opacity:1}100%{opacity:0}}
+.fx-yeah{position:fixed;left:50%;top:45%;z-index:59;transform:translate(-50%,-50%);font-family:'Playfair Display',serif;font-weight:700;font-size:clamp(4rem,26vw,15rem);color:var(--gold);-webkit-text-stroke:3px var(--deep);text-shadow:8px 8px 0 var(--brown);pointer-events:none;animation:yeahSlam 1.9s ease forwards}
+@keyframes yeahSlam{0%{opacity:0;transform:translate(-50%,-50%) scale(4) rotate(-8deg)}10%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(-4deg)}80%{opacity:1;transform:translate(-50%,-50%) scale(1.04) rotate(-4deg)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.1) rotate(-4deg)}}
+.fx-shades{position:fixed;left:50%;top:18%;z-index:60;font-size:clamp(3rem,14vw,7rem);pointer-events:none;transform:translateX(-50%);animation:shadesDrop 1.9s ease forwards}
+@keyframes shadesDrop{0%{opacity:0;transform:translate(-50%,-200px)}20%{opacity:1;transform:translate(-50%,0)}80%{opacity:1}100%{opacity:0}}
+.muscle-ov{position:fixed;inset:0;z-index:62;pointer-events:none;overflow:hidden;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,#f6d27a,#c8943a 60%,#7a5230);animation:musBg 3.3s ease forwards}
+@keyframes musBg{0%{opacity:0}6%{opacity:1}88%{opacity:1}100%{opacity:0}}
+.muscle-ov .arm{font-size:max(125vw,125vh);line-height:1;animation:musArm 3.3s ease forwards}
+@keyframes musArm{0%{transform:scale(.05) rotate(-35deg)}20%{transform:scale(1) rotate(0)}30%{transform:scale(1.13)}40%{transform:scale(1)}50%{transform:scale(1.13)}60%{transform:scale(1)}70%{transform:scale(1.13)}85%{transform:scale(1.02)}100%{transform:scale(1.25)}}
+.muscle-ov .mus-txt{position:absolute;left:0;right:0;bottom:7%;text-align:center;font-family:'Playfair Display',serif;font-weight:700;font-size:clamp(1.8rem,8vw,4.5rem);letter-spacing:4px;color:#fff;-webkit-text-stroke:2px var(--deep);text-shadow:5px 5px 0 var(--deep)}
+.flash-dark{--x:50%;--y:50%;position:fixed;inset:0;z-index:60;pointer-events:none;background:radial-gradient(circle 120px at var(--x) var(--y),rgba(0,0,0,0) 0,rgba(0,0,0,.35) 60%,rgba(0,0,0,.97) 100%);animation:flick .9s steps(1) forwards}
+@keyframes flick{0%{opacity:0}10%{opacity:1}20%{opacity:.1}30%{opacity:1}40%{opacity:0}55%{opacity:1}65%{opacity:.3}100%{opacity:1}}
+.flash-dark .fl-msg{position:absolute;left:0;right:0;top:12%;text-align:center;font-family:'Caveat',cursive;font-size:1.6rem;color:rgba(250,244,232,.6);letter-spacing:2px;animation:flMsg 2.4s ease-in-out infinite}
+@keyframes flMsg{0%,100%{opacity:.2}50%{opacity:.9}}
+.scare{position:fixed;inset:0;z-index:6000;background:#000;display:flex;align-items:center;justify-content:center;pointer-events:none;overflow:hidden}
+.scare svg{width:min(90vw,90vh);height:auto;filter:drop-shadow(0 0 40px rgba(180,230,255,.8));animation:scareZoom .9s cubic-bezier(.1,.9,.2,1) forwards,scareShake .07s linear infinite}
+@keyframes scareZoom{0%{transform:scale(.15)}12%{transform:scale(1.35)}100%{transform:scale(1.8)}}
+@keyframes scareShake{0%,100%{margin:0}25%{margin:-12px 10px}50%{margin:10px -12px}75%{margin:-8px -8px}}
+.sq-wrap{position:fixed;left:50%;bottom:0;margin-left:-90px;width:180px;z-index:59;pointer-events:none;animation:sqWalk 6.6s ease-in-out forwards}
+@keyframes sqWalk{0%{transform:translateX(-85vw)}24%{transform:translateX(0)}80%{transform:translateX(0)}100%{transform:translateX(85vw)}}
+.sq-body{transform-origin:50% 100%;animation:sqHop .45s ease-in-out infinite alternate}
+.sq-body img,.sq-body svg{display:block;width:180px;height:auto}
+@keyframes sqHop{0%{transform:translateY(0) scale(1.08,.9)}100%{transform:translateY(-14px) scale(.94,1.08)}}
+.sq-sign{position:absolute;left:50%;bottom:calc(100% + 6px);width:230px;margin-left:-115px;padding:.7rem .5rem;background:var(--paper);border:2px solid var(--tan);box-shadow:4px 4px 0 var(--brown);text-align:center;font-family:'Caveat',cursive;font-size:2.1rem;font-weight:700;color:var(--rose);line-height:1.05;opacity:0;transform:rotate(-3deg) scale(.6);animation:sqSign .6s cubic-bezier(.34,1.6,.5,1) 1.7s forwards}
+.sq-sign small{display:block;font-size:1.1rem;font-weight:400;color:var(--brown);margin-top:.2rem}
+@keyframes sqSign{to{opacity:1;transform:rotate(-3deg) scale(1)}}
+.dlg{position:fixed;z-index:62;width:min(78vw,300px);background:#ece9d8;border:2px solid #fff;border-right-color:#5a5a5a;border-bottom-color:#5a5a5a;box-shadow:3px 3px 0 rgba(0,0,0,.4);font-family:Tahoma,Verdana,sans-serif;font-size:.85rem;color:#000;pointer-events:none}
+.dlg-t{background:linear-gradient(90deg,#0a246a,#a6caf0);color:#fff;padding:.2rem .4rem;font-weight:700;display:flex;justify-content:space-between}
+.dlg-b{padding:.8rem;display:flex;gap:.6rem;align-items:flex-start}
+.dlg-i{font-size:1.6rem;line-height:1}
+.dlg-btn{display:block;margin:0 auto .7rem;padding:.15rem 1.4rem;border:2px solid #fff;border-right-color:#555;border-bottom-color:#555;background:#ece9d8;width:max-content}
+.fan-ov{position:fixed;inset:0;z-index:59;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 30%,rgba(255,240,170,.55),rgba(0,0,0,.78) 70%);animation:fanOv 3.4s ease forwards}
+@keyframes fanOv{0%{opacity:0}12%{opacity:1}85%{opacity:1}100%{opacity:0}}
+.fan-f{font-size:clamp(6rem,30vw,13rem);line-height:1;animation:fanBob .45s ease-in-out infinite alternate}
+@keyframes fanBob{from{transform:translateY(0) rotate(-6deg)}to{transform:translateY(-22px) rotate(6deg)}}
+.fan-t{font-family:'Playfair Display',serif;font-weight:700;font-size:clamp(1.6rem,7vw,3.2rem);color:var(--gold);letter-spacing:3px;text-shadow:3px 3px 0 var(--deep);text-align:center}
+.en-wrap{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);width:min(84vw,360px);z-index:59;text-align:center;font-family:'Caveat',cursive;color:#fff;font-size:1.7rem;pointer-events:none;text-shadow:0 2px 8px rgba(0,0,0,.6);transition:opacity .5s}
+.en-bar{height:26px;border:3px solid #fff;border-radius:999px;overflow:hidden;background:rgba(0,0,0,.45);margin-top:.3rem}
+.en-fill{height:100%;width:0;background:linear-gradient(90deg,#7ab870,#f3d27a,#e8786e);transition:width 1.6s cubic-bezier(.3,.8,.4,1)}
+.en-wrap.shake{animation:cardShake .5s ease-in-out 3}
+.en-wrap.boom{opacity:0}
+.trail-h{position:fixed;z-index:58;pointer-events:none;color:var(--rose);font-size:1.1rem;animation:trailH 1.6s ease-out forwards}
+@keyframes trailH{to{opacity:0;transform:translateY(24px) scale(.4)}}
+.plane{position:fixed;z-index:59;pointer-events:none;font-size:2.4rem;left:0;top:0}
+@media (prefers-reduced-motion:reduce){.muscle-ov .arm,.scare svg,.fan-f{animation-duration:.01s}}
 </style>
 </head>
 <body>
@@ -324,7 +374,7 @@ buildList();
 </script>
 <script src="js/eggs.js"></script>
 <script>
-// ---------- EASTER EGGS ON THIS PAGE (11 in total; the count lives in PageEggs.PAGES.reasons.total in js/eggs.js) ----------
+// ---------- EASTER EGGS ON THIS PAGE (21 in total; the count lives in PageEggs.PAGES.reasons.total in js/eggs.js) ----------
 // Each one wants a different kind of gesture: catch, read, pour, pull, press-and-release, double-tap,
 // scrub, scribble, hold, or just wait.
 (function(){
@@ -385,7 +435,9 @@ buildList();
   }
 
   // ---- tag the special cards, and get a card's index from the page's own onclick ----
-  const kindOf = t => /heinz/i.test(t) ? 'beans' : /noodles unite/i.test(t) ? 'noodles' : /^bing bong, bing bong/i.test(t) ? 'bingbong' : /2am/i.test(t) ? 'twoam' : /^doobeboobe/i.test(t) ? 'doobe' : /\badam\b/i.test(t) ? 'adam' : null;
+  const kindOf = t => /heinz/i.test(t) ? 'beans' : /noodles unite/i.test(t) ? 'noodles' : /^bing bong, bing bong/i.test(t) ? 'bingbong' : /2am/i.test(t) ? 'twoam' : /^doobeboobe/i.test(t) ? 'doobe' : /\badam\b/i.test(t) ? 'adam'
+    : /bing chillin/i.test(t) ? 'bingchill' : /^yeah\.?$/i.test(t) ? 'yeah' : /big muscle baddie/i.test(t) ? 'muscle' : /^love you bestie/i.test(t) ? 'loveyou' : /phas monday/i.test(t) ? 'phas'
+    : /^i want to say, thank you/i.test(t) ? 'thanks' : /men exist/i.test(t) ? 'wellmen' : /number one biggest ann fan/i.test(t) ? 'fan' : /crossed the sea/i.test(t) ? 'sea' : /^gbing gbong/i.test(t) ? 'energy' : null;
   const idxOf = card => { const m = /revealOne\((\d+)/.exec(card.getAttribute('onclick') || ''); return m ? +m[1] : -1; };
   document.querySelectorAll('.reason-card').forEach(card => {
     const i = idxOf(card); if(i < 0) return;
@@ -513,6 +565,193 @@ buildList();
   };
   let bell = [];
 
+
+  // =====================================================================
+  // MORE EGGS (tap a revealed card, or hold one for the hug). Sounds live in media/reasons/.
+  // =====================================================================
+  Object.assign(EGG, {
+    bingchill:{ title:'Bing chilling', text:"You woke up the ice cream. 冰淇淋.<br><br>The rules are simple: you have to go and get an ice cream now. It's the law. I don't make the laws." },
+    yeah:     { title:'Yeah.', text:"Yeah.<br><br>That's it. That's the whole egg. I had nothing to add, and honestly neither do you." },
+    muscle:   { title:'BIG MUSCLE BADDIE', text:"Three pumps and the whole screen couldn't hold it. That's roughly the scale of your power, for the record.<br><br>Please do not lift anything heavy because of this message." },
+    loveyou:  { title:'Squeeze', text:"You held on and it hugged you back. That's all I've got, really.<br><br>Love you bestie. Properly. Hugs from the UK, sent at the speed of the internet." },
+    phas:     { title:'Phas Monday', text:"Sorry. Not sorry.<br><br>I'd say it won't happen again, but we both know it'll happen again next Monday, probably when you least expect it. See you there, and please keep the sanity up." },
+    thanks:   { title:'A special delivery', text:"Squaishey was told to deliver this personally, and did so with great professionalism.<br><br>She's asked me to confirm it was meant, every word, and that she gets paid in snacks." },
+    wellmen:  { title:'Fatal error', text:"taste.exe ran perfectly on everything, then hit one small problem and fell over in a spectacular fashion.<br><br>It's fine. The rest of your taste is flawless, and I stand by every word of that. (Men are a known bug.)" },
+    fan:      { title:'Number one fan', text:"The foam finger has been presented. The crowd went wild. There is no number two. I have checked, and there is simply a gap where the number two would go.<br><br>Ann Fan Club, membership: one (1), president: me." },
+    sea:      { title:'Across the sea', text:"One tiny plane, a lot of hearts, and no baggage allowance problems for once.<br><br>The sea doesn't count for much, honestly. It never has." },
+    energy:   { title:'That is your energy', text:"The scale only goes to 100%. You went further, and it broke, which is the usual result.<br><br>Please enjoy the lightning. Replacement meters are on order." }
+  });
+  const wait = (ms, fn) => setTimeout(fn, ms);
+  function noise(dur, vol, f0, f1){
+    const c = audio(); if(!c) return;
+    const n = Math.floor(c.sampleRate * dur), b = c.createBuffer(1, n, c.sampleRate), d = b.getChannelData(0);
+    for(let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+    const s = c.createBufferSource(); s.buffer = b;
+    const f = c.createBiquadFilter(); f.type = 'bandpass'; f.frequency.setValueAtTime(f0, c.currentTime); if(f1) f.frequency.linearRampToValueAtTime(f1, c.currentTime + dur);
+    const g = c.createGain(); g.gain.setValueAtTime(vol, c.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + dur);
+    s.connect(f); f.connect(g); g.connect(c.destination); s.start();
+  }
+  function playFile(src, vol){ try{ const a = new Audio(src); a.volume = vol == null ? 1 : vol; const p = a.play(); if(p && p.catch) p.catch(() => {}); return a; }catch(e){ return null; } }
+  const place = (el, parent) => { (parent || document.body).appendChild(el); return el; };
+  const popAt = (card, glyph) => { const r = card.getBoundingClientRect(), e = mk('note-pop', glyph); e.style.left = (r.left + Math.random() * r.width) + 'px'; e.style.top = (r.top + r.height / 2) + 'px'; e.style.setProperty('--nx', ((Math.random() - 0.5) * 120) + 'px'); e.style.setProperty('--nr', ((Math.random() - 0.5) * 50) + 'deg'); place(e); wait(1700, () => e.remove()); };
+
+  const TAP = {
+    // BING CHILLING: plays the mp3, frosts the screen, rains ice cream
+    bingchill(card){
+      guard(5200, () => {
+        playFile('media/reasons/bing_chilling.mp3', 1);
+        const f = place(mk('frost')), t = place(mk('fx-big', '冰淇淋 🍦'));
+        rain(['🍦', '🍨', '🧊', '❄️'], 38);
+        wait(4200, () => { f.remove(); t.remove(); });
+        wait(3000, () => win('bingchill'));
+      });
+    },
+    // YEAH: plays the mp3, slams the word across the page
+    yeah(card){
+      guard(2600, () => {
+        playFile('media/reasons/yeah.mp3', 1);
+        const t = place(mk('fx-yeah', 'YEAH.')), s = place(mk('fx-shades', '😎'));
+        const w = document.querySelector('.reasons-wrap'); wait(150, () => { w.classList.add('quake'); wait(450, () => w.classList.remove('quake')); });
+        wait(2000, () => { t.remove(); s.remove(); win('yeah'); });
+      });
+    },
+    // MUSCLE: pump it three times quickly and a giant arm fills the whole screen
+    muscle(card){
+      const now = Date.now(); flex = flex.filter(t => now - t < 2000); flex.push(now);
+      const n = flex.length;
+      card.style.transition = 'transform .12s'; card.style.transform = 'scale(' + (1 + n * 0.07) + ')'; wait(200, () => { card.style.transform = ''; wait(160, () => { card.style.transition = ''; }); });
+      tone(160 + n * 70, 0, 0.22, 'square', 0.1); popAt(card, '💪');
+      if(n < 3) return;
+      flex = [];
+      guard(5000, () => {
+        const ov = place(mk('muscle-ov')); ov.append(mk('arm', '💪'), mk('mus-txt', 'BIG MUSCLE BADDIE'));
+        tone(70, 0, 1.2, 'sawtooth', 0.22, 40);
+        [392, 523, 659, 784].forEach((f, i) => tone(f, 0.5 + i * 0.18, 0.5, 'triangle', 0.16));
+        const w = document.querySelector('.reasons-wrap'); [700, 1300, 1900].forEach(a => wait(a, () => { w.classList.add('quake'); tone(90, 0, 0.3, 'sine', 0.35, 40); wait(420, () => w.classList.remove('quake')); }));
+        wait(3300, () => { ov.remove(); win('muscle'); });
+      });
+    },
+    // PHAS MONDAY: lights go out, you get a torch, the EMF reader starts beeping faster... then the jumpscare
+    phas(card){
+      guard(14000, () => {
+        const dark = place(mk('flash-dark')); dark.append(mk('fl-msg', '...is anyone there?'));
+        const mv = ev => { dark.style.setProperty('--x', ev.clientX + 'px'); dark.style.setProperty('--y', ev.clientY + 'px'); };
+        const r = card.getBoundingClientRect(); dark.style.setProperty('--x', (r.left + r.width / 2) + 'px'); dark.style.setProperty('--y', (r.top + r.height / 2) + 'px');
+        addEventListener('pointermove', mv);
+        const scareAt = Date.now() + 4600 + Math.random() * 2600; let n = 0;
+        const beep = () => {
+          if(Date.now() >= scareAt) return scare();
+          tone(700 + n * 45, 0, 0.07, 'square', 0.05); n++;
+          wait(Math.max(110, 800 - n * 85), beep);
+        };
+        wait(1100, beep);
+        function scare(){
+          removeEventListener('pointermove', mv); dark.remove();
+          const ov = place(mk('scare'));
+          ov.innerHTML = '<svg viewBox="0 0 200 240"><defs><radialGradient id="gh" cx="50%" cy="35%"><stop offset="0" stop-color="#f4fbff"/><stop offset="1" stop-color="#9fb4c2"/></radialGradient></defs><path d="M18 232 V92 C18 38 58 8 100 8 C142 8 182 38 182 92 V232 L156 206 L128 232 L100 206 L72 232 L44 206 Z" fill="url(#gh)"/><ellipse cx="68" cy="92" rx="17" ry="30" fill="#000"/><ellipse cx="132" cy="92" rx="17" ry="30" fill="#000"/><ellipse cx="100" cy="164" rx="24" ry="44" fill="#000"/></svg>';
+          noise(1.1, 0.5, 1800, 3200); tone(1200, 0, 0.9, 'sawtooth', 0.22, 2800); tone(95, 0, 1, 'sawtooth', 0.3, 60);
+          try{ if(navigator.vibrate) navigator.vibrate([180, 60, 180]); }catch(_){}
+          wait(1250, () => { ov.remove(); PageEggs.toast('sorry ♡ see you on Monday', 2600); wait(1400, () => win('phas')); });
+        }
+      });
+    },
+    // THANK YOU: Squaishey waddles in with a sign, delivers it, and waddles out
+    thanks(card){
+      guard(7000, () => {
+        const wrap = place(mk('sq-wrap')), body = mk('sq-body'), sign = mk('sq-sign');
+        sign.innerHTML = 'Thank you!<small>- delivered by Squaishey</small>';
+        const img = new Image(); img.alt = 'Squaishey'; img.src = 'media/reasons/squaishey.png';   // swap this for whatever Squaishey image you have
+        img.onerror = () => { const d = document.createElement('div'); d.innerHTML = '<svg viewBox="0 0 200 180"><ellipse cx="100" cy="108" rx="78" ry="62" fill="#f6b8c8" stroke="#c97a92" stroke-width="4"/><ellipse cx="72" cy="96" rx="7" ry="10" fill="#3a2010"/><ellipse cx="128" cy="96" rx="7" ry="10" fill="#3a2010"/><ellipse cx="56" cy="118" rx="12" ry="7" fill="#ee8fa8" opacity=".7"/><ellipse cx="144" cy="118" rx="12" ry="7" fill="#ee8fa8" opacity=".7"/><path d="M88 118 Q100 132 112 118" stroke="#3a2010" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="28" cy="100" rx="12" ry="20" fill="#f6b8c8" stroke="#c97a92" stroke-width="4" transform="rotate(-20 28 100)"/><ellipse cx="172" cy="100" rx="12" ry="20" fill="#f6b8c8" stroke="#c97a92" stroke-width="4" transform="rotate(20 172 100)"/></svg>'; img.replaceWith(d.firstChild); };
+        body.append(img); wrap.append(sign, body);
+        [0, 260, 520, 780, 1040, 1300].forEach((a, i) => wait(a, () => tone(640 + (i % 2) * 120, 0, 0.12, 'triangle', 0.08)));
+        wait(1700, () => { tone(784, 0, 0.3, 'triangle', 0.14); tone(988, 0.12, 0.5, 'triangle', 0.14); rain(['♡', '💌', '✨'], 18); });
+        wait(6600, () => { wrap.remove(); win('thanks'); });
+      });
+    },
+    // WELL, MEN EXIST: a very 2003 cascade of error boxes
+    wellmen(card){
+      guard(7800, () => {
+        const mkDlg = (title, icon, msg, btn, x, y) => {
+          const d = mk('dlg'); d.style.left = x + 'px'; d.style.top = y + 'px';
+          d.innerHTML = '<div class="dlg-t"><span>' + title + '</span><span>✕</span></div><div class="dlg-b"><span class="dlg-i">' + icon + '</span><span>' + msg + '</span></div><div class="dlg-btn">' + btn + '</div>';
+          return place(d);
+        };
+        const w = innerWidth, h = innerHeight, bw = Math.min(w * 0.78, 300), x0 = Math.max(8, w / 2 - bw / 2 - 50), y0 = Math.max(60, h * 0.2);
+        const all = [];
+        noise(0.35, 0.3, 4000, 300); tone(900, 0, 0.35, 'sawtooth', 0.14, 110);   // record scratch
+        wait(500,  () => { all.push(mkDlg('taste.exe', 'ℹ️', 'Good taste detected in: food, music, shows, friends, everything.', 'OK', x0, y0)); tone(880, 0, 0.2, 'sine', 0.12); });
+        wait(1500, () => { all.push(mkDlg('men_exist.dll', '⚠️', 'Warning: men exist. This cannot be undone.', 'Ignore', x0 + 24, y0 + 40)); tone(660, 0, 0.2, 'sine', 0.12); });
+        wait(2600, () => {
+          tone(200, 0, 0.6, 'square', 0.12, 120);
+          for(let i = 0; i < 14; i++) wait(i * 70, () => all.push(mkDlg('Fatal Error', '❌', 'taste_in_men not found. Please contact Bestie Tristan.', 'Retry', x0 + 48 + i * 14, y0 + 80 + i * 18)));
+        });
+        wait(5600, () => { all.forEach(d => d.remove()); win('wellmen'); });
+      });
+    },
+    // NUMBER ONE FAN: spotlight, a foam finger, a roaring crowd
+    fan(card){
+      guard(3800, () => {
+        const ov = place(mk('fan-ov')); ov.append(mk('fan-f', '☝️'), mk('fan-t', '#1 ANN FAN'));
+        noise(1.8, 0.28, 1400, 2400); wait(500, () => noise(1.6, 0.22, 1000, 2000));
+        [523, 659, 784, 1046].forEach((f, i) => tone(f, i * 0.12, 0.35, 'triangle', 0.14));
+        rain(['🎉', '📣', '✨', '🎊'], 32);
+        wait(3400, () => { ov.remove(); win('fan'); });
+      });
+    },
+    // ACROSS THE SEA: a little plane crosses the screen, leaving hearts behind
+    sea(card){
+      guard(4200, () => {
+        const pl = place(mk('plane', '✈️')), w = innerWidth, h = innerHeight, T = 2800, t0 = performance.now();
+        const iv = setInterval(() => { const r = pl.getBoundingClientRect(), hh = mk('trail-h', '♡'); hh.style.left = (r.left + r.width) + 'px'; hh.style.top = (r.top + 20) + 'px'; place(hh); wait(1700, () => hh.remove()); }, 90);
+        const step = now => {
+          const k = Math.min(1, (now - t0) / T), x = w + 40 - (w + 120) * k, y = h * 0.62 - Math.sin(k * Math.PI) * h * 0.38;
+          pl.style.transform = 'translate(' + x + 'px,' + y + 'px) scaleX(-1)';
+          if(k < 1) requestAnimationFrame(step); else { clearInterval(iv); pl.remove(); }
+        };
+        requestAnimationFrame(step);
+        const lab = place(mk('fx-big', 'UK ✈ you ♡')); lab.style.color = '#fff3c4'; lab.style.animationDelay = '1.2s'; lab.style.opacity = 0;
+        wait(4200, () => { lab.remove(); win('sea'); });
+      });
+    },
+    // ENERGY: the meter climbs past 100% and breaks
+    energy(card){
+      guard(4600, () => {
+        const wrap = place(mk('en-wrap')), lab = mk('', 'ENERGY: 0%'), bar = mk('en-bar'), fill = mk('en-fill');
+        bar.append(fill); wrap.append(lab, bar);
+        requestAnimationFrame(() => requestAnimationFrame(() => { fill.style.width = '100%'; }));
+        let p = 0; const iv = setInterval(() => { p = Math.min(100, p + 5); lab.textContent = 'ENERGY: ' + p + '%'; tone(300 + p * 6, 0, 0.06, 'square', 0.05); if(p >= 100) clearInterval(iv); }, 80);
+        wait(1800, () => { lab.textContent = 'ENERGY: 9001%'; wrap.classList.add('shake'); tone(110, 0, 0.9, 'sawtooth', 0.25, 40); rain(['⚡', '✨', '💥'], 30); });
+        wait(3300, () => { lab.textContent = 'meter broke ⚡'; wrap.classList.add('boom'); });
+        wait(4000, () => { wrap.remove(); win('energy'); });
+      });
+    }
+  };
+  let flex = [];
+
+  // HUG: hold the "Love you Bestie" card; it squeezes back, then hugs you
+  DRAG.loveyou = (e, card) => {
+    const t0 = performance.now(); let done = false;
+    const iv = setInterval(() => {
+      const p = Math.min(1, (performance.now() - t0) / 1400);
+      card.style.transition = 'none'; card.style.transform = 'scale(' + (1 - p * 0.08) + ')';
+      card.style.boxShadow = '0 0 ' + (p * 40) + 'px ' + (p * 8) + 'px rgba(184,104,88,' + (p * 0.6) + ')';
+      if(Math.random() < 0.3) popAt(card, '♡');
+      if(p > 0.3 && Math.random() < 0.2){ try{ if(navigator.vibrate) navigator.vibrate(15); }catch(_){} }
+      if(p >= 1 && !done){
+        done = true; clearInterval(iv);
+        guard(3600, () => {
+          const hug = place(mk('fx-big', '🫂')); hug.style.fontSize = 'clamp(6rem,30vw,12rem)'; hug.style.fontStyle = 'normal';
+          const t = place(mk('fx-big', 'love you too, bestie ♡')); t.style.top = '68%'; t.style.color = '#ffd9d0'; t.style.textShadow = '0 0 20px rgba(232,120,110,.9)'; t.style.fontSize = 'clamp(1.6rem,7vw,3rem)';
+          rain(['❤️', '🩷', '♡', '💕'], 30);
+          [523, 659, 784].forEach((f, i) => tone(f, i * 0.1, 1.2, 'sine', 0.14));
+          wait(3000, () => { hug.remove(); t.remove(); win('loveyou'); });
+        });
+      }
+    }, 80);
+    track(e, card, () => {}, () => { clearInterval(iv); card.style.boxShadow = ''; spring(card, 500); });
+  };
+  document.querySelectorAll('.reason-card[data-fx]').forEach(c => { if(TAP[c.dataset.fx]) c.dataset.tap = '1'; });
+
   // ---- delegated pointer handling ----
   const list = document.getElementById('reasons-list');
   list.addEventListener('pointerdown', e => {
@@ -547,6 +786,7 @@ buildList();
     setTimeout(() => { ph.remove(); win('twoam'); }, 5000);
   };
   window.__eggTap = (idx, card) => {
+    if(TAP[card.dataset.fx]){ if(!PageEggs.isOpen()) TAP[card.dataset.fx](card); return; }
     if(card.dataset.fx !== 'twoam') return;
     const now = Date.now(), prev = lastTap[idx] || 0; lastTap[idx] = now;
     if(now - prev > 450) return;
