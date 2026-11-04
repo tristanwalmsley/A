@@ -8,14 +8,15 @@
    ========================================================================== */
 
 const NAV_KEYS = {
-  contract: 'ann_contract_signed_2026',
   gifts: 'ann_bday_2025_v6',
+  shared: 'besties_shared_v1',   // contract + membership record, filled in by bestie_storage.js
 };
 
 const TOTAL_GIFTS = 41;
 
-// Which gift-stop IDs unlock which pages (matches STOPS in gifts.html)
+// Which gift-stop IDs unlock which pages (matches STOPS in gifts_ann_2026_birthday.html)
 const PAGE_UNLOCKS = {
+  'gifts_ann_2026_birthday.html': 0,
   'our_journey.html':      2,
   'tier_list.html':        6,
   'us.html':               13,
@@ -27,8 +28,9 @@ const PAGE_UNLOCKS = {
   'the_end.html':          41,
 };
 
-// Pages that unlock once the contract is signed (rather than via a gift stop)
-const CONTRACT_GATED = ['contract.html', 'gifts.html', 'gifts_ann_2026_birthday.html'];
+// ORDER OF THINGS: membership page (always open) -> contract (once a membership is chosen)
+// -> everything below (once YOUR half of the contract is signed).
+const CONTRACT_GATED = ['countdown.html', 'birthday_2026.html', 'gifts_ann_2026_birthday.html'];
 
 /* --------------------------------------------------------------------------
    THE NAV. Order here = order on screen.
@@ -70,25 +72,27 @@ const NAV = [
     ],
   },
   {
+    id: 'contract',
+    label: 'Contracts',
+    glyph: '✎',
+    blurb: 'the yearly agreements',
+    items: [
+      { href: 'membership.html', label: '2026-27 Membership' },
+      { href: 'contract.html',   label: '2026-27 Contract' },
+    ],
+  },
+  {
     id: 'bday26',
     label: 'Birthday 2026',
     soloLabel: 'Birthday 2026',   // label used when only "Start here" is unlocked
     glyph: '✦',
     blurb: 'the whole experience',
     items: [
-      { href: 'birthday_2026.html',           label: 'Start here' },
+      { href: 'countdown.html',           label: 'The Showcase' },
+      { href: 'birthday_2026.html',           label: 'Gift Box Entry' },
       { href: 'gifts_ann_2026_birthday.html', label: 'Gifts' },
       { href: 'quiz.html',                    label: 'Quiz' },
       { href: 'the_end.html',                 label: 'Thank You' },
-    ],
-  },
-  {
-    id: 'contract',
-    label: 'Contracts',
-    glyph: '✎',
-    blurb: 'the yearly agreements',
-    items: [
-      { href: 'contract.html?view=1', label: '2026-27 Contract', matchHref: 'contract.html' },
     ],
   },
 ];
@@ -106,20 +110,24 @@ function getOpenedGifts() {
   } catch (e) { return new Set(); }
 }
 
-function isContractSigned() {
-  // any year's signed flag counts (ann_contract_signed_2025, _2026, ...)
-  try {
-    if (localStorage.getItem(NAV_KEYS.contract)) return true;
-    for (let i = 0; i < localStorage.length; i++) {
-      const k = localStorage.key(i) || '';
-      if (/^ann_contract_signed/i.test(k) && localStorage.getItem(k)) return true;
-    }
-    return false;
-  } catch (e) { return false; }
+function getShared() {
+  try { return JSON.parse(localStorage.getItem(NAV_KEYS.shared)) || {}; } catch (e) { return {}; }
+}
+function currentUser() {
+  try { return localStorage.getItem('bestie_current_user'); } catch (e) { return null; }
+}
+function hasMembership() {
+  const s = getShared(), u = currentUser();
+  return !!(u && s.membership && s.membership[u]);
+}
+function isContractSigned() {   // YOUR half of the contract
+  const s = getShared(), u = currentUser();
+  return !!(u && s.contract && s.contract[u]);
 }
 
 function isPageUnlocked(page) {
-  if (page === 'index.html') return true;
+  if (page === 'index.html' || page === 'membership.html') return true;
+  if (page === 'contract.html') return hasMembership();
   // contract-gated pages also open if she has already reached the final gift
   // (anyone who got to Thank You must have done the contract + gifts)
   if (CONTRACT_GATED.includes(page)) return isContractSigned() || getOpenedGifts().has(PAGE_UNLOCKS['the_end.html']);
@@ -173,56 +181,57 @@ function getLastPage() {
 
 function injectNavStyles() {
   if (document.getElementById('nav-styles')) return;
+  if (!document.getElementById('nav-font')) {   // the nav font, in case a page doesn't load it
+    const l = document.createElement('link');
+    l.id = 'nav-font'; l.rel = 'stylesheet';
+    l.href = 'https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap';
+    document.head.appendChild(l);
+  }
+  /* Every rule starts with #site-nav, so leftover nav CSS inside a page can't change the look.
+     To retune a theme, edit the --nv-* values in the first two rules. */
   const css = `
-    #site-nav .nav-links { display:flex; flex-wrap:wrap; align-items:center; gap:.25rem .5rem; }
-    #site-nav .nav-group { position:relative; }
+    #site-nav{--nv-bg:#fffdf5;--nv-line:#d4b483;--nv-brand:#b86858;--nv-link:#7a5230;--nv-link-hover:#3a2010;--nv-hover-bg:#f0ddb8;--nv-current:#3a2010;--nv-accent:#c8943a;--nv-menu-bg:#fffdf5;--nv-menu-fg:#7a5230;--nv-menu-line:#d4b483;--nv-menu-hover:#f0ddb8}
+    #site-nav[data-nav-theme="dark"]{--nv-bg:rgba(30,10,4,.95);--nv-line:rgba(255,255,255,.08);--nv-brand:#b86858;--nv-link:rgba(250,244,232,.82);--nv-link-hover:#faf4e8;--nv-hover-bg:rgba(255,255,255,.07);--nv-current:#c8943a;--nv-accent:#c8943a;--nv-menu-bg:#2a1a0e;--nv-menu-fg:#f0ddb8;--nv-menu-line:rgba(255,255,255,.18);--nv-menu-hover:rgba(255,255,255,.09)}
 
-    /* :where() = zero specificity, so the page's own .nav-a rules (font, colour,
-       hover background, current underline) still win over these button resets */
-    :where(#site-nav .nav-group-btn) {
-      font:inherit; color:inherit; background:none; border:0; cursor:pointer;
-      display:inline-flex; align-items:center; gap:.35em;
-    }
-    #site-nav .nav-group-btn::after {
-      content:''; width:.4em; height:.4em; margin-top:-.2em;
-      border-right:2px solid currentColor; border-bottom:2px solid currentColor;
-      transform:rotate(45deg); transition:transform .15s ease;
-    }
-    #site-nav .nav-group.open .nav-group-btn::after { transform:rotate(225deg); margin-top:.15em; }
+    #site-nav{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;padding:.8rem 2rem;position:sticky;top:0;z-index:600;background:var(--nv-bg);border-bottom:1px solid var(--nv-line);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+    #site-nav .nav-brand{font-family:'Caveat',cursive;font-size:1.3rem;font-weight:700;color:var(--nv-brand);text-decoration:none}
+    #site-nav .nav-links{display:flex;flex-wrap:wrap;align-items:center;gap:.25rem .5rem}
+    #site-nav .nav-a{display:inline-flex;align-items:center;gap:.35em;font-family:'Caveat',cursive;font-size:.9rem;line-height:1.4;letter-spacing:.5px;white-space:nowrap;color:var(--nv-link);text-decoration:none;padding:.25rem .6rem;border-radius:2px;background:none;border:0;border-bottom:2px solid transparent;cursor:pointer;transition:color .2s,background .2s}
+    #site-nav .nav-a:hover{color:var(--nv-link-hover);background:var(--nv-hover-bg)}
+    #site-nav .nav-a.current{color:var(--nv-current);font-weight:700;border-bottom-color:var(--nv-accent)}
+    #site-nav .nav-a:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 
-    #site-nav .nav-menu {
-      display:none; position:absolute; top:calc(100% + .35rem); left:0; z-index:50;
-      min-width:12rem; padding:.35rem; flex-direction:column; gap:.1rem;
-      background:var(--nav-menu-bg, #fff); color:var(--nav-menu-fg, inherit);
-      border:1px solid var(--nav-menu-border, rgba(0,0,0,.15)); border-radius:6px;
-      box-shadow:0 8px 24px rgba(0,0,0,.15);
-    }
-    #site-nav .nav-menu.align-right { left:auto; right:0; }
-    #site-nav .nav-group.open .nav-menu { display:flex; }
-    #site-nav .nav-menu .nav-a { display:block; padding:.5rem .75rem; white-space:nowrap; }
-    #site-nav .nav-menu .nav-a:hover,
-    #site-nav .nav-menu .nav-a:focus-visible { background:var(--nav-menu-hover, rgba(0,0,0,.07)); }
-    #site-nav .nav-menu .nav-a.current {
-      border-bottom:0; box-shadow:inset 3px 0 0 var(--nav-accent, currentColor);
-    }
-    #site-nav .nav-group-btn:focus-visible,
-    #site-nav .nav-a:focus-visible { outline:2px solid currentColor; outline-offset:2px; }
+    #site-nav .nav-group{position:relative}
+    #site-nav .nav-group-btn::after{content:'';width:.4em;height:.4em;margin-top:-.2em;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);transition:transform .15s ease}
+    #site-nav .nav-group.open .nav-group-btn::after{transform:rotate(225deg);margin-top:.15em}
+    #site-nav .nav-menu{display:none;position:absolute;top:calc(100% + .35rem);left:0;z-index:50;min-width:12rem;padding:.35rem;flex-direction:column;gap:.1rem;background:var(--nv-menu-bg);color:var(--nv-menu-fg);border:1px solid var(--nv-menu-line);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+    #site-nav .nav-menu.align-right{left:auto;right:0}
+    #site-nav .nav-group.open .nav-menu{display:flex}
+    #site-nav .nav-menu .nav-a{display:block;padding:.5rem .75rem;color:var(--nv-menu-fg);border-bottom:0}
+    #site-nav .nav-menu .nav-a:hover,#site-nav .nav-menu .nav-a:focus-visible{background:var(--nv-menu-hover);color:var(--nv-menu-fg)}
+    #site-nav .nav-menu .nav-a.current{box-shadow:inset 3px 0 0 var(--nv-accent);color:var(--nv-menu-fg)}
 
-    @media (max-width:700px) {
-      #site-nav .nav-links { flex-direction:column; align-items:stretch; width:100%; }
-      #site-nav .nav-group-btn { width:100%; justify-content:space-between; }
-      #site-nav .nav-menu, #site-nav .nav-menu.align-right {
-        position:static; box-shadow:none; border:0; background:transparent;
-        padding:0 0 0 1rem; min-width:0;
-      }
+    @media (max-width:700px){
+      #site-nav .nav-links{flex-direction:column;align-items:stretch;width:100%}
+      #site-nav .nav-group-btn{width:100%;justify-content:space-between}
+      #site-nav .nav-menu,#site-nav .nav-menu.align-right{position:static;box-shadow:none;border:0;background:transparent;padding:0 0 0 1rem;min-width:0}
     }
-    @media (prefers-reduced-motion:reduce) {
-      #site-nav .nav-group-btn::after { transition:none; }
-    }`;
+    @media (prefers-reduced-motion:reduce){#site-nav .nav-group-btn::after{transition:none}}`;
   const style = document.createElement('style');
   style.id = 'nav-styles';
   style.textContent = css;
   document.head.appendChild(style);
+}
+
+/* Which theme? Set data-theme="dark" or "light" on <nav id="site-nav"> (recommended).
+   If it's missing, guess from the page's background colour; gradient backgrounds count as light. */
+function detectNavTheme() {
+  const rgb = el => {
+    const m = getComputedStyle(el).backgroundColor.match(/[\d.]+/g);
+    return m && (m.length < 4 || +m[3] > 0.5) ? m.slice(0, 3).map(Number) : null;
+  };
+  const c = rgb(document.body) || rgb(document.documentElement);
+  return c && (0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]) < 110 ? 'dark' : 'light';
 }
 
 /* ---------------------------------- build ---------------------------------- */
@@ -267,6 +276,7 @@ function buildNav(currentPage) {
   if (!linksDiv) return;
 
   injectNavStyles();
+  nav.setAttribute('data-nav-theme', nav.dataset.theme === 'dark' || nav.dataset.theme === 'light' ? nav.dataset.theme : detectNavTheme());
   linksDiv.innerHTML = '';
   recordVisit(currentPage);
 
