@@ -8,8 +8,8 @@
    ========================================================================== */
 
 const NAV_KEYS = {
-  contract: 'ann_contract_signed_2026',
   gifts: 'ann_bday_2025_v6',
+  shared: 'besties_shared_v1',   // contract + membership record, filled in by bestie_storage.js
 };
 
 const TOTAL_GIFTS = 41;
@@ -28,8 +28,9 @@ const PAGE_UNLOCKS = {
   'the_end.html':          41,
 };
 
-// Pages that unlock once the contract is signed (rather than via a gift stop)
-const CONTRACT_GATED = ['contract.html', 'gifts_ann_2026_birthday.html'];
+// ORDER OF THINGS: membership page (always open) -> contract (once a membership is chosen)
+// -> everything below (once YOUR half of the contract is signed).
+const CONTRACT_GATED = ['countdown.html', 'birthday_2026.html', 'gifts_ann_2026_birthday.html'];
 
 /* --------------------------------------------------------------------------
    THE NAV. Order here = order on screen.
@@ -71,6 +72,16 @@ const NAV = [
     ],
   },
   {
+    id: 'contract',
+    label: 'Contracts',
+    glyph: '✎',
+    blurb: 'the yearly agreements',
+    items: [
+      { href: 'membership.html', label: '2026-27 Membership' },
+      { href: 'contract.html',   label: '2026-27 Contract' },
+    ],
+  },
+  {
     id: 'bday26',
     label: 'Birthday 2026',
     soloLabel: 'Birthday 2026',   // label used when only "Start here" is unlocked
@@ -82,15 +93,6 @@ const NAV = [
       { href: 'gifts_ann_2026_birthday.html', label: 'Gifts' },
       { href: 'quiz.html',                    label: 'Quiz' },
       { href: 'the_end.html',                 label: 'Thank You' },
-    ],
-  },
-  {
-    id: 'contract',
-    label: 'Contracts',
-    glyph: '✎',
-    blurb: 'the yearly agreements',
-    items: [
-      { href: 'contract.html?view=1', label: '2026-27 Contract', matchHref: 'contract.html' },
     ],
   },
 ];
@@ -108,13 +110,24 @@ function getOpenedGifts() {
   } catch (e) { return new Set(); }
 }
 
-function isContractSigned() {
-  try { return !!localStorage.getItem(NAV_KEYS.contract); }
-  catch (e) { return false; }
+function getShared() {
+  try { return JSON.parse(localStorage.getItem(NAV_KEYS.shared)) || {}; } catch (e) { return {}; }
+}
+function currentUser() {
+  try { return localStorage.getItem('bestie_current_user'); } catch (e) { return null; }
+}
+function hasMembership() {
+  const s = getShared(), u = currentUser();
+  return !!(u && s.membership && s.membership[u]);
+}
+function isContractSigned() {   // YOUR half of the contract
+  const s = getShared(), u = currentUser();
+  return !!(u && s.contract && s.contract[u]);
 }
 
 function isPageUnlocked(page) {
-  if (page === 'index.html') return true;
+  if (page === 'index.html' || page === 'membership.html') return true;
+  if (page === 'contract.html') return hasMembership();
   // contract-gated pages also open if she has already reached the final gift
   // (anyone who got to Thank You must have done the contract + gifts)
   if (CONTRACT_GATED.includes(page)) return isContractSigned() || getOpenedGifts().has(PAGE_UNLOCKS['the_end.html']);
