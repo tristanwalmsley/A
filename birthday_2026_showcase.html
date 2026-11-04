@@ -809,18 +809,11 @@ body.stage-garden-enchanted .brand{color:#8a5a1f}
 // This page is a replay of the real countdown. Pressing Start shifts the page's
 // clock (Date.now) so it begins just before the build-up music starts, and every
 // existing schedule in the file then runs untouched against that shifted clock.
-// Storage is namespaced ("replay:") so replaying never touches Ann's real data.
+// Leaf/light data uses the normal site storage, exactly like the original countdown.
 const REPLAY_LEAD_IN_MS = 5000; // start this long BEFORE the music kicks in
 const _realNow = Date.now.bind(Date);
 let replayOffsetMs = 0;
 Date.now = () => _realNow() + replayOffsetMs;
-(function(){
-  const P = 'replay:', g = Storage.prototype.getItem, s = Storage.prototype.setItem, r = Storage.prototype.removeItem;
-  Storage.prototype.getItem = function(k){ return g.call(this, P + k); };
-  Storage.prototype.setItem = function(k, v){ return s.call(this, P + k, v); };
-  Storage.prototype.removeItem = function(k){ return r.call(this, P + k); };
-  try { Object.keys(localStorage).filter(k => k.startsWith(P)).forEach(k => localStorage.removeItem(k.slice(P.length))); } catch(e) {}
-})();
 </script>
 <script>
 // ---------- ENTRY GATE ----------
@@ -2467,8 +2460,8 @@ function stopLeafEvents(){
 // milestone landing right at the very end of the event.
 const BORDER_POS_PER_SIDE = 20;
 const TOTAL_BORDER_POSITIONS = BORDER_POS_PER_SIDE * 4; // 80 clusters around the 4 edges
-const LEAVES_PER_POSITION_MIN = 5;
-const LEAVES_PER_POSITION_MAX = 8; // varies per cluster - some spots bunch up thicker than others
+const LEAVES_PER_POSITION_MIN = 2;
+const LEAVES_PER_POSITION_MAX = 3; // varies per cluster - some spots bunch up thicker than others
 const BORDER_INSET_X = 1.5; // vw base distance from the edge
 const BORDER_INSET_Y = 1.5; // vh base distance from the edge
 const BORDER_INSET_JITTER = 1.7; // extra +/- vw/vh spread so leaves layer at different depths, not one thin line
