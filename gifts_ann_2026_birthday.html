@@ -237,7 +237,7 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 </div>
 <button id="reset-btn" onclick="if(confirm('Reset all gift progress?')){localStorage.removeItem(STORAGE_KEY);localStorage.removeItem(STORAGE_KEY+'_phase2');location.reload()}">reset</button>
 
-<script src="bestie_storage.js"></script>
+<script src="js/bestie_storage.js"></script>
 <script>
 const raf = (typeof requestAnimationFrame === 'function') ? requestAnimationFrame : (cb => setTimeout(cb, 16));
 
