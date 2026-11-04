@@ -52,9 +52,27 @@ async function migrateAnn(env) {
   if (!(await env.BESTIES_KV.get(kvKey('membership', 'ann'))))
     await env.BESTIES_KV.put(kvKey('membership', 'ann'), JSON.stringify({ plan: 'annual', at: null, migrated: true }));
 }
+// ---- shared predictions (us.html): ONE record per year, { [predictionId]: { by, at } }. Either of you can tick or untick any of them. ----
+// Ann's old ticks were saved by list position, so this is the ORIGINAL order of the 15 predictions, used once to carry them across.
+const LEGACY_PRED_IDS = ['plushie_return','ten_long_calls','ann_masters_something','dutch_progress','more_insync','new_bits','biscuit_tier_list',
+  'weekly_schedule','wren_married','phas_monday','games_list','mandalorian','tristan_graduates','better_friendship','meet_irl'];
+const predKey = () => `predictions:${YEAR}`;
+async function loadPredictions(env) {
+  const rec = await getJson(env, predKey());
+  if (rec) return rec;
+  const out = {};   // first ever load: migrate Ann's old position-based ticks (once), then store the record so this never repeats
+  try {
+    const raw = await env.BESTIES_KV.get('user:ann');
+    const d = raw && JSON.parse(raw), old = d && d.ann_predictions_2025 && JSON.parse(d.ann_predictions_2025);
+    if (Array.isArray(old)) old.forEach((i) => { const id = LEGACY_PRED_IDS[i]; if (id) out[id] = { by: 'ann', at: null, migrated: true }; });
+  } catch (e) {}
+  await env.BESTIES_KV.put(predKey(), JSON.stringify(out));
+  return out;
+}
+
 async function loadShared(env) {
   await migrateAnn(env);
-  const out = { membership: {}, contract: {} };
+  const out = { membership: {}, contract: {}, predictions: await loadPredictions(env) };
   await Promise.all(PEOPLE.flatMap((who) => ['membership', 'contract'].map(async (kind) => { out[kind][who] = await getJson(env, kvKey(kind, who)); })));
   return out;
 }
@@ -86,6 +104,16 @@ export default {
       if (!name) return json({ error: 'name required' }, 400);
       if (!(await getJson(env, kvKey('contract', user))))     // you can only ever sign your own half, once; the date is stamped here
         await env.BESTIES_KV.put(kvKey('contract', user), JSON.stringify({ name, date: today(), at: new Date().toISOString() }));
+      return json({ ok: true, shared: await loadShared(env) });
+    }
+    if (url.pathname === '/api/prediction' && request.method === 'POST') {
+      const body = await readBody(request);
+      const id = body && String(body.id || '');
+      if (!/^[a-z0-9_-]{1,40}$/.test(id) || typeof body.checked !== 'boolean') return json({ error: 'bad prediction' }, 400);
+      const rec = await loadPredictions(env);
+      if (body.checked) { if (Object.keys(rec).length >= 200 && !rec[id]) return json({ error: 'too many' }, 400); rec[id] = { by: user, at: new Date().toISOString() }; }
+      else delete rec[id];
+      await env.BESTIES_KV.put(predKey(), JSON.stringify(rec));
       return json({ ok: true, shared: await loadShared(env) });
     }
     if (url.pathname === '/api/data' && request.method === 'GET') {
