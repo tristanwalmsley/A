@@ -405,8 +405,8 @@ const CAT_COLOR = { story:'#b86858', media:'#6f9466', fun:'#c8943a', bday26:'#8a
 const GLYPH = {
   'our_journey.html':'🗺', 'us.html':'♡', 'reasons.html':'💌',
   'passport.html':'✈', 'postcard_gallery.html':'🏞', 'letters_archive.html':'✉',
-  'tier_list.html':'🏆', 'birthday_2026.html':'🎈', 'gifts_ann_2026_birthday.html':'🎁',
-  'quiz.html':'❓', 'the_end.html':'💛', 'contract.html':'✎'
+  'tier_list.html':'🏆', 'countdown.html':'🕰️', 'birthday_2026.html':'🎈', 'gifts_ann_2026_birthday.html':'🎁',
+  'quiz.html':'❓', 'the_end.html':'💛', 'membership.html':'📜', 'contract.html':'✎'
 };
 function renderSheet(){
   const sheet = $('sheet'), seen = getSeenPages();
