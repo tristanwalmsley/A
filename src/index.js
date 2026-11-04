@@ -34,6 +34,31 @@ async function verifyAccess(request, env) {
 const json = (obj, status = 200) => new Response(JSON.stringify(obj),
   { status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
 
+
+// ---- shared contract + membership (one record per person per year; each person only ever writes their own) ----
+const YEAR = '2026', PEOPLE = ['tristan', 'ann'], PLANS_ALLOWED = ['annual'];
+const kvKey = (kind, who) => `${kind}:${YEAR}:${who}`;
+const today = () => new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Europe/London' });
+const getJson = async (env, key) => { const r = await env.BESTIES_KV.get(key); return r ? JSON.parse(r) : null; };
+async function readBody(req) { try { const t = await req.text(); return t.length > 10000 ? null : JSON.parse(t); } catch (e) { return null; } }
+
+// Ann already signed the 2026 contract on the old system: carry her signature (and the only accepted membership) across once.
+async function migrateAnn(env) {
+  if (await env.BESTIES_KV.get(kvKey('contract', 'ann'))) return;
+  const raw = await env.BESTIES_KV.get('user:ann'); if (!raw) return;
+  let d; try { d = JSON.parse(raw); } catch (e) { return; }
+  if (!d.ann_contract_signed_2026) return;
+  await env.BESTIES_KV.put(kvKey('contract', 'ann'), JSON.stringify({ name: d.ann_contract_name_2026 || 'Ann', date: d.ann_contract_date_2026 || 'Signed with love', at: null }));
+  if (!(await env.BESTIES_KV.get(kvKey('membership', 'ann'))))
+    await env.BESTIES_KV.put(kvKey('membership', 'ann'), JSON.stringify({ plan: 'annual', at: null, migrated: true }));
+}
+async function loadShared(env) {
+  await migrateAnn(env);
+  const out = { membership: {}, contract: {} };
+  await Promise.all(PEOPLE.flatMap((who) => ['membership', 'contract'].map(async (kind) => { out[kind][who] = await getJson(env, kvKey(kind, who)); })));
+  return out;
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -44,9 +69,28 @@ export default {
     const user = email && users[email];
     if (!user) return json({ error: 'unauthorized' }, 401);
 
+
+    if (url.pathname === '/api/shared' && request.method === 'GET') return json({ user, shared: await loadShared(env) });
+    if (url.pathname === '/api/membership' && request.method === 'POST') {
+      const body = await readBody(request);
+      if (!body || !PLANS_ALLOWED.includes(body.plan)) return json({ error: 'plan not accepted' }, 400);
+      if (!(await getJson(env, kvKey('membership', user))))   // locked once chosen
+        await env.BESTIES_KV.put(kvKey('membership', user), JSON.stringify({ plan: body.plan, at: new Date().toISOString() }));
+      return json({ ok: true, shared: await loadShared(env) });
+    }
+    if (url.pathname === '/api/contract' && request.method === 'POST') {
+      await migrateAnn(env);
+      if (!(await getJson(env, kvKey('membership', user)))) return json({ error: 'choose a membership first' }, 403);
+      const body = await readBody(request);
+      const name = String((body && body.name) || '').trim().slice(0, 60);
+      if (!name) return json({ error: 'name required' }, 400);
+      if (!(await getJson(env, kvKey('contract', user))))     // you can only ever sign your own half, once; the date is stamped here
+        await env.BESTIES_KV.put(kvKey('contract', user), JSON.stringify({ name, date: today(), at: new Date().toISOString() }));
+      return json({ ok: true, shared: await loadShared(env) });
+    }
     if (url.pathname === '/api/data' && request.method === 'GET') {
       const raw = await env.BESTIES_KV.get('user:' + user);
-      return json({ user, data: raw ? JSON.parse(raw) : null });
+      return json({ user, data: raw ? JSON.parse(raw) : null, shared: await loadShared(env) });
     }
     if (url.pathname === '/api/data' && request.method === 'PUT') {
       const text = await request.text();
