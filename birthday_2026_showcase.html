@@ -3641,5 +3641,99 @@ for (let i = 0; i < 10; i++) {
 </script>
 <script src="js/nav.js"></script>
 <script>window.addEventListener('DOMContentLoaded',()=>buildNav('birthday_2026_showcase.html'));</script>
+<script>
+// ================= REPLAY EXTRAS: filling the quiet 35 minutes =================
+// Everything you'd want to edit is in the CONFIG block. Times are "seconds LEFT until the reveal".
+const TRACK_TITLES = [];              // e.g. ['Song one', 'Song two', ...] - 7 titles, in order. Empty = "Song 1", "Song 2"...
+const GOAL_LIGHTS_PER_SONG = 12;      // light-collecting goal for each song
+const TIMED_MESSAGES = [
+  { at: 34*60,      text: "35 minutes to go. she has no idea what's coming ♡" },
+  { at: 30*60,      text: "The Office of Bestie Affairs confirms: everything is, mostly, on schedule." },
+  { at: 26*60,      text: "Fun fact: this entire page is held together by hope and good intentions." },
+  { at: 22*60,      text: "Hydrate. Stretch. Collect a leaf or two." },
+  { at: 18*60,      text: "Somewhere, a very nervous person is checking the site one more time." },
+  { at: 14*60,      text: "Less than 15 minutes. The curtains are being dusted." },
+  { at: 11*60,      text: "Nearly time. Please remain seated and sparkly." },
+  { at: 8.5*60,     text: "Almost there ♡" }
+];
+// photos/quotes drifting by. img is optional, e.g. 'media/birthday_2026/memories/memory_01.jpg'
+// { at: 31*60, text: 'Remember when ...', img: null },
+const MEMORY_MOMENTS = [];
+// replay-only behind-the-scenes captions (shown only when the 💬 toggle is on)
+// { at: 28*60, text: 'this is where I was panicking about ...' },
+const COMMENTARY = [];
+
+(function(){
+  const css = document.createElement('style');
+  css.textContent = `
+  #rx-glow{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0;background:radial-gradient(ellipse at 50% 45%,rgba(0,0,0,0) 35%,rgba(20,6,30,.75) 100%);transition:opacity 4s ease}
+  #rx-np{position:fixed;left:1rem;bottom:1rem;z-index:54;max-width:min(70vw,18rem);padding:.5rem .9rem;border-radius:14px;background:rgba(40,22,12,.82);color:#f0ddb8;font-family:'Playfair Display',serif;font-size:.8rem;line-height:1.35;opacity:0;transition:opacity .7s ease;pointer-events:none}
+  #rx-np.show{opacity:1}
+  #rx-np b{display:block;font-family:'Caveat',cursive;font-size:1.15rem;color:var(--gold);font-weight:700}
+  #rx-np i{opacity:.7}
+  #rx-toast{position:fixed;top:1.1rem;left:50%;z-index:60;max-width:min(88vw,34rem);transform:translate(-50%,-20px);padding:.7rem 1.3rem;border-radius:14px;background:rgba(40,22,12,.9);color:#f6e7c8;font-family:'Playfair Display',serif;font-style:italic;font-size:.95rem;text-align:center;opacity:0;transition:opacity .8s ease,transform .8s ease;pointer-events:none}
+  #rx-toast.show{opacity:1;transform:translate(-50%,0)}
+  .rx-mem{position:fixed;right:1.2rem;bottom:20%;z-index:52;width:min(52vw,13rem);padding:.6rem;background:#fffdf5;color:#3a2010;border-radius:4px;box-shadow:0 8px 24px rgba(0,0,0,.35);font-family:'Caveat',cursive;font-size:1.1rem;text-align:center;pointer-events:none;opacity:0;animation:rxMem 11s ease-in-out forwards}
+  .rx-mem img{width:100%;display:block;margin-bottom:.4rem;border-radius:2px}
+  @keyframes rxMem{0%{opacity:0;transform:translateY(40px) rotate(3deg)}12%,85%{opacity:1;transform:translateY(0) rotate(-2deg)}100%{opacity:0;transform:translateY(-60px) rotate(2deg)}}
+  #rx-cap{position:fixed;left:50%;bottom:4.5rem;z-index:53;transform:translateX(-50%);max-width:min(88vw,34rem);font-family:'Caveat',cursive;font-size:1.3rem;color:#f6e7c8;text-shadow:0 2px 8px rgba(0,0,0,.7);text-align:center;opacity:0;transition:opacity .8s ease;pointer-events:none}
+  #rx-cap.show{opacity:1}
+  #rx-cmt{position:fixed;right:1rem;top:1rem;z-index:56;border:0;cursor:pointer;padding:.45rem .8rem;border-radius:999px;background:rgba(40,22,12,.82);color:#f0ddb8;font-size:.85rem;opacity:.75}
+  #rx-cmt.on{opacity:1;box-shadow:0 0 0 2px var(--gold)}`;
+  document.head.appendChild(css);
+  const mk = (tag, id, cls) => { const e = document.createElement(tag); if (id) e.id = id; if (cls) e.className = cls; document.body.appendChild(e); return e; };
+  const glow = mk('div','rx-glow'), np = mk('div','rx-np'), toast = mk('div','rx-toast'), cap = mk('div','rx-cap');
+  let commentaryOn = false;
+  if (COMMENTARY.length) {
+    const b = mk('button','rx-cmt'); b.type = 'button'; b.textContent = '💬 commentary';
+    b.addEventListener('click', () => { commentaryOn = !commentaryOn; b.classList.toggle('on', commentaryOn); if (!commentaryOn) cap.classList.remove('show'); });
+  }
+  // messages queue so two never overlap
+  const q = []; let busy = false;
+  function toastNow(text, ms){ q.push([text, ms || 6000]); if (!busy) next(); }
+  function next(){
+    const it = q.shift(); if (!it) { busy = false; return; }
+    busy = true; toast.textContent = it[0]; toast.classList.add('show');
+    setTimeout(() => { toast.classList.remove('show'); setTimeout(next, 900); }, it[1]);
+  }
+  const title = i => TRACK_TITLES[i] || ('Song ' + (i + 1));
+  const fired = new Set(); let lastIdx = null, songStartLights = 0, goalHit = false, capTimer = null;
+  const SLOW_START = MUSIC_START_AT_S, SLOW_END = 360; // gradual darkening from music start until the 6:00 build-up takes over
+
+  setInterval(() => {
+    if (!document.body.classList.contains('replay-started')) return;
+    const left = (TARGET - Date.now()) / 1000;
+    if (left <= 0) { np.classList.remove('show'); glow.style.opacity = 0; return; }
+    // 3. slow escalation
+    const t = Math.max(0, Math.min(1, (SLOW_START - left) / (SLOW_START - SLOW_END)));
+    glow.style.opacity = (t * 0.55).toFixed(3);
+    // 1+2+7. now playing, song-change moment, per-song goal
+    const st = left <= SLOW_START ? computeMusicState(left * 1000) : null;
+    if (st && st.mode === 'pool') {
+      const lights = getLightCount(), goalOn = left > 6.5 * 60;
+      if (st.index !== lastIdx) {
+        const first = lastIdx === null; lastIdx = st.index; songStartLights = lights; goalHit = false;
+        if (!first) { try { triggerColorPulse(); spawnHeartBurstSparkles(); } catch(e) {} toastNow('♪ now playing: ' + title(st.index), 4500); }
+      }
+      if (goalOn && !goalHit && lights - songStartLights >= GOAL_LIGHTS_PER_SONG) {
+        goalHit = true; try { spawnHeartBurstSparkles(); } catch(e) {} toastNow('♡ song goal reached - nice collecting!', 4500);
+      }
+      const prog = goalOn ? (goalHit ? ' · goal ✓' : ' · leaves ' + Math.max(0, lights - songStartLights) + '/' + GOAL_LIGHTS_PER_SONG) : '';
+      const nxt = st.index + 1 < TRACKS.length ? 'up next: ' + title(st.index + 1) : 'up next: the finale';
+      np.innerHTML = '<b></b><i></i>'; np.firstChild.textContent = '♪ ' + title(st.index) + prog; np.lastChild.textContent = nxt;
+      np.classList.add('show');
+    } else np.classList.remove('show');
+    // 4. timed messages
+    TIMED_MESSAGES.forEach((m, i) => { if (!fired.has('m' + i) && left <= m.at) { fired.add('m' + i); if (left > m.at - 60) toastNow(m.text, 6500); } });
+    // 5. memories
+    MEMORY_MOMENTS.forEach((m, i) => { if (!fired.has('r' + i) && left <= m.at) { fired.add('r' + i); if (left > m.at - 60) {
+      const c = mk('div', '', 'rx-mem'); if (m.img) { const im = document.createElement('img'); im.src = m.img; c.appendChild(im); }
+      c.appendChild(document.createTextNode(m.text || '')); setTimeout(() => c.remove(), 11500); } } });
+    // 6. commentary
+    COMMENTARY.forEach((m, i) => { if (!fired.has('c' + i) && left <= m.at) { fired.add('c' + i); if (left > m.at - 60 && commentaryOn) {
+      cap.textContent = m.text; cap.classList.add('show'); clearTimeout(capTimer); capTimer = setTimeout(() => cap.classList.remove('show'), 8000); } } });
+  }, 1000);
+})();
+</script>
 </body>
 </html>
