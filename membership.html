@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Besties ♡ - Membership</title>
+<title>Besties ♡</title>
+<link rel="icon" type="image/x-icon" href="images/site_icon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <!-- EmailJS: lets a static page send a real email with no backend. See the EMAILJS_* constants
      near the top of the script below for the one-time setup this needs. -->
+<script src="js/bestie_storage.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -132,6 +134,12 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .checkout-line{font-size:1.05rem;color:rgba(250,244,232,0.35);margin-bottom:0.75rem;opacity:0;transform:translateY(6px);transition:opacity 0.4s ease,transform 0.4s ease,color 0.4s ease}
 .checkout-line.show{opacity:1;transform:translateY(0);color:var(--cream)}
 .checkout-line.show.done{color:var(--sage)}
+.my-membership{max-width:560px;margin:2.5rem auto 1rem;padding:1.6rem 1.5rem;background:var(--paper);border:1.5px solid var(--tan);box-shadow:5px 5px 0 var(--warm);text-align:center}
+.my-membership[hidden]{display:none}
+.mm-title{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--deep);margin-bottom:1rem}
+.mm-row{display:flex;justify-content:space-between;gap:1rem;padding:.5rem 0;border-bottom:1px dotted var(--tan);color:var(--brown)}
+.mm-row b{color:var(--deep)}.mm-row small{color:var(--tan)}
+.mm-go{display:inline-block;margin-top:1.3rem;padding:.7rem 1.4rem;background:var(--brown);color:var(--cream);text-decoration:none;font-family:'Caveat',cursive;font-size:1.1rem;box-shadow:3px 3px 0 var(--gold)}
 </style>
 </head>
 <body>
@@ -146,6 +154,7 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
   <p>Before proceeding to the official Bestie Contract, please review the following membership tiers and select the one that most accurately reflects your level of commitment.</p>
 </div>
 
+<div id="my-membership" class="my-membership" hidden></div>
 <div class="plans-wrap" id="plans-wrap"></div>
 
 <p class="disclaimer">All tiers are final upon selection. Terms and conditions apply - some financial, most emotional. Please review carefully before proceeding.</p>
@@ -412,7 +421,7 @@ function proceedConfirm() {
       return;
     }
     document.getElementById('confirm-overlay').classList.remove('show');
-    startCheckout(email);
+    startCheckout(email, plan.id);
   } else {
     document.getElementById('confirm-overlay').classList.remove('show');
     showReject(plan);
@@ -429,12 +438,13 @@ function closeReject() {
   document.getElementById('reject-overlay').classList.remove('show');
 }
 
-function startCheckout(email) {
+function startCheckout(email, planId) {
   sendConfirmationEmail(email); // fire-and-forget - doesn't block the redirect below
   document.getElementById('checkout-overlay').classList.add('show');
   const lines = [0,1,2,3].map(i => document.getElementById('co-line-'+i));
   lines.forEach((l,i) => setTimeout(() => { l.classList.add('show'); if (i === 3) l.classList.add('done'); }, 350 + i*550));
-  setTimeout(() => { window.location.href = 'contract.html'; }, 350 + lines.length*550 + 750);
+  const saved = BestieSync.post('/api/membership', { plan: planId }).catch(e => console.error('membership not saved', e));
+  setTimeout(() => { saved.finally(() => { window.location.href = 'contract.html'; }); }, 350 + lines.length*550 + 750);
 }
 
 document.addEventListener('keydown', (e) => {
@@ -446,8 +456,32 @@ document.addEventListener('keydown', (e) => {
 renderPlans();
 renderTestimonials();
 renderFaqs();
+
+async function showMyMembership() {
+  try {
+    const S = await BestieSync.refreshShared(), me = BestieSync.user;
+    if (!S.membership[me]) return;
+    const box = document.getElementById('my-membership');
+    const label = id => (PLANS.find(p => p.id === id) || {}).name || id;
+    const fmt = a => a && a.at ? new Date(a.at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+    box.innerHTML = '';
+    const t = document.createElement('div'); t.className = 'mm-title'; t.textContent = 'Your 2026-27 membership'; box.appendChild(t);
+    [['tristan', 'Tristan'], ['ann', 'Ann']].forEach(([w, nm]) => {
+      const m = S.membership[w], row = document.createElement('div'); row.className = 'mm-row';
+      const a = document.createElement('b'); a.textContent = nm;
+      const c = document.createElement('span'); c.textContent = m ? label(m.plan) + (fmt(m) ? ' · ' + fmt(m) : '') : 'not chosen yet';
+      row.append(a, c); box.appendChild(row);
+    });
+    const go = document.createElement('a'); go.className = 'mm-go'; go.href = 'contract.html';
+    go.textContent = S.contract[me] ? 'View the contract →' : 'On to the contract →';
+    box.appendChild(go); box.hidden = false;
+    document.getElementById('plans-wrap').style.display = 'none';
+    const d = document.querySelector('.disclaimer'); if (d) d.style.display = 'none';
+  } catch (e) { console.warn('membership status unavailable', e); }
+}
+showMyMembership();
 </script>
-<script src="nav.js"></script>
+<script src="js/nav.js"></script>
 <script>window.addEventListener('DOMContentLoaded',()=>buildNav('membership.html'));</script>
 </body>
 </html>
