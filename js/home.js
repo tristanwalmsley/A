@@ -166,23 +166,29 @@ const BADGES = [
     hint:'open every gift and every page of the Birthday 2026 adventure',
     earned: () => birthday2026Complete(),
     info: () => 'All ' + TOTAL_GIFTS + ' stops opened, every page of the birthday adventure unlocked, start to finish.<br><br>Thank you for letting me spoil you rotten, and for being the kind of person who is worth the extra hours. Happy 25th, Bestie Ann.',
-    // same ring-and-collapse as Secret Keeper, but with presents
+    // a gift box drops in, shakes, pops its lid; the medal rises out and balloons float up
     play(done){
       const o = dimOverlay();
-      const ring = document.createElement('div'); ring.className = 'sk-ring';
-      const bits = ['🎁','🎈','✉','🎂'];
-      for(let i=0;i<EGG_KEYS.length;i++){          // same count as Secret Keeper so the ring CSS fits
-        const s = document.createElement('span');
-        s.textContent = bits[i % bits.length];
-        s.style.setProperty('--a', (i*360/EGG_KEYS.length) + 'deg');
-        ring.appendChild(s);
-      }
-      const core = document.createElement('div'); core.className = 'sk-core'; core.textContent = '🎁';
-      o.append(ring, core);
-      setTimeout(() => ring.classList.add('collapse'), 1900);
-      setTimeout(() => { core.classList.add('in'); launchConfetti(); launchHeartBurst(); }, 2300);
-      setTimeout(launchHeartBurst, 3000);
-      setTimeout(() => endOverlay(o, done), 4200);
+      const stage = document.createElement('div'); stage.className = 'gb-stage';
+      const gift = document.createElement('div'); gift.className = 'gb-gift';
+      const core = document.createElement('div'); core.className = 'gb-core'; core.textContent = '🎁';
+      const box = document.createElement('div'); box.className = 'gb-box';
+      const lid = document.createElement('div'); lid.className = 'gb-lid';
+      gift.append(core, box, lid);
+      stage.appendChild(gift);
+      ['🎈','🎈','🎈','🎈','🎈','🎈'].forEach((b, i) => {
+        const el = document.createElement('span'); el.className = 'gb-balloon'; el.textContent = b;
+        el.style.setProperty('--bx', ((i - 2.5) * 70 + (Math.random() - 0.5) * 30) + 'px');
+        el.style.setProperty('--bd', (2.2 + Math.random() * 0.8) + 's');
+        el.style.setProperty('--bl', (i * 0.12) + 's');
+        stage.appendChild(el);
+      });
+      o.appendChild(stage);
+      setTimeout(() => gift.classList.add('shake'), 900);
+      setTimeout(() => { lid.classList.add('pop'); stage.classList.add('pop'); launchConfetti(); }, 2100);
+      setTimeout(() => { core.classList.add('in'); launchHeartBurst(); }, 2250);
+      setTimeout(launchHeartBurst, 3200);
+      setTimeout(() => endOverlay(o, done), 4900);
     } }
 ];
 
