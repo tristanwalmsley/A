@@ -8,19 +8,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--cream:#faf4e8;--warm:#f0ddb8;--tan:#d4b483;--brown:#7a5230;--deep:#3a2010;--rose:#b86858;--gold:#c8943a;--sage:#7a9870;--paper:#fffdf5;--ink:#2a1a08;
---nav-menu-bg:#2a1a0e;--nav-menu-fg:#f0ddb8;--nav-menu-border:rgba(255,255,255,.18);--nav-menu-hover:rgba(255,255,255,.09);--nav-accent:var(--gold)}
+:root{--cream:#faf4e8;--warm:#f0ddb8;--tan:#d4b483;--brown:#7a5230;--deep:#3a2010;--rose:#b86858;--gold:#c8943a;--sage:#7a9870;--paper:#fffdf5;--ink:#2a1a08}
 html{scroll-behavior:smooth}
 body{background:var(--deep);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden;overflow-y:auto}
 body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.5}
 .bg-pattern{position:fixed;inset:0;opacity:0.04;background-image:repeating-linear-gradient(0deg,var(--tan) 0px,transparent 1px,transparent 28px),repeating-linear-gradient(90deg,var(--tan) 0px,transparent 1px,transparent 28px);pointer-events:none}
-nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;z-index:600;background:rgba(30,10,4,0.95);backdrop-filter:blur(8px);flex-wrap:wrap;gap:0.5rem}
-.nav-brand{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--rose);font-weight:700;text-decoration:none}
-.nav-links{display:flex;gap:0.8rem;flex-wrap:wrap}
-.nav-a{font-family:'Caveat',cursive;font-size:0.9rem;color:rgba(250,244,232,0.82);text-decoration:none;padding:0.25rem 0.6rem;border-radius:2px;transition:color 0.2s,background 0.2s;letter-spacing:0.5px;white-space:nowrap}
-.nav-a:hover{color:var(--cream);background:rgba(255,255,255,0.07)}
-.nav-a.current{color:var(--gold)}
-.nav-a.locked{color:rgba(250,244,232,0.2);cursor:not-allowed;pointer-events:none}
 .view-banner{display:none;background:var(--gold);color:var(--deep);text-align:center;padding:0.6rem 2rem;font-family:'Caveat',cursive;font-size:1rem;letter-spacing:0.5px}
 .view-banner.show{display:block}
 .view-banner a{color:var(--deep);font-weight:700;text-decoration:none}
@@ -91,7 +83,7 @@ nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-be
   Viewing signed contract ♡ - <a href="gifts_ann_2026_birthday.html">back to gifts →</a>
 </div>
 
-<nav id="site-nav">
+<nav id="site-nav" data-theme="dark">
   <a href="index.html" class="nav-brand">Besties ♡</a>
   <div class="nav-links"></div>
 </nav>
