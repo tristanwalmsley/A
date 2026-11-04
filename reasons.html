@@ -188,6 +188,7 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .sq-wrap.pop{bottom:auto;transform-origin:50% 100%;animation:sqPop 4.4s ease forwards}
 .sq-wrap.pop .sq-sign{animation-delay:.9s}
 @keyframes sqPop{0%{opacity:0;transform:translateY(70px) scale(.1)}10%{opacity:1;transform:translateY(-40px) scale(1.2)}18%{transform:translateY(0) scale(1)}85%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(70px) scale(.1)}}
+.sea-lab{position:fixed;bottom:14vh;z-index:57;transform:translateX(-50%);pointer-events:none;font-family:'Caveat',cursive;font-size:1.5rem;font-weight:700;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.7);white-space:nowrap}
 /* ---- bing chilling: Croydon bus ---- */
 .bus-road{position:fixed;left:0;right:0;bottom:16vh;height:64px;z-index:56;background:#2b2b2e;border-top:3px solid #555;border-bottom:3px solid #555;pointer-events:none;animation:seaIn .4s ease forwards}
 .bus-road::after{content:'';position:absolute;left:0;right:0;top:50%;border-top:3px dashed rgba(255,230,160,.7)}
@@ -930,32 +931,36 @@ buildList();
   // 9. ACROSS THE SEA - FLY THE PLANE. Hold the card and drag a little plane clear across the screen over the sea. Let go early and it goes in the drink.
   // =====================================================================
   DRAG.sea = (e, card) => {
-    const sx = e.clientX, need = Math.max(260, innerWidth * 0.6), pl = place(mk('plane', '✈️')), band = place(mk('sea-band'));
+    if(busy || PageEggs.isOpen()) return;
+    const w = innerWidth, sx = e.clientX, dir = sx < w / 2 ? 1 : -1, destX = dir > 0 ? w - 46 : 46, need = Math.max(200, Math.abs(destX - sx) - 50);
+    const pl = place(mk('plane', '✈️')), band = place(mk('sea-band')), hint = place(mk('bus-hint', 'drag the plane across the sea to the other side ♡'));
     band.textContent = '🌊'.repeat(14);
+    const mkLab = (x, txt) => { const l = mk('sea-lab', txt); l.style.left = x + 'px'; return place(l); };
+    const a = mkLab(sx, '🇬🇧 UK'), z = mkLab(destX, '♡ you');
     let cx = e.clientX, cy = e.clientY, fired = false, lastH = 0;
-    const put = (x, y, flip) => { pl.style.transform = 'translate(' + (x - 20) + 'px,' + (y - 20) + 'px) scaleX(' + (flip ? -1 : 1) + ')'; };
+    const clean = () => [band, hint, a, z].forEach(n => n.remove());
+    const put = (x, y) => { pl.style.transform = 'translate(' + (x - 20) + 'px,' + (y - 20) + 'px) scaleX(' + (dir < 0 ? -1 : 1) + ')'; };
     const heart = (x, y) => { const hh = mk('trail-h', '♡'); hh.style.left = x + 'px'; hh.style.top = y + 'px'; place(hh); wait(1700, () => hh.remove()); };
-    put(cx, cy, false);
+    put(cx, cy);
     track(e, card, ev => {
       if(fired) return;
-      cx = ev.clientX; cy = ev.clientY; put(cx, cy, cx < sx);
+      cx = ev.clientX; cy = ev.clientY; put(cx, cy); hint.style.opacity = 0;
       if(performance.now() - lastH > 70){ lastH = performance.now(); heart(cx, cy + 10); }
-      if(Math.abs(cx - sx) >= need){
+      if((cx - sx) * dir >= need){
         fired = true;
-        guard(4200, () => {
-          const dir = cx < sx ? -1 : 1;
-          pl.style.transition = 'transform 1.2s ease-in'; pl.style.transform = 'translate(' + (cx + dir * innerWidth) + 'px,' + (cy - 120) + 'px) scaleX(' + (dir < 0 ? -1 : 1) + ')';
+        if(!guard(4200, () => {
+          pl.style.transition = 'transform 1.2s ease-in'; pl.style.transform = 'translate(' + (cx + dir * w) + 'px,' + (cy - 120) + 'px) scaleX(' + (dir < 0 ? -1 : 1) + ')';
           const lab = place(mk('fx-big', 'UK ✈ you ♡')); lab.style.color = '#fff3c4';
           [523, 659, 784, 1046].forEach((f, i) => tone(f, i * 0.1, 0.4, 'triangle', 0.13));
-          wait(1300, () => pl.remove()); wait(4200, () => { lab.remove(); band.remove(); win('sea'); });
-        });
-        if(!busy) { /* guard refused (busy); just tidy up */ }
+          wait(1300, () => pl.remove()); wait(4200, () => { lab.remove(); clean(); win('sea'); });
+        })){ pl.remove(); clean(); }
       }
     }, () => {
       if(fired) return;
       pl.style.transition = 'transform .8s ease-in, opacity .8s'; pl.style.opacity = 0; pl.style.transform = 'translate(' + (cx - 20) + 'px,' + (cy + 420) + 'px) rotate(160deg)';
-      tone(500, 0, 0.5, 'sine', 0.12, 120); band.style.transition = 'opacity .6s'; band.style.opacity = 0;
-      wait(900, () => { pl.remove(); band.remove(); });
+      tone(500, 0, 0.5, 'sine', 0.12, 120); clean();
+      PageEggs.toast('splash! keep holding all the way across ♡', 2800);
+      wait(900, () => pl.remove());
     });
   };
 
