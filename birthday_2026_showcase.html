@@ -378,11 +378,9 @@ body.timer-grow .timer{transform:scale(1.4);transition:transform 15s cubic-bezie
 .entry-start{display:inline-block;margin-top:1.1rem;padding:0.7rem 2.2rem;font-family:'Caveat',cursive;font-size:1.7rem;color:#140a04;background:var(--gold);border:none;border-radius:999px;cursor:pointer;opacity:0;transition:opacity 0.6s ease,transform 0.2s ease;pointer-events:none}
 .entry-start.ready{opacity:1;pointer-events:auto}
 .entry-start:hover{transform:scale(1.05)}
-#site-nav{position:fixed;top:0;left:0;right:0;z-index:10001;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:0.7rem 1.2rem;background:rgba(20,10,4,0.85);backdrop-filter:blur(6px);border-bottom:1px solid rgba(200,148,58,0.35);transition:opacity 0.6s ease}
-#site-nav .nav-brand{font-family:'Caveat',cursive;font-size:1.6rem;color:var(--gold);text-decoration:none}
-#site-nav .nav-links{display:flex;flex-wrap:wrap;gap:0.4rem 1rem}
-#site-nav .nav-links a{font-family:'Playfair Display',serif;font-size:0.9rem;color:var(--warm);text-decoration:none;opacity:0.85}
-#site-nav .nav-links a:hover,#site-nav .nav-links a.active{opacity:1;color:var(--gold)}
+/* nav.js injects its own #site-nav rules (sticky, z-index 600) AFTER this stylesheet, so these use body #site-nav to win:
+   pinned over the Start screen instead of sitting in the page flow */
+body #site-nav{position:fixed;top:0;left:0;right:0;z-index:10001;transition:opacity 0.6s ease}
 body.replay-started #site-nav{opacity:0;pointer-events:none}
 .entry-sub{font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:var(--warm);opacity:0;transition:opacity 0.6s ease;pointer-events:none}
 .entry-sub.ready{opacity:0.75;animation:entryPulse 1.8s ease-in-out infinite}
@@ -661,7 +659,7 @@ body.stage-garden-enchanted .brand{color:#8a5a1f}
 </style>
 </head>
 <body>
-<nav id="site-nav">
+<nav id="site-nav" data-theme="dark">
   <a href="index.html" class="nav-brand">Besties ♡</a>
   <div class="nav-links"></div>
 </nav>
