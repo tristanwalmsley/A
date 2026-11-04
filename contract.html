@@ -80,7 +80,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 <body>
 <div class="bg-pattern"></div>
 <div class="view-banner" id="view-banner">
-  Viewing signed contract ♡ - <a href="gifts_ann_2026_birthday.html">back to gifts →</a>
+  Viewing signed contract ♡ - <a href="birthday_2026_gifts.html">back to gifts →</a>
 </div>
 
 <nav id="site-nav" data-theme="dark">
@@ -226,7 +226,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   <div class="signed-stamp">SIGNED ♡</div>
 </div>
 <div class="proceed-wrap" id="proceed-wrap">
-  <button class="btn-proceed" onclick="location.href='gifts_ann_2026_birthday.html'">Open the box →</button>
+  <button class="btn-proceed" onclick="location.href='birthday_2026_gifts.html'">Open the box →</button>
   <div class="proceed-sub">contract saved - you're good to go ♡</div>
 </div>
 
@@ -237,7 +237,7 @@ const PLAN_NAMES = { annual: 'Annual' };
 const $ = id => document.getElementById(id);
 let ME = null, SHARED = null;
 const isViewMode = () => new URLSearchParams(location.search).get('view') === '1';
-const nextPage = () => ME === 'ann' ? 'gifts_ann_2026_birthday.html' : 'index.html';
+const nextPage = () => ME === 'ann' ? 'birthday_2026_gifts.html' : 'index.html';
 const block = who => document.querySelector('.sig-block[data-who="' + who + '"]');
 
 function paintSide(who) {
