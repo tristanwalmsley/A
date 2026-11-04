@@ -91,6 +91,31 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 @keyframes shootAcross{0%{opacity:0;transform:translate(0,0)}8%{opacity:1}85%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy))}}
 .spark{position:fixed;z-index:60;pointer-events:none;color:#ffe9a0;font-size:1.1rem;animation:sparkOut .9s ease-out forwards}
 @keyframes sparkOut{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--sx),var(--sy)) scale(.3)}}
+/* ---- EASTER EGGS: interactions ---- */
+.reason-card{-webkit-touch-callout:none}
+.reason-card[data-fx].revealed{touch-action:none;-webkit-user-select:none;user-select:none}
+.reason-card.press{transform:scale(.96) translateY(2px);box-shadow:inset 0 3px 10px rgba(58,32,16,.25)}
+.reason-card.peeking{animation:peekRamp 2.2s linear forwards;-webkit-user-select:none;user-select:none}
+@keyframes peekRamp{0%{transform:translate(0,0);box-shadow:0 0 0 0 rgba(200,148,58,0)}10%{transform:translate(-1px,0)}20%{transform:translate(1px,1px) rotate(.4deg)}30%{transform:translate(-2px,0) rotate(-.6deg)}40%{transform:translate(2px,-1px) rotate(.8deg)}50%{transform:translate(-3px,1px) rotate(-1deg);box-shadow:0 0 14px 2px rgba(200,148,58,.25)}60%{transform:translate(3px,0) rotate(1.2deg)}70%{transform:translate(-4px,1px) rotate(-1.4deg);box-shadow:0 0 22px 4px rgba(200,148,58,.4)}80%{transform:translate(4px,-1px) rotate(1.6deg)}90%{transform:translate(-5px,0) rotate(-1.8deg);box-shadow:0 0 30px 6px rgba(200,148,58,.55)}100%{transform:translate(5px,0) rotate(2deg) scale(1.03);box-shadow:0 0 40px 10px rgba(200,148,58,.7)}}
+.bean-pour{position:fixed;z-index:58;pointer-events:none;font-size:1.5rem;animation:beanFall 1.3s ease-in forwards}
+@keyframes beanFall{to{transform:translate(var(--bx),78vh) rotate(var(--br));opacity:.9}}
+.noodle-svg{position:fixed;inset:0;width:100%;height:100%;z-index:58;pointer-events:none}
+.noodle-svg path{fill:none;stroke:#f3d27a;stroke-width:5;stroke-linecap:round;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
+.reason-card canvas.scribble{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:3}
+.reason-card .adam{border-bottom:0;transition:color .4s}
+.reason-card .adam.dead{text-decoration:line-through;text-decoration-color:#d63a3a;text-decoration-thickness:3px;color:#b8a38a}
+.rej-stamp{position:absolute;right:8%;top:50%;z-index:4;font-family:'Playfair Display',serif;font-weight:700;letter-spacing:3px;font-size:1.5rem;color:#d63a3a;border:4px solid #d63a3a;padding:.05rem .6rem;border-radius:4px;pointer-events:none;transform:translateY(-50%) rotate(-12deg) scale(2.6);opacity:0;animation:rejSlam .45s cubic-bezier(.2,1.6,.4,1) .05s forwards;mix-blend-mode:multiply}
+@keyframes rejSlam{to{transform:translateY(-50%) rotate(-12deg) scale(1);opacity:.92}}
+.reasons-wrap.quake{animation:quake .4s ease-in-out}
+@keyframes quake{0%,100%{transform:translate(0,0)}20%{transform:translate(-5px,3px)}40%{transform:translate(5px,-3px)}60%{transform:translate(-3px,2px)}80%{transform:translate(2px,-1px)}}
+.const-svg{position:fixed;inset:0;width:100%;height:100%;z-index:57;pointer-events:none;transition:opacity 1s}
+.const-svg.out{opacity:0}
+.const-line{fill:none;stroke:rgba(255,230,160,.8);stroke-width:1.5;transition:stroke-dashoffset 5s linear;filter:drop-shadow(0 0 6px rgba(255,215,106,.8))}
+.const-dot{fill:#fff3c4;opacity:0;transform-box:fill-box;transform-origin:center;animation:dotIn .5s ease forwards;filter:drop-shadow(0 0 6px #ffd76a)}
+@keyframes dotIn{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
+.const-label{position:fixed;left:50%;top:50%;z-index:58;transform:translate(-50%,-50%);font-family:'Caveat',cursive;font-size:2rem;color:#faf4e8;text-shadow:0 0 18px rgba(255,215,106,.9);opacity:0;transition:opacity 1.2s;pointer-events:none;text-align:center;white-space:nowrap}
+.const-label.in{opacity:1}
+.const-label.out{opacity:0}
 </style>
 </head>
 <body>
@@ -298,54 +323,35 @@ buildList();
 </script>
 <script src="js/eggs.js"></script>
 <script>
-// ---------- EASTER EGGS ON THIS PAGE (8 in total; see PageEggs.PAGES.reasons.total in js/eggs.js) ----------
+// ---------- EASTER EGGS ON THIS PAGE (11 in total; the count lives in PageEggs.PAGES.reasons.total in js/eggs.js) ----------
+// Each one wants a different kind of gesture: catch, read, pour, pull, press-and-release, double-tap,
+// scrub, scribble, hold, or just wait.
 (function(){
   const EGG = {
     star:     { title:'Make a wish', text:"You caught a shooting star. I'm told you're supposed to make a wish now, and I'm also told you're not supposed to tell anyone what it was.<br><br>I'll just say I hope it comes true." },
     readall:  { title:'Every. Single. One.', text:"You opened every reason one at a time. No shortcuts, no 'reveal all' button. That's exactly the kind of person who deserves to read every one of them.<br><br>And there are still so many more where those came from." },
-    beans:    { title:'Beans Means Heinz', text:"You double-tapped a tin of beans and it rained. I stand by every word of that reason, and I would like to formally thank the beans." },
-    noodles:  { title:'Noodles Unite Us', text:"A downpour of noodles. Somewhere a bowl is very full and very proud.<br><br>Noodles unite us, and I'm not taking questions." },
-    bingbong: { title:'Bing bong', text:"Bing bong. Bing bong.<br><br>I'd explain it, but if you know, you know, and you know. That's the whole point." },
+    beans:    { title:'Beans Means Heinz', text:"You tipped a tin of beans right out of the page. I stand by every word of that reason, and I would like to formally thank the beans." },
+    noodles:  { title:'Noodles Unite Us', text:"You pulled the noodle until it twanged. Somewhere a bowl is very full and very proud.<br><br>Noodles unite us, and I'm not taking questions." },
+    bingbong: { title:'Bing bong', text:"You pressed it, you let go, and it answered. Twice. That's a doorbell, and that's us.<br><br>I'd explain it, but if you know, you know, and you know. That's the whole point." },
     twoam:    { title:'2am thoughts', text:"That's the 2am message in action: random thought goes in, exactly the right amount of enthusiasm comes out. It has never once failed.<br><br>Keep the 2am thoughts coming. I'll always answer." },
-    doobe:    { title:'DOOBEBOOBEDOOOOOO', text:"You found the song hiding inside the reason. I have no further comment, except that it's a masterpiece and you are, as ever, my favourite audience." }
+    doobe:    { title:'DOOBEBOOBEDOOOOOO', text:"You scrubbed the song out of the reason, back and forth like a record. I have no further comment, except that it's a masterpiece and you are, as ever, my favourite audience." },
+    adam:     { title:'Adam has been rejected', text:"Scribbled out, stamped REJECTED, and returned to sender.<br><br>Hating on Adam together is a long and proud tradition, and as of right now it is officially on the record. He'll never know.<br><br>(He'll know.)" },
+    peek:     { title:'Impatient?', text:"Most people tap. You held on, like you were waiting for it to say something.<br><br>It did. It said: I like how you don't just skim things." },
+    stay:     { title:'You stayed', text:"Nothing to click. Nothing to find. You just stayed a while, and the stars joined up on their own.<br><br>That's most of what I like about us: sitting around doing nothing, and it still turns into something." }
   };
   const sig = 'Bestie Tristan';
   const win = k => PageEggs.found('reasons', k, { title:EGG[k].title, text:EGG[k].text, sig });
-  const ql = (s, el) => (el || document).querySelector(s);
   const mk = (cls, text) => { const e = document.createElement('div'); e.className = cls; if(text != null) e.textContent = text; return e; };
+  const NS = 'http://www.w3.org/2000/svg';
   let busy = false;
   const guard = (ms, fn) => { if(busy || PageEggs.isOpen()) return false; busy = true; setTimeout(() => { busy = false; }, ms); fn(); return true; };
 
-  // ---- 1. read every reason one at a time (hooked from revealOne / revealAll below) ----
+  // ---- read every reason one at a time (hooked from revealOne / revealAll in the page) ----
   const manual = new Set(); let usedAll = false;
   window.__eggReveal = idx => { manual.add(idx); if(!usedAll && manual.size >= REASONS.length) setTimeout(() => win('readall'), 900); };
   window.__eggUsedAll = () => { usedAll = true; };
 
-  // ---- 2. double-tap a revealed reason ----
-  const kindOf = t => /heinz/i.test(t) ? 'beans' : /noodles unite/i.test(t) ? 'noodles' : /^bing bong, bing bong/i.test(t) ? 'bingbong' : /2am/i.test(t) ? 'twoam' : /^doobeboobe/i.test(t) ? 'doobe' : null;
-  const lastTap = {};
-  window.__eggTap = (idx, card) => {
-    const kind = kindOf(REASONS[idx].text); if(!kind) return;
-    const now = Date.now(), prev = lastTap[idx] || 0; lastTap[idx] = now;
-    if(now - prev > 450) return;
-    lastTap[idx] = 0;
-    guard(5200, () => FX[kind](card));
-  };
-
-  function rain(glyphs, n){
-    const layer = mk('fx-layer');
-    for(let i = 0; i < n; i++){
-      const d = mk('fx-drop', glyphs[i % glyphs.length]);
-      d.style.left = (Math.random() * 98) + '%';
-      d.style.fontSize = (1.4 + Math.random() * 1.6) + 'rem';
-      d.style.setProperty('--fd', (2.2 + Math.random() * 1.6) + 's');
-      d.style.setProperty('--fdl', (Math.random() * 1.4) + 's');
-      d.style.setProperty('--fr', ((Math.random() - 0.5) * 720) + 'deg');
-      layer.appendChild(d);
-    }
-    document.body.appendChild(layer);
-    setTimeout(() => layer.remove(), 5400);
-  }
+  // ---- sound ----
   let actx = null;
   function audio(){ try{ actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if(actx.state === 'suspended') actx.resume(); return actx; }catch(e){ return null; } }
   function tone(freq, at, dur, type, vol, glideTo){
@@ -365,47 +371,195 @@ buildList();
       document.body.appendChild(e); setTimeout(() => e.remove(), 1700);
     }, i * 140);
   }
+  function rain(glyphs, n){
+    const layer = mk('fx-layer');
+    for(let i = 0; i < n; i++){
+      const d = mk('fx-drop', glyphs[i % glyphs.length]);
+      d.style.left = (Math.random() * 98) + '%'; d.style.fontSize = (1.4 + Math.random() * 1.6) + 'rem';
+      d.style.setProperty('--fd', (2.2 + Math.random() * 1.6) + 's'); d.style.setProperty('--fdl', (Math.random() * 1.4) + 's');
+      d.style.setProperty('--fr', ((Math.random() - 0.5) * 720) + 'deg');
+      layer.appendChild(d);
+    }
+    document.body.appendChild(layer); setTimeout(() => layer.remove(), 5400);
+  }
 
-  const FX = {
-    beans(){ rain(['🥫', '🫘', '🫘', '🍅'], 46); setTimeout(() => win('beans'), 2300); },
-    noodles(){ rain(['🍜', '🥢', '🍜', '🍥'], 46); setTimeout(() => win('noodles'), 2300); },
-    bingbong(card){
-      [0, 1.05].forEach(o => { tone(659, o, 0.9, 'sine', 0.25); tone(1318, o, 0.5, 'triangle', 0.07); tone(523, o + 0.4, 1.0, 'sine', 0.25); tone(1046, o + 0.4, 0.5, 'triangle', 0.06); });
-      card.classList.remove('ring', 'shake'); void card.offsetWidth; card.classList.add('ring', 'shake');
-      notes(card, 6); setTimeout(() => card.classList.remove('ring', 'shake'), 1000);
-      setTimeout(() => win('bingbong'), 2400);
+  // ---- tag the special cards, and get a card's index from the page's own onclick ----
+  const kindOf = t => /heinz/i.test(t) ? 'beans' : /noodles unite/i.test(t) ? 'noodles' : /^bing bong, bing bong/i.test(t) ? 'bingbong' : /2am/i.test(t) ? 'twoam' : /^doobeboobe/i.test(t) ? 'doobe' : /\badam\b/i.test(t) ? 'adam' : null;
+  const idxOf = card => { const m = /revealOne\((\d+)/.exec(card.getAttribute('onclick') || ''); return m ? +m[1] : -1; };
+  document.querySelectorAll('.reason-card').forEach(card => {
+    const i = idxOf(card); if(i < 0) return;
+    const k = kindOf(REASONS[i].text); if(!k) return;
+    card.dataset.fx = k;
+    if(k === 'adam'){ const t = card.querySelector('.reason-text'); t.innerHTML = t.innerHTML.replace(/\bAdam\b/, '<span class="adam">Adam</span>'); }
+  });
+
+  // ---- a small pointer-drag helper: calls onMove for each move, onEnd on release ----
+  function track(e, card, onMove, onEnd){
+    const id = e.pointerId; try{ card.setPointerCapture(id); }catch(_){}
+    const mv = ev => { if(ev.pointerId === id) onMove(ev); };
+    const up = ev => {
+      if(ev.pointerId !== id) return;
+      card.removeEventListener('pointermove', mv); card.removeEventListener('pointerup', up); card.removeEventListener('pointercancel', up);
+      try{ card.releasePointerCapture(id); }catch(_){}
+      onEnd(ev);
+    };
+    card.addEventListener('pointermove', mv); card.addEventListener('pointerup', up); card.addEventListener('pointercancel', up);
+  }
+  const spring = (card, ms) => { card.style.transition = 'transform ' + (ms || 600) + 'ms cubic-bezier(.34,1.8,.5,1)'; card.style.transform = ''; setTimeout(() => { card.style.transition = ''; card.style.transformOrigin = ''; }, (ms || 600) + 60); };
+
+  const DRAG = {
+    // SCRUB: drag the card side to side like a record; the song plays under your finger, and enough scrubbing finishes it
+    doobe(e, card){
+      const sx = e.clientX, r = card.getBoundingClientRect(), SCALE = [262, 294, 330, 392, 440, 523];
+      let last = sx, dir = 0, seg = 0, rev = 0, travel = 0, lastNote = -1, fired = false;
+      track(e, card, ev => {
+        const dx = ev.clientX - last; last = ev.clientX; travel += Math.abs(dx);
+        const d = Math.sign(dx);
+        if(d && dir && d !== dir){ if(seg > 30) rev++; seg = 0; }
+        if(d){ dir = d; seg += Math.abs(dx); }
+        card.style.transition = 'none';
+        card.style.transform = 'translateX(' + Math.max(-60, Math.min(60, (ev.clientX - sx) * 0.35)) + 'px) skewX(' + Math.max(-18, Math.min(18, -dx * 1.2)) + 'deg)';
+        const ni = Math.max(0, Math.min(5, Math.floor((ev.clientX - r.left) / r.width * 6)));
+        if(ni !== lastNote){ lastNote = ni; tone(SCALE[ni], 0, 0.3, 'triangle', 0.16); if(Math.random() < 0.5) notes(card, 1); }
+        if(!fired && rev >= 4 && travel >= 700){
+          fired = true;
+          [[262, 0, .2], [330, .22, .2], [392, .44, .2], [330, .66, .2], [523, .88, 1.1]].forEach(([f, a, du], i) => tone(f, a, du, 'triangle', 0.2, i === 4 ? 560 : null));
+          notes(card, 9); setTimeout(() => win('doobe'), 2000);
+        }
+      }, () => spring(card, 500));
     },
-    doobe(card){
-      [[262, 0, .2], [330, .22, .2], [392, .44, .2], [330, .66, .2], [523, .88, 1.1]].forEach(([f, a, d], i) => tone(f, a, d, 'triangle', 0.2, i === 4 ? 560 : null));
-      card.classList.remove('doobe'); void card.offsetWidth; card.classList.add('doobe');
-      notes(card, 9); setTimeout(() => card.classList.remove('doobe'), 1900);
-      setTimeout(() => win('doobe'), 2300);
+    // POUR: drag sideways to tip the tin over; hold it tipped and beans pour out
+    beans(e, card){
+      const sx = e.clientX; let ang = 0, pour = 0, fired = false;
+      const timer = setInterval(() => {
+        if(Math.abs(ang) < 62) return;
+        pour += 0.07;
+        const r = card.getBoundingClientRect(), b = mk('bean-pour', Math.random() < 0.75 ? '🫘' : '🥫');
+        b.style.left = (ang > 0 ? r.right - 12 - Math.random() * 30 : r.left + 12 + Math.random() * 30) + 'px'; b.style.top = (r.top + r.height * 0.45) + 'px';
+        b.style.setProperty('--bx', ((Math.random() - 0.5) * 120) + 'px'); b.style.setProperty('--br', ((Math.random() - 0.5) * 540) + 'deg');
+        document.body.appendChild(b); setTimeout(() => b.remove(), 1400);
+        if(!fired && pour >= 1.6){ fired = true; setTimeout(() => { rain(['🫘', '🥫'], 24); win('beans'); }, 900); }
+      }, 70);
+      track(e, card, ev => {
+        ang = Math.max(-125, Math.min(125, (ev.clientX - sx) * 0.7));
+        card.style.transition = 'none'; card.style.transformOrigin = ang > 0 ? '100% 100%' : '0 100%';
+        card.style.transform = 'rotate(' + ang + 'deg)';
+      }, () => { clearInterval(timer); spring(card, 650); });
     },
-    twoam(){
-      const ph = mk('sms'), mins = String(2 + Math.floor(Math.random() * 7)).padStart(2, '0');
-      ph.append(mk('sms-time', '2:' + mins + ' am'));
-      const a = mk('sms-b sms-me', 'random thought: penguins have knees'), dots = mk('sms-dots'), b = mk('sms-b sms-her', 'WAIT WHAT 😭 tell me EVERYTHING');
-      dots.innerHTML = '<i></i><i></i><i></i>';
-      const wrap = mk(''); wrap.style.minHeight = '3rem'; wrap.append(dots, b); dots.style.position = 'absolute'; wrap.style.position = 'relative';
-      ph.append(a, wrap); document.body.appendChild(ph);
-      requestAnimationFrame(() => ph.classList.add('in'));
-      setTimeout(() => a.classList.add('show'), 500);
-      setTimeout(() => dots.classList.add('show'), 1500);
-      setTimeout(() => { dots.classList.remove('show'); b.classList.add('show'); }, 2700);
-      setTimeout(() => ph.classList.remove('in'), 4600);
-      setTimeout(() => { ph.remove(); win('twoam'); }, 5000);
+    // PULL: grab the card and stretch a noodle out of it; pull it taut and let go
+    noodles(e, card){
+      const r = card.getBoundingClientRect(), ax = e.clientX < r.left + r.width / 2 ? r.left : r.right, ay = r.top + r.height / 2;
+      const svg = document.createElementNS(NS, 'svg'); svg.setAttribute('class', 'noodle-svg');
+      const path = document.createElementNS(NS, 'path'); svg.appendChild(path); document.body.appendChild(svg);
+      let cx = e.clientX, cy = e.clientY, creaked = false;
+      const draw = () => {
+        const d = Math.hypot(cx - ax, cy - ay), sag = Math.max(0, 140 - d * 0.45);
+        path.setAttribute('d', 'M' + ax + ' ' + ay + ' Q' + ((ax + cx) / 2) + ' ' + ((ay + cy) / 2 + sag) + ' ' + cx + ' ' + cy);
+        path.style.stroke = d > 300 ? '#fff0b0' : '#f3d27a';
+      };
+      draw();
+      track(e, card, ev => {
+        cx = ev.clientX; cy = ev.clientY; draw();
+        if(!creaked && Math.hypot(cx - ax, cy - ay) > 300){ creaked = true; tone(300, 0, 0.25, 'triangle', 0.12, 420); }
+      }, () => {
+        const d = Math.hypot(cx - ax, cy - ay), fx = cx, fy = cy, t0 = performance.now();
+        const step = now => {
+          const k = Math.min(1, (now - t0) / 160); cx = fx + (ax - fx) * k; cy = fy + (ay - fy) * k; draw();
+          if(k < 1) requestAnimationFrame(step); else svg.remove();
+        };
+        requestAnimationFrame(step);
+        if(d > 300){ tone(180, 0, 0.4, 'sawtooth', 0.12, 55); guard(5200, () => { rain(['🍜', '🥢', '🍥'], 40); setTimeout(() => win('noodles'), 2300); }); }
+      });
+    },
+    // DOORBELL: pressing rings "bing", letting go rings "bong". Do it twice.
+    bingbong(e, card){
+      tone(659, 0, 0.9, 'sine', 0.25); tone(1318, 0, 0.5, 'triangle', 0.07);
+      card.classList.add('press');
+      track(e, card, () => {}, () => {
+        card.classList.remove('press');
+        tone(523, 0, 1.0, 'sine', 0.25); tone(1046, 0, 0.5, 'triangle', 0.06);
+        card.classList.remove('ring'); void card.offsetWidth; card.classList.add('ring'); notes(card, 3);
+        setTimeout(() => card.classList.remove('ring'), 1000);
+        const now = Date.now(); bell = bell.filter(t => now - t < 5000); bell.push(now);
+        if(bell.length >= 2){ bell = []; setTimeout(() => win('bingbong'), 1500); }
+      });
+    },
+    // SCRIBBLE: rub out the word with a red marker; once it's well and truly crossed out, it gets stamped
+    adam(e, card){
+      const word = card.querySelector('.adam');
+      if(!word || word.classList.contains('dead') || !e.target.closest('.adam')) return;
+      let cv = card.querySelector('canvas.scribble');
+      if(!cv){ cv = document.createElement('canvas'); cv.className = 'scribble'; card.appendChild(cv); }
+      const cr = card.getBoundingClientRect(); cv.width = cr.width; cv.height = cr.height;
+      const ctx = cv.getContext('2d'); ctx.strokeStyle = 'rgba(214,58,58,.9)'; ctx.lineWidth = 3.5; ctx.lineCap = 'round';
+      let px = e.clientX - cr.left, py = e.clientY - cr.top, len = 0, rev = 0, dir = 0, seg = 0, fired = false;
+      track(e, card, ev => {
+        const x = ev.clientX - cr.left, y = ev.clientY - cr.top, wr = word.getBoundingClientRect();
+        ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(x, y); ctx.stroke();
+        const dx = x - px, dy = y - py; px = x; py = y;
+        const inside = ev.clientX > wr.left - 14 && ev.clientX < wr.right + 14 && ev.clientY > wr.top - 14 && ev.clientY < wr.bottom + 14;
+        if(!inside) return;
+        len += Math.hypot(dx, dy);
+        const d = Math.sign(dx); if(d && dir && d !== dir){ if(seg > 12) rev++; seg = 0; } if(d){ dir = d; seg += Math.abs(dx); }
+        if(!fired && len >= 240 && rev >= 3){
+          fired = true; word.classList.add('dead');
+          const st = mk('rej-stamp', 'REJECTED'); card.appendChild(st);
+          setTimeout(() => { tone(140, 0, 0.5, 'sine', 0.4, 40); const w = document.querySelector('.reasons-wrap'); w.classList.add('quake'); setTimeout(() => w.classList.remove('quake'), 450); }, 120);
+          setTimeout(() => win('adam'), 1700);
+        }
+      }, () => { ctx.clearRect(0, 0, cv.width, cv.height); });
     }
   };
+  let bell = [];
 
-  // ---- 3. the shooting star ----
+  // ---- delegated pointer handling ----
+  const list = document.getElementById('reasons-list');
+  list.addEventListener('pointerdown', e => {
+    const card = e.target.closest('.reason-card'); if(!card || PageEggs.isOpen()) return;
+    if(!card.classList.contains('revealed')) return peek(card);
+    const f = DRAG[card.dataset.fx]; if(f) f(e, card);
+  });
+
+  // ---- HOLD: press and hold a hidden reason instead of tapping it ----
+  function peek(card){
+    let fired = false;
+    const t = setTimeout(() => { fired = true; tone(392, 0, 0.5, 'triangle', 0.16, 600); win('peek'); }, 2200);
+    card.classList.add('peeking');
+    const stop = () => { clearTimeout(t); card.classList.remove('peeking'); ['pointerup', 'pointerleave', 'pointercancel'].forEach(n => card.removeEventListener(n, stop)); };
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(n => card.addEventListener(n, stop));
+  }
+
+  // ---- DOUBLE-TAP: the 2am card ----
+  const lastTap = {};
+  const TWOAM = () => {
+    const ph = mk('sms'), mins = String(2 + Math.floor(Math.random() * 7)).padStart(2, '0');
+    ph.append(mk('sms-time', '2:' + mins + ' am'));
+    const a = mk('sms-b sms-me', 'random thought: penguins have knees'), dots = mk('sms-dots'), b = mk('sms-b sms-her', 'WAIT WHAT 😭 tell me EVERYTHING');
+    dots.innerHTML = '<i></i><i></i><i></i>';
+    const wrap = mk(''); wrap.style.minHeight = '3rem'; wrap.style.position = 'relative'; dots.style.position = 'absolute'; wrap.append(dots, b);
+    ph.append(a, wrap); document.body.appendChild(ph);
+    requestAnimationFrame(() => ph.classList.add('in'));
+    setTimeout(() => a.classList.add('show'), 500);
+    setTimeout(() => dots.classList.add('show'), 1500);
+    setTimeout(() => { dots.classList.remove('show'); b.classList.add('show'); }, 2700);
+    setTimeout(() => ph.classList.remove('in'), 4600);
+    setTimeout(() => { ph.remove(); win('twoam'); }, 5000);
+  };
+  window.__eggTap = (idx, card) => {
+    if(card.dataset.fx !== 'twoam') return;
+    const now = Date.now(), prev = lastTap[idx] || 0; lastTap[idx] = now;
+    if(now - prev > 450) return;
+    lastTap[idx] = 0; guard(5200, TWOAM);
+  };
+
+  // ---- CATCH: the shooting star ----
   function shoot(){
-    if(document.hidden || ql('.shoot') || PageEggs.isOpen()) return schedule();
+    if(document.hidden || document.querySelector('.shoot') || PageEggs.isOpen()) return schedule();
     const s = mk('shoot'), w = innerWidth, h = innerHeight;
     const dx = -(w * 0.5 + 240), dy = -dx * 0.62;
     s.style.left = (w * (0.5 + Math.random() * 0.45)) + 'px'; s.style.top = (h * (0.04 + Math.random() * 0.3)) + 'px';
     s.style.setProperty('--dx', dx + 'px'); s.style.setProperty('--dy', dy + 'px'); s.style.setProperty('--ang', Math.atan2(-dy, -dx) + 'rad');
-    s.title = '';
-    s.addEventListener('click', e => {
+    s.addEventListener('click', () => {
       const r = s.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
       s.remove();
       for(let i = 0; i < 16; i++){
@@ -416,12 +570,33 @@ buildList();
       }
       setTimeout(() => win('star'), 500);
     });
-    document.body.appendChild(s);
-    setTimeout(() => s.remove(), 4200);
+    document.body.appendChild(s); setTimeout(() => s.remove(), 4200);
     schedule();
   }
   function schedule(){ setTimeout(shoot, 26000 + Math.random() * 26000); }
   setTimeout(shoot, 9000);
+
+  // ---- WAIT: do nothing for a while and the stars join up ----
+  const IDLE = window.__eggIdleMs || 75000;
+  let lastAct = Date.now(), idleDone = PageEggs.has('reasons', 'stay');
+  ['pointermove', 'pointerdown', 'keydown', 'wheel', 'touchstart', 'scroll'].forEach(n => addEventListener(n, () => { lastAct = Date.now(); }, { passive: true }));
+  setInterval(() => {
+    if(idleDone || document.hidden || PageEggs.isOpen() || busy) return;
+    if(Date.now() - lastAct > IDLE){ idleDone = true; constellation(); }
+  }, 2000);
+  function constellation(){
+    const w = innerWidth, h = innerHeight, cx = w / 2, cy = h / 2 - 10, sc = Math.min(w, h) / 38, N = 16, pts = [];
+    for(let i = 0; i <= N; i++){ const t = (i / N) * Math.PI * 2; pts.push([cx + 16 * Math.pow(Math.sin(t), 3) * sc, cy - (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * sc]); }
+    const svg = document.createElementNS(NS, 'svg'); svg.setAttribute('class', 'const-svg'); svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+    const line = document.createElementNS(NS, 'polyline'); line.setAttribute('class', 'const-line'); line.setAttribute('points', pts.map(p => p.join(',')).join(' ')); svg.appendChild(line);
+    pts.forEach((p, i) => { const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', p[0]); c.setAttribute('cy', p[1]); c.setAttribute('r', 3.4); c.setAttribute('class', 'const-dot'); c.style.animationDelay = (i * 0.28) + 's'; svg.appendChild(c); });
+    document.body.appendChild(svg);
+    const len = line.getTotalLength(); line.style.strokeDasharray = len; line.style.strokeDashoffset = len;
+    requestAnimationFrame(() => requestAnimationFrame(() => { line.style.strokeDashoffset = 0; }));
+    const lab = mk('const-label', 'you stayed a while ♡'); document.body.appendChild(lab);
+    setTimeout(() => lab.classList.add('in'), 5200);
+    setTimeout(() => { svg.classList.add('out'); lab.classList.add('out'); setTimeout(() => { svg.remove(); lab.remove(); }, 1200); win('stay'); }, 7800);
+  }
 })();
 </script>
 </body>
