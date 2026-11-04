@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Besties ♡</title>
 <link rel="icon" type="image/x-icon" href="images/site_icon.ico">
+<link rel="stylesheet" href="css/besties.css">
 <style>
-body{font-family:Georgia,serif;background:#faf4e8;color:#3a2010;max-width:640px;margin:2rem auto;padding:0 1.2rem;line-height:1.5}
+body{font-family:Georgia,serif;line-height:1.5}
+.wrap{max-width:640px;margin:2rem auto;padding:0 1.2rem 3rem;position:relative;z-index:2}
 h1{font-style:italic}h2{margin-top:2rem}
 .card{background:#fffdf5;border:1px solid #d4b483;box-shadow:4px 4px 0 #f0ddb8;padding:1.2rem;margin:1rem 0}
 button{font:inherit;padding:.5rem 1rem;border:1px solid #7a5230;background:#3a2010;color:#faf4e8;cursor:pointer;margin:.3rem .3rem .3rem 0}
@@ -22,6 +24,7 @@ textarea{width:100%;height:7rem;font:12px monospace;box-sizing:border-box}
   <a href="index.html" class="nav-brand">Besties ♡</a>
   <div class="nav-links"></div>
 </nav>
+<main class="wrap">
   
 <h1>Data Migration</h1>
 <p id="where"></p>
@@ -47,10 +50,12 @@ textarea{width:100%;height:7rem;font:12px monospace;box-sizing:border-box}
   <div class="msg" id="impMsg"></div>
 </div>
   
+</main>
 <script src="js/nav.js"></script>
 
 <script>
-const SKIP=new Set(['bestie_current_user']);
+window.addEventListener('DOMContentLoaded',()=>buildNav('migrate.html'));
+const SKIP=new Set(['bestie_current_user','besties_shared_v1']);
 const $=id=>document.getElementById(id);
 $('where').textContent=location.hostname.endsWith('workers.dev')
   ?'You are on the NEW site: use section 2 to import.'
@@ -59,7 +64,7 @@ function snap(){const o={};for(let i=0;i<localStorage.length;i++){const k=localS
 function summary(d){
   const lines=[Object.keys(d).length+' saved items'];
   try{const g=JSON.parse(d['ann_bday_2025_v6']);lines.push('Gifts opened: '+(Array.isArray(g)?g.length:'?'))}catch(e){lines.push('Gifts opened: none found')}
-  lines.push('Contract signed: '+(d['ann_contract_signed_2025']?'yes':'no'));
+  lines.push('Contract signed: '+((d['ann_contract_signed_2026']||d['ann_contract_signed_2025'])?'yes':'no'));
   try{const s=JSON.parse(d['ann_eggs_found']);lines.push('Secrets found: '+(Array.isArray(s)?s.length:Object.keys(s).length))}catch(e){lines.push('Secrets found: none found')}
   return lines.join('\n');
 }
