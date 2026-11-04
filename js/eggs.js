@@ -11,7 +11,7 @@
   const KEY = 'ann_page_eggs_v1';   // { reasons:[eggIds], _order:[pageIds in the order they were completed] }
   const PAGES = {
     home:    { label:'Home',    total:9, legacyKey:'ann_eggs_found' },   // home.js sets the real total
-    reasons: { label:'Reasons', total:11 },
+    reasons: { label:'Reasons', total:21 },
   };
 
   const load = () => { try{ const d = JSON.parse(localStorage.getItem(KEY)); return (d && typeof d === 'object' && !Array.isArray(d)) ? d : {}; }catch(e){ return {}; } };
