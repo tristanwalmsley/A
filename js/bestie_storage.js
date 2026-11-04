@@ -6,7 +6,7 @@
 (function () {
   'use strict';
   const API = '/api/data';
-  const LOCAL_ONLY = new Set(['bestie_current_user']);
+  const LOCAL_ONLY = new Set(['bestie_current_user', 'besties_shared_v1']);
   let user = null, timer = null, dirty = false, loaded = false;
 
   const snapshot = () => {
@@ -28,6 +28,33 @@
   }
   const schedule = () => { dirty = true; clearTimeout(timer); timer = setTimeout(() => push(false), 2000); };
 
+
+  // shared contract/membership record (server is the truth). Pages + nav.js read it from localStorage.
+  function useShared(S) {
+    try {
+      if (!S || !user) return;
+      localStorage.setItem('bestie_current_user', user);
+      localStorage.setItem('besties_shared_v1', JSON.stringify(S));
+      const c = S.contract && S.contract[user];
+      if (c) {   // keep the old keys alive so older pages (e.g. the gifts page) still see "signed"
+        localStorage.setItem('ann_contract_signed_2026', '1');
+        localStorage.setItem('ann_contract_name_2026', c.name);
+        localStorage.setItem('ann_contract_date_2026', c.date || '');
+      }
+    } catch (e) {}
+  }
+  async function refreshShared() {
+    const r = await fetch('/api/shared'); if (!r.ok) throw new Error('shared ' + r.status);
+    const j = await r.json(); user = user || j.user; useShared(j.shared); return j.shared;
+  }
+  async function post(path, body) {
+    const r = await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw Object.assign(new Error(j.error || r.status), { status: r.status });
+    if (j.shared) useShared(j.shared);
+    return j;
+  }
+
   // 1. load synchronously so the page's own scripts see the data
   try {
     const x = new XMLHttpRequest();
@@ -37,6 +64,7 @@
       user = r.user; loaded = true;
       if (r.data) Object.keys(r.data).forEach((k) => { if (!LOCAL_ONLY.has(k)) localStorage.setItem(k, r.data[k]); });
       else if (localStorage.length) dirty = true;   // first ever sync: upload what's here
+      useShared(r.shared);
     } else if (x.status === 401 || x.status === 403) {
       // never reload here: a persistent refusal would loop forever
       console.error('[bestie-storage] /api/data refused (' + x.status + '). Check the values in wrangler.jsonc.');
@@ -52,7 +80,7 @@
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') push(true); });
   if (dirty) schedule();
 
-  window.BestieSync = { get user() { return user; }, isSyncing: () => dirty,
+  window.BestieSync = { get user() { return user; }, refreshShared, post, isSyncing: () => dirty,
     logout() { location.href = '/cdn-cgi/access/logout'; }, switchUser() { this.logout(); } };
   setTimeout(() => document.dispatchEvent(new CustomEvent('bestie-sync-ready', { detail: { user } })), 0);
 })();
