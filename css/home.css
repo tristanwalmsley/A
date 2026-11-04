@@ -133,6 +133,84 @@ a.pst:hover,a.pst:focus-visible{transform:rotate(0) translateY(-6px) scale(1.06)
 .gb-stage.pop .gb-balloon{animation:gbBalloon var(--bd) ease-out var(--bl) forwards}
 @keyframes gbBalloon{0%{opacity:0;transform:translate(0,0) scale(.4)}12%{opacity:1}80%{opacity:1}100%{opacity:0;transform:translate(var(--bx),-75vh) scale(1.1)}}
 
+/* ---------- BADGE LEVEL PILL (upgradeable badges) ---------- */
+.bdg .ro{position:relative}
+.bdg-lv{position:absolute;right:-6px;bottom:-6px;min-width:22px;height:22px;padding:0 5px;border-radius:11px;background:var(--deep);color:var(--cream);font-family:'Caveat',cursive;font-size:.95rem;line-height:22px;text-align:center;box-shadow:0 0 0 2px var(--paper)}
+
+/* ---------- SHARED: cards that drop in and shrink away ---------- */
+@keyframes bdIn{from{opacity:0;transform:translateY(-30px) scale(.8)}to{opacity:1;transform:none}}
+
+/* ---------- Creature of Habit: the habit tracker ticks off the days ---------- */
+.hb-card{background:var(--paper);border:1px solid var(--tan);padding:1.2rem 1.4rem 1rem;box-shadow:6px 6px 0 var(--brown),0 0 60px rgba(200,148,58,.3);text-align:center;animation:bdIn .6s cubic-bezier(.34,1.5,.64,1) backwards;transition:transform .5s ease-in,opacity .5s}
+.hb-card.out{transform:scale(.2) rotate(-6deg);opacity:0}
+.hb-cap{font-family:'Caveat',cursive;font-size:1.35rem;font-weight:700;color:var(--rose);margin-bottom:.6rem}
+.hb-days{display:flex;gap:.4rem}
+.hb-day{position:relative;width:36px;height:46px;border:2px solid var(--tan);background:var(--warm);font-family:'Caveat',cursive;font-size:1rem;color:var(--brown);padding-top:2px}
+.hb-day::after{content:'✓';position:absolute;left:0;right:0;bottom:2px;font-size:1.6rem;line-height:1;color:var(--rose);opacity:0;transform:scale(2.6) rotate(-20deg);animation:hbTick .35s cubic-bezier(.3,1.5,.5,1) var(--d) forwards}
+@keyframes hbTick{to{opacity:1;transform:scale(1) rotate(-6deg)}}
+
+/* ---------- Pen Pal: her postmarks slam down across the screen ---------- */
+.pm-stage,.sc-stage{position:absolute;inset:0}
+.pm-stamp{position:absolute;width:78px;height:78px;margin:-39px 0 0 -39px;border-radius:50%;border:3px solid var(--rose);color:var(--rose);background:rgba(255,253,245,.92);box-shadow:inset 0 0 0 3px rgba(255,253,245,.92),inset 0 0 0 4px var(--rose);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Caveat',cursive;line-height:1;opacity:0;transform:rotate(var(--r));animation:pmSlam .38s cubic-bezier(.3,1.5,.5,1) var(--d) forwards}
+.pm-m{font-size:1.5rem;font-weight:700;letter-spacing:1px}
+.pm-y{font-size:1rem;opacity:.8}
+@keyframes pmSlam{from{opacity:0;transform:rotate(var(--r)) scale(2.4)}to{opacity:.92;transform:rotate(var(--r)) scale(1)}}
+.pm-stage.out .pm-stamp{animation:pmOut .5s ease-in forwards}
+@keyframes pmOut{from{opacity:.92;transform:rotate(var(--r)) scale(1)}to{opacity:0;transform:rotate(calc(var(--r) * 2)) scale(.2)}}
+
+/* ---------- Sticker Collector: her stickers slap on at random angles ---------- */
+.sc-sticker{position:absolute;line-height:1;opacity:0;transform:translate(-50%,-50%) rotate(var(--r)) scale(3);filter:drop-shadow(2px 3px 3px rgba(0,0,0,.4));animation:scSlap .4s cubic-bezier(.3,1.6,.5,1) var(--d) forwards}
+@keyframes scSlap{to{opacity:1;transform:translate(-50%,-50%) rotate(var(--r)) scale(1)}}
+.sc-stage.out .sc-sticker{animation:scOut .5s ease-in forwards}
+@keyframes scOut{from{opacity:1;transform:translate(-50%,-50%) rotate(var(--r)) scale(1)}to{opacity:0;transform:translate(-50%,-50%) rotate(calc(var(--r) * 3)) scale(.2)}}
+
+/* ---------- Signed & Sealed: a quill signs, a wax seal stamps ---------- */
+.ss-card{position:relative;width:min(300px,80vw);height:190px;background:var(--paper);border:1px solid var(--tan);box-shadow:6px 6px 0 var(--brown),0 0 60px rgba(200,148,58,.3);animation:bdIn .6s cubic-bezier(.34,1.5,.64,1) backwards;transition:transform .5s ease-in,opacity .5s}
+.ss-card.out{transform:scale(.2) rotate(8deg);opacity:0}
+.ss-title{position:absolute;top:14px;left:0;right:0;text-align:center;font-family:'Playfair Display',serif;font-style:italic;font-size:1.15rem;color:var(--rose)}
+.ss-line{position:absolute;left:22px;right:22px;bottom:56px;border-bottom:1.5px solid var(--tan)}
+.ss-sig{position:absolute;left:22px;bottom:58px;width:220px;height:80px;overflow:visible}
+.ss-sig path{fill:none;stroke:var(--deep);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:ssDraw 1.5s ease-in-out .7s forwards}
+@keyframes ssDraw{to{stroke-dashoffset:0}}
+.ss-quill{position:absolute;left:14px;bottom:60px;font-size:1.6rem;line-height:1;opacity:0;animation:ssQuill 1.5s ease-in-out .7s forwards}
+@keyframes ssQuill{0%{opacity:1;transform:translate(0,0) rotate(-20deg)}50%{opacity:1;transform:translate(100px,-8px) rotate(-20deg)}100%{opacity:0;transform:translate(210px,-4px) rotate(-20deg)}}
+.ss-seal{position:absolute;right:16px;bottom:10px;width:62px;height:62px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#d4564a,#a83a30 60%,#7e2620);border:2px solid #7e2620;color:rgba(255,240,230,.85);display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 0 0 3px rgba(168,58,48,.25),2px 3px 0 rgba(58,32,16,.4);opacity:0;animation:ssStamp .45s cubic-bezier(.3,1.5,.5,1) 2.4s forwards}
+@keyframes ssStamp{from{opacity:0;transform:scale(2.8) rotate(-30deg)}to{opacity:1;transform:scale(1) rotate(-8deg)}}
+
+/* ---------- Cartographer: page stamps fly in and fill the sheet ---------- */
+.cg-sheet{background:#efdfba;border:1px solid var(--tan);padding:.9rem;box-shadow:6px 6px 0 var(--brown),0 0 60px rgba(200,148,58,.3);animation:bdIn .5s ease backwards;transition:transform .5s ease-in,opacity .5s}
+.cg-sheet.out{transform:scale(.2);opacity:0}
+.cg-grid{display:grid;grid-template-columns:repeat(4,54px);gap:.5rem}
+.cg-tile{height:64px;background:var(--paper);border:5px dotted #efdfba;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:var(--rose);box-shadow:1px 2px 0 rgba(58,32,16,.2);opacity:0;animation:cgFly .7s cubic-bezier(.2,.9,.3,1.15) var(--d) forwards}
+@keyframes cgFly{from{opacity:0;transform:translate(var(--fx),var(--fy)) rotate(var(--fr)) scale(.4)}to{opacity:1;transform:none}}
+
+/* ---------- Friendiversary: a calendar leaf flips down ---------- */
+.an-leaf{width:170px;background:var(--paper);border:1px solid var(--tan);box-shadow:6px 6px 0 var(--brown),0 0 60px rgba(200,148,58,.3);text-align:center;transform-origin:top center;animation:anFlip .9s cubic-bezier(.3,1.3,.5,1) backwards;transition:transform .5s ease-in,opacity .5s}
+.an-leaf.out{transform:scale(.2);opacity:0}
+.an-top{background:var(--rose);color:var(--paper);font-family:'Caveat',cursive;font-size:1.3rem;font-weight:700;letter-spacing:2px;padding:.2rem 0}
+.an-day{font-family:'Playfair Display',serif;font-size:4.6rem;line-height:1.1;color:var(--deep)}
+.an-year{font-family:'Caveat',cursive;font-size:1.35rem;font-weight:700;color:var(--rose);padding-bottom:.6rem;opacity:0;animation:anYear .5s cubic-bezier(.3,1.6,.5,1) 1.1s forwards}
+@keyframes anFlip{from{opacity:0;transform:perspective(700px) rotateX(-100deg) translateY(-30px)}to{opacity:1;transform:perspective(700px) rotateX(0)}}
+@keyframes anYear{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:scale(1)}}
+
+/* ---------- Two Candles: lit one after the other ---------- */
+.tc-stage{position:relative;display:flex;gap:3.2rem;align-items:flex-end;padding-top:3rem;transition:opacity .5s,transform .5s}
+.tc-stage.out{opacity:0;transform:scale(.4)}
+.tc-glow{position:absolute;left:50%;top:35%;width:340px;height:340px;margin:-170px 0 0 -170px;border-radius:50%;background:radial-gradient(circle,rgba(255,200,90,.55),transparent 65%);opacity:0;transition:opacity .8s;pointer-events:none}
+.tc-stage.glow .tc-glow{opacity:1}
+.tc-one{position:relative;display:flex;flex-direction:column;align-items:center;animation:bdIn .5s ease backwards}
+.tc-candle{position:relative;width:24px;height:96px;border-radius:3px 3px 0 0;background:repeating-linear-gradient(-45deg,rgba(255,255,255,.5) 0 5px,transparent 5px 10px),var(--cc);box-shadow:2px 2px 0 rgba(0,0,0,.35)}
+.tc-candle::before{content:'';position:absolute;left:50%;bottom:100%;width:2px;height:9px;margin-left:-1px;background:#3a2010}
+.tc-flame{position:absolute;left:50%;bottom:calc(100% + 7px);width:15px;height:27px;margin-left:-7.5px;border-radius:50% 50% 50% 50%/62% 62% 38% 38%;background:radial-gradient(ellipse at 50% 72%,#fff3b0 0 22%,#ffb23e 55%,#e8641e);box-shadow:0 0 16px 5px rgba(255,170,60,.6);transform:scale(0);transform-origin:50% 100%}
+.tc-one.lit .tc-flame{animation:tcLight .4s ease forwards,tcFlicker .22s ease-in-out .4s infinite alternate}
+.tc-stage.flare .tc-one.lit .tc-flame{animation:tcFlare .6s ease forwards}
+.tc-date{margin-top:.6rem;font-family:'Caveat',cursive;font-size:1.25rem;font-weight:700;color:var(--paper)}
+@keyframes tcLight{to{transform:scale(1)}}
+@keyframes tcFlicker{from{transform:scale(1) rotate(-3deg)}to{transform:scale(.92,1.08) rotate(3deg)}}
+@keyframes tcFlare{from{transform:scale(1)}to{transform:scale(2.1,2.4)}}
+
+@media (prefers-reduced-motion:reduce){.hb-day::after,.pm-stamp,.sc-sticker,.cg-tile,.ss-seal,.an-year{animation-duration:.01s;animation-delay:0s}}
+
 /* ---------- CONFETTI / HEARTS / EGG FLOURISH ---------- */
 .drifter{position:fixed;width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;z-index:800;cursor:pointer;color:var(--rose);background:rgba(255,253,245,.92);border:2px solid var(--rose);border-radius:50%;box-shadow:3px 3px 10px rgba(0,0,0,.18);animation:driftAcross 5.5s linear forwards;transition:transform .15s}
 .drifter:hover{transform:scale(1.15)}
