@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sync check</title>
+<style>
+body{font-family:Georgia,serif;background:#faf4e8;color:#3a2010;max-width:640px;margin:0 auto;padding:1.5rem}
+h1{font-style:italic;font-weight:400}
+.row{background:#fffdf5;border:1px solid #d4b483;padding:.7rem .9rem;margin:.5rem 0;line-height:1.5;word-break:break-word}
+.ok{border-left:6px solid #5a9a5a}.bad{border-left:6px solid #c0392b}.info{border-left:6px solid #c8943a}
+button{font:inherit;padding:.7rem 1.2rem;background:#3a2010;color:#faf4e8;border:0;cursor:pointer;margin:.4rem .4rem 0 0}
+pre{white-space:pre-wrap;font-size:.8rem;background:#f0ddb8;padding:.6rem;max-height:220px;overflow:auto}
+</style>
+</head>
+<body>
+<h1>Sync check ♡</h1>
+<p>This page only reads things, except the "test a save" button, which re-saves exactly what the server already has. It doesn't include the normal sync script, on purpose.</p>
+<div id="out"></div>
+<button id="again">Run again</button>
+<button id="test">Test a save</button>
+<button id="copy">Copy this report</button>
+<script>
+const out = document.getElementById('out'); let report = [];
+const JUNK = ['setItem','removeItem','clear','getItem','key','length'];
+function row(cls, text){ const d = document.createElement('div'); d.className = 'row ' + cls; d.textContent = text; out.appendChild(d); report.push((cls === 'ok' ? '[ok] ' : cls === 'bad' ? '[PROBLEM] ' : '[info] ') + text); }
+function showJSON(label, o){ const p = document.createElement('pre'); p.textContent = label + '\n' + JSON.stringify(o, null, 1); out.appendChild(p); report.push(label + ' ' + JSON.stringify(o)); }
+
+async function run(){
+  out.innerHTML = ''; report = [];
+  row('info', 'Browser: ' + navigator.userAgent);
+  let ls = null;
+  try { localStorage.setItem('__t', '1'); localStorage.removeItem('__t'); ls = localStorage; row('ok', 'This browser lets the site store data.'); }
+  catch(e){ row('bad', 'Storage is blocked here (private/lockdown mode?): ' + e.message); }
+  if(ls){
+    const keys = Object.keys(ls);
+    row('info', 'Keys stored on this device: ' + keys.length);
+    const junk = keys.filter(k => JUNK.includes(k));
+    if(junk.length) row('bad', 'Junk keys found (left by the old sync file): ' + junk.join(', '));
+    else row('ok', 'No junk keys on this device.');
+    const eggs = ls.getItem('ann_page_eggs_v1'); row('info', 'Secrets stored on this device: ' + (eggs || '(none)'));
+  }
+  let server = null;
+  try {
+    const r = await fetch('/api/data', { cache:'no-store' });
+    row(r.ok ? 'ok' : 'bad', 'Asking the server for saved data: HTTP ' + r.status);
+    if(r.ok){
+      const j = await r.json(); server = j;
+      row('info', 'Logged in as: ' + j.user);
+      const t = j.data === null ? 'nothing saved yet' : Array.isArray(j.data) ? 'ARRAY (wrong shape)' : typeof j.data;
+      row(t === 'object' ? 'ok' : (j.data === null ? 'info' : 'bad'), 'Shape of the saved data: ' + t);
+      if(j.data && typeof j.data === 'object'){
+        const k = Object.keys(j.data); row('info', 'Keys on the server: ' + k.length);
+        const bad = k.filter(x => JUNK.includes(x)); if(bad.length) row('bad', 'Junk keys on the server: ' + bad.join(', '));
+        const nonStr = k.filter(x => typeof j.data[x] !== 'string'); if(nonStr.length) row('bad', 'Values that are not text: ' + nonStr.join(', '));
+        row('info', 'Secrets saved on the server: ' + (j.data['ann_page_eggs_v1'] || '(none)'));
+        showJSON('Server key list:', k);
+      }
+    }
+  } catch(e){ row('bad', 'Could not reach the server: ' + e.message); }
+  window.__server = server;
+}
+document.getElementById('again').onclick = run;
+document.getElementById('test').onclick = async () => {
+  if(!window.__server || !window.__server.data || typeof window.__server.data !== 'object'){ row('bad', 'Nothing to test with: the server has no usable saved data to re-save.'); return; }
+  try {
+    const r = await fetch('/api/data', { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ data: window.__server.data }) });
+    row(r.ok ? 'ok' : 'bad', 'Test save (same data written back): HTTP ' + r.status + (r.ok ? ' - saving works' : ' - THE SERVER IS REFUSING SAVES'));
+    if(!r.ok){ try { row('info', 'Server said: ' + (await r.text()).slice(0, 300)); } catch(e){} }
+  } catch(e){ row('bad', 'Test save failed: ' + e.message); }
+};
+document.getElementById('copy').onclick = () => { const t = report.join('\n'); (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => alert('Copied! Paste it to Tristan.')).catch(() => prompt('Copy this:', t)); };
+run();
+</script>
+</body>
+</html>
