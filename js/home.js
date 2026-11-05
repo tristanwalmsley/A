@@ -888,6 +888,7 @@ const SETTINGS = [
   { label:'Reset data', danger:true, run(){ if(confirm('Reset ALL progress? This clears everything.')){ localStorage.clear(); location.reload(); } } },
   { label:'Reset secrets', run(){ if(confirm('Reset just the hidden secrets progress? Your gifts/letters stay untouched.')){ localStorage.removeItem('ann_eggs_found'); localStorage.removeItem('ann_page_eggs_v1'); try{ const c = bdgJSON(BK.celebrated, {}); if(!Array.isArray(c)){ delete c.secrets; localStorage.setItem(BK.celebrated, JSON.stringify(c)); } }catch(e){} location.reload(); } } },
   { label:'Migrate', run(){ location.href = '/migrate'; } },
+  { label:'Sync', run(){ location.href = '/sync_check'; } },
   { label:'Log out', run(){ location.href = '/cdn-cgi/access/logout'; } },
 ];
 function initSettings(){
