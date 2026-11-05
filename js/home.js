@@ -128,6 +128,35 @@ function playEggHatch(callback){
   setTimeout(() => { egg.remove(); callback(); }, 950);
 }
 
+
+// ---------- BADGE CLUES ----------
+// a nudge for every badge she hasn't earned yet (shown as "?", never the badge name), plus one for the next level of any she has.
+// returns a clue string, or null when there is nothing more to chase. Add a line here whenever a badge is added.
+const BADGE_CLUES = {
+  secrets:       lv => lv < 1 ? 'Empty a page of every last hiding place.' : (lv < Object.keys(PageEggs.PAGES).length ? 'Another page has just as much tucked away.' : null),
+  birthday26:    lv => lv < 1 ? 'Unwrap everything from one very special celebration.' : null,
+  signed:        lv => lv < 1 ? 'Your word, put down properly, with ink.' : null,
+  habit:         lv => lv < 1 ? 'Turn up so often it becomes a routine.' : (lv < BDG_STREAK_STEPS.length ? 'Make that routine last far longer.' : null),
+  penpal:        lv => lv < 1 ? 'Come back whenever the calendar turns over, and keep doing it.' : (lv < BDG_LEDGER_STEPS.length ? 'Keep coming back as the months pile up.' : null),
+  stickers:      lv => lv < 1 ? 'Drop by regularly and a certain board slowly fills.' : (lv < bdgCorkSteps().length ? 'There is still room on that board.' : null),
+  cartographer:  lv => lv < 1 ? 'Find every corner of this place.' : 'When something new is built, go and find it.',
+  friendiversary:lv => lv < 1 ? 'There is one date each year that is worth turning up for.' : 'Same date, next year.',
+  candles:       lv => lv < 1 ? 'Two particular days, both worth showing up for.' : 'Both of those days again, next year.'
+};
+function showBadgeClues(){
+  let html = '', n = 0;
+  BADGES.forEach(bd => {
+    const f = BADGE_CLUES[bd.id]; if(!f) return;
+    const lv = badgeLevel(bd), clue = f(lv);
+    if(!clue) return;
+    n++;
+    const mark = lv < 1 ? '?' : bd.glyph + ' <small>next level</small>';
+    html += '<div style="text-align:left;margin:.6rem 0;line-height:1.5"><b style="color:var(--rose,#b86858);margin-right:.4rem">' + mark + '</b><i>' + clue + '</i></div>';
+  });
+  if(!n) html = '<p>Every badge, every level, for now. More will turn up as the site grows.</p>';
+  showModal(n ? 'A clue for each badge' : 'Nothing left to chase', html, 'Bestie Tristan');
+}
+
 // ---------- BADGES ----------
 // each badge: { id, name, glyph, hint, level() (or earned()), info(level), play(done) }
 //   level()    = 0 when not earned, 1+ when earned. Upgradeable badges also set tiered:true (shows a level pill),
@@ -888,7 +917,6 @@ const SETTINGS = [
   { label:'Reset data', danger:true, run(){ if(confirm('Reset ALL progress? This clears everything.')){ localStorage.clear(); location.reload(); } } },
   { label:'Reset secrets', run(){ if(confirm('Reset just the hidden secrets progress? Your gifts/letters stay untouched.')){ localStorage.removeItem('ann_eggs_found'); localStorage.removeItem('ann_page_eggs_v1'); try{ const c = bdgJSON(BK.celebrated, {}); if(!Array.isArray(c)){ delete c.secrets; localStorage.setItem(BK.celebrated, JSON.stringify(c)); } }catch(e){} location.reload(); } } },
   { label:'Migrate', run(){ location.href = '/migrate'; } },
-  { label:'Sync', run(){ location.href = '/sync_check'; } },
   { label:'Log out', run(){ location.href = '/cdn-cgi/access/logout'; } },
 ];
 function initSettings(){
