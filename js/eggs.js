@@ -14,6 +14,14 @@
     reasons: { label:'Reasons', total:21 },
   };
 
+
+  // display names for the "secrets found" list. Add a line here whenever a page gets a new egg (unknown ids still show, using their id).
+  const NAMES = {
+    home: { postmark:'You found the secret!', nav:'Snooping at the letterhead?', konami:'The secret code', name:'Someone said your name', signature:'Double-checking my signature?', tristan:"Hi, it's me", idle:'Special delivery, mid-air', mail:'Special delivery', chase:'You caught it' },
+    reasons: { peek:'Impatient?', star:'Make a wish', readall:'Every. Single. One.', beans:'Beans Means Heinz', noodles:'Noodles Unite Us', bingbong:'Bing bong', twoam:'2am thoughts', doobe:'DOOBEBOOBEDOOOOOO', adam:'Adam has been rejected', stay:'You stayed', song:'The hidden song',
+      bingchill:'Bing chilling', yeah:'Yeah.', muscle:'BIG MUSCLE BADDIE', loveyou:'Love you too', phas:'Phas Monday', thanks:'A special delivery', wellmen:'Fatal error', fan:'Number one fan', sea:'Across the sea', energy:'That is your energy' }
+  };
+
   const load = () => { try{ const d = JSON.parse(localStorage.getItem(KEY)); return (d && typeof d === 'object' && !Array.isArray(d)) ? d : {}; }catch(e){ return {}; } };
   const save = d => { try{ localStorage.setItem(KEY, JSON.stringify(d)); }catch(e){} };
 
@@ -66,6 +74,13 @@
 #pe-modal .pe-sig{font-family:'Caveat',cursive;font-size:1.6rem;font-weight:700;color:var(--rose,#b86858);margin-top:1rem;display:block}
 #pe-modal .pe-x{position:absolute;top:-1rem;right:-1rem;background:var(--deep,#3a2010);color:var(--cream,#faf4e8);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center}
 #pe-modal .pe-x:hover{background:var(--brown,#7a5230)}
+#pe-modal .pe-list{max-height:60vh;overflow-y:auto;margin:0 -.4rem;padding:0 .4rem;text-align:left}
+#pe-modal .pe-lh{display:flex;justify-content:space-between;font-family:'Caveat',cursive;font-size:1.25rem;font-weight:700;color:var(--rose,#b86858);border-bottom:1px dashed var(--tan,#d4b483);margin:.9rem 0 .3rem}
+#pe-modal .pe-lh:first-child{margin-top:0}
+#pe-modal .pe-li{font-family:'EB Garamond',Georgia,serif;font-size:1rem;line-height:1.5;color:var(--brown,#7a5230);padding:.12rem 0}
+#pe-modal .pe-li.no{opacity:.45;letter-spacing:2px}
+#pe-modal .pe-li::before{content:'\u2726 ';color:var(--gold,#c8943a)}
+#pe-modal .pe-li.no::before{content:'\u00b7 ';color:var(--tan,#d4b483)}
 #pe-toast{position:fixed;left:50%;top:1.2rem;transform:translate(-50%,-30px);z-index:5100;max-width:calc(100vw - 2rem);padding:.6rem 1.3rem;border-radius:999px;background:var(--gold,#c8943a);color:var(--deep,#3a2010);font-family:'Caveat',cursive;font-size:1.2rem;text-align:center;box-shadow:4px 4px 0 var(--brown,#7a5230);opacity:0;transition:opacity .5s ease,transform .6s cubic-bezier(.34,1.56,.64,1);pointer-events:none}
 #pe-toast.show{opacity:1;transform:translate(-50%,0)}`;
     document.head.appendChild(st);
@@ -101,6 +116,20 @@
   }
   const isOpen = () => { const m = document.getElementById('pe-modal'); return !!m && m.classList.contains('show'); };
 
+
+  // popup listing every secret found so far (titles only; the ones not found yet stay hidden as ???)
+  function showList(){
+    const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+    let html = '<div class="pe-list">';
+    Object.keys(PAGES).forEach(p => {
+      const got = list(p), names = NAMES[p] || {}, tot = total(p);
+      html += '<div class="pe-lh"><span>' + esc(PAGES[p].label) + '</span><span>' + Math.min(got.length, tot) + ' / ' + tot + '</span></div>';
+      got.forEach(id => { html += '<div class="pe-li">' + esc(names[id] || id) + '</div>'; });
+      for(let i = got.length; i < tot; i++) html += '<div class="pe-li no">???</div>';
+    });
+    modal('Secrets found: ' + foundTotal() + ' / ' + grandTotal(), html + '</div>', '\u2661');
+  }
+
   // call this when an egg is found. msg = { title, text, sig } shows the popup; leave it out for a toast only.
   function found(page, id, msg){
     ui();
@@ -119,5 +148,5 @@
     return isNew;
   }
 
-  window.PageEggs = { PAGES, list, count, total, isDone, has, sync, level, order: sync, grandTotal, foundTotal, found, toast, modal, close, isOpen };
+  window.PageEggs = { PAGES, list, count, total, isDone, has, sync, level, order: sync, grandTotal, foundTotal, found, toast, modal, close, isOpen, showList, names: NAMES };
 })();
