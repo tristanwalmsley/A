@@ -223,6 +223,69 @@ function bdgMedal(o, glyph, at, done){
 }
 
 
+// ---- Secret Keeper PRESTIGE ----
+// Every page whose secrets are all found = one prestige. The medal itself changes (see css/secret_keeper.css, .skm-p1 ... .skm-p6).
+// Past the last look it keeps its final form and the roman numeral keeps climbing.
+// To change a look: edit its entry here + its .skm-pN rules in the css. A new look = add an entry here and a .skm-pN block.
+const SK_TIERS = [
+  { title:'Secret Keeper',        metal:'Bronze',    glyph:'★' },
+  { title:'Secret Agent',         metal:'Silver',    glyph:'★' },
+  { title:'Master of Mysteries',  metal:'Gold',      glyph:'★' },
+  { title:'Keeper of Everything', metal:'Ruby',      glyph:'✦' },
+  { title:'Living Legend',        metal:'Prismatic', glyph:'✧' },
+  { title:'Celestial Keeper',     metal:'Celestial', glyph:'♛' },
+];
+function skRoman(n){
+  const r = [[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];
+  let o = ''; r.forEach(([v, c]) => { while(n >= v){ o += c; n -= v; } }); return o;
+}
+const skTier  = p => SK_TIERS[Math.min(Math.max(p, 1), SK_TIERS.length) - 1];
+const skTitle = p => p > SK_TIERS.length ? skTier(p).title + ' ' + skRoman(p) : skTier(p).title;
+
+// builds the medal for a prestige. Layers are only added as the prestige grows, so it gets busier and fancier.
+function skMedal(p, size){
+  const t = Math.min(p, SK_TIERS.length);
+  const m = bdgEl('div', 'skm skm-p' + t);
+  m.style.setProperty('--sz', size + 'px');
+  const add = (cls, txt) => m.appendChild(bdgEl('div', cls, txt));
+  if(t >= 6) add('skm-halo');
+  if(t >= 3) add('skm-rays');
+  if(t >= 4) add('skm-orbit');
+  add('skm-disc'); add('skm-inner');
+  add('skm-g', skTier(p).glyph);
+  if(t >= 3) add('skm-shine');
+  if(t >= 5){
+    const sp = bdgEl('div', 'skm-sparks'), n = t >= 6 ? 6 : 4;
+    for(let i = 0; i < n; i++){ const s = bdgEl('span'); s.style.setProperty('--a', (i * 360 / n) + 'deg'); sp.appendChild(s); }
+    m.appendChild(sp);
+  }
+  if(p > 1) add('skm-num', skRoman(p));
+  return m;
+}
+
+// the prestige ending: the old medal charges up, flashes, and turns into the new one
+function skReveal(o, lv, done){
+  const big = Math.round(Math.min(170, window.innerWidth * 0.42));
+  const stage = bdgEl('div', 'skp-stage'), hold = bdgEl('div', 'skp-hold');
+  const sub = bdgEl('div', 'skp-sub'), ttl = bdgEl('div', 'skp-title');
+  stage.append(hold, sub, ttl); o.appendChild(stage);
+  const put = (p, cls) => { hold.querySelectorAll('.skm').forEach(e => e.remove()); const m = skMedal(p, big); m.classList.add(cls); hold.appendChild(m); };
+  const say = p => { sub.textContent = 'Prestige ' + skRoman(p); ttl.textContent = skTitle(p); sub.classList.add('show'); ttl.classList.add('show'); };
+  const reveal = () => {
+    const f = bdgEl('div', 'skp-flash'); hold.appendChild(f); setTimeout(() => f.remove(), 900);
+    put(lv, 'skp-pop'); say(lv);
+    launchConfetti(); launchHeartBurst(); setTimeout(launchHeartBurst, 800);
+  };
+  let end;
+  if(lv > 1){
+    put(lv - 1, 'skp-in'); say(lv - 1);                          // the medal she had
+    setTimeout(() => hold.classList.add('charge'), 1100);        // it trembles and glows
+    setTimeout(() => { hold.classList.remove('charge'); reveal(); }, 2300);
+    end = 2300 + 2300;
+  } else { setTimeout(reveal, 200); end = 200 + 2300; }
+  setTimeout(() => endOverlay(o, done), end);
+}
+
 // ---- Secret Keeper: one tier per page whose secrets are all found ----
 // Each page has its own animation. When the badge plays, EVERY completed page's animation plays in the order
 // the pages were finished, one after the other, and the newest one comes last before the medal.
@@ -294,12 +357,12 @@ const SECRET_TIERS = {
 };
 
 const BADGES = [
-  { id:'secrets', name:'Secret Keeper', glyph:'★', tiered:true, celebrateOnVisit:true,
+  { id:'secrets', name:'Secret Keeper', glyph:'★', celebrateOnVisit:true, medal: lv => skMedal(lv, 58),
     hint:'find every secret hiding on a page',
     level: () => PageEggs.sync().length,
-    title: lv => ['Secret Keeper', 'Secret Agent', 'Master of Mysteries', 'Keeper of Everything'][lv - 1] || ('Secret Keeper ' + lv),
-    next: lv => lv < Object.keys(PageEggs.PAGES).length ? 'find every secret on another page' : null,
-    info: lv => { const t = SECRET_TIERS[PageEggs.order()[lv - 1]]; return t ? t.info : 'Every secret on another page, found.'; },
+    title: lv => skTitle(lv),
+    next: lv => lv < Object.keys(PageEggs.PAGES).length ? 'find every secret on another page to prestige' : null,
+    info: lv => '<em>Prestige ' + skRoman(lv) + ' &middot; ' + skTier(lv).metal + '</em><br><br>' + (() => { const t = SECRET_TIERS[PageEggs.order()[lv - 1]]; return t ? t.info : 'Every secret on another page, found.'; })(),
     // every completed page's animation plays in turn (oldest first); the newest is last, then the medal
     play(done, lv){
       const o = dimOverlay();
@@ -308,8 +371,7 @@ const BADGES = [
         const t = pages.length ? SECRET_TIERS[pages.shift()] : null;
         if(t) return t.anim(o, step);
         if(pages.length) return step();
-        if(lv > 1) o.appendChild(bdgEl('div', 'sk-lv', 'level ' + lv));
-        bdgMedal(o, '★', 200, done);
+        skReveal(o, lv, done);
       };
       setTimeout(step, 500);
     } },
@@ -618,7 +680,8 @@ function renderBadges(){
     el.title = title + (nextHint ? ' - next: ' + nextHint : '');
     el.innerHTML = '<span class="ro"></span><span class="bdg-name"></span>';
     const ro = el.querySelector('.ro');
-    ro.textContent = bd.glyph;
+    if(bd.medal){ ro.classList.add('ro-medal'); ro.textContent = ''; ro.appendChild(bd.medal(lv)); }
+    else ro.textContent = bd.glyph;
     if(bd.tiered){
       const pill = document.createElement('span');
       pill.className = 'bdg-lv'; pill.textContent = lv;
