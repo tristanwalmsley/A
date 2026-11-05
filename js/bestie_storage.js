@@ -2,7 +2,10 @@
    Include as the FIRST <script> on every page. The login is Cloudflare Access, so there is
    no password or token in here. Pages keep using localStorage exactly as before.
    - Page load: fetches your saved data (blocking, so it's ready before other scripts run).
-   - Any setItem/removeItem/clear is saved to the server ~2s later, and on leaving the page. */
+   - Any setItem/removeItem/clear is saved to the server ~2s later, and on leaving the page.
+   - v2: hooks live on Storage.prototype (assigning localStorage.setItem = fn can store the function as a junk key
+     in some browsers and silently break saving), a 2.5s change-watcher backs the hooks up, unsynced local
+     changes are never overwritten by an older server copy, and found secrets are always merged, never lost. */
 (function () {
   'use strict';
   // ---- OLD SITE GUARD ----
@@ -29,40 +32,76 @@
   }
 
   const API = '/api/data';
-  const LOCAL_ONLY = new Set(['bestie_current_user', 'besties_shared_v1']);
-  let user = null, timer = null, dirty = false, loaded = false;
+  const LOCAL_ONLY = new Set(['bestie_current_user', 'besties_shared_v1', 'besties_pending_v1']);
+  // names that are Storage methods; a stored item with one of these names can shadow the real method in some browsers
+  const JUNK = new Set(['setItem', 'removeItem', 'clear', 'getItem', 'key', 'length']);
+  const skip = (k) => LOCAL_ONLY.has(k) || JUNK.has(k);
+
+  // capture the REAL storage methods once, and only ever use these inside this file
+  const SP = Storage.prototype;
+  const rawSet = SP.setItem, rawGet = SP.getItem, rawRem = SP.removeItem, rawClr = SP.clear, rawKey = SP.key;
+  const lenGet = Object.getOwnPropertyDescriptor(SP, 'length').get;
+  const L = localStorage;
+  const lsSet = (k, v) => rawSet.call(L, k, v), lsGet = (k) => rawGet.call(L, k), lsRem = (k) => rawRem.call(L, k);
+  const lsLen = () => lenGet.call(L), lsKey = (i) => rawKey.call(L, i);
+
+  let user = null, timer = null, dirty = false, loaded = false, lastSig = '', lastStatus = 'not synced yet';
+
+  // clear out junk keys left behind by the old version of this file
+  try { JUNK.forEach((k) => lsRem(k)); } catch (e) {}
 
   const snapshot = () => {
+    const keys = [];
+    for (let i = 0; i < lsLen(); i++) { const k = lsKey(i); if (k !== null && !skip(k)) keys.push(k); }
+    keys.sort();
     const out = {};
-    for (let i = 0; i < localStorage.length; i++) {
-      const k = localStorage.key(i);
-      if (!LOCAL_ONLY.has(k)) out[k] = localStorage.getItem(k);
-    }
+    keys.forEach((k) => { out[k] = lsGet(k); });
     return out;
   };
 
-  function push(keepalive) {
-    if (!loaded || !user || !dirty) return;
-    dirty = false; clearTimeout(timer);
-    fetch(API, { method: 'PUT', keepalive: !!keepalive, headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data: snapshot() }) })
-      .then((r) => { if (!r.ok) dirty = true; })
-      .catch(() => { dirty = true; });
-  }
-  const schedule = () => { dirty = true; clearTimeout(timer); timer = setTimeout(() => push(false), 2000); };
+  // found secrets only ever grow, so when local and server disagree we keep both sets
+  const asArr = (s) => { try { const a = JSON.parse(s); return Array.isArray(a) ? a : null; } catch (e) { return null; } };
+  const asObj = (s) => { try { const o = JSON.parse(s); return (o && typeof o === 'object' && !Array.isArray(o)) ? o : null; } catch (e) { return null; } };
+  const union = (a, b) => Array.from(new Set([].concat(a || [], b || [])));
+  const MERGE = {
+    ann_eggs_found: (loc, srv) => { const a = asArr(loc), b = asArr(srv); return (a && b) ? JSON.stringify(union(b, a)) : (b ? srv : loc); },
+    ann_page_eggs_v1: (loc, srv) => {
+      const a = asObj(loc), b = asObj(srv); if (!a || !b) return b ? srv : loc;
+      const out = Object.assign({}, b);
+      Object.keys(a).forEach((p) => { if (Array.isArray(a[p])) out[p] = union(Array.isArray(b[p]) ? b[p] : [], a[p]); });
+      return JSON.stringify(out);
+    }
+  };
 
+  function push(keepalive) {
+    if (!loaded || !user) return;
+    const snap = snapshot(), sig = JSON.stringify(snap);
+    if (!dirty && sig === lastSig) return;
+    dirty = false; clearTimeout(timer);
+    const body = JSON.stringify({ data: snap });
+    fetch(API, { method: 'PUT', keepalive: !!keepalive && body.length < 60000, headers: { 'Content-Type': 'application/json' }, body })
+      .then((r) => {
+        if (r.ok) { lastSig = sig; lastStatus = 'saved ' + new Date().toISOString(); if (!dirty && JSON.stringify(snapshot()) === sig) { try { lsRem('besties_pending_v1'); } catch (e) {} } }
+        else { dirty = true; lastStatus = 'save refused: HTTP ' + r.status; console.warn('[bestie-storage] save refused (' + r.status + ')'); }
+      })
+      .catch((e) => { dirty = true; lastStatus = 'save failed: ' + e; });
+  }
+  const schedule = () => {
+    dirty = true; clearTimeout(timer); timer = setTimeout(() => push(false), 2000);
+    try { lsSet('besties_pending_v1', '1'); } catch (e) {}   // "this device has changes the server hasn't seen"
+  };
 
   // shared contract/membership record (server is the truth). Pages + nav.js read it from localStorage.
   function useShared(S) {
     try {
       if (!S || !user) return;
-      localStorage.setItem('bestie_current_user', user);
-      localStorage.setItem('besties_shared_v1', JSON.stringify(S));
+      lsSet('bestie_current_user', user);
+      lsSet('besties_shared_v1', JSON.stringify(S));
       const c = S.contract && S.contract[user];
       if (c) {   // keep the old keys alive so older pages (e.g. the gifts page) still see "signed"
-        localStorage.setItem('ann_contract_signed_2026', '1');
-        localStorage.setItem('ann_contract_name_2026', c.name);
-        localStorage.setItem('ann_contract_date_2026', c.date || '');
+        lsSet('ann_contract_signed_2026', '1');
+        lsSet('ann_contract_name_2026', c.name);
+        lsSet('ann_contract_date_2026', c.date || '');
       }
     } catch (e) {}
   }
@@ -85,25 +124,51 @@
     if (x.status === 200) {
       const r = JSON.parse(x.responseText);
       user = r.user; loaded = true;
-      if (r.data) Object.keys(r.data).forEach((k) => { if (!LOCAL_ONLY.has(k)) localStorage.setItem(k, r.data[k]); });
-      else if (localStorage.length) dirty = true;   // first ever sync: upload what's here
+      const pending = lsGet('besties_pending_v1') === '1';   // unsynced changes from last time: they win over the server copy
+      let sd = r.data;
+      if (typeof sd === 'string') { try { sd = JSON.parse(sd); } catch (e) { sd = null; } }
+      const good = sd && typeof sd === 'object' && !Array.isArray(sd);
+      if (good) {
+        Object.keys(sd).forEach((k) => {
+          if (skip(k)) return;
+          const sv = typeof sd[k] === 'string' ? sd[k] : JSON.stringify(sd[k]);
+          const lv = lsGet(k);
+          if (lv === null) { lsSet(k, sv); }
+          else if (MERGE[k]) { const m = MERGE[k](lv, sv); if (m !== lv) lsSet(k, m); if (m !== sv) dirty = true; }
+          else if (!pending) { if (lv !== sv) lsSet(k, sv); }
+          else if (lv !== sv) { dirty = true; }
+        });
+        // anything that exists here but not on the server also needs uploading
+        const serverKeys = new Set(Object.keys(sd));
+        Object.keys(snapshot()).forEach((k) => { if (!serverKeys.has(k)) dirty = true; });
+      } else {
+        if (r.data != null) console.warn('[bestie-storage] server data was not an object; ignoring it and keeping local data');
+        if (lsLen()) dirty = true;   // first ever sync (or broken server copy): upload what's here
+      }
       useShared(r.shared);
+      lastSig = dirty ? '' : JSON.stringify(snapshot());
+      lastStatus = 'loaded ' + new Date().toISOString();
     } else if (x.status === 401 || x.status === 403) {
       // never reload here: a persistent refusal would loop forever
+      lastStatus = 'load refused: HTTP ' + x.status;
       console.error('[bestie-storage] /api/data refused (' + x.status + '). Check the values in wrangler.jsonc.');
-    }
-  } catch (e) { console.warn('[bestie-storage] offline, running on local data only', e); }
+    } else { lastStatus = 'load failed: HTTP ' + x.status; }
+  } catch (e) { lastStatus = 'offline: ' + e; console.warn('[bestie-storage] offline, running on local data only', e); }
 
-  // 2. mirror writes
-  const set = localStorage.setItem.bind(localStorage), rem = localStorage.removeItem.bind(localStorage), clr = localStorage.clear.bind(localStorage);
-  localStorage.setItem = (k, v) => { set(k, v); if (!LOCAL_ONLY.has(k)) schedule(); };
-  localStorage.removeItem = (k) => { rem(k); if (!LOCAL_ONLY.has(k)) schedule(); };
-  localStorage.clear = () => { clr(); dirty = true; push(true); };   // resets save immediately
+  // 2. mirror writes (on the prototype, never by assigning to localStorage itself)
+  try {
+    SP.setItem = function (k, v) { rawSet.apply(this, arguments); if (this === L && !skip(String(k))) schedule(); };
+    SP.removeItem = function (k) { rawRem.apply(this, arguments); if (this === L && !skip(String(k))) schedule(); };
+    SP.clear = function () { rawClr.apply(this, arguments); if (this === L) { dirty = true; push(true); } };   // resets save immediately
+  } catch (e) { console.warn('[bestie-storage] could not hook storage; relying on the change watcher', e); }
+  // backup: even if a hook is bypassed, any difference from what the server has gets uploaded within a few seconds
+  setInterval(() => { if (loaded && user && !dirty && JSON.stringify(snapshot()) !== lastSig) schedule(); }, 2500);
   addEventListener('pagehide', () => push(true));
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') push(true); });
   if (dirty) schedule();
 
   window.BestieSync = { get user() { return user; }, refreshShared, post, isSyncing: () => dirty,
+    get status() { return lastStatus; },
     logout() { location.href = '/cdn-cgi/access/logout'; }, switchUser() { this.logout(); } };
   setTimeout(() => document.dispatchEvent(new CustomEvent('bestie-sync-ready', { detail: { user } })), 0);
 })();
