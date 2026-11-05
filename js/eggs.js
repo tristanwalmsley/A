@@ -22,45 +22,6 @@
       bingchill:'Bing chilling', yeah:'Yeah.', muscle:'BIG MUSCLE BADDIE', loveyou:'Love you too', phas:'Phas Monday', thanks:'A special delivery', wellmen:'Fatal error', fan:'Number one fan', sea:'Across the sea', energy:'That is your energy' }
   };
 
-  // one cryptic nudge per egg for the "give me a clue" popup. Never the egg's name, never the exact steps.
-  // Add a line here for every new egg; eggs without a clue are simply left out of that popup.
-  const CLUES = {
-    home: {
-      postmark: "The postmark loves company. Keep pressing it.",
-      nav: "The little word under our names has more patience than it looks. Keep at it.",
-      konami: "Old-school gamers already know exactly what to press.",
-      name: "Spell your own name when nobody's looking.",
-      tristan: "...and now spell mine.",
-      signature: "A signature deserves a second look. Quick, one after the other.",
-      idle: "Linger a while. Post comes for the patient, and it doesn't hang around.",
-      mail: "That little stamp wants to go somewhere. Show it where.",
-      chase: "Something shy drifts about after a while. It runs from you, but corners don't give it a choice."
-    },
-    reasons: {
-      peek: "Not every card wants a quick tap. Some want you to stop and wait with them.",
-      star: "Keep an eye on the sky. When something crosses it, be quick.",
-      readall: "Take the scenic route through every reason, one at a time, no shortcuts.",
-      beans: "One card is a tin that wants tipping. Tilt it, and don't stop.",
-      noodles: "One card is stretchy. Pull until it's taut.",
-      bingbong: "A doorbell is happiest when you ring it twice.",
-      twoam: "Late-night messages answer best when you send them twice, fast.",
-      doobe: "One card has a song stuck inside it. Work it like a record.",
-      adam: "Someone on this list isn't welcome. Make that very clear on the card.",
-      stay: "Do nothing at all. The stars notice.",
-      song: "The title at the top has a song in it. Be persistent, or be polite.",
-      bingchill: "Take the wheel, and stop exactly where you're supposed to.",
-      yeah: "Agree with it. Properly, with your whole head.",
-      muscle: "Give one very flexed card a lot of attention, quickly, before it gives up.",
-      loveyou: "Answer that card the way you'd answer a love note: draw something back.",
-      phas: "Knock, and see who answers. Then take a torch.",
-      thanks: "Squeeze a card until it can't take any more, then let go. Someone's waiting inside.",
-      wellmen: "Be decisive about the men. Dating-app decisive.",
-      fan: "Wave like you're right at the front of the crowd.",
-      sea: "Cross the whole sea in one go. No landing early.",
-      energy: "Listen carefully, then play it back."
-    }
-  };
-
   const load = () => { try{ const d = JSON.parse(localStorage.getItem(KEY)); return (d && typeof d === 'object' && !Array.isArray(d)) ? d : {}; }catch(e){ return {}; } };
   const save = d => { try{ localStorage.setItem(KEY, JSON.stringify(d)); }catch(e){} };
 
@@ -117,8 +78,6 @@
 #pe-modal .pe-lh{display:flex;justify-content:space-between;font-family:'Caveat',cursive;font-size:1.25rem;font-weight:700;color:var(--rose,#b86858);border-bottom:1px dashed var(--tan,#d4b483);margin:.9rem 0 .3rem}
 #pe-modal .pe-lh:first-child{margin-top:0}
 #pe-modal .pe-li{font-family:'EB Garamond',Georgia,serif;font-size:1rem;line-height:1.5;color:var(--brown,#7a5230);padding:.12rem 0}
-#pe-modal .pe-li.clue{font-style:italic}
-#pe-modal .pe-li.clue{padding:.25rem 0}
 #pe-modal .pe-li.no{opacity:.45;letter-spacing:2px}
 #pe-modal .pe-li::before{content:'\u2726 ';color:var(--gold,#c8943a)}
 #pe-modal .pe-li.no::before{content:'\u00b7 ';color:var(--tan,#d4b483)}
@@ -172,22 +131,6 @@
   }
 
 
-  // popup with one cryptic clue for every secret not found yet (no names, no instructions)
-  function showClues(){
-    const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-    let html = '<div class="pe-list">', left = 0;
-    Object.keys(PAGES).forEach(p => {
-      const have = list(p), cl = CLUES[p] || {};
-      const todo = Object.keys(cl).filter(id => !have.includes(id));
-      if(!todo.length) return;
-      left += todo.length;
-      html += '<div class="pe-lh"><span>' + esc(PAGES[p].label) + '</span><span>' + todo.length + ' to find</span></div>';
-      todo.forEach(id => { html += '<div class="pe-li clue">' + esc(cl[id]) + '</div>'; });
-    });
-    if(!left) html += '<div class="pe-li">You\'ve found every secret I\'ve hidden so far. There will be more.</div>';
-    modal(left ? 'A clue for each one left' : 'Nothing left to find', html + '</div>', '\u2661');
-  }
-
   // call this when an egg is found. msg = { title, text, sig } shows the popup; leave it out for a toast only.
   function found(page, id, msg){
     ui();
@@ -206,5 +149,5 @@
     return isNew;
   }
 
-  window.PageEggs = { PAGES, list, count, total, isDone, has, sync, level, order: sync, grandTotal, foundTotal, found, toast, modal, close, isOpen, showList, showClues, names: NAMES, clues: CLUES };
+  window.PageEggs = { PAGES, list, count, total, isDone, has, sync, level, order: sync, grandTotal, foundTotal, found, toast, modal, close, isOpen, showList, names: NAMES };
 })();
