@@ -3799,7 +3799,9 @@ function getShowcase(){ try { const b = JSON.parse(localStorage.getItem(SHOWCASE
   .gl-row small{display:block;opacity:.65;font-style:italic}
   .gl-bar{height:6px;border-radius:3px;background:rgba(255,255,255,.12);margin-top:.25rem;overflow:hidden}
   .gl-bar i{display:block;height:100%;background:var(--gold);width:0}
-  .gl-row.done{color:var(--gold)}`;
+  .gl-row.done{color:var(--gold)}
+  .gl-reset{margin:0 0 .4rem;border:1px solid rgba(240,221,184,.35);background:none;color:#f0ddb8;border-radius:999px;padding:.3rem .8rem;font-size:.75rem;cursor:pointer;opacity:.75}
+  .gl-reset:hover{opacity:1}`;
   document.head.appendChild(css);
   const ctrl = document.createElement('div'); ctrl.id = 'rx-ctrl'; document.body.appendChild(ctrl);
   const btn = document.createElement('button'); btn.id = 'gl-btn'; btn.type = 'button'; ctrl.appendChild(btn);
@@ -3808,11 +3810,23 @@ function getShowcase(){ try { const b = JSON.parse(localStorage.getItem(SHOWCASE
   const panel = document.createElement('div'); panel.id = 'gl-panel'; document.body.appendChild(panel);
   btn.addEventListener('click', () => { panel.classList.toggle('open'); render(); });
 
+  // goal progress for THIS run (shown in the panel). b.goals stays as the lifetime record the home-page badge reads.
+  function resetRunGoals(){
+    const b = getShowcase(); b.runGoals = {}; save(b);
+    Object.assign(run, { lights: 0, catches: 0, bestStreak: 0, bestCombo: 0, bigCatch: 0, secret: 0, phLights: 0 }); run.songLights.fill(0); recent.length = 0;
+  }
   function render(){
-    const done = getShowcase().goals || {}, n = Object.keys(done).length;
+    const done = getShowcase().runGoals || {}, n = Object.keys(done).length;
     btn.textContent = '🏆 goals ' + n + '/' + GOALS.length;
     if (!panel.classList.contains('open')) return;
     panel.textContent = ''; const h = document.createElement('h4'); h.textContent = 'Showcase goals'; panel.appendChild(h);
+    const rb = document.createElement('button'); rb.type = 'button'; rb.className = 'gl-reset'; rb.textContent = 'reset goal progress';
+    rb.addEventListener('click', () => {
+      if (!rb.dataset.armed) { rb.dataset.armed = '1'; rb.textContent = 'tap again to confirm'; setTimeout(() => { if (rb.isConnected) { delete rb.dataset.armed; rb.textContent = 'reset goal progress'; } }, 4000); return; }
+      resetRunGoals(); try { window.rxToast('goal progress reset (eggs and lifetime lights untouched)', 3500); } catch(e) {}
+      render();
+    });
+    panel.appendChild(rb);
     GOALS.forEach(g => {
       const [cur, tgt] = g.get(run), ok = !!done[g.id], row = document.createElement('div');
       row.className = 'gl-row' + (ok ? ' done' : '');
@@ -3832,12 +3846,13 @@ function getShowcase(){ try { const b = JSON.parse(localStorage.getItem(SHOWCASE
     });
   }
   function check(){
-    const b = getShowcase(), done = b.goals || {}; let changed = false;
+    const b = getShowcase(), done = b.runGoals || {}, life = b.goals || {}; let changed = false;
     GOALS.forEach(g => { const [cur, tgt] = g.get(run); if (!done[g.id] && cur >= tgt) {
-      done[g.id] = { at: new Date().toISOString() }; changed = true;
+      const at = new Date().toISOString();
+      done[g.id] = { at }; if (!life[g.id]) life[g.id] = { at }; changed = true;
       try { window.rxToast('🏆 goal complete: ' + g.label, 5000); spawnHeartBurstSparkles(); } catch(e) {}
     } });
-    if (changed) { b.goals = done; save(b); if (Object.keys(done).length >= GOALS.length) try { window.rxToast('every goal done - your badge is waiting on the home page ♡', 7000); } catch(e) {} }
+    if (changed) { b.runGoals = done; b.goals = life; save(b); if (Object.keys(done).length >= GOALS.length) try { window.rxToast('every goal done - your badge is waiting on the home page ♡', 7000); } catch(e) {} }
     render();
   }
 
@@ -3886,7 +3901,7 @@ function getShowcase(){ try { const b = JSON.parse(localStorage.getItem(SHOWCASE
   function saveProgress(){
     // past zero (the final show) resumes a few seconds before the reveal
     const left = Math.max(15, (TARGET - Date.now()) / 1000);
-    const data = { v: 1, left, savedAt: new Date().toISOString(), run, skipped, visited: [...visited] };
+    const data = { v: 1, left, savedAt: new Date().toISOString(), run, runGoals: getShowcase().runGoals || {}, skipped, visited: [...visited] };
     try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(data)); }
     catch(e) { try { window.rxToast('could not save here (storage is blocked) - sorry!', 5000); } catch(_) {} return false; }
     return true;
@@ -3895,6 +3910,9 @@ function getShowcase(){ try { const b = JSON.parse(localStorage.getItem(SHOWCASE
     if (saveProgress()) { try { window.rxToast('💾 progress saved - ' + fmt(Math.max(15, (TARGET - Date.now()) / 1000)) + ' left on the clock ♡', 4000); } catch(e) {} }
   });
   exitBtn.addEventListener('click', () => { if (saveProgress()) location.href = 'index.html'; });
+
+  // a fresh Start (or Start over) begins at 0 goals; lifetime goals, eggs and lights are untouched
+  document.getElementById('entry-start').addEventListener('click', resetRunGoals);
 
   // offer Continue on the entry screen when a save exists
   try {
@@ -3906,6 +3924,7 @@ function getShowcase(){ try { const b = JSON.parse(localStorage.getItem(SHOWCASE
       document.getElementById('entry-start').textContent = 'Start over';
       cont.addEventListener('click', e => {
         e.stopPropagation();
+        { const b = getShowcase(); b.runGoals = saved.runGoals || {}; save(b); }
         Object.assign(run, saved.run || {});
         if (!Array.isArray(run.songLights) || run.songLights.length !== TRACKS.length) run.songLights = new Array(TRACKS.length).fill(0);
         run.phLights = run.phLights || 0;
