@@ -295,6 +295,7 @@ body.evo-4{--evo-accent:#d43a72}
   100%{transform:translate(50%,-50%) scale(2.35);filter:drop-shadow(0 0 34px var(--evo-accent))}
 }
 .constellation.heart-gone{opacity:0;transform:translate(50%,-50%) scale(2.7);transition:opacity 2s ease,transform 2.2s ease}
+.constellation .star-emoji.show{pointer-events:auto;cursor:pointer;padding:6px}
 .constellation svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .constellation .star-line{fill:none;stroke:var(--evo-accent);stroke-width:0.6;stroke-linecap:round;stroke-linejoin:round;opacity:0.5}
 .star-emoji{position:absolute;transform:translate(-50%,-50%);font-size:1.3rem;text-shadow:0 0 4px var(--evo-accent);opacity:0;transition:opacity 1.3s ease,transform 0.5s ease}
@@ -669,6 +670,7 @@ body.stage-garden-enchanted .brand{color:#8a5a1f}
     <div class="entry-spinner" id="entry-spinner" aria-hidden="true"></div>
     <div class="entry-sub" id="entry-sub">relive the countdown to the reveal</div>
     <button class="entry-start" id="entry-start" type="button">Start</button>
+    <button class="entry-start" id="entry-continue" type="button" style="display:none;margin-left:.7rem">Continue</button>
   </div>
 </div>
 
@@ -835,6 +837,7 @@ function unlockEntry(){
   entrySpinner.classList.remove('done');
   entrySub.classList.remove('ready');
   entryStart.classList.remove('ready');
+  const _ec = document.getElementById('entry-continue'); if (_ec) _ec.classList.remove('ready');
   entrySub.textContent = 'just a moment...';
 
   // let the browser actually paint the spinner before doing the (synchronous,
@@ -843,7 +846,9 @@ function unlockEntry(){
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       document.body.classList.add('replay-started');
-      replayOffsetMs = (TARGET - MUSIC_START_AT - REPLAY_LEAD_IN_MS) - _realNow();
+      // a saved run resumes from its saved time-left (window.__resumeLeftMs); otherwise start just before the music
+      const _startLeftMs = window.__resumeLeftMs || (MUSIC_START_AT + REPLAY_LEAD_IN_MS);
+      replayOffsetMs = (TARGET - _startLeftMs) - _realNow();
       startCountdown();
       // small minimum so the spinner reads as "loading" rather than a flicker
       setTimeout(() => { entryGate.classList.add('hide'); }, 300);
@@ -865,6 +870,7 @@ Promise.all([
   entrySpinner.classList.add('done');
   entrySub.classList.add('ready');
   entryStart.classList.add('ready');
+  const _ec = document.getElementById('entry-continue'); if (_ec) _ec.classList.add('ready');
 });
 
 // ---------- MUSIC ----------
@@ -1783,6 +1789,7 @@ const HEART_POINTS = [
   [10.0,45.85],[10.0,23.51],[29.37,12.99],[46.47,22.56]
 ];
 const HEART_N = HEART_POINTS.length;
+const CONSTELLATION_FULL_AT_S = 10 * 60; // seconds left when the last star lights (10:00)
 let constellationBuilt = false;
 let starEls = [];
 let segmentEls = []; // one path per adjacent pair of heart points
@@ -1915,8 +1922,11 @@ function revealNewStars(indices, litCount, daysLeftNow){
 
 function updateConstellation(daysLeft){
   if (!constellationBuilt) buildConstellation();
-  const elapsedDays = Math.floor((Date.now() - COUNTDOWN_START) / 86400000);
-  const litCount = Math.max(0, Math.min(HEART_N, elapsedDays));
+  // SHOWCASE VERSION: the real countdown lit one star per day. Here the heart starts empty when the
+  // showcase begins (35:39 left) and a star lights every ~110s, so all 14 are in by CONSTELLATION_FULL_AT_S.
+  const leftS = (TARGET - Date.now()) / 1000;
+  const progress = (MUSIC_START_AT_S - leftS) / (MUSIC_START_AT_S - CONSTELLATION_FULL_AT_S);
+  const litCount = Math.max(0, Math.min(HEART_N, Math.floor(progress * HEART_N + 1e-9)));
 
   const newlyLit = [];
   for (let i = 0; i < litCount; i++) {
@@ -3655,6 +3665,7 @@ const TIMED_MESSAGES = [
   { at: 22*60,      text: "Hydrate. Stretch. Collect a leaf or two." },
   { at: 18*60,      text: "Somewhere, a very nervous person is checking the site one more time." },
   { at: 15*60,      text: "power hour is over. the sky settles... for now." },
+  { at: 10*60,      text: "the last star just lit - the heart is complete ♡" },
   { at: 14*60,      text: "Less than 15 minutes. The curtains are being dusted." },
   { at: 11*60,      text: "Nearly time. Please remain seated and sparkly." },
   { at: 8.5*60,     text: "Almost there ♡" }
@@ -3670,7 +3681,7 @@ const COMMENTARY = [];
   const css = document.createElement('style');
   css.textContent = `
   #rx-glow{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0;background:radial-gradient(ellipse at 50% 45%,rgba(0,0,0,0) 35%,rgba(20,6,30,.75) 100%);transition:opacity 4s ease}
-  #rx-np{position:fixed;left:1rem;bottom:1rem;z-index:54;max-width:min(70vw,18rem);padding:.5rem .9rem;border-radius:14px;background:rgba(40,22,12,.82);color:#f0ddb8;font-family:'Playfair Display',serif;font-size:.8rem;line-height:1.35;opacity:0;transition:opacity .7s ease;pointer-events:none}
+  #rx-np{position:fixed;left:.8rem;bottom:3.4rem;z-index:54;max-width:min(70vw,18rem);padding:.5rem .9rem;border-radius:14px;background:rgba(40,22,12,.82);color:#f0ddb8;font-family:'Playfair Display',serif;font-size:.8rem;line-height:1.35;opacity:0;transition:opacity .7s ease;pointer-events:none}
   #rx-np.show{opacity:1}
   #rx-np b{display:block;font-family:'Caveat',cursive;font-size:1.15rem;color:var(--gold);font-weight:700}
   #rx-np i{opacity:.7}
@@ -3750,21 +3761,38 @@ const GOALS = [
   { id:'catches_100', label:'Catch 100 leaves',                    desc:'in a single run',                          get:r => [r.catches, 100] },
   { id:'streak_25',   label:'Reach a streak of 25',                desc:'25 catches in a row',                      get:r => [r.bestStreak, 25] },
   { id:'streak_50',   label:'Reach a streak of 50',                desc:'50 catches in a row',                      get:r => [r.bestStreak, 50] },
-  { id:'combo',       label:'Catch 5 leaves in 5 seconds',         desc:'a proper flurry',                          get:r => [r.bestCombo, 5] },
+  { id:'combo',       label:'Catch 4 leaves in 5 seconds',         desc:'a proper flurry',                          get:r => [r.bestCombo, 4] },
+  { id:'combo8',      label:'Catch 8 leaves in 5 seconds',         desc:'an absolute blur of leaves',               get:r => [r.bestCombo, 8] },
+  { id:'ph_lights',   label:'Collect 100,000 lights in power hour', desc:'only lights caught during power hour count', get:r => [r.phLights, 100000] },
+  { id:'all_eggs',    label:'Find all 5 easter eggs',              desc:'hidden around the showcase - they stay found', get:r => [Object.keys(getShowcase().eggs || {}).length, EGGS.length] },
   { id:'big_catch',   label:'One catch worth 1,000+',              desc:'a single leaf',                            get:r => [r.bigCatch, 1000] },
   { id:'every_song',  label:'5,000 lights during every song',      desc:'all 7 songs, in one run (no skipping ahead)', get:r => [r.songLights.filter(v => v >= 5000).length, 7] },
   { id:'secret',      label:'Find the secret',                     desc:'something on this page is ticklish',       get:r => [r.secret, 7] }
 ];
+
+// ---- easter eggs (found eggs are kept forever, across runs) ----
+// stored as getShowcase().eggs = { <eggId>: { at } }. The 'all_eggs' goal above counts them.
+const EGGS = [
+  { id:'ph_wish',     name:'the wishing star',   hint:'power hour has a star you can wish on' },
+  { id:'show_marquee',name:'the marquee',        hint:'the final show has a sign that likes attention' },
+  { id:'cd_clock',    name:'the clock',          hint:'the big countdown clock does not like being poked' },
+  { id:'cd_heart',    name:'the constellation',  hint:'the stars in the corner remember something (or: type a word)' },
+  { id:'finale_rush', name:'the last minute',    hint:'in the final minute, impatience is noticed' }
+];
 function getShowcase(){ try { const b = JSON.parse(localStorage.getItem(SHOWCASE_KEY)); return (b && typeof b === 'object') ? b : {}; } catch(e) { return {}; } }
 (function(){
   const save = b => { try { localStorage.setItem(SHOWCASE_KEY, JSON.stringify(b)); } catch(e) {} };
-  const run = { lights: 0, catches: 0, bestStreak: 0, bestCombo: 0, bigCatch: 0, songLights: new Array(TRACKS.length).fill(0), secret: 0 };
+  const run = { lights: 0, catches: 0, bestStreak: 0, bestCombo: 0, bigCatch: 0, songLights: new Array(TRACKS.length).fill(0), secret: 0, phLights: 0 };
   const recent = []; let skipped = false, started = false;
   const css = document.createElement('style');
   css.textContent = `
-  #gl-btn{position:fixed;left:1rem;top:4.3rem;z-index:56;border:0;cursor:pointer;padding:.4rem .8rem;border-radius:999px;background:rgba(40,22,12,.82);color:#f0ddb8;font-size:.82rem;display:none}
+  #rx-ctrl{position:fixed;left:1rem;top:4.3rem;z-index:56;display:none;gap:.4rem;flex-wrap:wrap;max-width:calc(100vw - 2rem)}
+  #rx-ctrl.show{display:flex}
+  #rx-ctrl button{border:0;cursor:pointer;padding:.4rem .8rem;border-radius:999px;background:rgba(40,22,12,.82);color:#f0ddb8;font-size:.82rem;font-family:inherit}
+  #rx-ctrl button:hover{background:rgba(40,22,12,.95)}
+  #gl-btn{display:none}
   #gl-btn.show{display:block}
-  #gl-panel{position:fixed;left:1rem;top:6.9rem;z-index:57;width:min(88vw,21rem);max-height:62vh;overflow:auto;padding:.9rem 1rem;border-radius:14px;background:rgba(30,16,8,.94);color:#f0ddb8;font-family:'Playfair Display',serif;display:none}
+  #gl-panel{position:fixed;left:1rem;top:7.2rem;z-index:57;width:min(88vw,21rem);max-height:58vh;overflow:auto;padding:.9rem 1rem;border-radius:14px;background:rgba(30,16,8,.94);color:#f0ddb8;font-family:'Playfair Display',serif;display:none}
   #gl-panel.open{display:block}
   #gl-panel h4{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--gold);margin-bottom:.4rem}
   .gl-row{margin:.55rem 0;font-size:.82rem}
@@ -3773,7 +3801,10 @@ function getShowcase(){ try { const b = JSON.parse(localStorage.getItem(SHOWCASE
   .gl-bar i{display:block;height:100%;background:var(--gold);width:0}
   .gl-row.done{color:var(--gold)}`;
   document.head.appendChild(css);
-  const btn = document.createElement('button'); btn.id = 'gl-btn'; btn.type = 'button'; document.body.appendChild(btn);
+  const ctrl = document.createElement('div'); ctrl.id = 'rx-ctrl'; document.body.appendChild(ctrl);
+  const btn = document.createElement('button'); btn.id = 'gl-btn'; btn.type = 'button'; ctrl.appendChild(btn);
+  const saveBtn = document.createElement('button'); saveBtn.type = 'button'; saveBtn.textContent = '💾 save'; saveBtn.title = 'save your progress and keep watching'; ctrl.appendChild(saveBtn);
+  const exitBtn = document.createElement('button'); exitBtn.type = 'button'; exitBtn.textContent = '💾 save & exit'; exitBtn.title = 'save your progress and go back to the home page'; ctrl.appendChild(exitBtn);
   const panel = document.createElement('div'); panel.id = 'gl-panel'; document.body.appendChild(panel);
   btn.addEventListener('click', () => { panel.classList.toggle('open'); render(); });
 
@@ -3789,6 +3820,15 @@ function getShowcase(){ try { const b = JSON.parse(localStorage.getItem(SHOWCASE
       const d = document.createElement('small'); d.textContent = ok ? 'done!' : g.desc + ' · ' + Math.min(cur, tgt).toLocaleString() + ' / ' + tgt.toLocaleString();
       const bar = document.createElement('div'); bar.className = 'gl-bar'; const f = document.createElement('i'); f.style.width = (ok ? 100 : Math.min(100, cur / tgt * 100)) + '%'; bar.appendChild(f);
       row.append(t, d, bar); panel.appendChild(row);
+    });
+    const eggs = getShowcase().eggs || {};
+    const eh = document.createElement('h4'); eh.textContent = 'Easter eggs ' + Object.keys(eggs).length + '/' + EGGS.length; eh.style.marginTop = '.9rem'; panel.appendChild(eh);
+    EGGS.forEach(e => {
+      const row = document.createElement('div'), ok = !!eggs[e.id];
+      row.className = 'gl-row' + (ok ? ' done' : '');
+      const t = document.createElement('div'); t.textContent = ok ? '🥚 ' + e.name : '🥚 ???';
+      const d = document.createElement('small'); d.textContent = ok ? 'found!' : e.hint;
+      row.append(t, d); panel.appendChild(row);
     });
   }
   function check(){
@@ -3807,6 +3847,7 @@ function getShowcase(){ try { const b = JSON.parse(localStorage.getItem(SHOWCASE
     _bump.apply(this, arguments);
     if (!document.body.classList.contains('replay-started') || !(v > 0)) return;
     const now = Date.now(); run.lights += v; run.catches++; run.bigCatch = Math.max(run.bigCatch, v);
+    try { if (replayPowerHourWindow()) run.phLights += v; } catch(e) {}
     run.bestStreak = Math.max(run.bestStreak, currentStreak);
     recent.push(now); while (recent.length && now - recent[0] > 5000) recent.shift(); run.bestCombo = Math.max(run.bestCombo, recent.length);
     try { const st = computeMusicState((TARGET - now)); if (st && st.mode === 'pool') run.songLights[st.index] += v; } catch(e) {}
@@ -3816,7 +3857,7 @@ function getShowcase(){ try { const b = JSON.parse(localStorage.getItem(SHOWCASE
   const brand = document.querySelector('.brand');
   if (brand) brand.addEventListener('click', () => { if (!started) return; run.secret++; if (run.secret === 7) { try { window.rxToast('hehe, that tickles ♡', 4000); } catch(e) {} } check(); });
 
-  setInterval(() => { if (!started && document.body.classList.contains('replay-started')) { started = true; btn.classList.add('show'); render(); } }, 500);
+  setInterval(() => { if (!started && document.body.classList.contains('replay-started')) { started = true; btn.classList.add('show'); ctrl.classList.add('show'); render(); } }, 500);
 
   // ---- Front Row: one run, whole show, no skipping ----
   ['buildup-skip-btn', 'power-hour-skip-btn'].forEach(id => {
@@ -3836,6 +3877,121 @@ function getShowcase(){ try { const b = JSON.parse(localStorage.getItem(SHOWCASE
     }
     visited.add(sceneIndex);
   };
+
+  // ================= SAVE / RESUME =================
+  // Saves how far into the countdown you are (seconds left) plus this run's goal progress.
+  // Goals/eggs already earned are kept separately in SHOWCASE_KEY, so they never get lost.
+  const PROGRESS_KEY = 'ann_showcase_2026_progress_v1';
+  const fmt = sec => { sec = Math.max(0, Math.round(sec)); return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0'); };
+  function saveProgress(){
+    // past zero (the final show) resumes a few seconds before the reveal
+    const left = Math.max(15, (TARGET - Date.now()) / 1000);
+    const data = { v: 1, left, savedAt: new Date().toISOString(), run, skipped, visited: [...visited] };
+    try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(data)); }
+    catch(e) { try { window.rxToast('could not save here (storage is blocked) - sorry!', 5000); } catch(_) {} return false; }
+    return true;
+  }
+  saveBtn.addEventListener('click', () => {
+    if (saveProgress()) { try { window.rxToast('💾 progress saved - ' + fmt(Math.max(15, (TARGET - Date.now()) / 1000)) + ' left on the clock ♡', 4000); } catch(e) {} }
+  });
+  exitBtn.addEventListener('click', () => { if (saveProgress()) location.href = 'index.html'; });
+
+  // offer Continue on the entry screen when a save exists
+  try {
+    const saved = JSON.parse(localStorage.getItem(PROGRESS_KEY));
+    const cont = document.getElementById('entry-continue');
+    if (saved && saved.v === 1 && saved.left > 0 && cont) {
+      cont.style.display = 'inline-block';
+      cont.textContent = 'Continue · ' + fmt(saved.left) + ' left';
+      document.getElementById('entry-start').textContent = 'Start over';
+      cont.addEventListener('click', e => {
+        e.stopPropagation();
+        Object.assign(run, saved.run || {});
+        if (!Array.isArray(run.songLights) || run.songLights.length !== TRACKS.length) run.songLights = new Array(TRACKS.length).fill(0);
+        run.phLights = run.phLights || 0;
+        skipped = !!saved.skipped; (saved.visited || []).forEach(i => visited.add(i));
+        window.__resumeLeftMs = Math.min(saved.left, MUSIC_START_AT_S + 5) * 1000;
+        unlockEntry();
+      });
+    }
+  } catch(e) {}
+
+  // ================= EASTER EGGS =================
+  function foundEgg(id, effect){
+    if (!document.body.classList.contains('replay-started')) return;
+    try { effect && effect(); } catch(e) {}
+    const b = getShowcase(); b.eggs = b.eggs || {};
+    if (b.eggs[id]) return; // already found: just replay the effect
+    b.eggs[id] = { at: new Date().toISOString() }; save(b);
+    const egg = EGGS.find(x => x.id === id), n = Object.keys(b.eggs).length;
+    try { window.rxToast('🥚 easter egg ' + n + '/' + EGGS.length + ' found: ' + (egg ? egg.name : id), 5000); spawnHeartBurstSparkles(); } catch(e) {}
+    check();
+  }
+  const tapCounter = (need, windowMs) => { let hits = []; return () => { const t = Date.now(); hits.push(t); hits = hits.filter(x => t - x <= windowMs); if (hits.length >= need) { hits = []; return true; } return false; }; };
+  const sayWhenAlone = (msg, ms) => { try { window.rxToast(msg, ms || 4500); } catch(e) {} };
+
+  // 1) power hour: a faint wishing star in the galaxy sky
+  const wishCss = document.createElement('style');
+  wishCss.textContent = `#rx-wish{position:fixed;left:11vw;top:17vh;z-index:45;font-size:1.15rem;padding:14px;color:#ffe9b0;text-shadow:0 0 8px #ffd37a,0 0 18px #ffd37a;opacity:0;pointer-events:none;cursor:pointer;transition:opacity 2s ease;animation:rxTwinkle 3.2s ease-in-out infinite;user-select:none}
+  #rx-wish.on{opacity:.38;pointer-events:auto}
+  #rx-wish.zap{animation:rxZap 1.6s ease-in forwards}
+  @keyframes rxTwinkle{0%,100%{transform:scale(.85)}50%{transform:scale(1.2)}}
+  @keyframes rxZap{0%{transform:scale(1)}30%{transform:scale(2.4);opacity:1}100%{transform:translate(70vw,-30vh) scale(.4);opacity:0}}
+  .timer-holder.rx-wobble{animation:rxWobble 1.3s ease}
+  @keyframes rxWobble{0%{transform:rotate(0)}15%{transform:rotate(-7deg) scale(1.06)}30%{transform:rotate(6deg)}45%{transform:rotate(-4deg)}60%{transform:rotate(3deg)}100%{transform:rotate(0) scale(1)}}
+  .marquee{pointer-events:auto;cursor:default;user-select:none}
+  .marquee-lights.rx-wild span{animation-duration:.18s!important;width:11px;height:11px;transition:all .3s}`;
+  document.head.appendChild(wishCss);
+  const wish = document.createElement('div'); wish.id = 'rx-wish'; wish.textContent = '✦'; wish.setAttribute('aria-hidden', 'true'); document.body.appendChild(wish);
+  setInterval(() => { let on = false; try { on = replayPowerHourWindow(); } catch(e) {} wish.classList.toggle('on', on && !wish.classList.contains('zap')); }, 1000);
+  wish.addEventListener('click', () => foundEgg('ph_wish', () => {
+    wish.classList.add('zap'); setTimeout(() => wish.classList.remove('zap'), 1700);
+    sayWhenAlone('you wished on a power hour star ♡ (it is already on its way)');
+    spawnHeartBurstSparkles();
+  }));
+
+  // 2) the final show: the marquee sign likes attention (5 taps)
+  const marqueeTap = tapCounter(5, 4000);
+  const marquee = document.querySelector('.marquee');
+  if (marquee) marquee.addEventListener('click', () => { if (marqueeTap()) foundEgg('show_marquee', () => {
+    const lights = document.querySelector('.marquee-lights');
+    if (lights) { lights.classList.add('rx-wild'); setTimeout(() => lights.classList.remove('rx-wild'), 2600); }
+    launchRevealBurst();
+    sayWhenAlone('Bestie Pictures would like to thank: you. mostly you. ♡');
+  }); });
+
+  // 3) any time: poke the big countdown clock (7 pokes)
+  const clockTap = tapCounter(7, 5000);
+  const clockEl = document.getElementById('timer');
+  if (clockEl) clockEl.addEventListener('click', () => { if (clockTap()) foundEgg('cd_clock', () => {
+    const holder = document.querySelector('.timer-holder');
+    if (holder) { holder.classList.add('rx-wobble'); setTimeout(() => holder.classList.remove('rx-wobble'), 1400); }
+    sayWhenAlone('tick tock. time flies when you are being a bestie.');
+  }); });
+
+  // 4) any time: tap the constellation 3x, or type "bestie"
+  const heartEffect = () => { launchRevealBurst(); spawnHeartBurstSparkles(); sayWhenAlone('psst - in the real countdown, each of those stars was one whole day ♡'); };
+  const starTap = tapCounter(3, 3500);
+  const cons = document.getElementById('constellation');
+  if (cons) cons.addEventListener('click', e => { if (e.target.closest && e.target.closest('.star-emoji') && starTap()) foundEgg('cd_heart', heartEffect); });
+  let typed = '';
+  document.addEventListener('keydown', e => {
+    if (!e.key || e.key.length !== 1) return;
+    typed = (typed + e.key.toLowerCase()).slice(-6);
+    if (typed === 'bestie') { typed = ''; foundEgg('cd_heart', heartEffect); }
+  });
+
+  // 5) the very last minute: tapping around impatiently (10 taps in 8s)
+  const rushTap = tapCounter(10, 8000);
+  document.addEventListener('click', e => {
+    const left = (TARGET - Date.now()) / 1000;
+    if (left > 60 || left <= 0) return;
+    if (e.target.closest && e.target.closest('button,input,a,#rx-ctrl,#gl-panel')) return;
+    if (rushTap()) foundEgg('finale_rush', () => { launchRevealBurst(); sayWhenAlone('patience, bestie. it is nearly here ♡ (good things, etc.)', 5000); });
+  });
+
+  // refresh the goal count once so the "all_eggs" progress shows up straight away
+  check();
 })();
 </script>
 </body>
