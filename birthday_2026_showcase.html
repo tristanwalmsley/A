@@ -802,6 +802,7 @@ body.stage-garden-enchanted .brand{color:#8a5a1f}
   </div>
 </section>
 
+<script src="js/bestie_storage.js"></script>
 <script>
 // ---------- REPLAY MODE ----------
 // This page is a replay of the real countdown. Pressing Start shifts the page's
@@ -2193,6 +2194,15 @@ const FINAL_DAY_SPAWN_MULT = 0.75;  // gentler than power hour's 0.6 - this runs
                                      // rather than as intense as a short power-hour spike
 
 let powerHourWasActive = false;
+// REPLAY: power hour comes back for a window of the showcase (no music) - from 25:00 to 15:00 left.
+// Same galaxy sky / clock / ignition as the original, plus a bigger leaf boost and faster spawns.
+const REPLAY_PH_START_S = 25 * 60, REPLAY_PH_END_S = 15 * 60;
+const REPLAY_PH_VALUE_MULT = FINAL_DAY_VALUE_MULT * 1.5, REPLAY_PH_SPAWN_MULT = POWER_HOUR_SPAWN_MULT;
+function replayPowerHourWindow(){
+  if (!document.body.classList.contains('replay-started')) return false;
+  const left = (TARGET - Date.now()) / 1000;
+  return left <= REPLAY_PH_START_S && left > REPLAY_PH_END_S;
+}
 // plain daily on/off window, no lockout override - used for the visual
 // galaxy/clock/music side of things (see checkPowerHour)
 function isDailyPowerHourWindowActive(){
@@ -2207,13 +2217,14 @@ function isDailyPowerHourWindowActive(){
 // during the normal daily window, OR continuously once the final-day
 // lockout has kicked in (see startBirthdayMoment)
 function isPowerHourActive(){
+  if (replayPowerHourWindow()) return true;
   if (finalDayLockoutActive) return true; // final day: always "on" from here to TARGET
   return isDailyPowerHourWindowActive();
 }
 // picks which multiplier is active - the boosted final-day one once locked in,
 // otherwise the normal daily power-hour one
-function currentValueMult(){ return finalDayLockoutActive ? FINAL_DAY_VALUE_MULT : POWER_HOUR_VALUE_MULT; }
-function currentSpawnMult(){ return finalDayLockoutActive ? FINAL_DAY_SPAWN_MULT : POWER_HOUR_SPAWN_MULT; }
+function currentValueMult(){ if (replayPowerHourWindow()) return REPLAY_PH_VALUE_MULT; return finalDayLockoutActive ? FINAL_DAY_VALUE_MULT : POWER_HOUR_VALUE_MULT; }
+function currentSpawnMult(){ if (replayPowerHourWindow()) return REPLAY_PH_SPAWN_MULT; return finalDayLockoutActive ? FINAL_DAY_SPAWN_MULT : POWER_HOUR_SPAWN_MULT; }
 // ---------- POWER HOUR GALAXY STARFIELD ----------
 // a scattering of small twinkling stars, generated once up front and simply
 // shown/hidden (via the #power-hour-stars.show class) whenever power hour
@@ -2233,15 +2244,9 @@ function currentSpawnMult(){ return finalDayLockoutActive ? FINAL_DAY_SPAWN_MULT
 })();
 
 function updatePowerHourClock(){
-  const now = new Date(Date.now());
-  const minutesNow = now.getUTCHours() * 60 + now.getUTCMinutes() + now.getUTCSeconds() / 60;
-  const start = POWER_HOUR_START_HOUR_UTC * 60 + POWER_HOUR_START_MINUTE_UTC;
-  const end = start + POWER_HOUR_DURATION_MINUTES;
-  const secondsLeft = Math.max(0, Math.round((end - minutesNow) * 60));
-  const mins = Math.floor(secondsLeft / 60);
-  const secs = secondsLeft % 60;
-  setUnit('ph-mins', pad(mins));
-  setUnit('ph-secs', pad(secs));
+  const secondsLeft = Math.max(0, Math.round((TARGET - Date.now()) / 1000 - REPLAY_PH_END_S));
+  setUnit('ph-mins', pad(Math.floor(secondsLeft / 60)));
+  setUnit('ph-secs', pad(secondsLeft % 60));
 }
 
 function checkPowerHour(){
@@ -2251,7 +2256,7 @@ function checkPowerHour(){
   // are a "this hour is special" cue that doesn't make sense running for
   // ~20 straight hours. So visuals below only ever respond to the normal
   // daily window, never to finalDayLockoutActive.
-  const active = !finalDayLockoutActive && isDailyPowerHourWindowActive();
+  const active = replayPowerHourWindow();
   if (active) updatePowerHourClock();
   if (active === powerHourWasActive) return;
   powerHourWasActive = active;
@@ -2261,12 +2266,9 @@ function checkPowerHour(){
   if (dark) dark.classList.toggle('show', active);
   const stars = document.getElementById('power-hour-stars');
   if (stars) stars.classList.toggle('show', active);
-  const volCtl = document.getElementById('power-hour-volume');
-  if (volCtl) volCtl.classList.toggle('show', active);
   document.body.classList.toggle('power-hour-active', active);
   if (active) {
-    firePowerHourIgnition();
-    startPowerHourMusic();
+    firePowerHourIgnition(); // no power hour music in the replay - the build-up music keeps playing
   } else {
     stopPowerHourMusic();
   }
@@ -3645,13 +3647,14 @@ for (let i = 0; i < 10; i++) {
 // ================= REPLAY EXTRAS: filling the quiet 35 minutes =================
 // Everything you'd want to edit is in the CONFIG block. Times are "seconds LEFT until the reveal".
 const TRACK_TITLES = [];              // e.g. ['Song one', 'Song two', ...] - 7 titles, in order. Empty = "Song 1", "Song 2"...
-const GOAL_LIGHTS_PER_SONG = 12;      // light-collecting goal for each song
 const TIMED_MESSAGES = [
   { at: 34*60,      text: "35 minutes to go. she has no idea what's coming ♡" },
   { at: 30*60,      text: "The Office of Bestie Affairs confirms: everything is, mostly, on schedule." },
   { at: 26*60,      text: "Fun fact: this entire page is held together by hope and good intentions." },
+  { at: 25*60,      text: "⚡ POWER HOUR is on - leaves are worth far more for the next 10 minutes!" },
   { at: 22*60,      text: "Hydrate. Stretch. Collect a leaf or two." },
   { at: 18*60,      text: "Somewhere, a very nervous person is checking the site one more time." },
+  { at: 15*60,      text: "power hour is over. the sky settles... for now." },
   { at: 14*60,      text: "Less than 15 minutes. The curtains are being dusted." },
   { at: 11*60,      text: "Nearly time. Please remain seated and sparkly." },
   { at: 8.5*60,     text: "Almost there ♡" }
@@ -3691,13 +3694,14 @@ const COMMENTARY = [];
   // messages queue so two never overlap
   const q = []; let busy = false;
   function toastNow(text, ms){ q.push([text, ms || 6000]); if (!busy) next(); }
+  window.rxToast = toastNow;
   function next(){
     const it = q.shift(); if (!it) { busy = false; return; }
     busy = true; toast.textContent = it[0]; toast.classList.add('show');
     setTimeout(() => { toast.classList.remove('show'); setTimeout(next, 900); }, it[1]);
   }
   const title = i => TRACK_TITLES[i] || ('Song ' + (i + 1));
-  const fired = new Set(); let lastIdx = null, songStartLights = 0, goalHit = false, capTimer = null;
+  const fired = new Set(); let lastIdx = null, capTimer = null;
   const SLOW_START = MUSIC_START_AT_S, SLOW_END = 360; // gradual darkening from music start until the 6:00 build-up takes over
 
   setInterval(() => {
@@ -3710,17 +3714,12 @@ const COMMENTARY = [];
     // 1+2+7. now playing, song-change moment, per-song goal
     const st = left <= SLOW_START ? computeMusicState(left * 1000) : null;
     if (st && st.mode === 'pool') {
-      const lights = getLightCount(), goalOn = left > 6.5 * 60;
       if (st.index !== lastIdx) {
-        const first = lastIdx === null; lastIdx = st.index; songStartLights = lights; goalHit = false;
+        const first = lastIdx === null; lastIdx = st.index;
         if (!first) { try { triggerColorPulse(); spawnHeartBurstSparkles(); } catch(e) {} toastNow('♪ now playing: ' + title(st.index), 4500); }
       }
-      if (goalOn && !goalHit && lights - songStartLights >= GOAL_LIGHTS_PER_SONG) {
-        goalHit = true; try { spawnHeartBurstSparkles(); } catch(e) {} toastNow('♡ song goal reached - nice collecting!', 4500);
-      }
-      const prog = goalOn ? (goalHit ? ' · goal ✓' : ' · leaves ' + Math.max(0, lights - songStartLights) + '/' + GOAL_LIGHTS_PER_SONG) : '';
       const nxt = st.index + 1 < TRACKS.length ? 'up next: ' + title(st.index + 1) : 'up next: the finale';
-      np.innerHTML = '<b></b><i></i>'; np.firstChild.textContent = '♪ ' + title(st.index) + prog; np.lastChild.textContent = nxt;
+      np.innerHTML = '<b></b><i></i>'; np.firstChild.textContent = '♪ ' + title(st.index); np.lastChild.textContent = nxt;
       np.classList.add('show');
     } else np.classList.remove('show');
     // 4. timed messages
@@ -3733,6 +3732,110 @@ const COMMENTARY = [];
     COMMENTARY.forEach((m, i) => { if (!fired.has('c' + i) && left <= m.at) { fired.add('c' + i); if (left > m.at - 60 && commentaryOn) {
       cap.textContent = m.text; cap.classList.add('show'); clearTimeout(capTimer); capTimer = setTimeout(() => cap.classList.remove('show'), 8000); } } });
   }, 1000);
+})();
+</script>
+<script>
+// ================= GOALS + BADGES =================
+// Progress is saved in localStorage under SHOWCASE_KEY (synced per person by bestie_storage.js). The REAL badges live in
+// js/home.js (Front Row + Leaf Legend) and read this key; their animations play on the home page the next time she visits.
+//   { goals: { <goalId>: { at } }, frontRow: { at } }
+// Goals are measured per RUN (from pressing Start) but, once hit, they're kept forever - so they can be earned over several replays.
+// Numbers are scaled to the real leaf values: on the final day a leaf is worth ~500 lights (about 125 x the final-day 4x boost),
+// up to ~2,000 with a long streak, and roughly 15-20 leaves can spawn a minute.
+const SHOWCASE_KEY = 'ann_showcase_2026_v1';
+const GOALS = [
+  { id:'lights_10k',  label:'Collect 10,000 lights',               desc:'in a single run',                          get:r => [r.lights, 10000] },
+  { id:'lights_50k',  label:'Collect 50,000 lights',               desc:'in a single run',                          get:r => [r.lights, 50000] },
+  { id:'lights_150k', label:'Collect 150,000 lights',              desc:'in a single run - you will need streaks',  get:r => [r.lights, 150000] },
+  { id:'catches_100', label:'Catch 100 leaves',                    desc:'in a single run',                          get:r => [r.catches, 100] },
+  { id:'streak_25',   label:'Reach a streak of 25',                desc:'25 catches in a row',                      get:r => [r.bestStreak, 25] },
+  { id:'streak_50',   label:'Reach a streak of 50',                desc:'50 catches in a row',                      get:r => [r.bestStreak, 50] },
+  { id:'combo',       label:'Catch 5 leaves in 5 seconds',         desc:'a proper flurry',                          get:r => [r.bestCombo, 5] },
+  { id:'big_catch',   label:'One catch worth 1,000+',              desc:'a single leaf',                            get:r => [r.bigCatch, 1000] },
+  { id:'every_song',  label:'5,000 lights during every song',      desc:'all 7 songs, in one run (no skipping ahead)', get:r => [r.songLights.filter(v => v >= 5000).length, 7] },
+  { id:'secret',      label:'Find the secret',                     desc:'something on this page is ticklish',       get:r => [r.secret, 7] }
+];
+function getShowcase(){ try { const b = JSON.parse(localStorage.getItem(SHOWCASE_KEY)); return (b && typeof b === 'object') ? b : {}; } catch(e) { return {}; } }
+(function(){
+  const save = b => { try { localStorage.setItem(SHOWCASE_KEY, JSON.stringify(b)); } catch(e) {} };
+  const run = { lights: 0, catches: 0, bestStreak: 0, bestCombo: 0, bigCatch: 0, songLights: new Array(TRACKS.length).fill(0), secret: 0 };
+  const recent = []; let skipped = false, started = false;
+  const css = document.createElement('style');
+  css.textContent = `
+  #gl-btn{position:fixed;left:1rem;top:4.3rem;z-index:56;border:0;cursor:pointer;padding:.4rem .8rem;border-radius:999px;background:rgba(40,22,12,.82);color:#f0ddb8;font-size:.82rem;display:none}
+  #gl-btn.show{display:block}
+  #gl-panel{position:fixed;left:1rem;top:6.9rem;z-index:57;width:min(88vw,21rem);max-height:62vh;overflow:auto;padding:.9rem 1rem;border-radius:14px;background:rgba(30,16,8,.94);color:#f0ddb8;font-family:'Playfair Display',serif;display:none}
+  #gl-panel.open{display:block}
+  #gl-panel h4{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--gold);margin-bottom:.4rem}
+  .gl-row{margin:.55rem 0;font-size:.82rem}
+  .gl-row small{display:block;opacity:.65;font-style:italic}
+  .gl-bar{height:6px;border-radius:3px;background:rgba(255,255,255,.12);margin-top:.25rem;overflow:hidden}
+  .gl-bar i{display:block;height:100%;background:var(--gold);width:0}
+  .gl-row.done{color:var(--gold)}`;
+  document.head.appendChild(css);
+  const btn = document.createElement('button'); btn.id = 'gl-btn'; btn.type = 'button'; document.body.appendChild(btn);
+  const panel = document.createElement('div'); panel.id = 'gl-panel'; document.body.appendChild(panel);
+  btn.addEventListener('click', () => { panel.classList.toggle('open'); render(); });
+
+  function render(){
+    const done = getShowcase().goals || {}, n = Object.keys(done).length;
+    btn.textContent = '🏆 goals ' + n + '/' + GOALS.length;
+    if (!panel.classList.contains('open')) return;
+    panel.textContent = ''; const h = document.createElement('h4'); h.textContent = 'Showcase goals'; panel.appendChild(h);
+    GOALS.forEach(g => {
+      const [cur, tgt] = g.get(run), ok = !!done[g.id], row = document.createElement('div');
+      row.className = 'gl-row' + (ok ? ' done' : '');
+      const t = document.createElement('div'); t.textContent = (ok ? '✓ ' : '') + g.label;
+      const d = document.createElement('small'); d.textContent = ok ? 'done!' : g.desc + ' · ' + Math.min(cur, tgt).toLocaleString() + ' / ' + tgt.toLocaleString();
+      const bar = document.createElement('div'); bar.className = 'gl-bar'; const f = document.createElement('i'); f.style.width = (ok ? 100 : Math.min(100, cur / tgt * 100)) + '%'; bar.appendChild(f);
+      row.append(t, d, bar); panel.appendChild(row);
+    });
+  }
+  function check(){
+    const b = getShowcase(), done = b.goals || {}; let changed = false;
+    GOALS.forEach(g => { const [cur, tgt] = g.get(run); if (!done[g.id] && cur >= tgt) {
+      done[g.id] = { at: new Date().toISOString() }; changed = true;
+      try { window.rxToast('🏆 goal complete: ' + g.label, 5000); spawnHeartBurstSparkles(); } catch(e) {}
+    } });
+    if (changed) { b.goals = done; save(b); if (Object.keys(done).length >= GOALS.length) try { window.rxToast('every goal done - your badge is waiting on the home page ♡', 7000); } catch(e) {} }
+    render();
+  }
+
+  // every leaf catch comes through bumpLightCount(value)
+  const _bump = bumpLightCount;
+  bumpLightCount = function(v){
+    _bump.apply(this, arguments);
+    if (!document.body.classList.contains('replay-started') || !(v > 0)) return;
+    const now = Date.now(); run.lights += v; run.catches++; run.bigCatch = Math.max(run.bigCatch, v);
+    run.bestStreak = Math.max(run.bestStreak, currentStreak);
+    recent.push(now); while (recent.length && now - recent[0] > 5000) recent.shift(); run.bestCombo = Math.max(run.bestCombo, recent.length);
+    try { const st = computeMusicState((TARGET - now)); if (st && st.mode === 'pool') run.songLights[st.index] += v; } catch(e) {}
+    check();
+  };
+  // the secret: the "Besties ♡" brand text is ticklish
+  const brand = document.querySelector('.brand');
+  if (brand) brand.addEventListener('click', () => { if (!started) return; run.secret++; if (run.secret === 7) { try { window.rxToast('hehe, that tickles ♡', 4000); } catch(e) {} } check(); });
+
+  setInterval(() => { if (!started && document.body.classList.contains('replay-started')) { started = true; btn.classList.add('show'); render(); } }, 500);
+
+  // ---- Front Row: one run, whole show, no skipping ----
+  ['buildup-skip-btn', 'power-hour-skip-btn'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('click', () => {
+      if (skipped || !document.body.classList.contains('replay-started')) return;
+      skipped = true; try { window.rxToast('skipped a song - the Front Row badge is off the table this run', 5000); } catch(e) {}
+    });
+  });
+  const visited = new Set(), _next = nextScene;
+  nextScene = function(){
+    _next.apply(this, arguments);
+    if (skipped || !document.body.classList.contains('replay-started')) return;
+    if (sceneIndex === 0 && visited.size >= SCENES.length) {
+      const b = getShowcase(); if (!b.frontRow) { b.frontRow = { at: new Date().toISOString() }; save(b); try { window.rxToast('🎟️ Front Row earned - see the home page!', 7000); spawnHeartBurstSparkles(); } catch(e) {} }
+      return;
+    }
+    visited.add(sceneIndex);
+  };
 })();
 </script>
 </body>
