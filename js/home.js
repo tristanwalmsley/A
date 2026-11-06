@@ -184,6 +184,7 @@ const BK = {
   special:     'ann_special_visits_v1',    // { met:[years], ann:[years], tristan:[years] } - years she visited on that day
   carto:       'ann_cartographer_v1',      // { level, covered:[page keys] }
   celebrated:  'ann_badges_celebrated_v1', // { badgeId: level that has already been celebrated }
+  animVer:     'ann_badges_animver_v1',    // { badgeId: animVersion she has already been shown } (see animVersion on BADGES)
   annBday:     '08-05',                    // MM-DD  Ann's birthday
   tristanBday: '06-27',                    // MM-DD  Tristan's birthday
 };
@@ -374,7 +375,7 @@ const SECRET_TIERS = {
 };
 
 const BADGES = [
-  { id:'secrets', name:'Secret Keeper', glyph:'★', evolveGlyph:true, celebrateOnVisit:true,
+  { id:'secrets', name:'Secret Keeper', glyph:'★', animVersion:2, evolveGlyph:true, celebrateOnVisit:true,
     ladder:['Secret Keeper', 'Secret Agent', 'Master of Mysteries', 'Keeper of Everything', 'Living Legend', 'Celestial Keeper'],
     hint:'find every secret hiding on a page',
     level: () => PageEggs.sync().length,
@@ -442,7 +443,7 @@ const BADGES = [
     } },
 
   // ---- Creature of Habit: visit streak (7 / 30 / 100 days in a row) ----
-  { id:'habit', name:'Creature of Habit', glyph:'📅', celebrateOnVisit:true,
+  { id:'habit', name:'Creature of Habit', glyph:'📅', animVersion:2, celebrateOnVisit:true,
     ladder:['Creature of Habit', 'Devoted', 'Unshakeable'],
     hint:'visit seven days in a row',
     level: () => bdgTier(bdgBestStreak(), BDG_STREAK_STEPS),
@@ -470,7 +471,7 @@ const BADGES = [
     } },
 
   // ---- Pen Pal: months stamped in the ledger (6 / 12 / 24) ----
-  { id:'penpal', name:'Pen Pal', glyph:'📮', celebrateOnVisit:true,
+  { id:'penpal', name:'Pen Pal', glyph:'📮', animVersion:2, celebrateOnVisit:true,
     ladder:['Pen Pal', 'Postmaster', 'Postmaster General'],
     hint:'keep coming back, month after month',
     level: () => bdgTier(bdgArr(BK.ledger).length, BDG_LEDGER_STEPS),
@@ -501,7 +502,7 @@ const BADGES = [
     } },
 
   // ---- Sticker Collector: weekly corkboard stickers (10 / the full set / 52) ----
-  { id:'stickers', name:'Sticker Collector', glyph:'📌', celebrateOnVisit:true,
+  { id:'stickers', name:'Sticker Collector', glyph:'📌', animVersion:2, celebrateOnVisit:true,
     ladder:['Sticker Collector', 'Sticker Hoarder', 'Corkboard Royalty'],
     hint:'keep dropping by and the corkboard fills up',
     level: () => bdgTier(bdgArr(BK.cork).length, bdgCorkSteps()),
@@ -533,14 +534,14 @@ const BADGES = [
     } },
 
   // ---- Cartographer: every page unlocked. Never retracts: each time pages are added, completing the new set levels it up ----
-  { id:'cartographer', name:'Cartographer', glyph:'🧭', celebrateOnVisit:true,
+  { id:'cartographer', name:'Cartographer', glyph:'🧭', animVersion:2, celebrateOnVisit:true,
     ladder:['Cartographer', 'Trailblazer', 'Pathfinder', 'Mapmaker Supreme', 'Atlas', 'World Wanderer'],
-    hint:'unlock every page on the site',
-    level: () => bdgJSON(BK.carto, {}).level || 0,
-    next: () => 'unlock whatever gets added next',
+    hint:'unlock 10 pages on the site',
+    level: () => cartoLevel(),
+    next: lv => CARTO_STEPS[lv] ? 'unlock ' + CARTO_STEPS[lv] + ' pages' : null,
     info: lv => lv > 1
-      ? 'I added more to explore and you went and found all of it anyway.<br><br>The map is bigger now, and you have covered every inch.'
-      : 'Every door on this site is open to you. Every single stamp on the sheet is filled in.<br><br>You are officially the best-travelled person in this entire corner of the internet.',
+      ? 'You have unlocked ' + (CARTO_STEPS[lv - 1] || cartoUnlocked()) + ' pages and counting. The map keeps growing and you keep finding your way across it.<br><br>Officially the best-travelled person in this entire corner of the internet.'
+      : 'Ten doors on this site are open to you, ten stamps filled in on the sheet.<br><br>You are officially the best-travelled person in this entire corner of the internet.',
     // her real page stamps fly in from all sides and fill the sheet
     play(done, lv){
       const o = dimOverlay();
@@ -562,7 +563,7 @@ const BADGES = [
     } },
 
   // ---- Friendiversary: visiting on the day you met (one level per year) ----
-  { id:'friendiversary', name:'Friendiversary', glyph:'🥂', celebrateOnVisit:true,
+  { id:'friendiversary', name:'Friendiversary', glyph:'🥂', animVersion:2, celebrateOnVisit:true,
     ladder:['Friendiversary', 'Another Year', 'Tradition', 'Forever Fixture', 'Ever After', 'Evergreen'],
     hint:'there is one day a year worth turning up for',
     level: () => bdgSpecialYears('met').length,
@@ -585,7 +586,7 @@ const BADGES = [
     } },
 
   // ---- Two Candles: visiting on BOTH birthdays in the same year (one level per year) ----
-  { id:'candles', name:'Two Candles', glyph:'🎂', celebrateOnVisit:true,
+  { id:'candles', name:'Two Candles', glyph:'🎂', animVersion:2, celebrateOnVisit:true,
     ladder:['Two Candles', 'Double Wish', 'Birthday Tradition', 'Never Missed One', 'Every Candle', 'Lifelong Guest'],
     hint:'some days are worth showing up for',
     level: () => bdgBothBirthdayYears().length,
@@ -641,16 +642,22 @@ function recordSpecialVisits(){
   if(changed){ try{ localStorage.setItem(BK.special, JSON.stringify(data)); }catch(e){} }
 }
 
-// Cartographer never goes down. Once every page is unlocked it levels up, and again each later time
-// every page (including any added since) is unlocked.
+// Cartographer is based on HOW MANY pages are unlocked, not on "every page": prestige I at 10 pages, II at 15, and so on.
+// Adding pages to the site never takes a level away or demands a re-collect. To add a prestige, append a number here
+// (and make sure the badge's ladder has a title for it).
+const CARTO_STEPS = [10, 15, 20, 25, 30, 35];
+const cartoUnlocked = () => getNavCategories().flatMap(cat => cat.items).filter(i => i.unlocked).length;
+const cartoCount = n => CARTO_STEPS.filter(step => n >= step).length;
+// never goes down: the best of what she has saved and what is unlocked right now
+function cartoLevel(){
+  const saved = bdgJSON(BK.carto, {}).level || 0;
+  return Math.min(Math.max(saved, cartoCount(cartoUnlocked())), CARTO_STEPS.length);
+}
 function updateCartographer(){
   const c = bdgJSON(BK.carto, {});
-  const covered = Array.isArray(c.covered) ? c.covered : [];
-  const items = getNavCategories().flatMap(cat => cat.items);
-  if(!items.length || !items.every(i => i.unlocked)) return;   // not everything open yet - keep what she has
-  if(!items.some(i => !covered.includes(i.key))) return;       // nothing new since the last level
-  const next = { level: (c.level || 0) + 1, covered: [...new Set([...covered, ...items.map(i => i.key)])] };
-  try{ localStorage.setItem(BK.carto, JSON.stringify(next)); }catch(e){}
+  const lv = cartoLevel();
+  if(lv <= (c.level || 0)) return;
+  try{ localStorage.setItem(BK.carto, JSON.stringify({ level: lv, pages: cartoUnlocked() })); }catch(e){}
 }
 
 // ---- badge levels, titles, popups ----
@@ -663,7 +670,13 @@ const badgeTitle = (bd, lv) => lv > 0 ? (bd.ladder ? prTitle(bd, lv) : (bd.title
 function celebrateNewBadges(delay){
   let seen = bdgJSON(BK.celebrated, {});
   if(Array.isArray(seen)) seen = Object.fromEntries(seen.map(id => [id, 1]));   // older format
-  const queue = BADGES.filter(b => b.celebrateOnVisit && badgeLevel(b) > (seen[b.id] || 0));
+  // Badges also carry an animVersion (default 1). Bump it when a badge's animation is improved and everyone who already
+  // has the badge sees the new one on their next visit. Someone with no record counts as having seen version 1.
+  const ver = bdgJSON(BK.animVer, {}); const verOf = b => b.animVersion || 1;
+  const queue = BADGES.filter(b => b.celebrateOnVisit && (badgeLevel(b) > (seen[b.id] || 0) || (badgeLevel(b) > 0 && (ver[b.id] || 1) < verOf(b))));
+  // brand-new level for someone who has never been shown anything: nothing to record for the old ones
+  BADGES.forEach(b => { if(badgeLevel(b) > 0 && b.celebrateOnVisit) ver[b.id] = verOf(b); });
+  try{ localStorage.setItem(BK.animVer, JSON.stringify(ver)); }catch(e){}
   if(!queue.length) return;
   queue.forEach(b => { seen[b.id] = badgeLevel(b); });
   try{ localStorage.setItem(BK.celebrated, JSON.stringify(seen)); }catch(e){}
