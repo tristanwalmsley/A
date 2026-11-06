@@ -320,7 +320,13 @@ const SECRET_TIERS = {
   // a wall of reasons flips over, flies into a heart, beats three times, then bursts
   reasons: {
     info: 'Every secret on the reasons page: a song, a shooting star, a tin of beans, a doorbell, a 2am text and more. You read the small print of a list that was already meant to cheer you up.<br><br>There really are so many more reasons. I will keep adding them.',
+    // the grand finale: the wall of cards flips, flies into a heart, beats and bursts (js/reasons_reel.js plays it last)
     anim(o, next){
+      // the long version: all 21 reasons-page secrets replayed first, with a skip button and a start screen. If the file didn't load, it's just the finale.
+      if(window.ReasonsReel) ReasonsReel.play(o, (cb) => SECRET_TIERS.reasons.finale(o, cb), next);
+      else SECRET_TIERS.reasons.finale(o, next);
+    },
+    finale(o, next){
       const N = 48, cols = 8, rows = 6;
       const stage = bdgEl('div', 'rw-stage');
       const sc = Math.min(11, window.innerWidth / 38);
