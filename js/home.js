@@ -375,7 +375,7 @@ const SECRET_TIERS = {
 };
 
 const BADGES = [
-  { id:'secrets', name:'Secret Keeper', glyph:'★', animVersion:2, evolveGlyph:true, celebrateOnVisit:true,
+  { id:'secrets', name:'Secret Keeper', glyph:'★', animVersion:3, evolveGlyph:true, celebrateOnVisit:true,
     ladder:['Secret Keeper', 'Secret Agent', 'Master of Mysteries', 'Keeper of Everything', 'Living Legend', 'Celestial Keeper'],
     hint:'find every secret hiding on a page',
     level: () => PageEggs.sync().length,
