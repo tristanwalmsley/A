@@ -159,8 +159,8 @@ function showBadgeClues(){
 
 // ---------- BADGES ----------
 // each badge: { id, name, glyph, hint, level() (or earned()), info(level), play(done) }
-//   level()    = 0 when not earned, 1+ when earned. Upgradeable badges also set tiered:true (shows a level pill),
-//                title(level) (name per level) and next(level) (hint at the next level, shown on hover)
+//   level()    = 0 when not earned, 1+ when earned. Upgradeable badges also set ladder:[title per prestige] (see PRESTIGE below)
+//                and next(level) (hint at the next prestige, shown on hover), and finish play(done, lv) with bdgPrestige(...)
 //   celebrateOnVisit:true = its animation plays on the home page the first time a new level is reached
 //   play(done) = that badge's own animation; call done() when it has finished (bdgMedal() is a shared ending)
 //   info       = what the popup says after the animation
@@ -223,28 +223,36 @@ function bdgMedal(o, glyph, at, done){
 }
 
 
-// ---- Secret Keeper PRESTIGE ----
-// Every page whose secrets are all found = one prestige. The medal itself changes (see css/secret_keeper.css, .skm-p1 ... .skm-p6).
-// Past the last look it keeps its final form and the roman numeral keeps climbing.
-// To change a look: edit its entry here + its .skm-pN rules in the css. A new look = add an entry here and a .skm-pN block.
-const SK_TIERS = [
-  { title:'Secret Keeper',        metal:'Bronze',    glyph:'★' },
-  { title:'Secret Agent',         metal:'Silver',    glyph:'★' },
-  { title:'Master of Mysteries',  metal:'Gold',      glyph:'★' },
-  { title:'Keeper of Everything', metal:'Ruby',      glyph:'✦' },
-  { title:'Living Legend',        metal:'Prismatic', glyph:'✧' },
-  { title:'Celestial Keeper',     metal:'Celestial', glyph:'♛' },
+// ---- PRESTIGE: every badge that has levels ----
+// A badge with levels gets  ladder: ['Title at prestige I', 'Title at prestige II', ...]  (and no other level code).
+// Its medal then evolves automatically through the looks below (css/secret_keeper.css, .skm-p1 ... .skm-p6),
+// the badge row shows it, and reaching a new prestige plays the "old medal charges up and transforms" finale.
+// Past the last title it keeps the last name + a roman numeral; past the last look it keeps its final look.
+// evolveGlyph:true = the symbol in the middle changes with each look too (only Secret Keeper does this).
+const PRESTIGE_LOOKS = [
+  { metal:'Bronze',    star:'★' },
+  { metal:'Silver',    star:'★' },
+  { metal:'Gold',      star:'★' },
+  { metal:'Ruby',      star:'✦' },
+  { metal:'Prismatic', star:'✧' },
+  { metal:'Celestial', star:'♛' },
 ];
 function skRoman(n){
   const r = [[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];
   let o = ''; r.forEach(([v, c]) => { while(n >= v){ o += c; n -= v; } }); return o;
 }
-const skTier  = p => SK_TIERS[Math.min(Math.max(p, 1), SK_TIERS.length) - 1];
-const skTitle = p => p > SK_TIERS.length ? skTier(p).title + ' ' + skRoman(p) : skTier(p).title;
+const skLook = p => PRESTIGE_LOOKS[Math.min(Math.max(p, 1), PRESTIGE_LOOKS.length) - 1];
+const prBadge = id => BADGES.find(b => b.id === id);
+function prTitle(bd, p){
+  const L = bd.ladder || [bd.name];
+  return p <= L.length ? L[p - 1] : L[L.length - 1] + ' ' + skRoman(p);
+}
+const prGlyph = (bd, p) => bd.evolveGlyph ? skLook(p).star : bd.glyph;
+const prLine = (bd, lv) => '<em>Prestige ' + skRoman(lv) + ' &middot; ' + skLook(lv).metal + '</em><br><br>';
 
-// builds the medal for a prestige. Layers are only added as the prestige grows, so it gets busier and fancier.
-function skMedal(p, size){
-  const t = Math.min(p, SK_TIERS.length);
+// builds a badge's medal for a prestige. Layers are only added as the prestige grows, so it gets busier and fancier.
+function skMedal(bd, p, size){
+  const t = Math.min(p, PRESTIGE_LOOKS.length);
   const m = bdgEl('div', 'skm skm-p' + t);
   m.style.setProperty('--sz', size + 'px');
   const add = (cls, txt) => m.appendChild(bdgEl('div', cls, txt));
@@ -252,7 +260,7 @@ function skMedal(p, size){
   if(t >= 3) add('skm-rays');
   if(t >= 4) add('skm-orbit');
   add('skm-disc'); add('skm-inner');
-  add('skm-g', skTier(p).glyph);
+  add('skm-g' + (bd.evolveGlyph ? '' : ' skm-emoji'), prGlyph(bd, p));
   if(t >= 3) add('skm-shine');
   if(t >= 5){
     const sp = bdgEl('div', 'skm-sparks'), n = t >= 6 ? 6 : 4;
@@ -264,13 +272,14 @@ function skMedal(p, size){
 }
 
 // the prestige ending: the old medal charges up, flashes, and turns into the new one
-function skReveal(o, lv, done){
+function skReveal(o, id, lv, done){
+  const bd = prBadge(id); lv = lv || 1;
   const big = Math.round(Math.min(170, window.innerWidth * 0.42));
   const stage = bdgEl('div', 'skp-stage'), hold = bdgEl('div', 'skp-hold');
   const sub = bdgEl('div', 'skp-sub'), ttl = bdgEl('div', 'skp-title');
   stage.append(hold, sub, ttl); o.appendChild(stage);
-  const put = (p, cls) => { hold.querySelectorAll('.skm').forEach(e => e.remove()); const m = skMedal(p, big); m.classList.add(cls); hold.appendChild(m); };
-  const say = p => { sub.textContent = 'Prestige ' + skRoman(p); ttl.textContent = skTitle(p); sub.classList.add('show'); ttl.classList.add('show'); };
+  const put = (p, cls) => { hold.querySelectorAll('.skm').forEach(e => e.remove()); const m = skMedal(bd, p, big); m.classList.add(cls); hold.appendChild(m); };
+  const say = p => { sub.textContent = 'Prestige ' + skRoman(p); ttl.textContent = prTitle(bd, p); sub.classList.add('show'); ttl.classList.add('show'); };
   const reveal = () => {
     const f = bdgEl('div', 'skp-flash'); hold.appendChild(f); setTimeout(() => f.remove(), 900);
     put(lv, 'skp-pop'); say(lv);
@@ -285,6 +294,8 @@ function skReveal(o, lv, done){
   } else { setTimeout(reveal, 200); end = 200 + 2300; }
   setTimeout(() => endOverlay(o, done), end);
 }
+// drop-in replacement for bdgMedal() in any badge with levels: waits `at` ms (for the badge's own animation), then does the prestige finale
+function bdgPrestige(o, id, lv, at, done){ setTimeout(() => skReveal(o, id, lv, done), at); }
 
 // ---- Secret Keeper: one tier per page whose secrets are all found ----
 // Each page has its own animation. When the badge plays, EVERY completed page's animation plays in the order
@@ -357,12 +368,12 @@ const SECRET_TIERS = {
 };
 
 const BADGES = [
-  { id:'secrets', name:'Secret Keeper', glyph:'★', celebrateOnVisit:true, medal: lv => skMedal(lv, 58),
+  { id:'secrets', name:'Secret Keeper', glyph:'★', evolveGlyph:true, celebrateOnVisit:true,
+    ladder:['Secret Keeper', 'Secret Agent', 'Master of Mysteries', 'Keeper of Everything', 'Living Legend', 'Celestial Keeper'],
     hint:'find every secret hiding on a page',
     level: () => PageEggs.sync().length,
-    title: lv => skTitle(lv),
     next: lv => lv < Object.keys(PageEggs.PAGES).length ? 'find every secret on another page to prestige' : null,
-    info: lv => '<em>Prestige ' + skRoman(lv) + ' &middot; ' + skTier(lv).metal + '</em><br><br>' + (() => { const t = SECRET_TIERS[PageEggs.order()[lv - 1]]; return t ? t.info : 'Every secret on another page, found.'; })(),
+    info: lv => (() => { const t = SECRET_TIERS[PageEggs.order()[lv - 1]]; return t ? t.info : 'Every secret on another page, found.'; })(),
     // every completed page's animation plays in turn (oldest first); the newest is last, then the medal
     play(done, lv){
       const o = dimOverlay();
@@ -371,7 +382,7 @@ const BADGES = [
         const t = pages.length ? SECRET_TIERS[pages.shift()] : null;
         if(t) return t.anim(o, step);
         if(pages.length) return step();
-        skReveal(o, lv, done);
+        skReveal(o, 'secrets', lv, done);
       };
       setTimeout(step, 500);
     } },
@@ -425,10 +436,10 @@ const BADGES = [
     } },
 
   // ---- Creature of Habit: visit streak (7 / 30 / 100 days in a row) ----
-  { id:'habit', name:'Creature of Habit', glyph:'📅', tiered:true, celebrateOnVisit:true,
+  { id:'habit', name:'Creature of Habit', glyph:'📅', celebrateOnVisit:true,
+    ladder:['Creature of Habit', 'Devoted', 'Unshakeable'],
     hint:'visit seven days in a row',
     level: () => bdgTier(bdgBestStreak(), BDG_STREAK_STEPS),
-    title: lv => ['Creature of Habit', 'Devoted', 'Unshakeable'][lv - 1],
     next: lv => BDG_STREAK_STEPS[lv] ? BDG_STREAK_STEPS[lv] + ' days in a row' : null,
     info: lv => [
       'Seven days in a row. You kept coming back to this little corner of the internet, and I will never get over how nice that is.<br><br>Keep the streak warm.',
@@ -436,7 +447,7 @@ const BADGES = [
       'One hundred days in a row. At this point I think you live here.<br><br>I am so, so glad you do.'
     ][lv - 1],
     // a habit tracker ticks off the days one by one
-    play(done){
+    play(done, lv){
       const o = dimOverlay();
       const card = bdgEl('div', 'hb-card');
       card.appendChild(bdgEl('div', 'hb-cap', bdgBestStreak() + ' days in a row'));
@@ -449,14 +460,14 @@ const BADGES = [
       card.appendChild(days);
       o.appendChild(card);
       setTimeout(() => card.classList.add('out'), 3100);
-      bdgMedal(o, '📅', 3300, done);
+      bdgPrestige(o, 'habit', lv, 3300, done);
     } },
 
   // ---- Pen Pal: months stamped in the ledger (6 / 12 / 24) ----
-  { id:'penpal', name:'Pen Pal', glyph:'📮', tiered:true, celebrateOnVisit:true,
+  { id:'penpal', name:'Pen Pal', glyph:'📮', celebrateOnVisit:true,
+    ladder:['Pen Pal', 'Postmaster', 'Postmaster General'],
     hint:'keep coming back, month after month',
     level: () => bdgTier(bdgArr(BK.ledger).length, BDG_LEDGER_STEPS),
-    title: lv => ['Pen Pal', 'Postmaster', 'Postmaster General'][lv - 1],
     next: lv => BDG_LEDGER_STEPS[lv] ? BDG_LEDGER_STEPS[lv] + ' months stamped' : null,
     info: lv => [
       'Three different months stamped in the ledger. Here`s to three more brilliant months of fun..',
@@ -465,7 +476,7 @@ const BADGES = [
       'Twenty-four months of postmarks. Two whole years of you turning up.<br><br>Postmaster General, with all the honour and absolutely no extra pay.'
     ][lv - 1],
     // her real postmarks slam down across the screen
-    play(done){
+    play(done, lv){
       const o = dimOverlay();
       const stage = bdgEl('div', 'pm-stage');
       bdgArr(BK.ledger).slice(-9).forEach((key, i) => {
@@ -480,14 +491,14 @@ const BADGES = [
       });
       o.appendChild(stage);
       setTimeout(() => stage.classList.add('out'), 2700);
-      bdgMedal(o, '📮', 2900, done);
+      bdgPrestige(o, 'penpal', lv, 2900, done);
     } },
 
   // ---- Sticker Collector: weekly corkboard stickers (10 / the full set / 52) ----
-  { id:'stickers', name:'Sticker Collector', glyph:'📌', tiered:true, celebrateOnVisit:true,
+  { id:'stickers', name:'Sticker Collector', glyph:'📌', celebrateOnVisit:true,
+    ladder:['Sticker Collector', 'Sticker Hoarder', 'Corkboard Royalty'],
     hint:'keep dropping by and the corkboard fills up',
     level: () => bdgTier(bdgArr(BK.cork).length, bdgCorkSteps()),
-    title: lv => ['Sticker Collector', 'Sticker Hoarder', 'Corkboard Royalty'][lv - 1],
     next: lv => bdgCorkSteps()[lv] ? bdgCorkSteps()[lv] + ' weeks of stickers' : null,
     info: lv => [
       'Ten weeks, ten stickers on the corkboard. You keep dropping by, and the board keeps getting prettier because of it.',
@@ -495,7 +506,7 @@ const BADGES = [
       'Fifty-two weeks of stickers. A whole year of the corkboard filling up, one visit at a time.<br><br>Royalty. Obviously.'
     ][lv - 1],
     // her own stickers slap onto the screen at random angles
-    play(done){
+    play(done, lv){
       const o = dimOverlay();
       const mine = bdgArr(BK.cork).map(s => s && s.glyph).filter(Boolean);
       const pool = (mine.length ? mine : CORK_STICKERS).slice();
@@ -512,19 +523,20 @@ const BADGES = [
       });
       o.appendChild(stage);
       setTimeout(() => stage.classList.add('out'), 2500);
-      bdgMedal(o, '📌', 2700, done);
+      bdgPrestige(o, 'stickers', lv, 2700, done);
     } },
 
   // ---- Cartographer: every page unlocked. Never retracts: each time pages are added, completing the new set levels it up ----
-  { id:'cartographer', name:'Cartographer', glyph:'🧭', tiered:true, celebrateOnVisit:true,
+  { id:'cartographer', name:'Cartographer', glyph:'🧭', celebrateOnVisit:true,
+    ladder:['Cartographer', 'Trailblazer', 'Pathfinder', 'Mapmaker Supreme', 'Atlas', 'World Wanderer'],
     hint:'unlock every page on the site',
     level: () => bdgJSON(BK.carto, {}).level || 0,
     next: () => 'unlock whatever gets added next',
     info: lv => lv > 1
-      ? 'Level ' + lv + '. I added more to explore and you went and found all of it anyway.<br><br>The map is bigger now, and you have covered every inch.'
+      ? 'I added more to explore and you went and found all of it anyway.<br><br>The map is bigger now, and you have covered every inch.'
       : 'Every door on this site is open to you. Every single stamp on the sheet is filled in.<br><br>You are officially the best-travelled person in this entire corner of the internet.',
     // her real page stamps fly in from all sides and fill the sheet
-    play(done){
+    play(done, lv){
       const o = dimOverlay();
       const tiles = getNavCategories().flatMap(c => c.items).filter(i => i.unlocked).slice(0, 12);
       const sheet = bdgEl('div', 'cg-sheet'), grid = bdgEl('div', 'cg-grid');
@@ -540,11 +552,12 @@ const BADGES = [
       sheet.appendChild(grid);
       o.appendChild(sheet);
       setTimeout(() => sheet.classList.add('out'), 3000);
-      bdgMedal(o, '🧭', 3200, done);
+      bdgPrestige(o, 'cartographer', lv, 3200, done);
     } },
 
   // ---- Friendiversary: visiting on the day you met (one level per year) ----
-  { id:'friendiversary', name:'Friendiversary', glyph:'🥂', tiered:true, celebrateOnVisit:true,
+  { id:'friendiversary', name:'Friendiversary', glyph:'🥂', celebrateOnVisit:true,
+    ladder:['Friendiversary', 'Another Year', 'Tradition', 'Forever Fixture', 'Ever After', 'Evergreen'],
     hint:'there is one day a year worth turning up for',
     level: () => bdgSpecialYears('met').length,
     next: () => 'come by on the same day next year',
@@ -552,7 +565,7 @@ const BADGES = [
       ? 'That is ' + lv + ' anniversaries you have come by for. Every one of them makes me ridiculously happy.<br><br>Here is to the next one.'
       : 'You showed up on the anniversary of the day we met. I could not have planned a better way to mark it.<br><br>Cheers, bestie.',
     // a calendar leaf flips down on the day you met
-    play(done){
+    play(done, lv){
       const o = dimOverlay();
       const [my, mm, md] = MET_DATE.split('-').map(Number);
       const yrs = new Date().getFullYear() - my;
@@ -562,11 +575,12 @@ const BADGES = [
       setTimeout(launchHeartBurst, 1000);
       setTimeout(launchHeartBurst, 1900);
       setTimeout(() => leaf.classList.add('out'), 3000);
-      bdgMedal(o, '🥂', 3200, done);
+      bdgPrestige(o, 'friendiversary', lv, 3200, done);
     } },
 
   // ---- Two Candles: visiting on BOTH birthdays in the same year (one level per year) ----
-  { id:'candles', name:'Two Candles', glyph:'🎂', tiered:true, celebrateOnVisit:true,
+  { id:'candles', name:'Two Candles', glyph:'🎂', celebrateOnVisit:true,
+    ladder:['Two Candles', 'Double Wish', 'Birthday Tradition', 'Never Missed One', 'Every Candle', 'Lifelong Guest'],
     hint:'some days are worth showing up for',
     level: () => bdgBothBirthdayYears().length,
     next: () => 'visit on both birthdays again next year',
@@ -574,7 +588,7 @@ const BADGES = [
       ? 'That is ' + lv + ' years you have turned up for both birthdays. I do not take a single one of them for granted.'
       : 'Your birthday and mine, both in the same year, and you came by for each one. Two candles, one very happy me.<br><br>Thank you for showing up for both.',
     // two candles get lit, one after the other
-    play(done){
+    play(done, lv){
       const o = dimOverlay();
       const stage = bdgEl('div', 'tc-stage');
       stage.appendChild(bdgEl('div', 'tc-glow'));
@@ -593,7 +607,7 @@ const BADGES = [
       setTimeout(() => stage.classList.add('glow'), 1700);
       setTimeout(() => stage.classList.add('flare'), 2500);
       setTimeout(() => stage.classList.add('out'), 3000);
-      bdgMedal(o, '🎂', 3200, done);
+      bdgPrestige(o, 'candles', lv, 3200, done);
     } },
 ];
 
@@ -635,7 +649,7 @@ function updateCartographer(){
 
 // ---- badge levels, titles, popups ----
 const badgeLevel = bd => bd.level ? bd.level() : (bd.earned() ? 1 : 0);
-const badgeTitle = (bd, lv) => (lv > 0 && bd.title) ? bd.title(lv) : bd.name;
+const badgeTitle = (bd, lv) => lv > 0 ? (bd.ladder ? prTitle(bd, lv) : (bd.title ? bd.title(lv) : bd.name)) : bd.name;
 
 // Plays the animation for any celebrateOnVisit badge that has reached a level she hasn't been shown yet.
 // If several are waiting (e.g. the first visit after an update) they play one after another, each
@@ -660,7 +674,7 @@ function openBadge(id){
   const bd = BADGES.find(b => b.id === id);
   if(!bd) return;
   const lv = badgeLevel(bd);
-  bd.play(() => showModal(badgeTitle(bd, lv), bd.info(lv), 'Bestie Tristan'), lv);
+  bd.play(() => showModal(badgeTitle(bd, lv), (bd.ladder ? prLine(bd, lv) : '') + bd.info(lv), 'Bestie Tristan'), lv);
 }
 
 function renderBadges(){
@@ -680,7 +694,7 @@ function renderBadges(){
     el.title = title + (nextHint ? ' - next: ' + nextHint : '');
     el.innerHTML = '<span class="ro"></span><span class="bdg-name"></span>';
     const ro = el.querySelector('.ro');
-    if(bd.medal){ ro.classList.add('ro-medal'); ro.textContent = ''; ro.appendChild(bd.medal(lv)); }
+    if(bd.ladder){ ro.classList.add('ro-medal'); ro.textContent = ''; ro.appendChild(skMedal(bd, lv, 58)); }   // badges with levels get the prestige medal
     else ro.textContent = bd.glyph;
     if(bd.tiered){
       const pill = document.createElement('span');
