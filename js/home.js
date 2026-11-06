@@ -374,6 +374,12 @@ const SECRET_TIERS = {
   }
 };
 
+// ---- Birthday 2026 showcase (replay) badges: progress is written by birthday_2026_showcase.html ----
+const SHOWCASE_KEY = 'ann_showcase_2026_v1';   // { goals:{id:{at}}, frontRow:{at} }
+const SHOWCASE_STEPS = [3, 6, 10];             // goals completed -> levels 1, 2, 3 (10 = every goal)
+const bdgShowcase = () => bdgJSON(SHOWCASE_KEY, {});
+const bdgShowcaseGoals = () => Object.keys(bdgShowcase().goals || {}).length;
+
 const BADGES = [
   { id:'secrets', name:'Secret Keeper', glyph:'★', animVersion:3, evolveGlyph:true, celebrateOnVisit:true,
     ladder:['Secret Keeper', 'Secret Agent', 'Master of Mysteries', 'Keeper of Everything', 'Living Legend', 'Celestial Keeper'],
@@ -616,6 +622,26 @@ const BADGES = [
       setTimeout(() => stage.classList.add('out'), 3000);
       bdgPrestige(o, 'candles', lv, 3200, done);
     } },
+  // ---- Front Row: sat through the whole showcase replay, no skipping (earned on the showcase page) ----
+  { id:'frontrow', name:'Front Row', glyph:'🎟️', celebrateOnVisit:true,
+    hint:'sit through the whole Birthday 2026 showcase - no skipping',
+    earned: () => !!bdgShowcase().frontRow,
+    info: () => 'The countdown, the music, the reveal and the whole premiere loop, start to finish, without skipping a single song.<br><br>That is a front row seat if I have ever seen one. Thank you for sitting through all of it.',
+    play(done){ const o = dimOverlay(); bdgMedal(o, '🎟️', 900, done); } },
+
+  // ---- Leaf Legend: showcase goals (3 / 6 / all 10) ----
+  { id:'showcase', name:'Leaf Catcher', glyph:'🍃', tiered:true, celebrateOnVisit:true,
+    hint:'complete the goals on the Birthday 2026 showcase',
+    level: () => bdgTier(bdgShowcaseGoals(), SHOWCASE_STEPS),
+    title: lv => ['Leaf Catcher', 'Leaf Hoarder', 'Leaf Legend'][lv - 1],
+    next: lv => SHOWCASE_STEPS[lv] ? SHOWCASE_STEPS[lv] + ' showcase goals' : null,
+    info: lv => [
+      'Three showcase goals done. Those leaves did not stand a chance.',
+      'Six goals. Your leaf-catching has become genuinely alarming.<br><br>Four to go.',
+      'Every single showcase goal, done: the big totals, the streaks, the flurries and the secret.<br><br>Leaf Legend. Officially. I am not worthy.'
+    ][lv - 1],
+    play(done){ const o = dimOverlay(); bdgMedal(o, '🍃', 900, done); } },
+
 ];
 
 // true once every gift stop (1..TOTAL_GIFTS) is opened AND every Birthday 2026 page is unlocked.
