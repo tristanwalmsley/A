@@ -623,24 +623,72 @@ const BADGES = [
       bdgPrestige(o, 'candles', lv, 3200, done);
     } },
   // ---- Front Row: sat through the whole showcase replay, no skipping (earned on the showcase page) ----
-  { id:'frontrow', name:'Front Row', glyph:'🎟️', celebrateOnVisit:true,
+  { id:'frontrow', name:'Front Row', glyph:'🎟️', animVersion:2, celebrateOnVisit:true,
     hint:'sit through the whole Birthday 2026 showcase - no skipping',
     earned: () => !!bdgShowcase().frontRow,
     info: () => 'The countdown, the music, the reveal and the whole premiere loop, start to finish, without skipping a single song.<br><br>That is a front row seat if I have ever seen one. Thank you for sitting through all of it.',
-    play(done){ const o = dimOverlay(); bdgMedal(o, '🎟️', 900, done); } },
+    // curtains part on a marquee, a ticket slides in and gets stamped, then the lights come up
+    play(done){
+      const o = dimOverlay();
+      const stage = bdgEl('div', 'frw-stage');
+      const L = bdgEl('div', 'frw-curtain frw-l'), R = bdgEl('div', 'frw-curtain frw-r');
+      const marquee = bdgEl('div', 'frw-marquee');
+      for(let i = 0; i < 14; i++){ const b = bdgEl('i', 'frw-bulb'); b.style.setProperty('--i', i); marquee.appendChild(b); }
+      marquee.appendChild(bdgEl('div', 'frw-now', 'now showing'));
+      const beam = bdgEl('div', 'frw-beam');
+      const ticket = bdgEl('div', 'frw-ticket');
+      ticket.append(bdgEl('div', 'frw-t-top', 'admit one'), bdgEl('div', 'frw-t-main', 'FRONT ROW'),
+        bdgEl('div', 'frw-t-sub', 'Birthday 2026 \u00b7 the whole show'), bdgEl('div', 'frw-perf'), bdgEl('div', 'frw-stamp', 'NO SKIPS'));
+      stage.append(beam, marquee, ticket, L, R);
+      o.appendChild(stage);
+      setTimeout(() => stage.classList.add('open'), 500);          // curtains part, bulbs chase
+      setTimeout(() => ticket.classList.add('in'), 1500);          // ticket slides in
+      setTimeout(() => ticket.classList.add('stamped'), 2700);     // stamp thumps down
+      setTimeout(() => { stage.classList.add('flare'); launchConfetti(); }, 2750);
+      setTimeout(() => stage.classList.add('out'), 4000);
+      bdgMedal(o, '🎟️', 4200, done);
+    } },
 
-  // ---- Leaf Legend: showcase goals (3 / 6 / all 10) ----
-  { id:'showcase', name:'Leaf Catcher', glyph:'🍃', tiered:true, celebrateOnVisit:true,
+  // ---- Leaf Legend: showcase goals (3 / 6 / all 10). On the prestige system: Bronze / Silver / Gold ----
+  { id:'showcase', name:'Leaf Catcher', glyph:'🍃', animVersion:2, celebrateOnVisit:true,
+    ladder:['Leaf Catcher', 'Leaf Hoarder', 'Leaf Legend'],
     hint:'complete the goals on the Birthday 2026 showcase',
     level: () => bdgTier(bdgShowcaseGoals(), SHOWCASE_STEPS),
-    title: lv => ['Leaf Catcher', 'Leaf Hoarder', 'Leaf Legend'][lv - 1],
     next: lv => SHOWCASE_STEPS[lv] ? SHOWCASE_STEPS[lv] + ' showcase goals' : null,
     info: lv => [
       'Three showcase goals done. Those leaves did not stand a chance.',
       'Six goals. Your leaf-catching has become genuinely alarming.<br><br>Four to go.',
       'Every single showcase goal, done: the big totals, the streaks, the flurries and the secret.<br><br>Leaf Legend. Officially. I am not worthy.'
     ][lv - 1],
-    play(done){ const o = dimOverlay(); bdgMedal(o, '🍃', 900, done); } },
+    // leaves rain down, her real goals tick off on a scoreboard, then the medal charges up
+    play(done, lv){
+      const o = dimOverlay();
+      const stage = bdgEl('div', 'lfc-stage');
+      const total = Object.keys(bdgShowcase().goals || {}).length, all = 10;
+      const glyphs = ['🍃', '🍂', '🍃', '🌿'];
+      for(let i = 0; i < 26; i++){
+        const l = bdgEl('span', 'lfc-leaf', glyphs[i % glyphs.length]);
+        l.style.left = (Math.random() * 96) + '%';
+        l.style.fontSize = (1.2 + Math.random() * 1.6) + 'rem';
+        l.style.setProperty('--sw', ((Math.random() - 0.5) * 140) + 'px');
+        l.style.setProperty('--r', ((Math.random() - 0.5) * 540) + 'deg');
+        l.style.setProperty('--t', (2.6 + Math.random() * 1.4) + 's');
+        l.style.setProperty('--d', (Math.random() * 1.8) + 's');
+        stage.appendChild(l);
+      }
+      const card = bdgEl('div', 'lfc-card');
+      const num = bdgEl('div', 'lfc-num', '0');
+      const pips = bdgEl('div', 'lfc-pips');
+      for(let i = 0; i < all; i++){ const p = bdgEl('i', 'lfc-pip'); p.style.setProperty('--d', (0.7 + i * 0.22) + 's'); if(i < total) p.classList.add('on'); pips.appendChild(p); }
+      card.append(bdgEl('div', 'lfc-cap', 'showcase goals'), num, pips);
+      stage.appendChild(card);
+      o.appendChild(stage);
+      // the scoreboard counts up in step with the pips lighting
+      for(let i = 1; i <= total; i++) setTimeout(() => { num.textContent = i; num.classList.remove('tick'); void num.offsetWidth; num.classList.add('tick'); }, 700 + (i - 1) * 220 + 120);
+      setTimeout(() => card.classList.add('flash'), 700 + total * 220 + 200);
+      setTimeout(() => stage.classList.add('out'), 3300);
+      bdgPrestige(o, 'showcase', lv, 3500, done);
+    } },
 
 ];
 
