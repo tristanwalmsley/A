@@ -374,8 +374,78 @@ const SECRET_TIERS = {
   }
 };
 
+// ---- Leaf Legend (prestige III) finale: five easter eggs circle, crack one by one and feed a golden core that detonates ----
+(function(){
+  const st = document.createElement('style');
+  st.textContent = `
+  .lgx-stage{position:fixed;inset:0;z-index:9500;pointer-events:none;overflow:hidden;transition:opacity 1s ease}
+  .lgx-stage.out{opacity:0}
+  .lgx-stage.shake{animation:lgxShake .09s linear 14}
+  @keyframes lgxShake{0%{transform:translate(0,0)}25%{transform:translate(-7px,4px)}50%{transform:translate(6px,-5px)}75%{transform:translate(-4px,-3px)}100%{transform:translate(0,0)}}
+  .lgx-egg{position:absolute;font-size:2.7rem;line-height:1;transform:translate(-50%,-50%) scale(0);opacity:0;animation:lgxEggIn .7s cubic-bezier(.34,1.56,.64,1) forwards;animation-delay:var(--d)}
+  @keyframes lgxEggIn{to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+  .lgx-egg.crack{animation:lgxCrack .65s ease forwards}
+  @keyframes lgxCrack{0%{transform:translate(-50%,-50%) scale(1)}25%{transform:translate(-50%,-50%) scale(1.2) rotate(-16deg)}50%{transform:translate(-50%,-50%) scale(1.2) rotate(16deg)}100%{transform:translate(-50%,-50%) scale(2.6);opacity:0}}
+  .lgx-core{position:absolute;left:50%;top:50%;font-size:3.4rem;line-height:1;transform:translate(-50%,-50%) scale(0);filter:drop-shadow(0 0 18px #ffcf5a) sepia(1) saturate(4) hue-rotate(-12deg);transition:transform .45s cubic-bezier(.34,1.56,.64,1)}
+  .lgx-core.pulse{animation:lgxPulse .5s ease-in-out infinite alternate}
+  @keyframes lgxPulse{to{filter:drop-shadow(0 0 34px #fff2b0) sepia(1) saturate(5) hue-rotate(-12deg) brightness(1.3)}}
+  .lgx-spark{position:absolute;font-size:1.2rem;line-height:1;transform:translate(-50%,-50%);animation:lgxSpark 1s ease-out forwards}
+  @keyframes lgxSpark{to{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) rotate(var(--r)) scale(.5);opacity:0}}
+  .lgx-trail{position:absolute;font-size:1rem;transform:translate(-50%,-50%);animation:lgxTrail .55s ease-in forwards}
+  @keyframes lgxTrail{to{left:50%;top:50%;opacity:0;transform:translate(-50%,-50%) scale(.3)}}
+  .lgx-ring{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;border:3px solid #ffd76a;box-shadow:0 0 22px #ffd76a,inset 0 0 18px #ffd76a;opacity:.95;animation:lgxRing 1.5s cubic-bezier(.1,.7,.3,1) forwards}
+  @keyframes lgxRing{to{transform:scale(34);opacity:0}}
+  .lgx-flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,#fff 0%,rgba(255,226,140,.8) 30%,transparent 70%);opacity:0;animation:lgxFlash 1.1s ease-out}
+  @keyframes lgxFlash{0%{opacity:0}12%{opacity:1}100%{opacity:0}}
+  .lgx-banner{position:absolute;left:0;right:0;top:calc(50% + 120px);text-align:center;font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(1.6rem,7vw,3rem);letter-spacing:.18em;white-space:nowrap}
+  .lgx-banner span{display:inline-block;opacity:0;transform:translateY(-40px) scale(1.8);background:linear-gradient(180deg,#fff6c8,#e8a92c 60%,#b97a10);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 12px rgba(255,200,80,.8));animation:lgxLetter .6s cubic-bezier(.2,1.4,.4,1) forwards;animation-delay:var(--d)}
+  @keyframes lgxLetter{to{opacity:1;transform:none}}
+  .lgx-ray{position:absolute;left:50%;top:50%;width:3px;height:60vmax;margin-left:-1.5px;transform-origin:50% 0;background:linear-gradient(#ffe9a0,transparent);opacity:0;animation:lgxRay 2.2s ease-out forwards;animation-delay:var(--d);transform:rotate(var(--a))}
+  @keyframes lgxRay{0%{opacity:0}20%{opacity:.8}100%{opacity:0}}`;
+  document.head.appendChild(st);
+})();
+function lgxGrandFinale(o){
+  const stage = bdgEl('div', 'lgx-stage'); o.appendChild(stage);
+  const R = Math.min(150, window.innerWidth * 0.34), N = 5, T = (ms, fn) => setTimeout(fn, ms);
+  const pos = i => { const a = (i / N) * Math.PI * 2 - Math.PI / 2; return { x: Math.cos(a) * R, y: Math.sin(a) * R }; };
+  const mid = () => ({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+  const eggs = [], loot = ['🍃', '🍀', '🌟', '💛', '✨'];
+  for(let i = 0; i < N; i++){
+    const e = bdgEl('div', 'lgx-egg', '🥚'), p = pos(i), c = mid();
+    e.style.left = (c.x + p.x) + 'px'; e.style.top = (c.y + p.y) + 'px'; e.style.setProperty('--d', (i * 0.15) + 's');
+    stage.appendChild(e); eggs.push(e);
+  }
+  const core = bdgEl('div', 'lgx-core', '🥚'); stage.appendChild(core);
+  T(1500, () => { core.style.transform = 'translate(-50%,-50%) scale(.6)'; });
+  const ring = () => stage.appendChild(bdgEl('div', 'lgx-ring'));
+  eggs.forEach((e, i) => T(1900 + i * 480, () => {
+    const c = mid(), p = pos(i), x = c.x + p.x, y = c.y + p.y;
+    e.classList.add('crack');
+    for(let k = 0; k < 10; k++){
+      const s = bdgEl('div', 'lgx-spark', loot[(i + k) % loot.length]), a = Math.random() * Math.PI * 2, d = 60 + Math.random() * 90;
+      s.style.left = x + 'px'; s.style.top = y + 'px';
+      s.style.setProperty('--dx', Math.cos(a) * d + 'px'); s.style.setProperty('--dy', Math.sin(a) * d + 'px'); s.style.setProperty('--r', (Math.random() * 540 - 270) + 'deg');
+      stage.appendChild(s); T(1100, () => s.remove());
+    }
+    const tr = bdgEl('div', 'lgx-trail', '✨'); tr.style.left = x + 'px'; tr.style.top = y + 'px'; stage.appendChild(tr); T(650, () => tr.remove());
+    core.style.transform = 'translate(-50%,-50%) scale(' + (0.9 + i * 0.4) + ')'; core.classList.add('pulse');
+    ring(); if(i % 2 === 0) launchHeartBurst();
+  }));
+  const boom = 1900 + N * 480 + 300;                    // everything has cracked: the core detonates
+  T(boom, () => {
+    stage.appendChild(bdgEl('div', 'lgx-flash')); stage.classList.add('shake'); T(1300, () => stage.classList.remove('shake'));
+    core.style.transition = 'transform .5s ease-in,opacity .5s ease-in'; core.style.transform = 'translate(-50%,-50%) scale(9)'; core.style.opacity = '0';
+    [0, 250, 500, 800].forEach(d => T(d, ring));
+    for(let k = 0; k < 16; k++){ const r = bdgEl('div', 'lgx-ray'); r.style.setProperty('--a', (k * 22.5) + 'deg'); r.style.setProperty('--d', (k % 4) * 0.06 + 's'); stage.appendChild(r); }
+    [0, 350, 700, 1100].forEach(d => T(d, () => { launchConfetti(); launchHeartBurst(); }));
+    const ban = bdgEl('div', 'lgx-banner'); 'LEAF LEGEND'.split('').forEach((ch, i) => { const sp = bdgEl('span', '', ch === ' ' ? '\u00a0' : ch); sp.style.setProperty('--d', (0.3 + i * 0.07) + 's'); ban.appendChild(sp); });
+    stage.appendChild(ban);
+  });
+  T(boom + 3600, () => stage.classList.add('out'));
+}
+
 // ---- Birthday 2026 showcase (replay) badges: progress is written by birthday_2026_showcase.html ----
-const SHOWCASE_KEY = 'ann_showcase_2026_v1';   // { goals:{id:{at}}, eggs:{id:{at}}, frontRow:{at} }
+const SHOWCASE_KEY = 'ann_showcase_2026_v1';   // { goals:{id:{at}} = lifetime goals earned (what the badge reads), runGoals = this showcase run only, eggs:{id:{at}}, frontRow:{at} }
 const SHOWCASE_STEPS = [3, 6, 13];             // goals completed -> levels 1, 2, 3 (13 = every goal)
 const bdgShowcase = () => bdgJSON(SHOWCASE_KEY, {});
 const bdgShowcaseGoals = () => Object.keys(bdgShowcase().goals || {}).length;
@@ -650,7 +720,7 @@ const BADGES = [
     } },
 
   // ---- Leaf Legend: showcase goals (3 / 6 / all 13). On the prestige system: Bronze / Silver / Gold ----
-  { id:'showcase', name:'Leaf Catcher', glyph:'🍃', animVersion:2, celebrateOnVisit:true,
+  { id:'showcase', name:'Leaf Catcher', glyph:'🍃', animVersion:3, celebrateOnVisit:true,
     ladder:['Leaf Catcher', 'Leaf Hoarder', 'Leaf Legend'],
     hint:'complete the goals on the Birthday 2026 showcase',
     level: () => bdgTier(bdgShowcaseGoals(), SHOWCASE_STEPS),
@@ -687,7 +757,10 @@ const BADGES = [
       for(let i = 1; i <= total; i++) setTimeout(() => { num.textContent = i; num.classList.remove('tick'); void num.offsetWidth; num.classList.add('tick'); }, 700 + (i - 1) * 220 + 120);
       setTimeout(() => card.classList.add('flash'), 700 + total * 220 + 200);
       setTimeout(() => stage.classList.add('out'), 3300);
-      bdgPrestige(o, 'showcase', lv, 3500, done);
+      if(lv >= 3){                                    // prestige III: the egg finale plays before the medal
+        setTimeout(() => lgxGrandFinale(o), 3500);
+        bdgPrestige(o, 'showcase', lv, 3500 + 6800, done);
+      } else bdgPrestige(o, 'showcase', lv, 3500, done);
     } },
 
 ];
