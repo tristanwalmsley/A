@@ -2081,13 +2081,13 @@ let activeLeaves = [];
 // the higher up the scale it goes, so the rarer/more valuable ones actually
 // feel like a genuine catch rather than a freebie
 const LEAF_TYPES = [
-  { glyph: '\ud83e\udd6c', value: 2, sizeMin: 1.5, sizeMax: 4.0, speed: 0.6 }, // 🥬 - big, slow, easy
-  { glyph: '\ud83c\udf3f', value: 3, sizeMin: 1.4, sizeMax: 3.0,  speed: 0.6  }, // 🌿
-  { glyph: '\ud83c\udf43', value: 4, sizeMin: 1.3, sizeMax: 2.2,  speed: 0.6  }, // 🍃
-  { glyph: '\ud83c\udf42', value: 5, sizeMin: 1.2, sizeMax: 2.0,  speed: 0.7 }, // 🍂
-  { glyph: '\ud83c\udf41', value: 6, sizeMin: 1.1, sizeMax: 1.8,  speed: 0.8 }, // 🍁
-  { glyph: '\ud83c\udf40', value: 7, sizeMin: 1.0, sizeMax: 1.6,  speed: 0.9  }, // 🍀 - small, fast, hard
-  { glyph: '🧸', value: 8, sizeMin: 0.9, sizeMax: 1.4,  speed: 1.0  }, // 🧸 - small, fast, hard
+  { glyph: '\ud83e\udd6c', value: 2, sizeMin: 1.6, sizeMax: 4.0, speed: 0.6 }, // 🥬 - big, slow, easy
+  { glyph: '\ud83c\udf3f', value: 3, sizeMin: 1.5, sizeMax: 3.0,  speed: 0.6  }, // 🌿
+  { glyph: '\ud83c\udf43', value: 4, sizeMin: 1.4, sizeMax: 2.6,  speed: 0.6  }, // 🍃
+  { glyph: '\ud83c\udf42', value: 5, sizeMin: 1.3, sizeMax: 2.3,  speed: 0.7 }, // 🍂
+  { glyph: '\ud83c\udf41', value: 6, sizeMin: 1.2, sizeMax: 2.0,  speed: 0.8 }, // 🍁
+  { glyph: '\ud83c\udf40', value: 7, sizeMin: 1.1, sizeMax: 1.8,  speed: 0.9  }, // 🍀 - small, fast, hard
+  { glyph: '🧸', value: 8, sizeMin: 0.9, sizeMax: 1.6,  speed: 1.0  }, // 🧸 - small, fast, hard
 ];
 
 // ---------- DAILY RAMP ----------
@@ -2113,7 +2113,7 @@ function currentLeafDayProgress(){
 // 6th is rarest of all. Day-to-day progression instead comes entirely from
 // currentLeafValueMultiplier() below (each catch is worth more as the days
 // pass), not from the rarer glyphs showing up more often.
-const LEAF_WEIGHTS = [15, 16, 17, 18, 19, 20, 14]; // 🥬 🌿 🍃 🍂 🍁 🍀 🧸
+const LEAF_WEIGHTS = [7, 9, 12, 16, 21, 27, 35]; // 🥬 🌿 🍃 🍂 🍁 🍀 🧸
 function currentLeafWeights(){
   return LEAF_WEIGHTS;
 }
@@ -2141,7 +2141,7 @@ function currentLeafValueMultiplier(){
 // faster AND are worth more the longer a streak runs, so a long streak
 // actually feels like it's paying off rather than being a purely cosmetic
 // number. Both ramp linearly with streak and cap out at streak 100.
-const STREAK_SPAWN_BOOST_PER_POINT = 0.015; // 2% faster spawns per streak point
+const STREAK_SPAWN_BOOST_PER_POINT = 0.01; // 2% faster spawns per streak point
 const STREAK_SPAWN_BOOST_CAP_STREAK = 200;  // caps out at 200 in a row = 400% faster spawns
 function currentStreakSpawnBoost(){
   return Math.min(currentStreak, STREAK_SPAWN_BOOST_CAP_STREAK) * STREAK_SPAWN_BOOST_PER_POINT;
@@ -2390,7 +2390,7 @@ function spawnWanderLeaf(){
   const orbitRadius = 5 + Math.random() * 6;
   const turns = (1.2 + Math.random() * 1.3) * (0.85 + type.speed * 0.2);
   const spinDir = Math.random() < 0.5 ? -1 : 1;
-  const duration = (6000 + Math.random() * 4000) / type.speed;
+  const duration = (18000 + Math.random() * 8000) / type.speed;
   const startTime = performance.now();
   let caught = false;
   let rafId = null;
