@@ -282,6 +282,8 @@ body.evo-4{--evo-accent:#d43a72}
    into slow-drifting sparkles (~2s) rather than snapping away. ~9.5s total. */
 .constellation.heart-glide{top:50%;right:50%;transform:translate(50%,-50%) scale(1.75);z-index:9450}
 .constellation.heart-beat{animation:heartBeatPulse 1.8s ease-in-out 2}
+.constellation.final-pulse{animation:cornerPulse 1.8s ease-in-out 2;transform-origin:50% 50%}
+@keyframes cornerPulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 0 transparent)}18%{transform:scale(1.14);filter:drop-shadow(0 0 16px var(--evo-accent))}36%{transform:scale(1)}50%{transform:scale(1.08);filter:drop-shadow(0 0 10px var(--evo-accent))}68%{transform:scale(1)}}
 @keyframes heartBeatPulse{
   0%,100%{transform:translate(50%,-50%) scale(1.75)}
   18%{transform:translate(50%,-50%) scale(1.92)}
@@ -1735,8 +1737,8 @@ function fireGardenFarewell(){
 function triggerFinalStar(){
   const wrap = document.getElementById('constellation');
   if (!wrap) return;
-  wrap.classList.add('heart-beat');
-  setTimeout(() => wrap.classList.remove('heart-beat'), 3700);
+  wrap.classList.add('final-pulse'); // corner-anchored pulse (heart-beat assumes the heart is already centred, which made it jump)
+  setTimeout(() => wrap.classList.remove('final-pulse'), 3700);
 }
 
 function pad(n) { return String(Math.max(0, n)).padStart(2, '0'); }
@@ -3680,7 +3682,7 @@ for (let i = 0; i < 10; i++) {
 <script>
 // ================= REPLAY EXTRAS: filling the quiet 35 minutes =================
 // Everything you'd want to edit is in the CONFIG block. Times are "seconds LEFT until the reveal".
-const TRACK_TITLES = [];              // e.g. ['Song one', 'Song two', ...] - 7 titles, in order. Empty = "Song 1", "Song 2"...
+const TRACK_TITLES = ['1989 Megamix', 'Enchanted x So High School', 'Manchild x Drop Dead', 'Billie Eilish Megamix', 'Good Luck Babe x Birds of a Feather', 'Manchild x Busy Woman', 'Please Please Please x Dancing Queen', 'Taylor Swift Megamix'];              // e.g. ['Song one', 'Song two', ...] - 7 titles, in order. Empty = "Song 1", "Song 2"...
 const TIMED_MESSAGES = [
   { at: 34*60,      text: "35 minutes to go. she has no idea what's coming ♡" },
   { at: 30*60,      text: "The Office of Bestie Affairs confirms: everything is, mostly, on schedule." },
@@ -3797,11 +3799,11 @@ const GOALS = [
 // ---- easter eggs (found eggs are kept forever, across runs) ----
 // stored as getShowcase().eggs = { <eggId>: { at } }. The 'all_eggs' goal above counts them.
 const EGGS = [
-  { id:'ph_wish',     name:'the wishing star',   hint:'power hour has a star you can wish on' },
-  { id:'show_marquee',name:'the marquee',        hint:'the final show has a sign that likes attention' },
-  { id:'cd_clock',    name:'the clock',          hint:'the big countdown clock does not like being poked' },
-  { id:'cd_heart',    name:'the constellation',  hint:'the stars in the corner remember something (or: type a word)' },
-  { id:'finale_rush', name:'the last minute',    hint:'in the final minute, impatience is noticed' }
+  { id:'ph_wish',     name:'the wishing star',  clues:['power hour has a star you can wish on', 'a faint twinkling ✦ in the upper-left of the sky during power hour - tap it'] },
+  { id:'show_marquee',name:'the marquee',       clues:['the final show has a sign that likes attention', 'once the reveal is over, tap "Bestie Pictures Presents" 5 times, quickly'] },
+  { id:'cd_clock',    name:'the clock',         clues:['the big countdown clock does not like being poked', 'tap the big countdown clock 7 times, quickly'] },
+  { id:'cd_heart',    name:'the constellation', clues:['the stars in the corner remember something (or: type a word)', 'tap a lit star in the corner 3 times - or type what we are to each other'] },
+  { id:'finale_rush', name:'the last minute',   clues:['in the final minute, impatience is noticed', 'in the last 60 seconds, tap anywhere (not on a button) 10 times'] }
 ];
 function getShowcase(){ try { const b = JSON.parse(localStorage.getItem(SHOWCASE_KEY)); return (b && typeof b === 'object') ? b : {}; } catch(e) { return {}; } }
 (function(){
@@ -3836,7 +3838,7 @@ function getShowcase(){ try { const b = JSON.parse(localStorage.getItem(SHOWCASE
 
   // goal progress for THIS run (shown in the panel). b.goals stays as the lifetime record the home-page badge reads.
   function resetRunGoals(){
-    const b = getShowcase(); b.runGoals = {}; save(b);
+    const b = getShowcase(); b.runGoals = {}; b.bestsBase = Object.assign({}, b.bests || {}); save(b);
     Object.assign(run, { lights: 0, catches: 0, bestStreak: 0, bestCombo: 0, bigCatch: 0, secret: 0, phLights: 0 }); run.songLights.fill(0); recent.length = 0;
   }
   function render(){
@@ -3861,13 +3863,30 @@ function getShowcase(){ try { const b = JSON.parse(localStorage.getItem(SHOWCASE
     });
     const eggs = getShowcase().eggs || {};
     const eh = document.createElement('h4'); eh.textContent = 'Easter eggs ' + Object.keys(eggs).length + '/' + EGGS.length; eh.style.marginTop = '.9rem'; panel.appendChild(eh);
+    const clueLv = getShowcase().eggClues || {};
     EGGS.forEach(e => {
-      const row = document.createElement('div'), ok = !!eggs[e.id];
+      const row = document.createElement('div'), ok = !!eggs[e.id], lv = clueLv[e.id] || 0;
       row.className = 'gl-row' + (ok ? ' done' : '');
       const t = document.createElement('div'); t.textContent = ok ? '🥚 ' + e.name : '🥚 ???';
-      const d = document.createElement('small'); d.textContent = ok ? 'found!' : e.hint;
+      const d = document.createElement('small'); d.textContent = ok ? 'found!' : (lv ? e.clues[Math.min(lv, 2) - 1] : 'no clue yet');
       row.append(t, d); panel.appendChild(row);
     });
+    const left = EGGS.filter(e => !eggs[e.id] && (clueLv[e.id] || 0) < 2);
+    const cb = document.createElement('button'); cb.type = 'button'; cb.className = 'gl-reset'; cb.style.marginTop = '.5rem';
+    cb.textContent = left.length ? 'give me an egg clue' : (Object.keys(eggs).length >= EGGS.length ? 'every egg found ♡' : 'no clues left - you have them all');
+    cb.disabled = !left.length; if (!left.length) cb.style.opacity = '.4';
+    cb.addEventListener('click', () => {
+      const pick = left.find(e => (clueLv[e.id] || 0) === 0) || left[0]; if (!pick) return;
+      const b = getShowcase(); b.eggClues = b.eggClues || {}; b.eggClues[pick.id] = (b.eggClues[pick.id] || 0) + 1; save(b);
+      try { window.rxToast('🥚 clue: ' + pick.clues[b.eggClues[pick.id] - 1], 6500); } catch(e) {}
+      render();
+    });
+    panel.appendChild(cb);
+    const bests = getShowcase().bests || {};
+    const bh = document.createElement('h4'); bh.textContent = 'Personal bests'; bh.style.marginTop = '.9rem'; panel.appendChild(bh);
+    const bl = document.createElement('div'); bl.className = 'gl-row'; bl.style.lineHeight = '1.6';
+    bl.textContent = '🍃 ' + (bests.lights || 0).toLocaleString() + ' lights  ·  ⚡ ' + (bests.phLights || 0).toLocaleString() + ' in power hour  ·  🔥 streak ' + (bests.streak || 0) + '  ·  💨 ' + (bests.combo || 0) + ' in 5s  ·  ⭐ biggest catch ' + (bests.bigCatch || 0).toLocaleString();
+    panel.appendChild(bl);
   }
   function check(){
     const b = getShowcase(), done = b.runGoals || {}, life = b.goals || {}; let changed = false;
@@ -3923,6 +3942,7 @@ function getShowcase(){ try { const b = JSON.parse(localStorage.getItem(SHOWCASE
   const PROGRESS_KEY = 'ann_showcase_2026_progress_v1';
   const fmt = sec => { sec = Math.max(0, Math.round(sec)); return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0'); };
   function saveProgress(){
+    try { updateBests(); } catch(e) {}
     // past zero (the final show) resumes a few seconds before the reveal
     const left = Math.max(15, (TARGET - Date.now()) / 1000);
     const data = { v: 1, left, savedAt: new Date().toISOString(), run, runGoals: getShowcase().runGoals || {}, skipped, visited: [...visited] };
@@ -4218,6 +4238,117 @@ function getShowcase(){ try { const b = JSON.parse(localStorage.getItem(SHOWCASE
     if (rushTap()) foundEgg('finale_rush', fxStamp, 6400);
   });
   window.__egx = { fxWish, fxMarquee, fxClock, fxHeart, fxStamp, eggBanner };
+
+  // ================= PERSONAL BESTS =================
+  // lifetime bests live in SHOWCASE_KEY.bests (home.js ignores them). bestsBase = the bests as they stood when this run began,
+  // so the recap can say "NEW BEST" even though the bests are updated as the run goes.
+  const runBests = () => ({ lights: run.lights, phLights: run.phLights, streak: run.bestStreak, combo: run.bestCombo, bigCatch: run.bigCatch });
+  function updateBests(){
+    if (!started) return;
+    const b = getShowcase(), cur = b.bests || {}, now = runBests(); let ch = false;
+    Object.keys(now).forEach(k => { if (now[k] > (cur[k] || 0)) { cur[k] = now[k]; ch = true; } });
+    if (ch) { b.bests = cur; save(b); }
+  }
+  setInterval(updateBests, 10000);
+  window.addEventListener('pagehide', updateBests);
+
+  // ================= RUN RECAP =================
+  const recapCss = document.createElement('style');
+  recapCss.textContent = `
+  #rx-recap{position:fixed;inset:0;z-index:9750;display:flex;align-items:center;justify-content:center;background:rgba(15,7,3,.6);opacity:0;transition:opacity .6s ease}
+  #rx-recap.in{opacity:1}
+  .rx-rc-card{width:min(92vw,25rem);max-height:86vh;overflow:auto;padding:1.2rem 1.4rem 1.1rem;border-radius:18px;background:linear-gradient(160deg,#fffdf5,#f4e6c6);color:#3a2010;font-family:'Playfair Display',serif;box-shadow:0 16px 50px rgba(0,0,0,.5),0 0 0 3px rgba(200,148,58,.45) inset;transform:translateY(24px) scale(.96);transition:transform .6s cubic-bezier(.2,1.3,.4,1)}
+  #rx-recap.in .rx-rc-card{transform:none}
+  .rx-rc-card h3{font-family:'Caveat',cursive;font-size:2rem;color:#b86858;text-align:center;line-height:1}
+  .rx-rc-card .sub{text-align:center;font-style:italic;opacity:.65;font-size:.8rem;margin:.2rem 0 .7rem}
+  .rx-rc-row{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;padding:.38rem 0;border-bottom:1px dashed rgba(122,82,48,.3);font-size:.92rem;opacity:0;transform:translateX(-14px);animation:rcIn .5s ease forwards;animation-delay:var(--d)}
+  @keyframes rcIn{to{opacity:1;transform:none}}
+  .rx-rc-row b{font-size:1.05rem;color:#7a5230;white-space:nowrap}
+  .rx-rc-new{display:inline-block;margin-left:.4rem;padding:.05rem .45rem;border-radius:999px;background:#c8943a;color:#fff;font-size:.62rem;letter-spacing:.08em;vertical-align:middle;animation:rcPulse 1s ease-in-out infinite alternate}
+  @keyframes rcPulse{to{transform:scale(1.15);box-shadow:0 0 10px #ffd76a}}
+  .rx-rc-x{display:block;margin:.8rem auto 0;border:0;border-radius:999px;padding:.4rem 1.2rem;background:#7a5230;color:#fff6dd;font-family:inherit;font-size:.85rem;cursor:pointer}
+  #rx-chap{position:fixed;left:1rem;top:7.2rem;z-index:57;width:min(88vw,18rem);padding:.8rem .9rem;border-radius:14px;background:rgba(30,16,8,.95);color:#f0ddb8;font-family:'Playfair Display',serif;display:none}
+  #rx-chap.open{display:block}
+  #rx-chap h4{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--gold)}
+  #rx-chap small{display:block;opacity:.6;font-style:italic;font-size:.72rem;margin-bottom:.4rem}
+  #rx-chap button,.entry-chip{display:block;width:100%;text-align:left;border:0;background:rgba(255,255,255,.07);color:#f0ddb8;border-radius:8px;padding:.35rem .6rem;margin:.22rem 0;font-family:inherit;font-size:.85rem;cursor:pointer}
+  #rx-chap button:hover,.entry-chip:hover{background:rgba(200,148,58,.3)}
+  #entry-chapters{margin:1.1rem auto 0;max-width:min(88vw,30rem);display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;opacity:.9}
+  #entry-chapters .lbl{width:100%;font-family:'Playfair Display',serif;font-style:italic;font-size:.85rem;color:var(--warm);opacity:.7}
+  .entry-chip{display:inline-block;width:auto;text-align:center;border:1px solid rgba(240,221,184,.25);border-radius:999px}`;
+  document.head.appendChild(recapCss);
+
+  function showRecap(auto){
+    if (document.getElementById('rx-recap')) return;
+    const b = getShowcase(), base = b.bestsBase || {}, now = runBests();
+    updateBests();
+    const eggsN = Object.keys(b.eggs || {}).length, goalsN = Object.keys(b.runGoals || {}).length;
+    const rows = [
+      ['🍃 Lights collected', now.lights, 'lights'], ['⚡ Lights in power hour', now.phLights, 'phLights'], ['🌿 Leaves caught', run.catches, null],
+      ['🔥 Best streak', now.streak, 'streak'], ['💨 Best flurry (in 5s)', now.combo, 'combo'], ['⭐ Biggest single catch', now.bigCatch, 'bigCatch'],
+      ['🏆 Goals this run', goalsN + ' / ' + GOALS.length, null], ['🥚 Easter eggs found', eggsN + ' / ' + EGGS.length, null]
+    ];
+    const o = document.createElement('div'); o.id = 'rx-recap';
+    const card = document.createElement('div'); card.className = 'rx-rc-card';
+    const h = document.createElement('h3'); h.textContent = 'your run'; card.appendChild(h);
+    const sub = document.createElement('div'); sub.className = 'sub'; sub.textContent = auto ? 'the reveal is on - here is how you did' : 'how this run is going'; card.appendChild(sub);
+    rows.forEach(([label, val, key], i) => {
+      const r = document.createElement('div'); r.className = 'rx-rc-row'; r.style.setProperty('--d', (0.35 + i * 0.12) + 's');
+      const l = document.createElement('span'); l.textContent = label;
+      const v = document.createElement('b'); v.textContent = typeof val === 'number' ? val.toLocaleString() : val;
+      if (key && now[key] > 0 && now[key] > (base[key] || 0)) { const n = document.createElement('span'); n.className = 'rx-rc-new'; n.textContent = 'NEW BEST'; v.appendChild(n); }
+      r.append(l, v); card.appendChild(r);
+    });
+    const x = document.createElement('button'); x.type = 'button'; x.className = 'rx-rc-x'; x.textContent = 'close'; card.appendChild(x);
+    o.appendChild(card); document.body.appendChild(o);
+    requestAnimationFrame(() => requestAnimationFrame(() => o.classList.add('in')));
+    const close = () => { o.classList.remove('in'); setTimeout(() => o.remove(), 700); };
+    x.addEventListener('click', close); o.addEventListener('click', e => { if (e.target === o) close(); });
+    if (auto) setTimeout(close, 22000);
+    try { if (now.lights > 0 && (now.lights > (base.lights || 0) || now.streak > (base.streak || 0))) { launchRevealBurst(); spawnHeartBurstSparkles(); } } catch(e) {}
+  }
+  const statsBtn = document.createElement('button'); statsBtn.type = 'button'; statsBtn.textContent = '📊 stats'; statsBtn.title = 'how this run is going'; ctrl.appendChild(statsBtn);
+  statsBtn.addEventListener('click', () => showRecap(false));
+  // the recap pops up as the final show begins
+  const _startScenes = startScenes;
+  startScenes = function(){ _startScenes.apply(this, arguments); if (run.catches > 0) setTimeout(() => showRecap(true), 1500); };
+
+  // ================= CHAPTERS (jump to a moment) =================
+  // Works by restarting from that time-left via the same resume machinery as Continue, so music, power hour, stars etc. all land correctly.
+  // A jump begins a fresh run (this run's goal progress resets); lifetime goals, eggs, bests and lights are untouched.
+  const CHAPTERS = [
+    { label: 'the beginning',        left: MUSIC_START_AT_S + 5 },
+    { label: 'power hour',           left: REPLAY_PH_START_S + 4 },
+    { label: 'after power hour',     left: REPLAY_PH_END_S },
+    { label: 'the last 10 minutes',  left: 10 * 60 },
+    { label: 'the final build-up',   left: BUILD_UP_SPAN / 1000 },
+    { label: 'the finale song',      left: FINALE_AT_S + 3 },
+    { label: 'the last minute',      left: 60 },
+    { label: 'the reveal',           left: 12 }
+  ];
+  const JUMP_KEY = 'ann_showcase_2026_jump';
+  const chap = document.createElement('div'); chap.id = 'rx-chap'; document.body.appendChild(chap);
+  chap.innerHTML = '<h4>Jump to…</h4><small>starts a fresh run from that moment (goal progress for this run resets)</small>';
+  CHAPTERS.forEach(c => { const bt = document.createElement('button'); bt.type = 'button'; bt.textContent = c.label + '  ·  ' + fmt(c.left);
+    bt.addEventListener('click', () => { try { sessionStorage.setItem(JUMP_KEY, JSON.stringify({ left: c.left, label: c.label })); } catch(e) {} location.reload(); }); chap.appendChild(bt); });
+  const chapBtn = document.createElement('button'); chapBtn.type = 'button'; chapBtn.textContent = '🎬 jump to…'; ctrl.appendChild(chapBtn);
+  chapBtn.addEventListener('click', () => { panel.classList.remove('open'); chap.classList.toggle('open'); });
+  btn.addEventListener('click', () => chap.classList.remove('open'));
+
+  // entry screen: chapter chips (a fresh run starting from that moment)
+  const entryCard = document.querySelector('.entry-card');
+  if (entryCard) {
+    const wrapC = document.createElement('div'); wrapC.id = 'entry-chapters';
+    const lb = document.createElement('div'); lb.className = 'lbl'; lb.textContent = 'or jump straight to…'; wrapC.appendChild(lb);
+    CHAPTERS.slice(1).forEach(c => { const chip = document.createElement('button'); chip.type = 'button'; chip.className = 'entry-chip'; chip.textContent = c.label;
+      chip.addEventListener('click', e => { e.stopPropagation(); if (!entryReady) return; window.__resumeLeftMs = c.left * 1000; resetRunGoals(); unlockEntry(); }); wrapC.appendChild(chip); });
+    entryCard.appendChild(wrapC);
+  }
+  // arriving here from the in-run "jump to…" menu: the Start button becomes "Jump to <moment>"
+  try {
+    const j = JSON.parse(sessionStorage.getItem(JUMP_KEY)); sessionStorage.removeItem(JUMP_KEY);
+    if (j && j.left > 0) { window.__resumeLeftMs = j.left * 1000; document.getElementById('entry-start').textContent = 'Jump to ' + j.label; }
+  } catch(e) {}
 
   // refresh the goal count once so the "all_eggs" progress shows up straight away
   check();
