@@ -3815,11 +3815,11 @@ const GOALS = [
 // ---- easter eggs (found eggs are kept forever, across runs) ----
 // stored as getShowcase().eggs = { <eggId>: { at } }. The 'all_eggs' goal above counts them.
 const EGGS = [
-  { id:'ph_wish',     name:'the wishing star',  clues:['power hour has a star you can wish on', 'a faint twinkling ✦ in the upper-left of the sky during power hour - tap it'] },
-  { id:'show_marquee',name:'the marquee',       clues:['the final show has a sign that likes attention', 'once the reveal is over, tap "Bestie Pictures Presents" 5 times, quickly'] },
-  { id:'cd_clock',    name:'the clock',         clues:['the big countdown clock does not like being poked', 'tap the big countdown clock 7 times, quickly'] },
-  { id:'cd_heart',    name:'the constellation', clues:['the stars in the corner remember something (or: type a word)', 'tap a lit star in the corner 3 times - or type what we are to each other'] },
-  { id:'finale_rush', name:'the last minute',   clues:['in the final minute, impatience is noticed', 'in the last 60 seconds, tap anywhere (not on a button) 10 times'] }
+  { id:'ph_wish',     name:'the wishing star',  clues:['power hour has a star you can wish on', ''] },
+  { id:'show_marquee',name:'the marquee',       clues:['the final show has a sign that likes attention', ''] },
+  { id:'cd_clock',    name:'the clock',         clues:['the big countdown clock does not like being poked', ''] },
+  { id:'cd_heart',    name:'the constellation', clues:['the stars in the corner remember something (or: type a word)', ''] },
+  { id:'finale_rush', name:'the last minute',   clues:['in the final minute, impatience is noticed', ''] }
 ];
 function getShowcase(){ try { const b = JSON.parse(localStorage.getItem(SHOWCASE_KEY)); return (b && typeof b === 'object') ? b : {}; } catch(e) { return {}; } }
 (function(){
