@@ -720,7 +720,7 @@ const BADGES = [
     } },
 
   // ---- Leaf Legend: showcase goals (3 / 6 / all 13). On the prestige system: Bronze / Silver / Gold ----
-  { id:'showcase', name:'Leaf Catcher', glyph:'🍃', animVersion:3, celebrateOnVisit:true,
+  { id:'showcase', name:'Leaf Catcher', glyph:'🍃', animVersion:4, celebrateOnVisit:true,
     ladder:['Leaf Catcher', 'Leaf Hoarder', 'Leaf Legend'],
     hint:'complete the goals on the Birthday 2026 showcase',
     level: () => bdgTier(bdgShowcaseGoals(), SHOWCASE_STEPS),
@@ -757,9 +757,12 @@ const BADGES = [
       for(let i = 1; i <= total; i++) setTimeout(() => { num.textContent = i; num.classList.remove('tick'); void num.offsetWidth; num.classList.add('tick'); }, 700 + (i - 1) * 220 + 120);
       setTimeout(() => card.classList.add('flash'), 700 + total * 220 + 200);
       setTimeout(() => stage.classList.add('out'), 3300);
-      if(lv >= 3){                                    // prestige III: the egg finale plays before the medal
-        setTimeout(() => lgxGrandFinale(o), 3500);
-        bdgPrestige(o, 'showcase', lv, 3500 + 6800, done);
+      if(lv >= 3){                                    // prestige III: the Leaf Legend reel (js/leaf_legend_reel.js) plays before the medal
+        setTimeout(() => {
+          const medal = () => skReveal(o, 'showcase', lv, done);
+          if(window.LeafLegendReel) LeafLegendReel.play(o, medal);          // the long one: all 5 showcase eggs, then the finale
+          else { lgxGrandFinale(o); setTimeout(medal, 6800); }               // file didn't load: the old short egg finale
+        }, 3500);
       } else bdgPrestige(o, 'showcase', lv, 3500, done);
     } },
 
