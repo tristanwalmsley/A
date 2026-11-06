@@ -375,8 +375,8 @@ const SECRET_TIERS = {
 };
 
 // ---- Birthday 2026 showcase (replay) badges: progress is written by birthday_2026_showcase.html ----
-const SHOWCASE_KEY = 'ann_showcase_2026_v1';   // { goals:{id:{at}}, frontRow:{at} }
-const SHOWCASE_STEPS = [3, 6, 10];             // goals completed -> levels 1, 2, 3 (10 = every goal)
+const SHOWCASE_KEY = 'ann_showcase_2026_v1';   // { goals:{id:{at}}, eggs:{id:{at}}, frontRow:{at} }
+const SHOWCASE_STEPS = [3, 6, 13];             // goals completed -> levels 1, 2, 3 (13 = every goal)
 const bdgShowcase = () => bdgJSON(SHOWCASE_KEY, {});
 const bdgShowcaseGoals = () => Object.keys(bdgShowcase().goals || {}).length;
 
@@ -649,7 +649,7 @@ const BADGES = [
       bdgMedal(o, '🎟️', 4200, done);
     } },
 
-  // ---- Leaf Legend: showcase goals (3 / 6 / all 10). On the prestige system: Bronze / Silver / Gold ----
+  // ---- Leaf Legend: showcase goals (3 / 6 / all 13). On the prestige system: Bronze / Silver / Gold ----
   { id:'showcase', name:'Leaf Catcher', glyph:'🍃', animVersion:2, celebrateOnVisit:true,
     ladder:['Leaf Catcher', 'Leaf Hoarder', 'Leaf Legend'],
     hint:'complete the goals on the Birthday 2026 showcase',
@@ -657,14 +657,14 @@ const BADGES = [
     next: lv => SHOWCASE_STEPS[lv] ? SHOWCASE_STEPS[lv] + ' showcase goals' : null,
     info: lv => [
       'Three showcase goals done. Those leaves did not stand a chance.',
-      'Six goals. Your leaf-catching has become genuinely alarming.<br><br>Four to go.',
-      'Every single showcase goal, done: the big totals, the streaks, the flurries and the secret.<br><br>Leaf Legend. Officially. I am not worthy.'
+      'Six goals. Your leaf-catching has become genuinely alarming.<br><br>Seven to go.',
+      'Every single showcase goal, done: the big totals, the streaks, the flurries, the power hour haul, the easter eggs and the secret.<br><br>Leaf Legend. Officially. I am not worthy.'
     ][lv - 1],
     // leaves rain down, her real goals tick off on a scoreboard, then the medal charges up
     play(done, lv){
       const o = dimOverlay();
       const stage = bdgEl('div', 'lfc-stage');
-      const total = Object.keys(bdgShowcase().goals || {}).length, all = 10;
+      const total = Object.keys(bdgShowcase().goals || {}).length, all = 13;
       const glyphs = ['🍃', '🍂', '🍃', '🌿'];
       for(let i = 0; i < 26; i++){
         const l = bdgEl('span', 'lfc-leaf', glyphs[i % glyphs.length]);
