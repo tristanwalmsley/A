@@ -731,7 +731,7 @@ body.stage-garden-enchanted .brand{color:#8a5a1f}
 </div>
 
 <div id="power-hour-clock" aria-hidden="true">
-  <div class="ph-clock-label">⚡ Power Hour - 3x leaves! ⚡</div>
+  <div class="ph-clock-label">⚡ Power Hour - 3x lights, 2x leaves! ⚡</div>
   <div class="timer ph-clock-timer">
     <div class="timer-unit"><div class="timer-num" id="ph-mins">60</div><div class="timer-label">Minutes</div></div>
     <div class="timer-unit"><div class="timer-num" id="ph-secs">00</div><div class="timer-label">Seconds</div></div>
@@ -1499,7 +1499,7 @@ function updateFinalLeadText(diff){
   if (!leadFinal) return;
 
   let next = null;
-  for (const ev of NAMED_EVENTS) {
+  for (const ev of getNamedEvents()) {
     const msUntil = diff + ev.offset; // offset is <=0, so this is "time until ev"
     if (msUntil > 0 && (next === null || msUntil < next.msUntil)) next = { ...ev, msUntil };
   }
@@ -1510,9 +1510,8 @@ function updateFinalLeadText(diff){
   const m = Math.floor((totalSecs % 3600) / 60);
   const s = totalSecs % 60;
   let text;
-  if (h > 0) text = `${h}h ${m}m till next event`;
-  else if (m > 0) text = `${m}m ${s}s till next event`;
-  else text = `${s}s till next event`;
+  const when = h > 0 ? `${h}h ${m}m` : (m > 0 ? `${m}m ${s}s` : `${s}s`);
+  text = `${when} until ${next.label}`;
   leadFinal.textContent = text;
 }
 
@@ -2207,7 +2206,9 @@ let powerHourWasActive = false;
 // REPLAY: power hour comes back for a window of the showcase (no music) - from 25:00 to 15:00 left.
 // Same galaxy sky / clock / ignition as the original, plus a bigger leaf boost and faster spawns.
 const REPLAY_PH_START_S = 25 * 60, REPLAY_PH_END_S = 15 * 60;
-const REPLAY_PH_VALUE_MULT = FINAL_DAY_VALUE_MULT * 1.5, REPLAY_PH_SPAWN_MULT = POWER_HOUR_SPAWN_MULT;
+// NOTE: in the replay the final-day lockout is ALREADY on (a flat FINAL_DAY_VALUE_MULT / FINAL_DAY_SPAWN_MULT boost the whole time), so
+// power hour has to be measured against THAT baseline or it barely feels different. These make it a real 3x lights and 2x leaves.
+const REPLAY_PH_VALUE_MULT = FINAL_DAY_VALUE_MULT * 3, REPLAY_PH_SPAWN_MULT = FINAL_DAY_SPAWN_MULT * 0.5;
 function replayPowerHourWindow(){
   if (!document.body.classList.contains('replay-started')) return false;
   const left = (TARGET - Date.now()) / 1000;
@@ -2971,24 +2972,47 @@ const CRAZY_AT = 60000; // 1:00 - all spotlights go full intensity + fast
 // nothing else depends on this list, it's purely what gets displayed.
 // Labels are deliberately vague ("event") rather than spoiling what each
 // moment actually is - change any label string if you'd rather be specific.
-const NAMED_EVENTS = [
-  { offset: FINAL_DAY_SCHEDULE.BIRTHDAY_MOMENT.offset,     label: 'event' },
-  { offset: FINAL_DAY_SCHEDULE.LEAF_COLLECTION_END.offset, label: 'event' },
-  { offset: FINAL_DAY_SCHEDULE.PLAYLIST_STOP.offset,       label: 'event' },
-  { offset: -MUSIC_START_AT,                                label: 'event' },
-  { offset: -10 * 60000,                                    label: 'event' },
-  { offset: FINAL_DAY_SCHEDULE.FINAL_STAR.offset,           label: 'event' },
-  { offset: -BUILD_UP_SPAN,                                 label: 'event' },
-  { offset: -SPOTLIGHT_SCHEDULE[0].at,                      label: 'event' },
-  { offset: -FINALE_AT,                                     label: 'event' },
-  { offset: -4 * 60000,                                     label: 'event' },
-  { offset: -SPOTLIGHT_SCHEDULE[1].at,                      label: 'event' },
-  { offset: -SPOTLIGHT_SCHEDULE[2].at,                      label: 'event' },
-  { offset: -90 * 1000,                                     label: 'event' },
-  { offset: -CRAZY_AT,                                      label: 'event' },
-  { offset: -10 * 1000,                                     label: 'event' },
-  { offset: 0,                                               label: 'event' }
-];
+// The list is built lazily (first call, from the tick loop) because it reads constants from scripts further down the page
+// (TIMED_MESSAGES, TRACK_TITLES, REPLAY_PH_*, CONSTELLATION_FULL_AT_S...). Every beat of the showcase is in here, named:
+// power hour start/end, every song change, every timed message, every constellation star, and each final-stretch moment.
+// offset = ms relative to TARGET (<= 0). If two beats share a time the one listed first wins.
+let _namedEvents = null;
+function getNamedEvents(){
+  if (_namedEvents) return _namedEvents;
+  const ev = []; const add = (leftS, label) => ev.push({ offset: -leftS * 1000, label });
+  const min = m => m * 60;
+  // music
+  add(MUSIC_START_AT_S, 'the music starting');
+  let acc = 0;
+  TRACKS.forEach((t, i) => { acc += t.duration; if (i < TRACKS.length - 1) add(MUSIC_START_AT_S - acc, 'song ' + (i + 2) + (typeof TRACK_TITLES !== 'undefined' && TRACK_TITLES[i + 1] ? ' (' + TRACK_TITLES[i + 1] + ')' : '')); });
+  add(FINALE_AT_S, 'the finale song');
+  // power hour
+  add(REPLAY_PH_START_S, 'power hour');
+  add(REPLAY_PH_END_S, 'power hour ending');
+  // constellation: one star per ~110s, complete at CONSTELLATION_FULL_AT_S
+  for (let k = 1; k <= HEART_N; k++) {
+    const left = MUSIC_START_AT_S - (k / HEART_N) * (MUSIC_START_AT_S - CONSTELLATION_FULL_AT_S);
+    add(left, k < HEART_N ? 'a new star (' + k + '/' + HEART_N + ')' : 'the constellation completing');
+  }
+  // every timed message
+  if (typeof TIMED_MESSAGES !== 'undefined') TIMED_MESSAGES.forEach(m => add(m.at, 'a message'));
+  if (typeof MEMORY_MOMENTS !== 'undefined') MEMORY_MOMENTS.forEach(m => add(m.at, 'a memory'));
+  // the final stretch
+  add(min(10), 'the brand growing');
+  add(-FINAL_DAY_SCHEDULE.FINAL_STAR.offset / 1000, 'the last star pulsing');
+  add(-FINAL_DAY_SCHEDULE.LEAF_COLLECTION_END.offset / 1000, 'leaf catching ending');
+  add(BUILD_UP_SPAN / 1000, 'the final build-up');
+  SPOTLIGHT_SCHEDULE.forEach((sp, i) => add(sp.at / 1000, 'spotlight ' + (i + 1) + ' of ' + SPOTLIGHT_SCHEDULE.length));
+  add(min(4), 'the clock growing');
+  add(90, 'the heart');
+  add(CRAZY_AT / 1000, 'everything going wild');
+  add(10, 'the final ten seconds');
+  add(0, 'the reveal');
+  // first label listed for a given moment wins; drop exact duplicates
+  const seen = new Set();
+  _namedEvents = ev.filter(e => { const k = Math.round(e.offset / 1000); if (seen.has(k)) return false; seen.add(k); return true; });
+  return _namedEvents;
+}
 
 let finalLeadCompacted = false;
 // pulls #lead-final out of .wrap and pins it small to the top of the real
@@ -3661,7 +3685,7 @@ const TIMED_MESSAGES = [
   { at: 34*60,      text: "35 minutes to go. she has no idea what's coming ♡" },
   { at: 30*60,      text: "The Office of Bestie Affairs confirms: everything is, mostly, on schedule." },
   { at: 26*60,      text: "Fun fact: this entire page is held together by hope and good intentions." },
-  { at: 25*60,      text: "⚡ POWER HOUR is on - leaves are worth far more for the next 10 minutes!" },
+  { at: 25*60,      text: "⚡ POWER HOUR is on - every leaf is worth 3x and they come twice as fast for the next 10 minutes!" },
   { at: 22*60,      text: "Hydrate. Stretch. Collect a leaf or two." },
   { at: 18*60,      text: "Somewhere, a very nervous person is checking the site one more time." },
   { at: 15*60,      text: "power hour is over. the sky settles... for now." },
@@ -3757,13 +3781,13 @@ const SHOWCASE_KEY = 'ann_showcase_2026_v1';
 const GOALS = [
   { id:'lights_10k',  label:'Collect 10,000 lights',               desc:'in a single run',                          get:r => [r.lights, 10000] },
   { id:'lights_50k',  label:'Collect 50,000 lights',               desc:'in a single run',                          get:r => [r.lights, 50000] },
-  { id:'lights_150k', label:'Collect 150,000 lights',              desc:'in a single run - you will need streaks',  get:r => [r.lights, 150000] },
+  { id:'lights_150k', label:'Collect 200,000 lights',              desc:'in a single run - you will need streaks',  get:r => [r.lights, 200000] },
   { id:'catches_100', label:'Catch 100 leaves',                    desc:'in a single run',                          get:r => [r.catches, 100] },
   { id:'streak_25',   label:'Reach a streak of 25',                desc:'25 catches in a row',                      get:r => [r.bestStreak, 25] },
   { id:'streak_50',   label:'Reach a streak of 50',                desc:'50 catches in a row',                      get:r => [r.bestStreak, 50] },
   { id:'combo',       label:'Catch 4 leaves in 5 seconds',         desc:'a proper flurry',                          get:r => [r.bestCombo, 4] },
   { id:'combo8',      label:'Catch 8 leaves in 5 seconds',         desc:'an absolute blur of leaves',               get:r => [r.bestCombo, 8] },
-  { id:'ph_lights',   label:'Collect 100,000 lights in power hour', desc:'only lights caught during power hour count', get:r => [r.phLights, 100000] },
+  { id:'ph_lights',   label:'Collect 400,000 lights in power hour', desc:'only lights caught during power hour count', get:r => [r.phLights, 400000] },
   { id:'all_eggs',    label:'Find all 5 easter eggs',              desc:'hidden around the showcase - they stay found', get:r => [Object.keys(getShowcase().eggs || {}).length, EGGS.length] },
   { id:'big_catch',   label:'One catch worth 1,000+',              desc:'a single leaf',                            get:r => [r.bigCatch, 1000] },
   { id:'every_song',  label:'5,000 lights during every song',      desc:'all 7 songs, in one run (no skipping ahead)', get:r => [r.songLights.filter(v => v >= 5000).length, 7] },
