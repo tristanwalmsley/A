@@ -13,13 +13,27 @@
 (function () {
   'use strict';
 
+  /* Per-theme options (all optional):
+       flakes  falling glyphs            drift  snow piled along the bottom      frost  icy screen corners
+       caps    snow caps on cards        burst  glyphs sparkled on click/tap
+       home    texts swapped in on the home page (greeting line, postmark, corner stamp)            */
+  var CAP_SELECTORS = '.letter, .keepsake-card, .sheet';
   var THEMES = [
     { id: 'winter',      label: 'Winter',      start: '11-06', end: '11-30',
-      flakes: { glyphs: ['❄', '❅', '❆', '•'], count: 24, size: [9, 20] } },
+      flakes: { glyphs: ['❄', '❅', '❆', '•'], count: 24, size: [9, 20] },
+      drift: true, frost: true, caps: true, burst: ['❄', '❅', '✦'],
+      home: { greeting: '❄ the winter edition is here - stay cosy, Bestie Ann ❄',
+              postmark: 'Winter<br>love from<br>the UK', corner: 'Frosty<br>class<br>bestie' } },
     { id: 'sinterklaas', label: 'Sinterklaas', start: '12-01', end: '12-05',
-      flakes: { glyphs: ['✦', '✧', '•'], count: 20, size: [10, 20] } },
+      flakes: { glyphs: ['✦', '✧', '•'], count: 20, size: [10, 20] },
+      burst: ['✦', '✧', '★'],
+      home: { greeting: '🎁 Sinterklaas edition - zet je schoentje, Bestie Ann! 🥾',
+              postmark: 'Fijne<br>Sint ✦<br>from UK', corner: 'Gold<br>star<br>bestie' } },
     { id: 'christmas',   label: 'Christmas',   start: '12-06', end: '12-31',
-      flakes: { glyphs: ['❄', '❅', '•'],  count: 26, size: [9, 20] } }
+      flakes: { glyphs: ['❄', '❅', '•'],  count: 26, size: [9, 20] },
+      drift: true, caps: true, burst: ['❄', '✦', '❅'],
+      home: { greeting: '🎄 the Christmas edition - happy holidays, Bestie Ann 🎄',
+              postmark: 'Merry<br>Christmas<br>from UK', corner: 'Festive<br>class<br>bestie' } }
   ];
 
   var KEY = 'site_theme_preview', KEY_DATE = 'site_theme_date';
@@ -58,11 +72,39 @@
   /* ---------------- decorations (ribbon + falling flakes) ---------------- */
   function rnd(a, b) { return a + Math.random() * (b - a); }
 
+  var HOME_SWAPS = [['.postmark-text', 'postmark'], ['.letter-corner span', 'corner']];
+
   function clearDeco() {
-    ['theme-ribbon', 'theme-deco', 'theme-preview-badge'].forEach(function (id) {
+    ['theme-ribbon', 'theme-deco', 'theme-preview-badge', 'theme-drift', 'theme-frost'].forEach(function (id) {
       var el = document.getElementById(id); if (el) el.remove();
     });
+    root.classList.remove('td-no-nav');
+    document.querySelectorAll('.td-cap, .td-greeting').forEach(function (el) { el.remove(); });
+    document.querySelectorAll('[data-td-orig]').forEach(function (el) {   // put swapped home texts back
+      el.innerHTML = el.getAttribute('data-td-orig'); el.removeAttribute('data-td-orig');
+    });
   }
+  function add(id) { var d = document.createElement('div'); d.id = id; d.setAttribute('aria-hidden', 'true'); document.body.appendChild(d); return d; }
+
+  function buildHome(h) {
+    var since = document.querySelector('.top-text .since');
+    if (since && h.greeting) {
+      var g = document.createElement('p'); g.className = 'td-greeting'; g.textContent = h.greeting;
+      since.parentNode.insertBefore(g, since.nextSibling);
+    }
+    HOME_SWAPS.forEach(function (pair) {
+      var el = document.querySelector(pair[0]);
+      if (el && h[pair[1]]) { el.setAttribute('data-td-orig', el.innerHTML); el.innerHTML = h[pair[1]]; }
+    });
+  }
+  function buildCaps() {
+    document.querySelectorAll(CAP_SELECTORS).forEach(function (el) {
+      if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
+      var c = document.createElement('span'); c.className = 'td-cap'; c.setAttribute('aria-hidden', 'true');
+      el.appendChild(c);
+    });
+  }
+
   function buildDeco() {
     clearDeco();
     var forcedNow = load(KEY) || load(KEY_DATE);
@@ -75,13 +117,17 @@
       document.body.appendChild(b);
     }
     if (!active) return;
-    var r = document.createElement('div'); r.id = 'theme-ribbon'; r.setAttribute('aria-hidden', 'true');
-    document.body.appendChild(r);
+    add('theme-ribbon');
+    root.classList.toggle('td-no-nav', !document.getElementById('site-nav'));   // pages without a nav hang the trim from the ribbon
+    if (active.frost) add('theme-frost');
+    if (active.drift) add('theme-drift');
+    if (active.caps) buildCaps();
+    if (active.home) buildHome(active.home);
     var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce || !active.flakes) return;
     var f = active.flakes, small = window.innerWidth < 700;
     var n = Math.round(f.count * (small ? 0.55 : 1));
-    var layer = document.createElement('div'); layer.id = 'theme-deco'; layer.setAttribute('aria-hidden', 'true');
+    var layer = add('theme-deco');
     for (var i = 0; i < n; i++) {
       var s = document.createElement('span'); s.className = 'td-flake';
       s.textContent = f.glyphs[i % f.glyphs.length];
@@ -90,8 +136,24 @@
         '--dx:' + rnd(-40, 40).toFixed(0) + 'px;--r:' + rnd(-180, 180).toFixed(0) + 'deg';
       layer.appendChild(s);
     }
-    document.body.appendChild(layer);
   }
+
+  /* sparkle burst where you click / tap */
+  document.addEventListener('pointerdown', function (e) {
+    if (!active || !active.burst) return;
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (document.querySelectorAll('.td-burst').length > 40) return;
+    for (var i = 0; i < 6; i++) {
+      var p = document.createElement('span'); p.className = 'td-burst';
+      p.textContent = active.burst[i % active.burst.length];
+      var ang = rnd(0, Math.PI * 2), dist = rnd(24, 58);
+      p.style.cssText = 'left:' + e.clientX + 'px;top:' + e.clientY + 'px;--s:' + rnd(10, 18).toFixed(0) + 'px;' +
+        '--bx:' + (Math.cos(ang) * dist).toFixed(0) + 'px;--by:' + (Math.sin(ang) * dist).toFixed(0) + 'px;--br:' + rnd(-120, 120).toFixed(0) + 'deg';
+      document.body.appendChild(p);
+      (function (el) { setTimeout(function () { el.remove(); }, 900); })(p);
+    }
+  }, { passive: true });
+
   if (document.body) buildDeco(); else document.addEventListener('DOMContentLoaded', buildDeco);
 
   /* ---------------- public API ---------------- */

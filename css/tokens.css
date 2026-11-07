@@ -9,7 +9,7 @@
   --cream:#faf4e8; --warm:#f0ddb8; --tan:#d4b483; --brown:#7a5230; --deep:#3a2010;
   --rose:#b86858;  --gold:#c8943a; --sage:#7a9870; --paper:#fffdf5; --ink:#2a1a08;
   /* shades that used to be hard-coded in button shadows / hovers */
-  --gold-hover:#e0a840; --rose-dark:#8a4838; --sage-dark:#5a7850;
+  --gold-hover:#e0a840; --mat:#efdfba; --gold-light:#e8b95a; --gold-dark:#a8741f; --rose-dark:#8a4838; --sage-dark:#5a7850;
 
   /* fonts */
   --font-display:'Playfair Display',serif;

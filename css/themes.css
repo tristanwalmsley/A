@@ -30,8 +30,8 @@ html[data-theme] #site-nav .nav-brand::before{content:var(--brand-glyph);margin-
 html[data-theme="winter"]{
   --cream:#f1f6fa; --warm:#dce8f1; --tan:#a9c0d3; --brown:#3f5a73; --deep:#14253a;
   --rose:#4f7fb0;  --gold:#5f9bc4; --sage:#6f9fa3; --paper:#fbfdff; --ink:#101c2b;
-  --gold-hover:#80b4d8; --rose-dark:#355a86; --sage-dark:#4d7377;
-  --nav-dark-bg:rgba(10,22,38,.95); --nav-dark-menu-bg:#101e30;
+  --gold-hover:#80b4d8; --gold-light:#b5dbf2; --gold-dark:#3b6f96; --rose-dark:#355a86; --sage-dark:#4d7377;
+  --mat:#dbe8f2; --nav-dark-bg:rgba(10,22,38,.95); --nav-dark-menu-bg:#101e30;
   --brand-glyph:'❄️';
   --ribbon:repeating-linear-gradient(90deg,#fbfdff 0 24px,#a9c0d3 24px 30px,#5f9bc4 30px 36px,#a9c0d3 36px 42px);
   --flake:#fff; --flake-shadow:0 0 3px rgba(20,37,58,.55);
@@ -41,8 +41,8 @@ html[data-theme="winter"]{
 html[data-theme="sinterklaas"]{
   --cream:#fbf3e6; --warm:#f2d9b0; --tan:#d9ae7a; --brown:#7b3326; --deep:#3a1219;
   --rose:#c8222f;  --gold:#d9a521; --sage:#4c7f86; --paper:#fffbf2; --ink:#2a1210;
-  --gold-hover:#ecbb3a; --rose-dark:#8e1520; --sage-dark:#36606a;
-  --nav-dark-bg:rgba(34,8,14,.95); --nav-dark-menu-bg:#2a0e14;
+  --gold-hover:#ecbb3a; --gold-light:#f3d675; --gold-dark:#a77a10; --rose-dark:#8e1520; --sage-dark:#36606a;
+  --mat:#f2dcb4; --nav-dark-bg:rgba(34,8,14,.95); --nav-dark-menu-bg:#2a0e14;
   --brand-glyph:'🎁';
   --ribbon:repeating-linear-gradient(90deg,#c8222f 0 22px,#fffbf2 22px 28px,#d9a521 28px 34px,#fffbf2 34px 40px);
   --flake:var(--gold); --flake-shadow:0 0 4px color-mix(in srgb,var(--gold) 60%,transparent);
@@ -52,9 +52,58 @@ html[data-theme="sinterklaas"]{
 html[data-theme="christmas"]{
   --cream:#f7f4ec; --warm:#e8e0cc; --tan:#c9b48a; --brown:#5e3b32; --deep:#17302a;
   --rose:#b3262e;  --gold:#c99a2e; --sage:#2f6b4a; --paper:#fffdf8; --ink:#1b1a14;
-  --gold-hover:#dcae3e; --rose-dark:#7d1a20; --sage-dark:#1f4a33;
-  --nav-dark-bg:rgba(10,28,22,.95); --nav-dark-menu-bg:#10241d;
+  --gold-hover:#dcae3e; --gold-light:#e9cb72; --gold-dark:#8f6a14; --rose-dark:#7d1a20; --sage-dark:#1f4a33;
+  --mat:#e8dfc9; --nav-dark-bg:rgba(10,28,22,.95); --nav-dark-menu-bg:#10241d;
   --brand-glyph:'🎄';
   --ribbon:repeating-linear-gradient(90deg,#b3262e 0 18px,#c99a2e 18px 22px,#2f6b4a 22px 40px,#c99a2e 40px 44px);
   --flake:#fff; --flake-shadow:0 0 3px rgba(23,48,42,.6);
 }
+
+
+/* ==========================================================================
+   Fun stuff: trims along the nav, snow drift, frost, snow caps, sparkle bursts.
+   Elements are created by js/theme.js; everything here is theme-scoped.
+   ========================================================================== */
+
+/* hanging trim under the nav bar (icicles / lights / bunting) */
+html[data-theme] #site-nav::after,
+html.td-no-nav[data-theme] #theme-ribbon::after{content:'';position:absolute;left:0;right:0;top:100%;pointer-events:none;z-index:-1}
+html[data-theme="winter"] #site-nav::after,
+html.td-no-nav[data-theme="winter"] #theme-ribbon::after{height:26px;background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 26' width='150' height='26'><g fill='%23eef7fd' stroke='%239fbfd8' stroke-width='.8' stroke-linejoin='round'><path d='M0 0h18l-9 13z'/><path d='M22 0h12l-6 24z'/><path d='M40 0h16l-8 9z'/><path d='M62 0h14l-7 18z'/><path d='M84 0h18l-9 12z'/><path d='M108 0h12l-6 26z'/><path d='M126 0h16l-8 15z'/></g></svg>") repeat-x 0 -1px;
+  filter:drop-shadow(0 2px 2px rgba(60,100,140,.25))}
+html[data-theme="christmas"] #site-nav::after,
+html.td-no-nav[data-theme="christmas"] #theme-ribbon::after{height:26px;background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 26' width='80' height='26'><path d='M0 1Q20 9 40 1T80 1' fill='none' stroke='%232b2b2b' stroke-width='1.2'/><g stroke='%232b2b2b' stroke-width='.6'><g fill='%23e0343c'><rect x='7' y='6' width='4' height='3' fill='%23444'/><ellipse cx='9' cy='13' rx='3.6' ry='5'/></g><g fill='%23f2c14e'><rect x='27' y='8' width='4' height='3' fill='%23444'/><ellipse cx='29' cy='15' rx='3.6' ry='5'/></g><g fill='%233fa66a'><rect x='47' y='8' width='4' height='3' fill='%23444'/><ellipse cx='49' cy='15' rx='3.6' ry='5'/></g><g fill='%234a8fe0'><rect x='67' y='6' width='4' height='3' fill='%23444'/><ellipse cx='69' cy='13' rx='3.6' ry='5'/></g></g></svg>") repeat-x;
+  animation:tdTwinkle 2.6s ease-in-out infinite alternate}
+html[data-theme="sinterklaas"] #site-nav::after,
+html.td-no-nav[data-theme="sinterklaas"] #theme-ribbon::after{height:30px;background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 30' width='120' height='30'><path d='M0 2Q30 9 60 2T120 2' fill='none' stroke='%236b4a2a' stroke-width='1.2'/><g stroke='%236b4a2a' stroke-width='.7' stroke-linejoin='round'><path d='M5 4l22 2-10 20z' fill='%23c8222f'/><path d='M33 6l22 0-11 20z' fill='%23fffbf2'/><path d='M61 4l22 -2-11 22z' fill='%23d9a521'/><path d='M89 3l22 3-11 20z' fill='%23c8222f'/></g></svg>") repeat-x;
+  transform-origin:50% 0;animation:tdSway 5s ease-in-out infinite alternate}
+@keyframes tdTwinkle{from{filter:brightness(.82) saturate(.9)}to{filter:brightness(1.3) saturate(1.3) drop-shadow(0 0 4px rgba(255,220,120,.7))}}
+@keyframes tdSway{from{transform:rotate(-.25deg)}to{transform:rotate(.25deg)}}
+@media (prefers-reduced-motion:reduce){html[data-theme] #site-nav::after,html.td-no-nav #theme-ribbon::after{animation:none}}
+
+/* snow piled along the bottom edge */
+#theme-drift{position:fixed;left:0;right:0;bottom:0;height:34px;z-index:440;pointer-events:none;
+  background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 34' width='240' height='34' preserveAspectRatio='none'><path d='M0 34V20Q15 6 36 16Q54 4 78 14Q98 2 124 14Q144 6 166 15Q190 3 212 14Q228 8 240 18V34z' fill='%23fff'/></svg>") repeat-x bottom/240px 34px;filter:drop-shadow(0 -2px 3px rgba(60,100,140,.3))}
+
+/* icy frost in the corners of the screen (winter) */
+#theme-frost{position:fixed;inset:0;z-index:440;pointer-events:none;
+  background:
+    radial-gradient(ellipse 34% 30% at 0 0,rgba(255,255,255,.7),transparent 70%),
+    radial-gradient(ellipse 30% 28% at 100% 0,rgba(255,255,255,.6),transparent 70%),
+    radial-gradient(ellipse 34% 30% at 0 100%,rgba(220,238,252,.7),transparent 70%),
+    radial-gradient(ellipse 30% 28% at 100% 100%,rgba(220,238,252,.6),transparent 70%);
+  box-shadow:inset 0 0 80px rgba(170,205,235,.35)}
+
+/* snow caps on cards */
+.td-cap{position:absolute;left:-4px;right:-4px;top:-11px;height:16px;pointer-events:none;z-index:3;
+  background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 16' width='96' height='16'><path d='M0 16V10Q6 2 14 7Q22 -1 32 6Q40 1 48 7Q58 0 66 6Q76 1 84 7Q90 3 96 9V16z' fill='%23fff' stroke='%23c9dcea' stroke-width='.8'/></svg>") repeat-x 0 0/96px 16px;filter:drop-shadow(0 1px 1px rgba(60,100,140,.25))}
+
+/* seasonal line under the title on the home page */
+.td-greeting{font-family:var(--font-hand);font-size:1.25rem;color:var(--rose);margin:.2rem 0 .6rem;letter-spacing:.5px}
+
+/* sparkles when you click or tap */
+.td-burst{position:fixed;z-index:9992;pointer-events:none;font-size:var(--s,14px);line-height:1;color:var(--flake,#fff);
+  text-shadow:var(--flake-shadow,none);animation:tdBurst .85s ease-out forwards}
+@keyframes tdBurst{
+  0%{opacity:1;transform:translate(-50%,-50%) scale(.4)}
+  100%{opacity:0;transform:translate(calc(-50% + var(--bx)),calc(-50% + var(--by))) scale(1.1) rotate(var(--br))}}
