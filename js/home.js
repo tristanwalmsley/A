@@ -343,6 +343,14 @@ const SECRET_TIERS = {
       setTimeout(() => { ring.remove(); launchHeartBurst(); next(); }, 2500);
     }
   },
+  // the five showcase eggs: the Leaf Legend reel replays them (js/leaf_legend_reel.js), then the golden finale
+  showcase: {
+    info: 'Every secret hiding on the Birthday 2026 showcase: a wishing star, a sign that loves attention, a clock that hates being poked, a constellation and a very impatient last minute.<br><br>Five more, found. You are unreasonable.',
+    anim(o, next){
+      if(window.LeafLegendReel) return LeafLegendReel.play(o, next, { banner:'ALL FIVE FOUND' });
+      lgxGrandFinale(o); setTimeout(next, 6800);
+    }
+  },
   // a wall of reasons flips over, flies into a heart, beats three times, then bursts
   reasons: {
     info: 'Every secret on the reasons page: a song, a shooting star, a tin of beans, a doorbell, a 2am text and more. You read the small print of a list that was already meant to cheer you up.<br><br>There really are so many more reasons. I will keep adding them.',
