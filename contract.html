@@ -6,12 +6,12 @@
 <title>Besties ♡</title>
 <link rel="icon" type="image/x-icon" href="media/shared/images/site_icon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--cream:#faf4e8;--warm:#f0ddb8;--tan:#d4b483;--brown:#7a5230;--deep:#3a2010;--rose:#b86858;--gold:#c8943a;--sage:#7a9870;--paper:#fffdf5;--ink:#2a1a08}
-html{scroll-behavior:smooth}
-body{background:var(--deep);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden;overflow-y:auto}
-body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.5}
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/themes.css">
+<script src="js/theme.js"></script>
+<style>:root{--page-bg:var(--deep);--grain-opacity:.714}
+body{overflow-y:auto}
 .bg-pattern{position:fixed;inset:0;opacity:0.04;background-image:repeating-linear-gradient(0deg,var(--tan) 0px,transparent 1px,transparent 28px),repeating-linear-gradient(90deg,var(--tan) 0px,transparent 1px,transparent 28px);pointer-events:none}
 .view-banner{display:none;background:var(--gold);color:var(--deep);text-align:center;padding:0.6rem 2rem;font-family:'Caveat',cursive;font-size:1rem;letter-spacing:0.5px}
 .view-banner.show{display:block}
@@ -50,7 +50,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .sig-line{border-bottom:1.5px solid var(--tan);height:2.5rem;position:relative}
 .sig-pre{position:absolute;bottom:0.25rem;left:0;font-family:'Caveat',cursive;font-size:1.5rem;font-weight:700;color:var(--rose);pointer-events:none}
 .sig-input{position:absolute;bottom:0;left:0;width:100%;border:none;outline:none;background:transparent;font-family:'Caveat',cursive;font-size:1.5rem;color:var(--rose);padding-bottom:0.25rem;letter-spacing:0.5px}
-.sig-input::placeholder{color:rgba(184,104,88,0.3);font-size:1rem;font-weight:400}
+.sig-input::placeholder{color:color-mix(in srgb,var(--rose) 30%,transparent);font-size:1rem;font-weight:400}
 .sig-date{font-family:'Caveat',cursive;font-size:0.82rem;color:var(--brown);margin-top:0.35rem}
 .wax-seal-wrap{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
 .wax-seal{width:62px;height:62px;background:var(--rose);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:0 3px 12px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.2);position:relative}
@@ -61,19 +61,19 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .footer-text{font-family:'Caveat',cursive;font-size:1rem;color:var(--brown);margin-bottom:1.2rem;letter-spacing:0.5px;line-height:1.6}
 .sign-error{font-family:'Caveat',cursive;font-size:0.9rem;color:var(--rose);margin-top:0.5rem;display:none}
 .sign-error.show{display:block}
-.btn-sign{display:inline-block;background:var(--rose);color:var(--cream);border:none;padding:1rem 3rem;font-family:'Caveat',cursive;font-size:1.4rem;cursor:pointer;letter-spacing:1px;box-shadow:5px 5px 0 #8a4838;transition:all 0.15s;position:relative;overflow:hidden}
+.btn-sign{display:inline-block;background:var(--rose);color:var(--cream);border:none;padding:1rem 3rem;font-family:'Caveat',cursive;font-size:1.4rem;cursor:pointer;letter-spacing:1px;box-shadow:5px 5px 0 var(--rose-dark);transition:all 0.15s;position:relative;overflow:hidden}
 .btn-sign::after{content:'';position:absolute;inset:0;border:1px solid rgba(255,255,255,0.15)}
-.btn-sign:hover{background:#c8605a;transform:translate(-3px,-3px);box-shadow:8px 8px 0 #8a4838}
-.btn-sign:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #8a4838}
+.btn-sign:hover{background:#c8605a;transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--rose-dark)}
+.btn-sign:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--rose-dark)}
 .signed-overlay{display:none;position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center;pointer-events:none}
 .signed-overlay.show{display:flex}
-.signed-stamp{font-family:'Playfair Display',serif;font-size:clamp(3rem,10vw,6rem);font-weight:700;color:var(--sage);border:6px solid var(--sage);padding:0.3rem 1rem;transform:rotate(-18deg) scale(0);opacity:0;transition:transform 0.5s cubic-bezier(0.34,1.6,0.64,1),opacity 0.2s;letter-spacing:4px;text-transform:uppercase;text-shadow:0 0 30px rgba(122,152,112,0.4)}
+.signed-stamp{font-family:'Playfair Display',serif;font-size:clamp(3rem,10vw,6rem);font-weight:700;color:var(--sage);border:6px solid var(--sage);padding:0.3rem 1rem;transform:rotate(-18deg) scale(0);opacity:0;transition:transform 0.5s cubic-bezier(0.34,1.6,0.64,1),opacity 0.2s;letter-spacing:4px;text-transform:uppercase;text-shadow:0 0 30px color-mix(in srgb,var(--sage) 40%,transparent)}
 .signed-overlay.show .signed-stamp{transform:rotate(-18deg) scale(1);opacity:1}
 .proceed-wrap{position:fixed;bottom:2.5rem;left:50%;transform:translateX(-50%);opacity:0;transition:opacity 0.5s ease 0.8s;pointer-events:none;text-align:center;z-index:1001}
 .proceed-wrap.show{opacity:1;pointer-events:auto}
 .btn-proceed{background:var(--gold);color:var(--deep);border:none;padding:1.1rem 3rem;font-family:'Caveat',cursive;font-size:1.35rem;cursor:pointer;box-shadow:5px 5px 0 var(--brown);letter-spacing:1px;transition:all 0.15s}
-.btn-proceed:hover{background:#e0a840;transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--brown)}
-.proceed-sub{font-family:'Caveat',cursive;font-size:0.85rem;color:rgba(250,244,232,0.6);margin-top:0.5rem;letter-spacing:0.5px}
+.btn-proceed:hover{background:var(--gold-hover);transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--brown)}
+.proceed-sub{font-family:'Caveat',cursive;font-size:0.85rem;color:color-mix(in srgb,var(--cream) 60%,transparent);margin-top:0.5rem;letter-spacing:0.5px}
 </style>
 <script src="js/bestie_storage.js"></script>
 </head>

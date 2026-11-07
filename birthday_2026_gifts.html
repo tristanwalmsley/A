@@ -6,27 +6,16 @@
 <title>Besties ♡</title>
 <link rel="icon" type="image/x-icon" href="media/shared/images/site_icon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --cream:#faf4e8;--warm:#f0ddb8;--tan:#d4b483;--brown:#7a5230;
-  --deep:#3a2010;--rose:#b86858;--gold:#c8943a;--sage:#7a9870;
-  --paper:#fffdf5;--ink:#2a1a08;--locked-bg:#eee8dc;--locked-text:#b0a898;
-}
-html{scroll-behavior:smooth}
-body{background:var(--cream);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden}
-body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.6}
-nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--tan);background:var(--paper);position:sticky;top:0;z-index:500;flex-wrap:wrap;gap:0.5rem}
-.nav-brand{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--rose);font-weight:700;text-decoration:none}
-.nav-links{display:flex;gap:1rem;flex-wrap:wrap}
-.nav-a{font-family:'Caveat',cursive;font-size:0.95rem;color:var(--brown);text-decoration:none;padding:0.3rem 0.6rem;border-radius:2px;transition:color 0.2s,background 0.2s;letter-spacing:0.5px;border:none;background:none;cursor:pointer}
-.nav-a:hover{color:var(--deep);background:var(--warm)}
-.nav-a.current{color:var(--deep);font-weight:700;border-bottom:2px solid var(--gold)}
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/themes.css">
+<script src="js/theme.js"></script>
+<style>:root{--locked-bg:#eee8dc;--locked-text:#b0a898}
+.page-header p{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--brown);margin-top:0.4rem;letter-spacing:0.5px}
 .nav-a.locked{color:var(--locked-text);cursor:not-allowed;pointer-events:none}
 .page-header{text-align:center;padding:3rem 2rem 1.5rem;animation:headerIn 0.7s ease both}
 @keyframes headerIn{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
 .page-header h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:400;color:var(--deep)}
-.page-header p{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--brown);margin-top:0.4rem;letter-spacing:0.5px}
 .tutorial-pill-wrap{text-align:center;margin-top:0.7rem}
 .tutorial-pill{background:none;border:1.5px solid var(--tan);color:var(--brown);font-family:'Caveat',cursive;font-size:0.9rem;padding:0.3rem 0.9rem;cursor:pointer;transition:all 0.2s;letter-spacing:0.3px}
 .tutorial-pill:hover{background:var(--warm);border-color:var(--gold);color:var(--deep)}
@@ -38,18 +27,18 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .spine{position:absolute;left:calc(1.5rem + 27px);top:0;bottom:0;width:2px;z-index:0;overflow:hidden}
 .spine-bg{position:absolute;inset:0;border-left:2.5px dashed var(--warm)}
 .spine-fill{position:absolute;top:0;left:0;right:0;height:0;background:linear-gradient(to bottom,var(--sage),var(--gold));transition:height 0.8s cubic-bezier(0.22,1,0.36,1)}
-.spine-fill::after{content:'';position:absolute;left:50%;bottom:-3px;width:9px;height:9px;border-radius:50%;background:var(--gold);transform:translateX(-50%);box-shadow:0 0 10px 3px rgba(200,148,58,0.6);opacity:0;transition:opacity 0.4s}
+.spine-fill::after{content:'';position:absolute;left:50%;bottom:-3px;width:9px;height:9px;border-radius:50%;background:var(--gold);transform:translateX(-50%);box-shadow:0 0 10px 3px color-mix(in srgb,var(--gold) 60%,transparent);opacity:0;transition:opacity 0.4s}
 .spine-fill.has-progress::after{opacity:1;animation:spineGlowPulse 1.8s ease-in-out infinite}
-@keyframes spineGlowPulse{0%,100%{transform:translateX(-50%) scale(1);box-shadow:0 0 10px 3px rgba(200,148,58,0.6)}50%{transform:translateX(-50%) scale(1.35);box-shadow:0 0 16px 6px rgba(200,148,58,0.8)}}
+@keyframes spineGlowPulse{0%,100%{transform:translateX(-50%) scale(1);box-shadow:0 0 10px 3px color-mix(in srgb,var(--gold) 60%,transparent)}50%{transform:translateX(-50%) scale(1.35);box-shadow:0 0 16px 6px color-mix(in srgb,var(--gold) 80%,transparent)}}
 /* STOP */
 .stop{display:flex;align-items:flex-start;gap:1.2rem;margin-bottom:2rem;position:relative;z-index:1;opacity:0;transform:translateX(-30px);animation:stopSlide 0.6s cubic-bezier(0.22,1,0.36,1) forwards}
 @keyframes stopSlide{to{opacity:1;transform:translateX(0)}}
 /* DOT - now an icon */
 .stop-dot{flex-shrink:0;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;position:relative;transition:transform 0.4s cubic-bezier(0.34,1.6,0.64,1),box-shadow 0.3s}
 .stop.is-locked .stop-dot{background:var(--locked-bg);border:2.5px dashed var(--locked-text);font-size:0.9rem}
-.stop.is-unlocked .stop-dot{background:var(--warm);border:2.5px solid var(--gold);box-shadow:0 0 0 4px rgba(200,148,58,0.15);cursor:pointer}
-.stop.is-unlocked .stop-dot:hover{transform:scale(1.18) rotate(-6deg);box-shadow:0 0 0 10px rgba(200,148,58,0.2)}
-.stop.is-opened .stop-dot{background:var(--sage);border:2.5px solid var(--sage);box-shadow:0 0 0 4px rgba(122,152,112,0.2)}
+.stop.is-unlocked .stop-dot{background:var(--warm);border:2.5px solid var(--gold);box-shadow:0 0 0 4px color-mix(in srgb,var(--gold) 15%,transparent);cursor:pointer}
+.stop.is-unlocked .stop-dot:hover{transform:scale(1.18) rotate(-6deg);box-shadow:0 0 0 10px color-mix(in srgb,var(--gold) 20%,transparent)}
+.stop.is-opened .stop-dot{background:var(--sage);border:2.5px solid var(--sage);box-shadow:0 0 0 4px color-mix(in srgb,var(--sage) 20%,transparent)}
 .stop.is-unlocked .stop-dot::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--gold);opacity:0;animation:pulseRing 2s ease-in-out infinite}
 @keyframes pulseRing{0%{opacity:0.8;transform:scale(1)}100%{opacity:0;transform:scale(1.7)}}
 .stop.kind-unlock.is-unlocked .stop-dot{border-style:double;border-width:4px}
@@ -62,7 +51,7 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .stop.is-opened .stop-card::before{background:var(--sage)}
 .stop.is-unlocked:hover .stop-card{box-shadow:6px 6px 0 var(--tan);transform:translate(-3px,-3px)}
 .stop.just-opened .stop-card{animation:justOpenedGlow 1.4s ease}
-@keyframes justOpenedGlow{0%{box-shadow:0 0 0 0 rgba(122,152,112,0.7)}60%{box-shadow:0 0 0 14px rgba(122,152,112,0)}100%{box-shadow:0 0 0 0 rgba(122,152,112,0)}}
+@keyframes justOpenedGlow{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--sage) 70%,transparent)}60%{box-shadow:0 0 0 14px color-mix(in srgb,var(--sage) 0%,transparent)}100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--sage) 0%,transparent)}}
 .stop-label{font-family:'Caveat',cursive;font-size:0.78rem;letter-spacing:3px;text-transform:uppercase;color:var(--brown);margin-bottom:0.25rem}
 .stop.is-locked .stop-label{color:var(--locked-text)}
 .stop-title{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--deep);margin-bottom:0.3rem}
@@ -88,8 +77,8 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .gift-box-scene{position:relative;display:flex;justify-content:center;align-items:center;height:260px;margin-bottom:-20px}
 .gift-box{width:160px;height:130px;position:relative;transform-style:preserve-3d;cursor:default}
 .box-body{position:absolute;bottom:0;left:0;right:0;height:100px;background:var(--warm);border:2px solid var(--tan);border-radius:2px;overflow:hidden}
-.box-body::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:20px;height:100%;background:rgba(200,148,58,0.3)}
-.box-lid{position:absolute;top:0;left:-8px;right:-8px;height:36px;background:var(--rose);border:2px solid #8a4838;border-radius:2px;transform-origin:left center;z-index:2}
+.box-body::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:20px;height:100%;background:color-mix(in srgb,var(--gold) 30%,transparent)}
+.box-lid{position:absolute;top:0;left:-8px;right:-8px;height:36px;background:var(--rose);border:2px solid var(--rose-dark);border-radius:2px;transform-origin:left center;z-index:2}
 .box-lid::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:100%;background:rgba(255,255,255,0.15)}
 .bow{position:absolute;top:-12px;left:50%;transform:translateX(-50%)}
 .bow-left,.bow-right{position:absolute;width:22px;height:16px;border:3px solid var(--gold);border-radius:50%;top:0}
@@ -112,14 +101,14 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .mystery-eyebrow{font-family:'Caveat',cursive;font-size:0.85rem;letter-spacing:3px;text-transform:uppercase;color:var(--rose);margin-bottom:0.7rem}
 .mystery-hint{font-size:1.05rem;line-height:1.75;color:var(--deep);font-style:italic;margin-bottom:1.4rem;padding:0 0.3rem}
 .btn-reveal{background:var(--gold);color:var(--deep);border:none;padding:0.7rem 1.6rem;font-family:'Caveat',cursive;font-size:1.1rem;cursor:pointer;box-shadow:3px 3px 0 var(--brown);transition:all 0.15s;letter-spacing:0.4px}
-.btn-reveal:hover{background:#e0a840;transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown)}
+.btn-reveal:hover{background:var(--gold-hover);transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown)}
 .btn-reveal:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--brown)}
 /* REVEALED STAGE */
 .gift-revealed{opacity:0}
 .gift-revealed.pop{animation:revealPop 0.5s cubic-bezier(0.22,1,0.36,1) forwards}
 @keyframes revealPop{0%{opacity:0;transform:scale(0.9) translateY(10px)}100%{opacity:1;transform:scale(1) translateY(0)}}
 .modal-num{font-family:'Playfair Display',serif;font-size:5rem;font-weight:700;line-height:1;margin-bottom:0.2rem;color:var(--warm);transition:color 0.4s,text-shadow 0.4s}
-.modal-num.lit{color:var(--gold);text-shadow:0 0 30px rgba(200,148,58,0.5)}
+.modal-num.lit{color:var(--gold);text-shadow:0 0 30px color-mix(in srgb,var(--gold) 50%,transparent)}
 @keyframes numPop{0%{transform:scale(0.3) rotate(-15deg)}60%{transform:scale(1.15) rotate(3deg)}80%{transform:scale(0.95) rotate(-1deg)}100%{transform:scale(1) rotate(0deg)}}
 .modal-num.lit{animation:numPop 0.6s cubic-bezier(0.34,1.6,0.64,1) forwards}
 .modal-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--deep);margin-bottom:0.5rem;line-height:1.2}
@@ -157,8 +146,8 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .tutorial-card ol{padding-left:1.3rem;margin-bottom:1.4rem}
 .tutorial-card li{font-size:0.96rem;line-height:1.7;color:var(--brown);margin-bottom:0.6rem}
 .btn-tutorial-close{display:block;margin:0 auto;background:var(--gold);color:var(--deep);border:none;padding:0.7rem 1.8rem;font-family:'Caveat',cursive;font-size:1.1rem;cursor:pointer;box-shadow:3px 3px 0 var(--brown);transition:all 0.15s}
-.btn-tutorial-close:hover{background:#e0a840;transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown)}
-#reset-btn{position:fixed;bottom:1.2rem;left:1.2rem;background:rgba(58,32,16,0.2);color:rgba(58,32,16,0.25);border:1px solid rgba(58,32,16,0.1);padding:0.25rem 0.6rem;font-family:'Caveat',cursive;font-size:0.7rem;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;z-index:100}
+.btn-tutorial-close:hover{background:var(--gold-hover);transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown)}
+#reset-btn{position:fixed;bottom:1.2rem;left:1.2rem;background:color-mix(in srgb,var(--deep) 20%,transparent);color:color-mix(in srgb,var(--deep) 25%,transparent);border:1px solid color-mix(in srgb,var(--deep) 10%,transparent);padding:0.25rem 0.6rem;font-family:'Caveat',cursive;font-size:0.7rem;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;z-index:100}
 #reset-btn:hover{background:var(--warm);color:var(--brown);border-color:var(--tan)}
 </style>
 </head>

@@ -32,16 +32,16 @@
 
 /* featured (annual) plan */
 .plan-featured{background:var(--deep);border-color:var(--gold);transform:scale(1.03);
-  box-shadow:6px 6px 0 var(--rose),0 0 40px rgba(200,148,58,0.25)}
-.plan-featured:hover{transform:scale(1.03) translateY(-4px);box-shadow:6px 6px 0 var(--rose),0 0 40px rgba(200,148,58,0.25)}
+  box-shadow:6px 6px 0 var(--rose),0 0 40px color-mix(in srgb,var(--gold) 25%,transparent)}
+.plan-featured:hover{transform:scale(1.03) translateY(-4px);box-shadow:6px 6px 0 var(--rose),0 0 40px color-mix(in srgb,var(--gold) 25%,transparent)}
 .plan-featured .plan-name{color:var(--cream)}
 .plan-featured .plan-price{color:var(--gold)}
-.plan-featured .plan-price-was{color:rgba(250,244,232,0.4)}
-.plan-featured .plan-period{color:rgba(250,244,232,0.55)}
+.plan-featured .plan-price-was{color:color-mix(in srgb,var(--cream) 40%,transparent)}
+.plan-featured .plan-period{color:color-mix(in srgb,var(--cream) 55%,transparent)}
 .plan-featured .plan-tagline{color:var(--warm)}
-.plan-featured .plan-features li{color:rgba(250,244,232,0.85)}
+.plan-featured .plan-features li{color:color-mix(in srgb,var(--cream) 85%,transparent)}
 .plan-featured .feat-yes{color:#9fd88a}
-.plan-featured .feat-no{color:rgba(250,244,232,0.3)}
+.plan-featured .feat-no{color:color-mix(in srgb,var(--cream) 30%,transparent)}
 .plan-featured .btn{--btn-shadow:var(--rose)}
 
 .disclaimer{text-align:center;font-size:0.85rem;color:var(--tan);margin:1.8rem auto 3rem;max-width:520px;line-height:1.6;padding:0 1.5rem}
@@ -94,9 +94,9 @@
 /* checkout screen */
 #checkout-overlay{z-index:950;background:var(--deep)}
 .checkout-card{max-width:440px;width:100%;text-align:center}
-.checkout-spinner{width:52px;height:52px;border:4px solid rgba(200,148,58,0.25);border-top-color:var(--gold);border-radius:50%;margin:0 auto 2rem;animation:spin 0.9s linear infinite}
+.checkout-spinner{width:52px;height:52px;border:4px solid color-mix(in srgb,var(--gold) 25%,transparent);border-top-color:var(--gold);border-radius:50%;margin:0 auto 2rem;animation:spin 0.9s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.checkout-line{font-size:1.05rem;color:rgba(250,244,232,0.35);margin-bottom:0.75rem;opacity:0;transform:translateY(6px);
+.checkout-line{font-size:1.05rem;color:color-mix(in srgb,var(--cream) 35%,transparent);margin-bottom:0.75rem;opacity:0;transform:translateY(6px);
   transition:opacity 0.4s ease,transform 0.4s ease,color 0.4s ease}
 .checkout-line.show{opacity:1;transform:translateY(0);color:var(--cream)}
 .checkout-line.show.done{color:var(--sage)}

@@ -6,21 +6,16 @@
 <title>Besties ♡</title>
 <link rel="icon" type="image/x-icon" href="media/shared/images/site_icon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--cream:#faf4e8;--warm:#f0ddb8;--tan:#d4b483;--brown:#7a5230;--deep:#3a2010;--rose:#b86858;--gold:#c8943a;--sage:#7a9870;--paper:#fffdf5;--ink:#2a1a08}
-body{background:var(--deep);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden;position:relative}
-body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.5}
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/themes.css">
+<script src="js/theme.js"></script>
+<style>:root{--page-bg:var(--deep);--grain-opacity:.714}
+body{position:relative}
 .stars{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
 .star{position:absolute;background:var(--gold);border-radius:50%;opacity:0;animation:starTwinkle var(--sd) ease-in-out var(--sdelay) infinite}
 @keyframes starTwinkle{0%,100%{opacity:0;transform:scale(0.5)}50%{opacity:var(--sop);transform:scale(1)}}
-nav{padding:0.8rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);background:rgba(30,10,4,0.92);position:sticky;top:0;z-index:500;flex-wrap:wrap;gap:0.5rem}
-.nav-brand{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--rose);font-weight:700;text-decoration:none}
-.nav-links{display:flex;gap:0.8rem;flex-wrap:wrap}
-.nav-a{font-family:'Caveat',cursive;font-size:0.9rem;color:rgba(250,244,232,0.55);text-decoration:none;padding:0.25rem 0.6rem;border-radius:2px;transition:color 0.2s,background 0.2s;letter-spacing:0.5px;white-space:nowrap}
-.nav-a:hover{color:var(--cream);background:rgba(255,255,255,0.07)}
-.nav-a.current{color:var(--gold)}
-.nav-a.locked{color:rgba(250,244,232,0.2);cursor:not-allowed;pointer-events:none}
+.nav-a.locked{color:color-mix(in srgb,var(--cream) 20%,transparent);cursor:not-allowed;pointer-events:none}
 main{min-height:90vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 2rem 5rem;position:relative;z-index:1;text-align:center}
 .ornament-row{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--gold);letter-spacing:16px;margin-bottom:2rem;opacity:0;animation:glowIn 1s ease 0.2s forwards}
 @keyframes glowIn{from{opacity:0;transform:scale(0.85);letter-spacing:30px}to{opacity:1;transform:scale(1);letter-spacing:16px}}
@@ -31,7 +26,7 @@ main{min-height:90vh;display:flex;flex-direction:column;align-items:center;justi
 @keyframes lineUp{to{opacity:1;transform:translateY(0)}}
 .finale-sub{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--tan);margin:0.8rem 0 3rem;opacity:0;animation:fadeUp 0.7s ease 1s forwards;letter-spacing:1px}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.finale-letter{max-width:500px;width:100%;background:var(--paper);border:1px solid var(--tan);padding:2.5rem 2.5rem 2.2rem;position:relative;opacity:0;animation:letterReveal 1s cubic-bezier(0.22,1,0.36,1) 1.2s forwards;box-shadow:0 0 60px rgba(200,148,58,0.2),8px 8px 0 var(--brown);margin-bottom:2.5rem}
+.finale-letter{max-width:500px;width:100%;background:var(--paper);border:1px solid var(--tan);padding:2.5rem 2.5rem 2.2rem;position:relative;opacity:0;animation:letterReveal 1s cubic-bezier(0.22,1,0.36,1) 1.2s forwards;box-shadow:0 0 60px color-mix(in srgb,var(--gold) 20%,transparent),8px 8px 0 var(--brown);margin-bottom:2.5rem}
 @keyframes letterReveal{0%{opacity:0;transform:scale(0.88) rotateX(10deg)}60%{opacity:1;transform:scale(1.02) rotateX(-1deg)}100%{opacity:1;transform:scale(1) rotateX(0deg)}}
 .finale-letter::before{content:'';position:absolute;inset:-6px;border:1px dashed var(--warm);pointer-events:none}
 .finale-letter p{font-size:1.08rem;line-height:1.9;color:var(--deep);margin-bottom:1rem}
@@ -41,7 +36,7 @@ main{min-height:90vh;display:flex;flex-direction:column;align-items:center;justi
 @keyframes sealDrop{0%{opacity:0;transform:scale(0) rotate(-180deg)}100%{opacity:1;transform:scale(1) rotate(0deg)}}
 .cta-wrap{opacity:0;animation:fadeUp 0.7s ease 2.2s forwards}
 .btn-story{display:inline-block;background:var(--gold);color:var(--deep);border:none;padding:1rem 2.8rem;font-family:'Caveat',cursive;font-size:1.35rem;cursor:pointer;letter-spacing:1px;box-shadow:5px 5px 0 var(--brown);transition:all 0.15s;text-decoration:none}
-.btn-story:hover{background:#e0a840;transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--brown)}
+.btn-story:hover{background:var(--gold-hover);transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--brown)}
 .btn-story:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--brown)}
 #burst-canvas{position:fixed;inset:0;pointer-events:none;z-index:9998}
 </style>

@@ -6,21 +6,12 @@
 <title>Besties ♡</title>
 <link rel="icon" type="image/x-icon" href="media/shared/images/site_icon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/themes.css">
+<script src="js/theme.js"></script>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--cream:#faf4e8;--warm:#f0ddb8;--tan:#d4b483;--brown:#7a5230;--deep:#3a2010;--rose:#b86858;--gold:#c8943a;--sage:#7a9870;--paper:#fffdf5;--ink:#2a1a08}
-html{scroll-behavior:smooth}
-body{background:var(--cream);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden}
-body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.6}
-nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--tan);background:var(--paper);position:sticky;top:0;z-index:500}
-.nav-brand{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--rose);font-weight:700;text-decoration:none}
-.nav-links{display:flex;gap:1.2rem;flex-wrap:wrap}
-.nav-a{font-family:'Caveat',cursive;font-size:1rem;color:var(--brown);text-decoration:none;padding:0.3rem 0.7rem;border-radius:2px;transition:color 0.2s,background 0.2s}
-.nav-a:hover{color:var(--deep);background:var(--warm)}
-.nav-a.current{color:var(--deep);font-weight:700;border-bottom:2px solid var(--gold)}
 .page-header{text-align:center;padding:3rem 2rem 0.5rem}
-.page-header h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:400;font-style:italic;color:var(--deep)}
-.page-header p{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--brown);margin-top:0.4rem;letter-spacing:0.5px}
 .page-header .instructions{font-size:0.95rem;line-height:1.7;color:var(--brown);font-style:italic;max-width:480px;margin:1rem auto 0}
 
 /* LIST TABS */
@@ -33,18 +24,18 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .tierlist-wrap{max-width:680px;margin:2rem auto 5rem;padding:0 1.5rem}
 .tier{display:flex;align-items:stretch;margin-bottom:0.5rem;min-height:80px;background:var(--paper);border:1px solid var(--tan)}
 .tier-label{width:140px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--cream);padding:0.5rem}
-.tier-s .tier-label{background:#b86858}
-.tier-a .tier-label{background:#c8943a}
-.tier-b .tier-label{background:#7a9870}
-.tier-c .tier-label{background:#7a5230}
-.tier-d .tier-label{background:#3a2010;font-size:1.3rem}
+.tier-s .tier-label{background:var(--rose)}
+.tier-a .tier-label{background:var(--gold)}
+.tier-b .tier-label{background:var(--sage)}
+.tier-c .tier-label{background:var(--brown)}
+.tier-d .tier-label{background:var(--deep);font-size:1.3rem}
 .tier-drop{flex:1;display:flex;flex-wrap:wrap;gap:0.5rem;padding:0.7rem;min-height:70px;border-left:2px solid var(--warm);transition:background 0.2s}
-.tier-drop.drag-over{background:rgba(200,148,58,0.12);border-left-color:var(--gold)}
+.tier-drop.drag-over{background:color-mix(in srgb,var(--gold) 12%,transparent);border-left-color:var(--gold)}
 /* BISCUIT CARDS */
 .biscuit-pool{margin-top:1.5rem;padding:1.2rem;background:var(--warm);border:1px solid var(--tan)}
 .pool-title{font-family:'Caveat',cursive;font-size:0.85rem;letter-spacing:3px;text-transform:uppercase;color:var(--brown);margin-bottom:0.8rem}
 .pool-inner{display:flex;flex-wrap:wrap;gap:0.7rem;min-height:80px}
-.pool-inner.drag-over{background:rgba(200,148,58,0.15)}
+.pool-inner.drag-over{background:color-mix(in srgb,var(--gold) 15%,transparent)}
 .biscuit-card{background:var(--paper);border:2px solid var(--tan);padding:0.6rem 1rem;cursor:grab;user-select:none;display:flex;align-items:center;gap:0.6rem;transition:transform 0.15s,box-shadow 0.15s;touch-action:none}
 .biscuit-card:hover{transform:translate(-2px,-3px);box-shadow:4px 4px 0 var(--tan)}
 .biscuit-card:active{cursor:grabbing;transform:scale(1.06) rotate(2deg);box-shadow:6px 6px 0 var(--brown);z-index:100}
@@ -60,10 +51,10 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .result-box{background:var(--deep);color:var(--cream);padding:1.5rem 2rem;text-align:center}
 .result-box h3{font-family:'Playfair Display',serif;font-size:1.4rem;font-style:italic;margin-bottom:0.5rem}
 .result-text{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--tan);letter-spacing:0.5px;line-height:1.7;white-space:pre-line}
-.btn-reset{margin-top:1rem;background:var(--rose);color:var(--cream);border:none;padding:0.5rem 1.5rem;font-family:'Caveat',cursive;font-size:1rem;cursor:pointer;box-shadow:3px 3px 0 #8a4838;letter-spacing:0.5px;transition:all 0.15s}
-.btn-reset:hover{background:#c8605a;transform:translate(-2px,-2px);box-shadow:5px 5px 0 #8a4838}
+.btn-reset{margin-top:1rem;background:var(--rose);color:var(--cream);border:none;padding:0.5rem 1.5rem;font-family:'Caveat',cursive;font-size:1rem;cursor:pointer;box-shadow:3px 3px 0 var(--rose-dark);letter-spacing:0.5px;transition:all 0.15s}
+.btn-reset:hover{background:#c8605a;transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--rose-dark)}
 .snapshot-btn{margin-top:1rem;display:inline-block;background:var(--gold);color:var(--deep);border:none;padding:0.5rem 1.5rem;font-family:'Caveat',cursive;font-size:1rem;cursor:pointer;box-shadow:3px 3px 0 var(--brown);letter-spacing:0.5px;transition:all 0.15s;margin-left:0.5rem}
-.snapshot-btn:hover{background:#e0a840;transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown)}
+.snapshot-btn:hover{background:var(--gold-hover);transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown)}
 
 /* CAMERA FLASH */
 .camera-flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:9997}
@@ -79,10 +70,10 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
 .snapshot-img-wrap img{width:100%;display:block}
 .snapshot-modal-actions{display:flex;gap:0.8rem;justify-content:center;margin-top:1.2rem;flex-wrap:wrap;flex-shrink:0}
 .snapshot-modal-actions button{font-family:'Caveat',cursive;font-size:1rem;padding:0.55rem 1.4rem;border:none;cursor:pointer;letter-spacing:0.5px;transition:all 0.15s}
-.btn-snap-copy{background:var(--sage);color:white;box-shadow:3px 3px 0 #5a7850}
-.btn-snap-copy:hover{background:#6a8860;transform:translate(-2px,-2px);box-shadow:5px 5px 0 #5a7850}
+.btn-snap-copy{background:var(--sage);color:white;box-shadow:3px 3px 0 var(--sage-dark)}
+.btn-snap-copy:hover{background:#6a8860;transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--sage-dark)}
 .btn-snap-save{background:var(--gold);color:var(--deep);box-shadow:3px 3px 0 var(--brown)}
-.btn-snap-save:hover{background:#e0a840;transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown)}
+.btn-snap-save:hover{background:var(--gold-hover);transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown)}
 .btn-snap-close{background:transparent;border:1.5px solid var(--tan)!important;color:var(--cream)}
 .btn-snap-close:hover{background:rgba(255,255,255,0.12)}
 .snapshot-loading{color:var(--cream);font-family:'Caveat',cursive;font-size:1.1rem;padding:2rem}
@@ -108,7 +99,7 @@ nav{padding:1rem 2rem;display:flex;align-items:center;justify-content:space-betw
   <a href="index.html" class="nav-brand">Besties ♡</a>
   <div class="nav-links"></div>
 </nav>
-<div class="page-header">
+<div class="page-header page-header--std">
   <h1 id="list-title">The Official Biscuit Tier List</h1>
   <p id="list-subtitle">drag each biscuit to its rightful place ♡</p>
   <p class="instructions" id="list-instructions">Open them first. Eat at least one of each. Then rank them with the authority of someone who has experienced them. This is science.</p>

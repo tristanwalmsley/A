@@ -1,0 +1,28 @@
+/* ==========================================================================
+   tokens.css - every colour / font the site uses, defined once.
+   Themes (css/themes.css) work by overriding these variables, nothing else.
+   Raw colour values should not appear anywhere else: use var(--token), or
+   color-mix(in srgb, var(--token) 30%, transparent) for see-through versions.
+   ========================================================================== */
+:root{
+  /* palette */
+  --cream:#faf4e8; --warm:#f0ddb8; --tan:#d4b483; --brown:#7a5230; --deep:#3a2010;
+  --rose:#b86858;  --gold:#c8943a; --sage:#7a9870; --paper:#fffdf5; --ink:#2a1a08;
+  /* shades that used to be hard-coded in button shadows / hovers */
+  --gold-hover:#e0a840; --rose-dark:#8a4838; --sage-dark:#5a7850;
+
+  /* fonts */
+  --font-display:'Playfair Display',serif;
+  --font-hand:'Caveat',cursive;
+  --font-body:'EB Garamond',Georgia,serif;
+
+  /* roles: what the page itself uses */
+  --page-bg:var(--cream);
+  --grain-opacity:.6;            /* paper-grain overlay strength */
+
+  /* dark-page nav surfaces */
+  --nav-dark-bg:rgba(30,10,4,.95); --nav-dark-menu-bg:#2a1a0e;
+
+  /* decoration hooks (empty by default; themes may fill them) */
+  --theme-deco-display:none;
+}

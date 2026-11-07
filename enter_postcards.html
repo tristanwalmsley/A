@@ -6,11 +6,12 @@
 <title>Besties ♡</title>
 <link rel="icon" type="image/x-icon" href="media/shared/images/site_icon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/themes.css">
+<script src="js/theme.js"></script>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--cream:#faf4e8;--warm:#f0ddb8;--tan:#d4b483;--brown:#7a5230;--deep:#3a2010;--rose:#b86858;--gold:#c8943a;--sage:#7a9870;--paper:#fffdf5;--ink:#2a1a08}
-body{background:var(--cream);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;padding:3rem 1.5rem 5rem}
-body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.6}
+body{padding:3rem 1.5rem 5rem}
 
 .wrap{max-width:940px;margin:0 auto}
 #screen-start,#screen-import,#screen-output{max-width:560px;margin:0 auto}
@@ -67,17 +68,17 @@ h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;font-styl
 .color-opt.selected{border-color:var(--ink);transform:scale(1.08)}
 .color-ww1{background:linear-gradient(135deg,#8a6a4a,#b08050)}
 .color-lancashire{background:linear-gradient(135deg,#4a6a8a,#7a9aaa)}
-.color-funny{background:linear-gradient(135deg,#e0a840,#c87040)}
+.color-funny{background:linear-gradient(135deg,var(--gold-hover),#c87040)}
 .color-mogsweep{background:linear-gradient(135deg,#8a5870,#c88898)}
 .color-snailmail{background:linear-gradient(135deg,#5a7860,#8ab098)}
 .color-from-ann{background:linear-gradient(135deg,#7a6a8a,#aaa0c0)}
 
 /* FORM ACTIONS */
 .form-actions{display:flex;gap:0.8rem;flex-wrap:wrap;margin-top:0.5rem}
-.btn-add-another{background:var(--sage);color:white;border:none;padding:0.7rem 1.6rem;font-family:'Caveat',cursive;font-size:1.1rem;cursor:pointer;box-shadow:3px 3px 0 #5a7850;transition:all 0.15s;letter-spacing:0.5px}
-.btn-add-another:hover{background:#6a8860;transform:translate(-2px,-2px);box-shadow:5px 5px 0 #5a7850}
+.btn-add-another{background:var(--sage);color:white;border:none;padding:0.7rem 1.6rem;font-family:'Caveat',cursive;font-size:1.1rem;cursor:pointer;box-shadow:3px 3px 0 var(--sage-dark);transition:all 0.15s;letter-spacing:0.5px}
+.btn-add-another:hover{background:#6a8860;transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--sage-dark)}
 .btn-generate{background:var(--gold);color:var(--deep);border:none;padding:0.7rem 1.6rem;font-family:'Caveat',cursive;font-size:1.1rem;cursor:pointer;box-shadow:3px 3px 0 var(--brown);transition:all 0.15s;letter-spacing:0.5px}
-.btn-generate:hover{background:#e0a840;transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown)}
+.btn-generate:hover{background:var(--gold-hover);transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown)}
 
 /* ADDED CARDS SUMMARY */
 .added-list{margin-bottom:1.5rem}
@@ -121,8 +122,8 @@ h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;font-styl
 .output-wrap{position:relative}
 .code-box{background:var(--deep);color:#e8d8b8;font-family:'Courier New',monospace;font-size:0.78rem;line-height:1.7;padding:1.5rem;overflow-x:auto;white-space:pre;border:1px solid var(--brown);max-height:60vh;overflow-y:auto}
 .btn-copy{background:var(--gold);color:var(--deep);border:none;padding:0.6rem 1.4rem;font-family:'Caveat',cursive;font-size:1rem;cursor:pointer;box-shadow:3px 3px 0 var(--brown);transition:all 0.15s;letter-spacing:0.5px}
-.btn-copy:hover{background:#e0a840;transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown)}
-.btn-copy.copied{background:var(--sage);color:white;box-shadow:3px 3px 0 #5a7850}
+.btn-copy:hover{background:var(--gold-hover);transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown)}
+.btn-copy.copied{background:var(--sage);color:white;box-shadow:3px 3px 0 var(--sage-dark)}
 .copy-row{display:flex;gap:0.8rem;align-items:center;margin-bottom:0.8rem;flex-wrap:wrap}
 .output-note{font-family:'Caveat',cursive;font-size:0.95rem;color:var(--brown);margin-top:1rem;letter-spacing:0.3px}
 .which-array{font-family:'Caveat',cursive;font-size:0.82rem;color:var(--rose);letter-spacing:1px;text-transform:uppercase;margin-bottom:0.4rem}

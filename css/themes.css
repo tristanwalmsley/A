@@ -1,0 +1,60 @@
+/* ==========================================================================
+   themes.css - seasonal themes. A theme only overrides tokens (see tokens.css).
+   The default look is "no theme": nothing here applies unless <html data-theme="...">
+   is set by js/theme.js.  WHEN a theme is active is decided in js/theme.js (THEMES).
+
+   To add a theme:  1) add a html[data-theme="name"]{...} block below
+                    2) add one line to THEMES in js/theme.js
+   ========================================================================== */
+
+/* ---------- shared hooks (only active while a theme is on) ---------- */
+html[data-theme] #site-nav .nav-brand::before{content:var(--brand-glyph);margin-right:.3em}
+
+#theme-ribbon{position:fixed;top:0;left:0;right:0;height:5px;z-index:9990;pointer-events:none;
+  background:var(--ribbon);box-shadow:0 1px 3px color-mix(in srgb,var(--deep) 35%,transparent)}
+#theme-deco{position:fixed;inset:0;pointer-events:none;z-index:450;overflow:hidden}
+#theme-deco .td-flake{position:absolute;top:-6%;left:var(--x);font-size:var(--s);line-height:1;opacity:var(--o);
+  color:var(--flake,#fff);text-shadow:var(--flake-shadow,none);
+  animation:tdFall var(--d) linear var(--dl) infinite;will-change:transform}
+@keyframes tdFall{
+  0%{transform:translate3d(0,0,0) rotate(0deg)}
+  50%{transform:translate3d(var(--dx),55vh,0) rotate(calc(var(--r) / 2))}
+  100%{transform:translate3d(calc(var(--dx) * -.6),112vh,0) rotate(var(--r))}}
+@media (prefers-reduced-motion:reduce){#theme-deco{display:none}}
+
+/* small "you are previewing a theme" badge (only shown when ?theme= is used) */
+#theme-preview-badge{position:fixed;left:.6rem;bottom:.6rem;z-index:9991;font:600 12px/1 system-ui,sans-serif;
+  background:#222;color:#fff;padding:.45rem .7rem;border-radius:99px;opacity:.85;cursor:pointer}
+
+/* ---------- Winter  (6-30 Nov): frosty blues and silver, no holiday colours ---------- */
+html[data-theme="winter"]{
+  --cream:#f1f6fa; --warm:#dce8f1; --tan:#a9c0d3; --brown:#3f5a73; --deep:#14253a;
+  --rose:#4f7fb0;  --gold:#5f9bc4; --sage:#6f9fa3; --paper:#fbfdff; --ink:#101c2b;
+  --gold-hover:#80b4d8; --rose-dark:#355a86; --sage-dark:#4d7377;
+  --nav-dark-bg:rgba(10,22,38,.95); --nav-dark-menu-bg:#101e30;
+  --brand-glyph:'❄️';
+  --ribbon:repeating-linear-gradient(90deg,#fbfdff 0 24px,#a9c0d3 24px 30px,#5f9bc4 30px 36px,#a9c0d3 36px 42px);
+  --flake:#fff; --flake-shadow:0 0 3px rgba(20,37,58,.55);
+}
+
+/* ---------- Sinterklaas  (1-5 Dec): bishop's red, gold, warm cream ---------- */
+html[data-theme="sinterklaas"]{
+  --cream:#fbf3e6; --warm:#f2d9b0; --tan:#d9ae7a; --brown:#7b3326; --deep:#3a1219;
+  --rose:#c8222f;  --gold:#d9a521; --sage:#4c7f86; --paper:#fffbf2; --ink:#2a1210;
+  --gold-hover:#ecbb3a; --rose-dark:#8e1520; --sage-dark:#36606a;
+  --nav-dark-bg:rgba(34,8,14,.95); --nav-dark-menu-bg:#2a0e14;
+  --brand-glyph:'🎁';
+  --ribbon:repeating-linear-gradient(90deg,#c8222f 0 22px,#fffbf2 22px 28px,#d9a521 28px 34px,#fffbf2 34px 40px);
+  --flake:var(--gold); --flake-shadow:0 0 4px color-mix(in srgb,var(--gold) 60%,transparent);
+}
+
+/* ---------- Christmas  (6-31 Dec): holly red, pine green, gold ---------- */
+html[data-theme="christmas"]{
+  --cream:#f7f4ec; --warm:#e8e0cc; --tan:#c9b48a; --brown:#5e3b32; --deep:#17302a;
+  --rose:#b3262e;  --gold:#c99a2e; --sage:#2f6b4a; --paper:#fffdf8; --ink:#1b1a14;
+  --gold-hover:#dcae3e; --rose-dark:#7d1a20; --sage-dark:#1f4a33;
+  --nav-dark-bg:rgba(10,28,22,.95); --nav-dark-menu-bg:#10241d;
+  --brand-glyph:'🎄';
+  --ribbon:repeating-linear-gradient(90deg,#b3262e 0 18px,#c99a2e 18px 22px,#2f6b4a 22px 40px,#c99a2e 40px 44px);
+  --flake:#fff; --flake-shadow:0 0 3px rgba(23,48,42,.6);
+}

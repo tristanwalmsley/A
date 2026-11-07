@@ -7,9 +7,11 @@
 <title>Besties ♡</title>
 <link rel="icon" type="image/x-icon" href="media/shared/images/site_icon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/themes.css">
+<script src="js/theme.js"></script>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--cream:#faf4e8;--warm:#f0ddb8;--tan:#d4b483;--brown:#7a5230;--deep:#3a2010;--rose:#b86858;--gold:#c8943a;--sage:#7a9870;--paper:#fffdf5;--ink:#2a1a08}
 html,body{height:100%}
 body{background:
 radial-gradient(
@@ -23,19 +25,18 @@ linear-gradient(
     #eaf7e2 30%,
     #d5efc8 65%,
     #b7df9d 100%
-);font-family:'EB Garamond',Georgia,serif;color:var(--ink);min-height:100vh;overflow-x:hidden;display:flex;align-items:center;justify-content:center;padding:2rem}
-body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.6}
+);display:flex;align-items:center;justify-content:center;padding:2rem}
 
 /* ---------- FINAL DAY: BIRTHDAY MOMENT + PLAYLIST CHIP --------- */
 #birthday-burst{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:0;
-  background:radial-gradient(circle at 50% 45%,rgba(255,255,255,0.95) 0%,rgba(255,214,170,0.6) 18%,rgba(200,148,58,0.25) 42%,transparent 68%);
+  background:radial-gradient(circle at 50% 45%,rgba(255,255,255,0.95) 0%,rgba(255,214,170,0.6) 18%,color-mix(in srgb,var(--gold) 25%,transparent) 42%,transparent 68%);
   mix-blend-mode:screen}
 #birthday-burst.fire{animation:bdayBurst 2.2s cubic-bezier(0.16,1,0.3,1) forwards}
 @keyframes bdayBurst{0%{opacity:0;transform:scale(0.3)}12%{opacity:1;transform:scale(1.05)}100%{opacity:0;transform:scale(2.4)}}
 
 #birthday-message{position:fixed;top:16%;left:50%;z-index:59;pointer-events:none;opacity:0;transform:translate(-50%,-40%) scale(0.3) rotate(-6deg)}
 #birthday-message.show{animation:bdayPop 3.6s cubic-bezier(0.34,1.56,0.64,1) forwards}
-#birthday-message .bday-text{font-family:'Caveat',cursive;font-weight:700;font-size:clamp(2.6rem,9vw,5rem);text-align:center;white-space:nowrap;background:linear-gradient(90deg,var(--rose),var(--gold),var(--rose));background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 4px 18px rgba(184,104,88,0.35));animation:bdayShimmer 2.4s linear infinite}
+#birthday-message .bday-text{font-family:'Caveat',cursive;font-weight:700;font-size:clamp(2.6rem,9vw,5rem);text-align:center;white-space:nowrap;background:linear-gradient(90deg,var(--rose),var(--gold),var(--rose));background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 4px 18px color-mix(in srgb,var(--rose) 35%,transparent));animation:bdayShimmer 2.4s linear infinite}
 @keyframes bdayPop{
   0%{opacity:0;transform:translate(-50%,-40%) scale(0.3) rotate(-6deg)}
   14%{opacity:1;transform:translate(-50%,0) scale(1.18) rotate(4deg)}
@@ -72,7 +73,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
    else. Click/tap anywhere along it to jump to that point in the track -
    handy after a refresh, since audio playback position doesn't persist
    across reloads on its own. */
-#track-progress-bar{position:fixed;top:0;left:0;width:100%;height:4px;background:rgba(58,32,16,0.12);z-index:57;opacity:0;pointer-events:none;transition:opacity 0.6s ease;cursor:pointer}
+#track-progress-bar{position:fixed;top:0;left:0;width:100%;height:4px;background:color-mix(in srgb,var(--deep) 12%,transparent);z-index:57;opacity:0;pointer-events:none;transition:opacity 0.6s ease;cursor:pointer}
 #track-progress-bar.show{opacity:1;pointer-events:auto}
 #track-progress-bar:hover{height:7px}
 #track-progress-fill{height:100%;width:0%;background:var(--rose);transition:width 0.1s linear}
@@ -250,10 +251,10 @@ body.power-hour-active .brand,body.power-hour-active .lead{opacity:0;max-height:
    out, warming through gold and rose, landing on a vivid pink-red on the
    day itself. Everything below (breeze particles, constellation stars)
    reads this one variable, so the whole "evolution" stays in sync. */
-:root{--evo-accent:#7a9870}
-body.evo-1{--evo-accent:#7a9870}
-body.evo-2{--evo-accent:#c8943a}
-body.evo-3{--evo-accent:#b86858}
+:root{--evo-accent:var(--sage)}
+body.evo-1{--evo-accent:var(--sage)}
+body.evo-2{--evo-accent:var(--gold)}
+body.evo-3{--evo-accent:var(--rose)}
 body.evo-4{--evo-accent:#d43a72}
 
 /* ---------- BREEZE: whimsical particles drifting left -> right ----------
@@ -387,14 +388,14 @@ body #site-nav{position:fixed;top:0;left:0;right:0;z-index:10001;transition:opac
 body.replay-started #site-nav{opacity:0;pointer-events:none}
 .entry-sub{font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:var(--warm);opacity:0;transition:opacity 0.6s ease;pointer-events:none}
 .entry-sub.ready{opacity:0.75;animation:entryPulse 1.8s ease-in-out infinite}
-.entry-spinner{width:26px;height:26px;margin:0.9rem auto 1rem;border-radius:50%;border:2.5px solid rgba(200,148,58,0.25);border-top-color:var(--gold);animation:entrySpin 0.8s linear infinite;opacity:1;transition:opacity 0.4s ease}
+.entry-spinner{width:26px;height:26px;margin:0.9rem auto 1rem;border-radius:50%;border:2.5px solid color-mix(in srgb,var(--gold) 25%,transparent);border-top-color:var(--gold);animation:entrySpin 0.8s linear infinite;opacity:1;transition:opacity 0.4s ease}
 .entry-spinner.done{opacity:0;pointer-events:none}
 @keyframes entrySpin{to{transform:rotate(360deg)}}
 @keyframes entryPulse{0%,100%{opacity:0.4}50%{opacity:0.9}}
 
 /* ---------- STAGED BUILD-UP: 65s zoom / 60s / 30s / 15s / 10s / 5s ---------- */
-body.mega-zoom .wrap{transform:translate(-50%,-50%) scale(1.9);transition:transform 60s cubic-bezier(0.45,0,0.55,1);filter:drop-shadow(0 0 0 rgba(200,148,58,0));animation:megaZoomGlow 60s ease-in forwards}
-@keyframes megaZoomGlow{0%{filter:drop-shadow(0 0 0 rgba(200,148,58,0))}100%{filter:drop-shadow(0 0 26px rgba(200,148,58,0.55))}}
+body.mega-zoom .wrap{transform:translate(-50%,-50%) scale(1.9);transition:transform 60s cubic-bezier(0.45,0,0.55,1);filter:drop-shadow(0 0 0 color-mix(in srgb,var(--gold) 0%,transparent));animation:megaZoomGlow 60s ease-in forwards}
+@keyframes megaZoomGlow{0%{filter:drop-shadow(0 0 0 color-mix(in srgb,var(--gold) 0%,transparent))}100%{filter:drop-shadow(0 0 26px color-mix(in srgb,var(--gold) 55%,transparent))}}
 body.stage-60 .timer-unit{border-color:var(--gold);box-shadow:4px 4px 0 var(--gold)}
 body.stage-30 .timer-unit{border-color:var(--rose);box-shadow:5px 5px 0 var(--rose);animation:unitPulse 1.1s ease-in-out infinite}
 body.stage-15 .timer-unit{animation:unitPulse 0.7s ease-in-out infinite;box-shadow:6px 6px 0 var(--rose)}
@@ -435,7 +436,7 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 @keyframes zoomAcross{0%{transform:translate(0,0);opacity:0}10%{opacity:0.95}85%{opacity:0.95}100%{transform:translate(var(--zx),var(--zy));opacity:0}}
 
 /* big launch-style number for the final 5 seconds */
-#big-number{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.4);font-family:'Playfair Display',serif;font-weight:700;font-size:9rem;color:var(--rose);opacity:0;z-index:600;pointer-events:none;text-shadow:0 0 40px rgba(184,104,88,0.5)}
+#big-number{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.4);font-family:'Playfair Display',serif;font-weight:700;font-size:9rem;color:var(--rose);opacity:0;z-index:600;pointer-events:none;text-shadow:0 0 40px color-mix(in srgb,var(--rose) 50%,transparent)}
 #big-number.pop{animation:bigNumberPop 0.9s cubic-bezier(0.16,1,0.3,1) forwards}
 @keyframes bigNumberPop{0%{opacity:0;transform:translate(-50%,-50%) scale(0.3)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}45%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}
 
@@ -529,7 +530,7 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 #music-intro{position:fixed;inset:0;z-index:9500;pointer-events:none;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 1.1s ease}
 #music-intro.show{opacity:1}
 
-.mi-glow{position:absolute;width:64vmax;height:64vmax;border-radius:50%;background:radial-gradient(circle, rgba(200,148,58,0.32) 0%, rgba(184,104,88,0.14) 42%, rgba(200,148,58,0) 72%);filter:blur(8px);opacity:0;transform:scale(0.3)}
+.mi-glow{position:absolute;width:64vmax;height:64vmax;border-radius:50%;background:radial-gradient(circle, color-mix(in srgb,var(--gold) 32%,transparent) 0%, color-mix(in srgb,var(--rose) 14%,transparent) 42%, color-mix(in srgb,var(--gold) 0%,transparent) 72%);filter:blur(8px);opacity:0;transform:scale(0.3)}
 #music-intro.show .mi-glow{animation:miGlowIn 3.4s cubic-bezier(0.22,1,0.36,1) forwards}
 @keyframes miGlowIn{0%{opacity:0;transform:scale(0.3)}40%{opacity:1;transform:scale(1)}100%{opacity:0.8;transform:scale(1.2)}}
 
@@ -575,7 +576,7 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 /* ---------- LIGHT COUNTER ----------
    Ann's found this already, so it no longer needs to hide - just stays
    small and tasteful, but genuinely readable against any background. */
-#light-counter{position:fixed;left:0.8rem;bottom:0.7rem;z-index:50;display:flex;align-items:center;gap:0.45rem;font-family:'EB Garamond',Georgia,serif;font-size:0.95rem;font-weight:600;letter-spacing:0.4px;color:var(--brown);opacity:0.92;pointer-events:none;padding:0.3rem 0.65rem;border-radius:999px;background:rgba(255,251,240,0.97);box-shadow:0 1px 6px rgba(58,32,16,0.12);border:1px solid rgba(184,104,88,0.18);transition:opacity 0.8s ease,transform 0.3s ease}
+#light-counter{position:fixed;left:0.8rem;bottom:0.7rem;z-index:50;display:flex;align-items:center;gap:0.45rem;font-family:'EB Garamond',Georgia,serif;font-size:0.95rem;font-weight:600;letter-spacing:0.4px;color:var(--brown);opacity:0.92;pointer-events:none;padding:0.3rem 0.65rem;border-radius:999px;background:rgba(255,251,240,0.97);box-shadow:0 1px 6px color-mix(in srgb,var(--deep) 12%,transparent);border:1px solid color-mix(in srgb,var(--rose) 18%,transparent);transition:opacity 0.8s ease,transform 0.3s ease}
 #light-counter-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 5px var(--gold);display:inline-block}
 #light-counter-next{font-size:0.8rem;font-weight:500;opacity:0.62;letter-spacing:0.2px}
 #light-counter.bump #light-counter-dot{animation:lightCounterBlip 0.6s ease}
@@ -583,13 +584,13 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 #light-counter.bump #light-counter-num{animation:lightCounterTick 0.5s ease}
 @keyframes lightCounterTick{0%{transform:translateY(-4px);opacity:0.3}100%{transform:translateY(0);opacity:1}}
 #light-counter.milestone{animation:lightCounterMilestone 1.1s ease}
-@keyframes lightCounterMilestone{0%{transform:scale(1);box-shadow:0 1px 6px rgba(58,32,16,0.12)}30%{transform:scale(1.18);box-shadow:0 0 22px rgba(212,160,60,0.55)}100%{transform:scale(1);box-shadow:0 1px 6px rgba(58,32,16,0.12)}}
+@keyframes lightCounterMilestone{0%{transform:scale(1);box-shadow:0 1px 6px color-mix(in srgb,var(--deep) 12%,transparent)}30%{transform:scale(1.18);box-shadow:0 0 22px rgba(212,160,60,0.55)}100%{transform:scale(1);box-shadow:0 1px 6px color-mix(in srgb,var(--deep) 12%,transparent)}}
 
 /* ---------- STREAK COUNTER ----------
    sits directly above the light counter, same pill styling for a matched
    set. Purely for satisfaction - doesn't affect the economy at all, just
    quietly tracks consecutive days Ann's opened the page during the event. */
-#streak-counter{position:fixed;right:0.8rem;bottom:0.7rem;z-index:50;display:flex;align-items:center;gap:0.4rem;font-family:'EB Garamond',Georgia,serif;font-size:0.95rem;font-weight:600;letter-spacing:0.4px;color:var(--brown);opacity:0;pointer-events:none;padding:0.3rem 0.65rem;border-radius:999px;background:rgba(255,251,240,0.97);box-shadow:0 1px 6px rgba(58,32,16,0.12);border:1px solid rgba(184,104,88,0.18);transition:opacity 0.8s ease,transform 0.3s ease}
+#streak-counter{position:fixed;right:0.8rem;bottom:0.7rem;z-index:50;display:flex;align-items:center;gap:0.4rem;font-family:'EB Garamond',Georgia,serif;font-size:0.95rem;font-weight:600;letter-spacing:0.4px;color:var(--brown);opacity:0;pointer-events:none;padding:0.3rem 0.65rem;border-radius:999px;background:rgba(255,251,240,0.97);box-shadow:0 1px 6px color-mix(in srgb,var(--deep) 12%,transparent);border:1px solid color-mix(in srgb,var(--rose) 18%,transparent);transition:opacity 0.8s ease,transform 0.3s ease}
 #streak-counter.show{opacity:0.92}
 #streak-counter.bump{animation:streakCounterBump 1.1s ease}
 @keyframes streakCounterBump{0%{transform:scale(1)}30%{transform:scale(1.18)}100%{transform:scale(1)}}
@@ -612,13 +613,13 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
    border was fully built). */
 .leaf-border-image{position:fixed;inset:0;width:100vw;height:100vh;object-fit:fill;z-index:21;pointer-events:none;opacity:0;transition:opacity 0.9s ease}
 .leaf-border-image.show{opacity:1}
-.border-leaf{position:fixed;left:0;top:0;transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(0);opacity:0;font-size:var(--leaf-size,1.1rem);text-shadow:0 1px 3px rgba(58,32,16,0.22);transition:opacity 0.9s ease,transform 0.9s cubic-bezier(0.34,1.56,0.64,1)}
+.border-leaf{position:fixed;left:0;top:0;transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(0);opacity:0;font-size:var(--leaf-size,1.1rem);text-shadow:0 1px 3px color-mix(in srgb,var(--deep) 22%,transparent);transition:opacity 0.9s ease,transform 0.9s cubic-bezier(0.34,1.56,0.64,1)}
 .border-leaf.grown{opacity:var(--leaf-op,0.85);transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(1)}
 .border-leaf.sprout{animation:borderLeafSprout 0.75s cubic-bezier(0.34,1.56,0.64,1)}
 @keyframes borderLeafSprout{
   0%{transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(0);filter:drop-shadow(0 0 0 transparent)}
   55%{transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(1.45);filter:drop-shadow(0 0 10px var(--gold))}
-  100%{transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(1);filter:drop-shadow(0 1px 3px rgba(58,32,16,0.22))}
+  100%{transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scale(1);filter:drop-shadow(0 1px 3px color-mix(in srgb,var(--deep) 22%,transparent))}
 }
 
 /* ---------- WANDERING LEAVES ----------
@@ -631,10 +632,10 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
    once accumulated light crosses each garden-stage threshold - flowers,
    then butterflies, then fireflies, then the final "enchanted" flourishes.
    None of this touches the border-leaf milestones above. */
-.border-flower{position:fixed;left:0;top:0;transform:translate(-50%,-50%) scale(0);opacity:0;pointer-events:none;text-shadow:0 1px 3px rgba(58,32,16,0.22);transition:opacity 1s ease,transform 1s cubic-bezier(0.34,1.56,0.64,1);z-index:22}
-.border-flower.grown{opacity:var(--fl-op,0.9);transform:translate(-50%,-50%) scale(1);filter:drop-shadow(0 0 7px rgba(255,214,120,0.85)) drop-shadow(0 1px 3px rgba(58,32,16,0.3))}
+.border-flower{position:fixed;left:0;top:0;transform:translate(-50%,-50%) scale(0);opacity:0;pointer-events:none;text-shadow:0 1px 3px color-mix(in srgb,var(--deep) 22%,transparent);transition:opacity 1s ease,transform 1s cubic-bezier(0.34,1.56,0.64,1);z-index:22}
+.border-flower.grown{opacity:var(--fl-op,0.9);transform:translate(-50%,-50%) scale(1);filter:drop-shadow(0 0 7px rgba(255,214,120,0.85)) drop-shadow(0 1px 3px color-mix(in srgb,var(--deep) 30%,transparent))}
 
-.garden-butterfly{position:fixed;z-index:23;font-size:1.35rem;line-height:1;pointer-events:none;opacity:0;filter:drop-shadow(0 2px 4px rgba(58,32,16,0.2));transition:opacity 1.2s ease}
+.garden-butterfly{position:fixed;z-index:23;font-size:1.35rem;line-height:1;pointer-events:none;opacity:0;filter:drop-shadow(0 2px 4px color-mix(in srgb,var(--deep) 20%,transparent));transition:opacity 1.2s ease}
 .garden-butterfly.in{opacity:0.92}
 
 .firefly-dot{position:fixed;z-index:21;width:5px;height:5px;border-radius:50%;background:radial-gradient(circle,#fff6c8,#e8c766 60%,transparent 100%);pointer-events:none;box-shadow:0 0 6px 2px rgba(232,199,102,0.75);animation:fireflyDrift ease-in-out infinite,fireflyGlow ease-in-out infinite}
@@ -647,12 +648,12 @@ body.stage-5 .wrap{animation:wrapShake 0.3s ease-in-out infinite}
 /* subtle gold cast to the paper tones once the garden is fully "enchanted" */
 body.stage-garden-enchanted .brand{color:#8a5a1f}
 
-.wander-leaf{position:fixed;left:0;top:0;z-index:9300;font-size:1.5rem;line-height:1;cursor:pointer;user-select:none;pointer-events:auto;filter:drop-shadow(0 2px 6px rgba(58,32,16,0.25));opacity:0;transition:opacity 0.6s ease}
+.wander-leaf{position:fixed;left:0;top:0;z-index:9300;font-size:1.5rem;line-height:1;cursor:pointer;user-select:none;pointer-events:auto;filter:drop-shadow(0 2px 6px color-mix(in srgb,var(--deep) 25%,transparent));opacity:0;transition:opacity 0.6s ease}
 .wander-leaf.in{opacity:0.92}
 .wander-leaf.caught{animation:leafCaughtPop 0.5s ease-out forwards;pointer-events:none}
 @keyframes leafCaughtPop{0%{opacity:0.92;transform:scale(1) rotate(0deg)}100%{opacity:0;transform:scale(1.9) rotate(35deg)}}
 .leaf-catch-spark{position:fixed;pointer-events:none;z-index:9401;opacity:0;line-height:1;will-change:transform,opacity;animation:starSparkFly var(--spark-dur,0.8s) ease-out forwards}
-.leaf-value-pop{position:fixed;pointer-events:none;z-index:9402;font-family:'Playfair Display',serif;font-weight:700;color:var(--gold);text-shadow:0 1px 4px rgba(58,32,16,0.35);opacity:0;transform:translate(-50%,-50%) scale(0.7);animation:leafValuePop 0.95s cubic-bezier(0.16,1,0.3,1) forwards}
+.leaf-value-pop{position:fixed;pointer-events:none;z-index:9402;font-family:'Playfair Display',serif;font-weight:700;color:var(--gold);text-shadow:0 1px 4px color-mix(in srgb,var(--deep) 35%,transparent);opacity:0;transform:translate(-50%,-50%) scale(0.7);animation:leafValuePop 0.95s cubic-bezier(0.16,1,0.3,1) forwards}
 @keyframes leafValuePop{
   0%{opacity:0;transform:translate(-50%,-50%) scale(0.6)}
   22%{opacity:1;transform:translate(-50%,-60%) scale(1.15)}

@@ -175,8 +175,8 @@ function getLastPage() {
 }
 
 /* ---------------------------------- styles ---------------------------------- */
-/* Injected once so you don't have to edit your CSS files. Override any of the
-   --nav-* variables in your site CSS to match your theme. Existing .nav-a /
+/* Injected once so you don't have to edit your CSS files. The nav now reads the shared
+   tokens in css/tokens.css, so themes restyle it automatically. Existing .nav-a /
    .nav-links / .current rules still apply to the links. */
 
 function injectNavStyles() {
@@ -190,8 +190,8 @@ function injectNavStyles() {
   /* Every rule starts with #site-nav, so leftover nav CSS inside a page can't change the look.
      To retune a theme, edit the --nv-* values in the first two rules. */
   const css = `
-    #site-nav{--nv-bg:#fffdf5;--nv-line:#d4b483;--nv-brand:#b86858;--nv-link:#7a5230;--nv-link-hover:#3a2010;--nv-hover-bg:#f0ddb8;--nv-current:#3a2010;--nv-accent:#c8943a;--nv-menu-bg:#fffdf5;--nv-menu-fg:#7a5230;--nv-menu-line:#d4b483;--nv-menu-hover:#f0ddb8}
-    #site-nav[data-nav-theme="dark"]{--nv-bg:rgba(30,10,4,.95);--nv-line:rgba(255,255,255,.08);--nv-brand:#b86858;--nv-link:rgba(250,244,232,.82);--nv-link-hover:#faf4e8;--nv-hover-bg:rgba(255,255,255,.07);--nv-current:#c8943a;--nv-accent:#c8943a;--nv-menu-bg:#2a1a0e;--nv-menu-fg:#f0ddb8;--nv-menu-line:rgba(255,255,255,.18);--nv-menu-hover:rgba(255,255,255,.09)}
+    #site-nav{--nv-bg:var(--paper);--nv-line:var(--tan);--nv-brand:var(--rose);--nv-link:var(--brown);--nv-link-hover:var(--deep);--nv-hover-bg:var(--warm);--nv-current:var(--deep);--nv-accent:var(--gold);--nv-menu-bg:var(--paper);--nv-menu-fg:var(--brown);--nv-menu-line:var(--tan);--nv-menu-hover:var(--warm)}
+    #site-nav[data-nav-theme="dark"]{--nv-bg:var(--nav-dark-bg);--nv-line:rgba(255,255,255,.08);--nv-brand:var(--rose);--nv-link:color-mix(in srgb,var(--cream) 82%,transparent);--nv-link-hover:var(--cream);--nv-hover-bg:rgba(255,255,255,.07);--nv-current:var(--gold);--nv-accent:var(--gold);--nv-menu-bg:var(--nav-dark-menu-bg);--nv-menu-fg:var(--warm);--nv-menu-line:rgba(255,255,255,.18);--nv-menu-hover:rgba(255,255,255,.09)}
 
     #site-nav{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;padding:.8rem 2rem;position:sticky;top:0;z-index:600;background:var(--nv-bg);border-bottom:1px solid var(--nv-line);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
     #site-nav .nav-brand{font-family:'Caveat',cursive;font-size:1.3rem;font-weight:700;color:var(--nv-brand);text-decoration:none}
