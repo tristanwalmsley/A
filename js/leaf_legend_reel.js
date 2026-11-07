@@ -681,7 +681,7 @@
     [0, 350, 700, 1100].forEach(d => later(() => { launchConfetti(); launchHeartBurst(); }, d));
     leafStorm(80); drift(140);
     const ban = el('ll-banner');
-    'LEAF LEGEND'.split('').forEach((ch, i) => { const sp = document.createElement('span'); sp.textContent = ch === ' ' ? '\u00a0' : ch; sp.style.setProperty('--d', (0.3 + i * 0.07) + 's'); ban.appendChild(sp); });
+    (OPTS.banner || 'LEAF LEGEND').split('').forEach((ch, i) => { const sp = document.createElement('span'); sp.textContent = ch === ' ' ? '\u00a0' : ch; sp.style.setProperty('--d', (0.3 + i * 0.07) + 's'); ban.appendChild(sp); });
     eggs.forEach(e => e.remove());
     await wait(4200);
     // it settles; the title lifts away and a short note takes its place
@@ -744,7 +744,9 @@
     R.timers.forEach(t => { clearTimeout(t); clearInterval(t); }); R.timers.clear();
   }
 
-  function play(o, next){
+  let OPTS = {};
+  function play(o, next, opts){
+    OPTS = opts || {};
     injectCSS();
     if(reduced()){
       if(typeof window.lgxGrandFinale === 'function'){ window.lgxGrandFinale(o); setTimeout(next, 6800); } else next();
