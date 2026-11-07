@@ -65,6 +65,7 @@ function showModal(title, html, sig){
 function closeEgg(){
   $('egg-modal').classList.remove('show');
   if(afterClose){ const f = afterClose; afterClose = null; setTimeout(f, 350); }
+  if(typeof eggAfterClose === 'function') eggAfterClose();
 }
 
 // ---------- SECRETS ----------
@@ -93,19 +94,41 @@ PageEggs.PAGES.home.total = EGG_KEYS.length;   // keeps the shared tracker in st
 let eggsFound = [];
 try{ eggsFound = JSON.parse(localStorage.getItem('ann_eggs_found')) || []; }catch(e){ eggsFound = []; }
 
-function unlockEgg(key){
+// Each egg plays its own full-screen moment (js/home_eggs.js) and THEN shows the message box.
+// If a second egg is found while one is still playing, it waits in line so nothing gets overwritten.
+let eggQueue = [], eggBusy = false, eggShowing = false;
+function unlockEgg(key, anchor){
   const before = PageEggs.sync().length;
   if(!eggsFound.includes(key)){
     eggsFound.push(key);
     try{ localStorage.setItem('ann_eggs_found', JSON.stringify(eggsFound)); }catch(e){}
   }
   // finishing a page's set levels up Secret Keeper: once she closes this secret, the badge plays
-  if(PageEggs.sync().length > before) afterClose = () => { markSecretsCelebrated(); openBadge('secrets'); };
-  playEggHatch(() => {
-    showModal(EGGS[key].title, EGGS[key].text, EGGS[key].sig);
+  const levelUp = PageEggs.sync().length > before;
+  eggQueue.push({ key, anchor, levelUp });
+  if(!eggBusy) runEggQueue();
+  renderBadges();                                  // after the egg has started, so a hiccup in the badges can never swallow an egg
+}
+function runEggQueue(){
+  const job = eggQueue.shift();
+  if(!job){ eggBusy = false; return; }
+  eggBusy = true;
+  const reveal = () => {
+    if(job.levelUp) afterClose = () => { markSecretsCelebrated(); openBadge('secrets'); };
+    eggShowing = true;
+    showModal(EGGS[job.key].title, EGGS[job.key].text, EGGS[job.key].sig);
     launchHeartBurst();
-  });
-  renderBadges();
+  };
+  if(window.HomeEggs) HomeEggs.play(job.key, job.anchor, reveal);
+  else playEggHatch(reveal);                       // home_eggs.js didn't load: the old little egg pop
+}
+// after she closes an egg's message, carry on with the next one in line (once any badge celebration has finished)
+function eggAfterClose(){
+  if(!eggShowing) return;
+  eggShowing = false; eggBusy = false;
+  if(!eggQueue.length) return;
+  const go = () => { if(document.querySelector('.celebration-overlay') || $('egg-modal').classList.contains('show')) setTimeout(go, 900); else runEggQueue(); };
+  setTimeout(go, 900);
 }
 function markSecretsCelebrated(){
   const seen = bdgJSON(BK.celebrated, {});
@@ -303,10 +326,12 @@ function bdgPrestige(o, id, lv, at, done){ setTimeout(() => skReveal(o, id, lv, 
 // the pages were finished, one after the other, and the newest one comes last before the medal.
 // To add a page: give it eggs (see js/eggs.js), then add an entry here with { info, anim(o, next) }.
 const SECRET_TIERS = {
-  // nine eggs spin in a ring and collapse into the middle
+  // the nine eggs: replayed as a reel, then stamped into a sheet (js/home_secrets_reel.js)
   home: {
     info: 'Every secret hiding on the home page, all ' + EGG_KEYS.length + ' of them. Poking, typing, chasing, dragging... you did it all.<br><br>Not many people would have the patience. You did.',
     anim(o, next){
+      // the long version: all nine home-page secrets replayed (js/home_secrets_reel.js). If it didn't load, the little ring collapse.
+      if(window.HomeSecretsReel && !matchMedia('(prefers-reduced-motion: reduce)').matches) return HomeSecretsReel.play(o, next);
       const ring = bdgEl('div', 'sk-ring');
       for(let i = 0; i < EGG_KEYS.length; i++){
         const sp = bdgEl('span', '', '🥚');
@@ -451,7 +476,7 @@ const bdgShowcase = () => bdgJSON(SHOWCASE_KEY, {});
 const bdgShowcaseGoals = () => Object.keys(bdgShowcase().goals || {}).length;
 
 const BADGES = [
-  { id:'secrets', name:'Secret Keeper', glyph:'★', animVersion:3, evolveGlyph:true, celebrateOnVisit:true,
+  { id:'secrets', name:'Secret Keeper', glyph:'★', animVersion:4, evolveGlyph:true, celebrateOnVisit:true,
     ladder:['Secret Keeper', 'Secret Agent', 'Master of Mysteries', 'Keeper of Everything', 'Living Legend', 'Celestial Keeper'],
     hint:'find every secret hiding on a page',
     level: () => PageEggs.sync().length,
@@ -883,6 +908,8 @@ function renderBadges(){
 }
 
 // ---------- THE EGGS THEMSELVES ----------
+// centerOf(element) = where on screen an egg was triggered, so its moment can start from there
+const centerOf = el => { const b = el.getBoundingClientRect(); return { x:b.left + b.width / 2, y:b.top + b.height / 2 }; };
 // postmark x5
 let pmClicks = 0;
 $('postmark').addEventListener('click', function(){
@@ -893,7 +920,7 @@ $('postmark').addEventListener('click', function(){
   setTimeout(() => this.classList.remove('clicked'), 500);
   if(pmClicks >= 5){
     c.classList.remove('show'); pmClicks = 0;
-    setTimeout(() => unlockEgg('postmark'), 200);
+    setTimeout(() => unlockEgg('postmark', centerOf($('postmark'))), 200);
   }
 });
 
@@ -917,13 +944,13 @@ window.addEventListener('keydown', e => {
 });
 
 // double-click the signature
-document.querySelector('.letter-sig').addEventListener('dblclick', () => unlockEgg('signature'));
+document.querySelector('.letter-sig').addEventListener('dblclick', () => unlockEgg('signature', centerOf(document.querySelector('.letter-sig'))));
 
 // click "besties" under the name 7x
 let brandClicks = 0;
 $('brand').addEventListener('click', () => {
   brandClicks++;
-  if(brandClicks >= 7){ brandClicks = 0; unlockEgg('nav'); }
+  if(brandClicks >= 7){ brandClicks = 0; unlockEgg('nav', centerOf($('brand'))); }
 });
 
 // drifting envelope
@@ -931,7 +958,7 @@ function spawnDrifter(){
   const d = document.createElement('div');
   d.className = 'drifter'; d.textContent = '✉';
   d.style.top = (10 + Math.random()*65) + 'vh';
-  d.onclick = () => { unlockEgg('idle'); d.remove(); };
+  d.onclick = () => { unlockEgg('idle', centerOf(d)); d.remove(); };
   document.body.appendChild(d);
   setTimeout(() => d.remove(), 6000);
 }
@@ -968,7 +995,7 @@ setInterval(spawnDrifter, 50000);
     stamp.style.transition = 'transform 0.5s cubic-bezier(0.34,1.6,0.64,1)';
     stamp.style.transform = 'translate(0,0)';
     setTimeout(() => { stamp.style.transition = ''; }, 520);
-    if(moved > 20 && d < 100) unlockEgg('mail');
+    if(moved > 20 && d < 100) unlockEgg('mail', centerOf(postmark));
   });
 })();
 
@@ -1002,7 +1029,7 @@ function spawnChaseHeart(){
     h.style.left = x+'px'; h.style.top = y+'px';
     if(x > window.innerWidth - 90 && y < 90){
       window.removeEventListener('mousemove', onMove);
-      unlockEgg('chase'); h.remove();
+      unlockEgg('chase', { x:x, y:y }); h.remove();
       return;
     }
     requestAnimationFrame(loop);
