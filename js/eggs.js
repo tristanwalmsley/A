@@ -12,12 +12,15 @@
   const PAGES = {
     home:    { label:'Home',    total:9, legacyKey:'ann_eggs_found' },   // home.js sets the real total
     reasons: { label:'Reasons', total:21 },
+    // the showcase page keeps its own eggs inside its save file: { eggs:{ id:{at} } }. Read from there (the page itself needs no changes).
+    showcase:{ label:'Showcase', total:5, storeKey:'ann_showcase_2026_v1', storeField:'eggs' },
   };
 
 
   // display names for the "secrets found" list. Add a line here whenever a page gets a new egg (unknown ids still show, using their id).
   const NAMES = {
     home: { postmark:'You found the secret!', nav:'Snooping at the letterhead?', konami:'The secret code', name:'Someone said your name', signature:'Double-checking my signature?', tristan:"Hi, it's me", idle:'Special delivery, mid-air', mail:'Special delivery', chase:'You caught it' },
+    showcase: { ph_wish:'Make a wish', show_marquee:'Attention seeker', cd_clock:'Time flies', cd_heart:'The constellation', finale_rush:'The last minute' },
     reasons: { peek:'Impatient?', star:'Make a wish', readall:'Every. Single. One.', beans:'Beans Means Heinz', noodles:'Noodles Unite Us', bingbong:'Bing bong', twoam:'2am thoughts', doobe:'DOOBEBOOBEDOOOOOO', adam:'Adam has been rejected', stay:'You stayed', song:'The hidden song',
       bingchill:'Bing chilling', yeah:'Yeah.', muscle:'BIG MUSCLE BADDIE', loveyou:'Love you too', phas:'Phas Monday', thanks:'A special delivery', wellmen:'Fatal error', fan:'Number one fan', sea:'Across the sea', energy:'That is your energy' }
   };
@@ -27,6 +30,7 @@
 
   function list(page){
     const p = PAGES[page]; if(!p) return [];
+    if(p.storeKey){ try{ const o = JSON.parse(localStorage.getItem(p.storeKey)), e = o && o[p.storeField]; return (e && typeof e === 'object') ? Object.keys(e) : []; }catch(e){ return []; } }
     if(p.legacyKey){ try{ const a = JSON.parse(localStorage.getItem(p.legacyKey)); return Array.isArray(a) ? a : []; }catch(e){ return []; } }
     const a = load()[page]; return Array.isArray(a) ? a : [];
   }
@@ -48,7 +52,7 @@
   const level = () => sync().length;
 
   function mark(page, id){          // returns true if this egg is new
-    if(!PAGES[page] || PAGES[page].legacyKey) return false;
+    if(!PAGES[page] || PAGES[page].legacyKey || PAGES[page].storeKey) return false;
     const d = load(), a = Array.isArray(d[page]) ? d[page] : [];
     if(a.includes(id)) return false;
     a.push(id); d[page] = a; save(d); sync();
