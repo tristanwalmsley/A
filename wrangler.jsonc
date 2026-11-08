@@ -10,4 +10,15 @@
     "TRISTAN_EMAIL": "tristanwalmsley49@outlook.com",
     "ANN_EMAIL": "mailnaarannika@gmail.com"
   }
-}
+},
+  "previews": {
+    "vars": {
+      "TEAM_DOMAIN": "besties-website.cloudflareaccess.com",
+      "POLICY_AUD": "17eae9ee76493d28921c96d4c081af7d23b86cb28df0d98dfa6499d13c6fde1d",
+      "TRISTAN_EMAIL": "tristanwalmsley49@outlook.com",
+      "ANN_EMAIL": "mailnaarannika@gmail.com"
+    },
+    "kv_namespaces": [
+      { "binding": "BESTIES_KV", "id": "PASTE_NEW_KV_ID" }
+    ]
+  }
