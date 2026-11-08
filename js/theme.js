@@ -32,7 +32,7 @@
     { id: 'christmas',   label: 'Christmas',   start: '12-06', end: '12-31',
       flakes: { glyphs: ['❄', '❅', '•'],  count: 26, size: [9, 20] },
       drift: true, caps: true, burst: ['❄', '✦', '❅'],
-      home: { greeting: '🎄 the Christmas edition - happy holidays, Bestie Ann 🎄',
+      home: { greeting: '🎄 Christmas 2026 - the winter drop is here, Bestie Ann 🎄',
               postmark: 'Merry<br>Christmas<br>from UK', corner: 'Festive<br>class<br>bestie' } }
   ];
 

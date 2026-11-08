@@ -1,0 +1,28 @@
+/* home_christmas.css - Christmas 2026 home page extras. Tokens only (see tokens.css). Shown only while data-theme="christmas". */
+#xmas{display:none}
+html[data-theme="christmas"] #xmas{display:block}
+.xm-hero{background:var(--deep);color:var(--paper);border-radius:10px;padding:1.6rem 1.4rem;text-align:center;position:relative;overflow:hidden;box-shadow:4px 4px 0 var(--warm);
+  background-image:radial-gradient(ellipse at 50% 0,color-mix(in srgb,var(--gold) 28%,transparent),transparent 65%)}
+.xm-hero small{font-family:var(--font-hand);font-size:1.25rem;color:var(--gold-light);letter-spacing:.5px}
+.xm-num{font-family:var(--font-display);font-size:clamp(3.4rem,12vw,6rem);line-height:1;color:var(--gold-light);text-shadow:0 0 18px color-mix(in srgb,var(--gold) 55%,transparent)}
+.xm-sub{font-family:var(--font-display);font-style:italic;font-size:1.15rem;margin-top:.2rem}
+.xm-row{display:grid;grid-template-columns:1fr;gap:1.6rem;margin-top:1.6rem}
+@media(min-width:760px){.xm-row{grid-template-columns:1.25fr 1fr}}
+.xm-advent{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:.55rem}
+.xm-door{aspect-ratio:1;border:1px solid var(--tan);border-radius:6px;background:var(--warm);color:var(--brown);font:700 1.05rem var(--font-display);display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;transition:transform .15s}
+.xm-door:nth-child(3n){background:color-mix(in srgb,var(--sage) 22%,var(--paper))}
+.xm-door:nth-child(3n+1){background:color-mix(in srgb,var(--rose) 18%,var(--paper))}
+.xm-door.shut{opacity:.45;cursor:default}
+.xm-door.open:hover{transform:rotate(-3deg) scale(1.06)}
+.xm-door.done::after{content:'✓';position:absolute;top:2px;right:5px;font-size:.7rem;color:var(--sage-dark)}
+.xm-door.today{background:var(--gold);color:var(--paper);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 35%,transparent),0 0 14px var(--gold);animation:xmGlow 2s ease-in-out infinite alternate}
+@keyframes xmGlow{to{box-shadow:0 0 0 5px color-mix(in srgb,var(--gold) 20%,transparent),0 0 22px var(--gold-light)}}
+.xm-tree{display:block;width:100%;max-width:230px;margin:0 auto}
+.xm-bauble{cursor:pointer;transition:transform .2s;transform-box:fill-box;transform-origin:center}
+.xm-bauble:hover{transform:scale(1.25)}
+.xm-bauble.off{opacity:.28}
+.xm-bauble.lit{filter:drop-shadow(0 0 4px var(--gold-light));animation:xmTw 2.4s ease-in-out infinite alternate}
+@keyframes xmTw{to{filter:drop-shadow(0 0 9px var(--gold-light)) brightness(1.25)}}
+.xm-note{font-family:var(--font-hand);font-size:1.15rem;color:var(--brown);text-align:center;min-height:1.6em;margin-top:.4rem}
+.pst .xm-date{position:absolute;bottom:4px;left:0;right:0;text-align:center;font:600 .62rem var(--font-hand);color:var(--brown)}
+@media(prefers-reduced-motion:reduce){.xm-door.today,.xm-bauble.lit{animation:none}}
