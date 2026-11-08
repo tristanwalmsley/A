@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="christmas">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Christmas 2026 ♡ Besties</title>
+<link rel="icon" type="image/x-icon" href="media/shared/images/site_icon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/themes.css">
+<script src="js/theme.js"></script>
+<style>
+/* This page is ALWAYS Christmas, whatever the date (the script at the bottom forces the theme). */
+.xm-hero{position:relative;text-align:center;color:var(--paper);padding:3.2rem 1.5rem 3.6rem;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 0,rgba(246,220,122,.35),transparent 60%),linear-gradient(180deg,#0f3d2b,#176343 70%,#0f3d2b);
+  border-bottom:6px solid var(--gold)}
+.xm-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle,rgba(255,255,255,.55) 0 1.5px,transparent 2px) 0 0/46px 46px,radial-gradient(circle,rgba(255,255,255,.35) 0 1px,transparent 2px) 23px 23px/46px 46px;opacity:.5}
+.xm-hero>*{position:relative}
+.xm-kick{font-family:var(--font-hand);font-size:1.5rem;color:var(--gold-light);letter-spacing:1px}
+.xm-title{font-family:var(--font-display);font-style:italic;font-weight:700;font-size:clamp(2.6rem,9vw,5.2rem);line-height:1.05;margin:.2rem 0 .3rem;text-shadow:0 3px 0 rgba(0,0,0,.25)}
+.xm-title b{color:var(--gold-light)}
+.xm-by{font-family:var(--font-display);font-size:1.15rem;opacity:.92}
+.xm-count{display:inline-block;margin-top:1.6rem;padding:1rem 2.2rem 1.1rem;border:3px dashed var(--gold-light);border-radius:14px;background:rgba(0,0,0,.22)}
+.xm-num{font-family:var(--font-display);font-weight:700;font-size:clamp(3.4rem,13vw,6.4rem);line-height:1;color:var(--gold-light);text-shadow:0 0 22px rgba(246,220,122,.65)}
+.xm-sub{font-family:var(--font-hand);font-size:1.5rem}
+.xm-garland{position:absolute;left:0;right:0;top:0;height:30px;background:repeating-linear-gradient(90deg,#1f7a4d 0 26px,#135c37 26px 52px);border-radius:0 0 50% 50%/0 0 100% 100%;opacity:.95}
+.xm-wrap{max-width:980px;margin:0 auto;padding:2rem 1.4rem 7rem}
+.xm-sec{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:clamp(1.7rem,4vw,2.3rem);color:var(--sage-dark);margin:2.2rem 0 .9rem}
+.xm-sec small{font-family:var(--font-hand);font-style:normal;font-size:1.15rem;color:var(--rose);margin-left:.6rem}
+.xm-card{background:var(--paper);border:2px solid var(--sage);padding:1.4rem 1.6rem;position:relative;box-shadow:5px 5px 0 color-mix(in srgb,var(--rose) 35%,var(--warm))}
+.xm-card::before{content:'';position:absolute;inset:-6px;border:1px dashed var(--rose);opacity:.55;pointer-events:none}
+.xm-card h3{font-family:var(--font-hand);font-size:1.3rem;color:var(--rose);font-weight:700}
+.xm-card .s{font-style:italic;font-size:.9rem;color:var(--brown);opacity:.8;margin:.1rem 0 .9rem}
+.xm-letter p{font-size:1.12rem;line-height:1.65;margin-bottom:.7rem}
+.xm-letter .sig{font-family:var(--font-hand);font-size:1.5rem;color:var(--rose);text-align:right}
+.xm-row{display:grid;grid-template-columns:1fr;gap:1.8rem}
+@media(min-width:780px){.xm-row{grid-template-columns:1.3fr 1fr}}
+.xm-advent{display:grid;grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:.6rem}
+.xm-door{aspect-ratio:1;border:2px solid var(--rose-dark);border-radius:7px;font:700 1.1rem var(--font-display);color:var(--paper);background:var(--rose);display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;transition:transform .15s}
+.xm-door:nth-child(even){background:var(--sage);border-color:var(--sage-dark)}
+.xm-door::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:6px;margin-left:-3px;background:var(--gold-light);opacity:.55}
+.xm-door span{position:relative;background:inherit;padding:0 .25em;border-radius:4px}
+.xm-door.open:hover{transform:rotate(-4deg) scale(1.08)}
+.xm-door.shut{filter:grayscale(.6) brightness(.9);opacity:.55;cursor:default}
+.xm-door.done::after{content:'✓';position:absolute;top:1px;right:4px;font-size:.75rem;color:var(--gold-light)}
+.xm-door.today{box-shadow:0 0 0 3px var(--gold-light),0 0 18px var(--gold);animation:xmGlow 1.8s ease-in-out infinite alternate}
+@keyframes xmGlow{to{box-shadow:0 0 0 5px rgba(246,220,122,.5),0 0 28px var(--gold-light)}}
+.xm-tree{display:block;width:100%;max-width:250px;margin:0 auto}
+.xm-bauble{cursor:pointer;transition:transform .2s;transform-box:fill-box;transform-origin:center}
+.xm-bauble:hover{transform:scale(1.25)}
+.xm-bauble.off{opacity:.3}
+.xm-bauble.lit{filter:drop-shadow(0 0 5px var(--gold-light));animation:xmTw 2.2s ease-in-out infinite alternate}
+@keyframes xmTw{to{filter:drop-shadow(0 0 11px var(--gold-light)) brightness(1.3)}}
+.xm-note{font-family:var(--font-hand);font-size:1.2rem;color:var(--brown);text-align:center;min-height:1.6em;margin-top:.5rem}
+.xm-stamps{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:1.2rem}
+.xm-pst{border:3px dotted var(--rose);background:var(--paper);padding:1.1rem .6rem;text-align:center;border-radius:4px;transform:rotate(var(--t,0deg));text-decoration:none;color:var(--ink);display:block}
+.xm-pst .g{font-size:2rem;display:block}
+.xm-pst .l{font-family:var(--font-hand);font-size:1.15rem;color:var(--rose-dark);display:block}
+.xm-pst .d{font-family:var(--font-hand);font-size:.95rem;color:var(--brown);display:block}
+.xm-pst.locked .g{opacity:.55}
+@media(prefers-reduced-motion:reduce){.xm-door.today,.xm-bauble.lit{animation:none}}
+</style>
+</head>
+<body>
+<nav id="site-nav" data-theme="light">
+  <a href="index.html" class="nav-brand">Besties ♡</a>
+  <div class="nav-links"></div>
+</nav>
+
+<header class="xm-hero">
+  <div class="xm-garland" aria-hidden="true"></div>
+  <div class="xm-kick">🎄 the winter drop 🎄</div>
+  <h1 class="xm-title">Christmas <b>2026</b></h1>
+  <div class="xm-by">Tristan &amp; Ann · from the UK, with love</div>
+  <div class="xm-count"><div class="xm-num" id="xm-num">-</div><div class="xm-sub" id="xm-sub"></div></div>
+</header>
+
+<main class="xm-wrap">
+  <div class="xm-card xm-letter">
+    <p>Merry Christmas, Bestie Ann.</p>
+    <p>Welcome to the festive corner of our little website. Grab a hot chocolate (or a very strong tea), open a door a day, and wander around - there is a lot more on its way this winter.</p>
+    <div class="sig">Bestie Tristan xo</div>
+  </div>
+
+  <div class="xm-row">
+    <div>
+      <h2 class="xm-sec">The Advent Strip<small>one door a day</small></h2>
+      <div class="xm-card"><h3>December doors</h3><div class="s">door N opens on N December - tap an open one</div><div class="xm-advent" id="xm-advent"></div></div>
+    </div>
+    <div>
+      <h2 class="xm-sec">The Tree<small>light it up</small></h2>
+      <div class="xm-card"><h3>Bauble count</h3><div class="s" id="xm-tree-sub"></div><div id="xm-tree"></div><div class="xm-note" id="xm-note">tap a bauble</div></div>
+    </div>
+  </div>
+
+  <h2 class="xm-sec">Coming this Christmas<small>unwrapping soon</small></h2>
+  <div class="xm-stamps" id="xm-stamps"></div>
+</main>
+
+<div id="egg-modal"><div class="egg-backdrop" onclick="closeEgg()"></div><div class="egg-card"><button class="egg-close" onclick="closeEgg()" aria-label="Close">✕</button><div class="egg-title" id="egg-title"></div><p class="egg-text" id="egg-text"></p><span class="egg-sig" id="egg-sig">Bestie Tristan xo</span></div></div>
+
+<script src="js/bestie_storage.js"></script>
+<script src="js/nav.js"></script>
+<script>
+(function(){
+  if(window.SiteTheme && SiteTheme.active !== 'christmas') SiteTheme.set('christmas');   // always festive here
+  const $ = id => document.getElementById(id);
+
+  /* ---- EDIT ME: door messages, bauble notes, coming-soon pages ---- */
+  const ADVENT = {};   // e.g. 1:{title:'Door 1', html:'A song, a memory, a Dutch phrase...'}
+  const BAUBLE_NOTES = ['Thank you for being my bestie.','Hot chocolate energy: you.','Stroopwafels beat mince pies. Fight me.','Another day, another reason.','You make December warmer.','Sending a very long-distance hug.'];
+  const TEASERS = [
+    { label:'Advent Calendar', glyph:'🗓', date:'opens 1 Dec',     live:false, href:'advent.html' },
+    { label:'Christmas Gifts', glyph:'🎁', date:'opens 24 Dec',    live:false, href:'christmas_gifts.html' },
+    { label:'Christmas Day',   glyph:'🎄', date:'25 Dec only',     live:false, href:'christmas_day.html' },
+    { label:'12 Days',         glyph:'🕯', date:'26 Dec - 6 Jan',  live:false, href:'twelve_days.html' }
+  ];
+
+  /* ---- today (honours ?themedate=MM-DD) ---- */
+  let now = new Date(), fd = null;
+  try{ fd = sessionStorage.getItem('site_theme_date'); }catch(e){}
+  const m = fd && fd.match(/(\d{1,2})-(\d{1,2})$/);
+  if(m) now = new Date(now.getFullYear(), +m[1]-1, +m[2]);
+  const Y = now.getFullYear(), day = now.getDate(), inDec = now.getMonth() === 11;
+  const toXmas = Math.round((new Date(Y,11,25) - new Date(Y,now.getMonth(),day)) / 864e5);
+  const num = $('xm-num'), sub = $('xm-sub');
+  if(toXmas > 1){ num.textContent = toXmas; sub.textContent = 'sleeps until Christmas'; }
+  else if(toXmas === 1){ num.textContent = '1'; sub.textContent = "sleep to go - it's Christmas Eve!"; }
+  else if(toXmas === 0){ num.textContent = '🎅'; sub.textContent = 'Merry Christmas, Bestie Ann!'; }
+  else { num.textContent = '✦'; sub.textContent = 'Christmas is over - Oud en Nieuw is coming'; }
+
+  /* ---- advent doors ---- */
+  let seen = []; try{ seen = JSON.parse(localStorage.getItem('xmas26_doors')) || []; }catch(e){}
+  for(let d = 1; d <= 25; d++){
+    const open = inDec && d <= day, el = document.createElement('button');
+    el.type = 'button'; el.className = 'xm-door ' + (open ? 'open' : 'shut') + (d === day && inDec ? ' today' : '') + (seen.includes(d) ? ' done' : '');
+    el.innerHTML = '<span>' + d + '</span>'; el.setAttribute('aria-label', 'Advent door ' + d + (open ? '' : ' (not yet)'));
+    if(open) el.onclick = () => {
+      const c = ADVENT[d] || { title:'Door ' + d, html:'This door is still being wrapped. The full Advent calendar is on its way - check back soon ♡' };
+      $('egg-title').textContent = c.title; $('egg-text').innerHTML = c.html; $('egg-modal').classList.add('show');
+      if(!seen.includes(d)){ seen.push(d); el.classList.add('done'); try{ localStorage.setItem('xmas26_doors', JSON.stringify(seen)); }catch(e){} }
+    };
+    $('xm-advent').appendChild(el);
+  }
+  window.closeEgg = () => $('egg-modal').classList.remove('show');
+
+  /* ---- tree: one bauble per different December day visited ---- */
+  let visits = []; try{ visits = JSON.parse(localStorage.getItem('xmas26_visits')) || []; }catch(e){}
+  if(inDec && !visits.includes(day)){ visits.push(day); try{ localStorage.setItem('xmas26_visits', JSON.stringify(visits)); }catch(e){} }
+  const spots = [[125,72],[100,108],[150,104],[78,146],[125,142],[172,146],[56,188],[96,182],[140,184],[184,186],[66,220],[176,220]];
+  const cols = ['--rose','--gold','--paper','--rose'];
+  let svg = '<svg class="xm-tree" viewBox="0 0 250 280" role="img" aria-label="Christmas tree: one bauble lights per day you visit"><rect x="113" y="240" width="24" height="30" fill="var(--brown)"/>'
+    + ['M125 22 L178 104 H72 Z','M125 62 L198 166 H52 Z','M125 112 L218 238 H32 Z'].map(p => '<path d="' + p + '" fill="var(--sage)" stroke="var(--sage-dark)" stroke-width="2"/>').join('')
+    + '<path d="M125 6 l6 12 13 1-10 9 3 13-12-7-12 7 3-13-10-9 13-1z" fill="var(--gold-light)" stroke="var(--gold-dark)"/>';
+  spots.forEach((p,i) => { svg += '<circle class="xm-bauble ' + (i < visits.length ? 'lit' : 'off') + '" cx="' + p[0] + '" cy="' + p[1] + '" r="10" fill="var(' + cols[i % 4] + ')" stroke="var(--gold-dark)" stroke-width="1.5" data-i="' + i + '"/>'; });
+  $('xm-tree').innerHTML = svg + '</svg>';
+  $('xm-tree-sub').textContent = Math.min(visits.length, 12) + ' of 12 baubles lit - visit on different days in December';
+  $('xm-tree').addEventListener('click', e => {
+    const b = e.target.closest('.xm-bauble'); if(!b) return;
+    $('xm-note').textContent = b.classList.contains('lit') ? BAUBLE_NOTES[+b.dataset.i % BAUBLE_NOTES.length] : 'not lit yet - come back another day ♡';
+  });
+
+  /* ---- coming-soon stamps ---- */
+  TEASERS.forEach((t, i) => {
+    const el = document.createElement(t.live ? 'a' : 'div'); el.className = 'xm-pst' + (t.live ? '' : ' locked');
+    el.style.setProperty('--t', ((i % 3) - 1) * 1.6 + 'deg'); if(t.live) el.href = t.href;
+    el.innerHTML = '<span class="g"></span><span class="l"></span><span class="d"></span>';
+    el.querySelector('.g').textContent = t.live ? t.glyph : '🎁';
+    el.querySelector('.l').textContent = t.live ? t.label : '? ? ?';
+    el.querySelector('.d').textContent = t.date;
+    $('xm-stamps').appendChild(el);
+  });
+})();
+</script>
+</body>
+</html>

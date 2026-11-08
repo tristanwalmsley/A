@@ -30,9 +30,9 @@
       home: { greeting: '🎁 Sinterklaas edition - zet je schoentje, Bestie Ann! 🥾',
               postmark: 'Fijne<br>Sint ✦<br>from UK', corner: 'Gold<br>star<br>bestie' } },
     { id: 'christmas',   label: 'Christmas',   start: '12-06', end: '12-31',
-      flakes: { glyphs: ['❄', '❅', '•'],  count: 26, size: [9, 20] },
-      drift: true, caps: true, burst: ['❄', '✦', '❅'],
-      home: { greeting: '🎄 Christmas 2026 - the winter drop is here, Bestie Ann 🎄',
+      flakes: { glyphs: ['❄', '❅', '❆', '🎄', '⭐', '🔔', '•'],  count: 38, size: [10, 24] },
+      drift: true, caps: true, lights: true, burst: ['❄', '✦', '❅', '🎄', '⭐', '🎁'],
+      home: { greeting: '🎄 the Christmas edition - merry Christmas, Bestie Ann 🎅🎁',
               postmark: 'Merry<br>Christmas<br>from UK', corner: 'Festive<br>class<br>bestie' } }
   ];
 
@@ -75,7 +75,7 @@
   var HOME_SWAPS = [['.postmark-text', 'postmark'], ['.letter-corner span', 'corner']];
 
   function clearDeco() {
-    ['theme-ribbon', 'theme-deco', 'theme-preview-badge', 'theme-drift', 'theme-frost'].forEach(function (id) {
+    ['theme-ribbon', 'theme-deco', 'theme-preview-badge', 'theme-drift', 'theme-frost', 'theme-lights'].forEach(function (id) {
       var el = document.getElementById(id); if (el) el.remove();
     });
     root.classList.remove('td-no-nav');
@@ -121,6 +121,7 @@
     root.classList.toggle('td-no-nav', !document.getElementById('site-nav'));   // pages without a nav hang the trim from the ribbon
     if (active.frost) add('theme-frost');
     if (active.drift) add('theme-drift');
+    if (active.lights) add('theme-lights');
     if (active.caps) buildCaps();
     if (active.home) buildHome(active.home);
     var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;

@@ -107,3 +107,39 @@ html.td-no-nav[data-theme="sinterklaas"] #theme-ribbon::after{height:30px;backgr
 @keyframes tdBurst{
   0%{opacity:1;transform:translate(-50%,-50%) scale(.4)}
   100%{opacity:0;transform:translate(calc(-50% + var(--bx)),calc(-50% + var(--by))) scale(1.1) rotate(var(--br))}}
+
+
+/* ==========================================================================
+   CHRISTMAS - EXTRA FESTIVE (6-31 Dec and the Christmas 2026 page)
+   ========================================================================== */
+html[data-theme="christmas"]{
+  --cream:#fff3e6; --warm:#f6d9c4; --tan:#d9a98c; --brown:#6b2a2a; --deep:#0f3d2b;
+  --rose:#c4172a; --gold:#d9a21b; --sage:#1f7a4d; --paper:#fffaf3; --ink:#241410;
+  --gold-hover:#f0b92e; --gold-light:#f6dc7a; --rose-dark:#8f0f1e; --sage-dark:#135c37;
+  --mat:#fbe3d0; --nav-dark-bg:rgba(8,40,28,.96); --nav-dark-menu-bg:#0b2e21;
+  --ribbon:repeating-linear-gradient(135deg,#c4172a 0 10px,#fffaf3 10px 20px);
+}
+html[data-theme="christmas"] body{
+  background-color:var(--page-bg);
+  background-image:
+    radial-gradient(circle at 12% 18%,rgba(196,23,42,.07) 0 3px,transparent 4px),
+    radial-gradient(circle at 70% 60%,rgba(31,122,77,.08) 0 3px,transparent 4px),
+    radial-gradient(circle at 40% 85%,rgba(217,162,27,.12) 0 2px,transparent 3px),
+    linear-gradient(180deg,#ffe9d9 0,var(--page-bg) 320px);
+  background-size:90px 90px,110px 110px,70px 70px,auto;
+}
+html[data-theme="christmas"] #theme-ribbon{height:12px;border-bottom:2px solid var(--gold)}
+html[data-theme="christmas"] #site-nav{border-bottom:3px solid var(--rose)}
+html[data-theme="christmas"] #site-nav .nav-brand{color:var(--rose)}
+html[data-theme="christmas"] .td-greeting{font-size:1.5rem;color:var(--rose)}
+/* holly corners + gift-wrap border on cards */
+html[data-theme="christmas"] .keepsake-card,html[data-theme="christmas"] .letter{border:2px solid var(--sage);box-shadow:5px 5px 0 color-mix(in srgb,var(--rose) 35%,var(--warm))}
+html[data-theme="christmas"] .keepsake-card::before{border-color:var(--rose);opacity:.55}
+html[data-theme="christmas"] .sec-title,html[data-theme="christmas"] .page-header h1{color:var(--sage-dark)}
+html[data-theme="christmas"] .sheet{border:2px solid var(--rose);background:color-mix(in srgb,var(--mat) 80%,var(--paper))}
+/* twinkling coloured lights along the bottom of the screen */
+#theme-lights{position:fixed;left:0;right:0;bottom:0;height:22px;z-index:445;pointer-events:none;
+  background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 22' width='120' height='22'><path d='M0 4Q15 14 30 4T60 4T90 4T120 4' fill='none' stroke='%23244d36' stroke-width='2'/><g stroke='%23222' stroke-width='.6'><ellipse cx='15' cy='13' rx='4' ry='6' fill='%23e0343c'/><ellipse cx='45' cy='13' rx='4' ry='6' fill='%23f6c84e'/><ellipse cx='75' cy='13' rx='4' ry='6' fill='%233fb36f'/><ellipse cx='105' cy='13' rx='4' ry='6' fill='%234a9ae8'/></g></svg>") repeat-x bottom/120px 22px;
+  animation:tdTwinkle 2.2s ease-in-out infinite alternate}
+html[data-theme="christmas"] #theme-drift{bottom:14px}
+@media(prefers-reduced-motion:reduce){#theme-lights{animation:none}}
