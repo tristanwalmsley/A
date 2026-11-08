@@ -9,8 +9,7 @@
     "POLICY_AUD": "17eae9ee76493d28921c96d4c081af7d23b86cb28df0d98dfa6499d13c6fde1d",
     "TRISTAN_EMAIL": "tristanwalmsley49@outlook.com",
     "ANN_EMAIL": "mailnaarannika@gmail.com"
-  }
-},
+  },
   "previews": {
     "vars": {
       "TEAM_DOMAIN": "besties-website.cloudflareaccess.com",
@@ -22,3 +21,4 @@
       { "binding": "BESTIES_KV", "id": "2e518ead4b34423495a1991378c82923" }
     ]
   }
+}
