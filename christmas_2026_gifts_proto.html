@@ -89,7 +89,7 @@ Object.assign(S[1],{t:'door',title:'New page unlocked: Us (winter)',tag:'page un
 Object.assign(S[3],{t:'img',title:'Frosted Window Photo',tag:'photo 📷',desc:'Wipe the frost off to see it. (A real photo goes under here.)'});
 Object.assign(S[4],{t:'slides',title:'The Slide Show',tag:'photo set 🎞️',desc:'A little collection, projected one frame at a time.',slides:['Frame one: a memory','Frame two: a bad selfie','Frame three: us, honestly']});
 Object.assign(S[6],{t:'song',title:'The Song (paper copy is in the box)',tag:'song 🎵',desc:'Lyrics play along here. Audio is optional, the paper is the real gift.',lyr:['Placeholder line one','Placeholder line two','Placeholder line three','Placeholder line four']});
-Object.assign(S[ghostAt],{t:'ghost',title:'Platform 13 (unscheduled)',tag:'??? 👻'});
+Object.assign(S[ghostAt],{t:'ghost',title:'The Phasmo Van',tag:'??? 👻'});
 Object.assign(S[N-1],{t:'premiere',title:'Haunted Couture 2026',tag:'the premiere 🎬'});
 const $=id=>document.getElementById(id);
 const world=$('world'),far=$('far'),mid=$('mid'),go=$('go'),train=$('train');
@@ -98,14 +98,14 @@ try{opened=new Set(JSON.parse(localStorage.getItem('xmx_open')||'[]'))}catch(e){
 const q=new URLSearchParams(location.search);if(q.get('at'))cur=Math.min(N-1,+q.get('at'));if(q.get('skip'))for(let i=0;i<N-1;i++)opened.add(i);
 // build stations
 S.forEach((s,i)=>{const d=document.createElement('div');d.className='st'+(s.t=='ghost'?' ghost':s.t=='premiere'?' pm':'');d.id='st'+i;d.style.left=(440+i*GAP-60)+'px';
-d.innerHTML='<div class="pole"><div class="lamp"></div></div><div class="sign">'+(s.t=='ghost'?'13':s.t=='premiere'?'🎬':(i+1))+'</div>';d.onclick=()=>{if(i==cur&&!busy)openStop()};world.appendChild(d)});
+d.innerHTML='<div class="pole"><div class="lamp"></div></div><div class="sign">'+(s.t=='ghost'?'20':s.t=='premiere'?'🎬':(i+1))+'</div>';d.onclick=()=>{if(i==cur&&!busy)openStop()};world.appendChild(d)});
 function zone(){return cur<13?'🇳🇱 the Dutch canals':cur<27?(cur==ghostAt?'👻 somewhere that is not on the map':'🌊 crossing the Channel'):'🇬🇧 Lancashire hills'}
 function paint(){world.style.transform='translateX('+(-x)+'px)';far.style.backgroundPositionX=(-x*.12)+'px';mid.style.backgroundPositionX=(-x*.35)+'px'}
 function hud(){$('zone').textContent=zone();$('cnt').textContent=opened.size+' / '+N;$('bar').style.width=(opened.size/N*100)+'%';
  $('aur').style.opacity=Math.min(1,opened.size/N*1.1);document.querySelectorAll('.st').forEach((e,i)=>{e.classList.toggle('lit',opened.has(i));e.classList.toggle('here',i==cur&&!opened.has(i))});
  go.textContent=opened.has(cur)?(cur==N-1?'The End ♡':'Chug on →'):'Open parcel 🎁';go.disabled=busy||(cur==N-1&&opened.has(cur))}
 function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',2200)}
-function travel(to){busy=true;train.classList.remove('stop');hud();const a=x,b=to*GAP,t0=performance.now(),D=1900;
+function travel(to){busy=true;train.classList.remove('stop');hud();const a=x,b=to*GAP,t0=performance.now(),D=5200;
  (function f(n){const k=Math.min(1,(n-t0)/D),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;x=a+(b-a)*e;paint();if(k<1)requestAnimationFrame(f);else{cur=to;busy=false;train.classList.add('stop');hud()}})(t0)}
 go.onclick=()=>{if(busy)return;if(!opened.has(cur))openStop();else if(cur<N-1)travel(cur+1)};
 addEventListener('keydown',e=>{if(e.key=='ArrowRight'||e.key=='Enter')go.click();if(e.key=='Escape'&&$('panel').classList.contains('on'))finish()});
@@ -182,6 +182,7 @@ const tone=(f,t,d,ty,v)=>{const a=au();if(!a||mute)return;const o=a.createOscill
 const chime=()=>[784,988,1175,1568,1976].forEach((f,i)=>tone(f,i*.08,1.1,'triangle',.09));
 const whistle=()=>{tone(466,0,1.2,'sawtooth',.04);tone(587,0,1.2,'sawtooth',.04);tone(932,.05,1.1,'sine',.03)};
 const hiss=(v)=>{const a=au();if(!a||mute)return;const s=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain();s.buffer=nz;f.type='lowpass';f.frequency.value=600;g.gain.setValueAtTime(v||.16,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.22);s.connect(f).connect(g).connect(a.destination);s.start();s.stop(a.currentTime+.25)};
+W.sfx={tone,chime,whistle,hiss};W.setMute=v=>{mute=v};W.getAC=au;
 // ---------- world dressing ----------
 const fir=(h,c)=>`<svg width="${h*.6}" height="${h}" viewBox="0 0 60 100"><path d="M30 0L48 34H12zM30 22L54 62H6zM30 48L60 100H0z" fill="${c}"/><path d="M30 0L36 11H24zM30 22L38 36H22zM30 48L40 64H20z" fill="#eaf4f8"/></svg>`;
 const mill=s=>`<svg width="${s}" height="${s*1.2}" viewBox="0 0 100 120"><path d="M28 118L38 40H62L72 118Z" fill="#a8896a"/><path d="M34 40L50 22L66 40Z" fill="#5a3a24"/><rect x="44" y="84" width="12" height="34" fill="#4a2c1c"/><rect x="45" y="58" width="10" height="12" fill="#f6dc7a"/><g class="bl"><rect x="47" y="-14" width="6" height="100" fill="#e8dcc8"/><rect x="0" y="33" width="100" height="6" fill="#e8dcc8"/></g></svg>`;
@@ -214,7 +215,7 @@ for(let i=0;i<260;i++)P.push({k:'s',x:rnd(0,innerWidth),y:rnd(0,innerHeight),z:r
 const burst=(x,y,n,col)=>{for(let i=0;i<n;i++){const a=rnd(0,6.28),s=rnd(1,7);P.push({k:'g',x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-1,l:rnd(50,100),m:100,col:col||(Math.random()<.5?'#f6dc7a':'#fff')})}};
 W.burst=burst;let t0=0,fr=0,shoot=0;
 const loop=t=>{fr++;dx=x-lx;lx=x;c.clearRect(0,0,cv.width,cv.height);
- if(fr%(run?5:16)==0)P.push({k:'p',x:innerWidth*0+352,y:innerHeight-170,vx:-.3-Math.max(0,dx)*.35,vy:-1.2,r:6,l:0});
+ if(fr%(run?5:16)==0)P.push({k:'p',x:W.TX(),y:W.TY(),vx:-.3-Math.max(0,dx)*.35,vy:-1.2,r:6,l:0});
  if(!shoot&&Math.random()<.004)shoot={x:rnd(innerWidth*.3,innerWidth),y:rnd(0,innerHeight*.3),l:0};
  if(shoot){c.strokeStyle='rgba(255,255,255,'+(1-shoot.l/30)+')';c.lineWidth=2;c.beginPath();c.moveTo(shoot.x,shoot.y);c.lineTo(shoot.x+90,shoot.y-40);c.stroke();shoot.x-=14;shoot.y+=6;if(++shoot.l>30)shoot=0}
  for(let i=P.length-1;i>=0;i--){const p=P[i];
@@ -223,7 +224,7 @@ const loop=t=>{fr++;dx=x-lx;lx=x;c.clearRect(0,0,cv.width,cv.height);
   else{p.x+=p.vx;p.y+=p.vy;p.vy+=.08;p.vx*=.985;p.l--;c.globalAlpha=Math.max(0,p.l/p.m);c.fillStyle=p.col;c.beginPath();c.arc(p.x,p.y,2.4,0,6.3);c.fill();c.globalAlpha=1;if(p.l<=0)P.splice(i,1)}}
  requestAnimationFrame(loop)};requestAnimationFrame(loop);
 // ---------- orchestration ----------
-const hunt=()=>{document.documentElement.classList.add('haunt');toast('🎫 Platform 13? That is not on the timetable…');tone(110,0,2,'sawtooth',.05);tone(116,0,2,'sawtooth',.05)};
+const hunt=()=>{document.documentElement.classList.add('haunt');toast('🎫 An unscheduled stop… the lights are flickering');tone(110,0,2,'sawtooth',.05);tone(116,0,2,'sawtooth',.05)};
 let was=false,chugT;
 const _t=travel;travel=function(to){run=true;whistle();hiss(.2);B.classList.add('shk');setTimeout(()=>B.classList.remove('shk'),600);clearInterval(chugT);chugT=setInterval(()=>hiss(.1),300);_t(to)};
 const watch=()=>{if(was&&!busy){run=false;clearInterval(chugT);hiss(.25);burst(innerWidth*.35,innerHeight-130,14,'#eaf4f8');if(cur==ghostAt&&!opened.has(cur))hunt()}was=busy;requestAnimationFrame(watch)};watch();
@@ -233,6 +234,107 @@ W.showText=()=>{const d=E('dsc'),hn=E('hnt');[d,hn].forEach(el=>{el.style.displa
 E('again').onclick=()=>E('fin').classList.remove('on');
 const start=(fast)=>{B.classList.add('on');E('intro').classList.add('out');if(fast){train.classList.add('noanim','in');return}au();whistle();run=true;train.classList.remove('stop');setTimeout(()=>train.classList.add('in'),300);setTimeout(()=>{train.classList.add('stop');run=false;hiss(.3);if(cur==ghostAt&&!opened.has(cur))hunt()},3900)};
 E('aboard').onclick=()=>start(false);if(q.get('skip')||q.get('at'))start(true);
+})();
+</script>
+<style>
+/* ===== PASS 3: camera, story, themed cards, van ===== */
+html{--S:1}#world{transform-origin:0 100%}
+#train{left:calc(-440px*var(--S));bottom:calc(62px*var(--S));transform:scale(var(--S));transform-origin:left bottom}#train.in{left:calc(30px*var(--S))}
+#beam{left:calc(356px*var(--S));bottom:calc(112px*var(--S));width:calc(340px*var(--S));height:calc(90px*var(--S))}
+#cap{position:fixed;left:0;right:0;bottom:calc(4vh + 4.8rem);text-align:center;z-index:7;font:italic 1.55rem 'Playfair Display',serif;color:#fff;text-shadow:0 2px 14px #000,0 0 3px #000;opacity:0;transition:opacity 1s;padding:0 2rem;pointer-events:none}#cap.on{opacity:1}
+#chap{position:fixed;inset:0;z-index:40;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 1.2s}#chap.on{opacity:1}#chap small{font:1.5rem Caveat,cursive;letter-spacing:10px;color:#9fc4e0;text-transform:uppercase}#chap b{font:italic 700 clamp(2.5rem,9vw,6.5rem) 'Playfair Display',serif;color:var(--gold);filter:drop-shadow(0 0 30px rgba(246,220,122,.4))}
+#tun,#xing{position:fixed;inset:0;z-index:6;pointer-events:none;opacity:0;transition:opacity .6s}#tun.on,#xing.on{opacity:1}
+#tun{background:radial-gradient(ellipse 60% 50% at 50% 60%,transparent 15%,#040302 75%),repeating-linear-gradient(90deg,#241810 0 60px,#0b0705 60px 68px);animation:tf .3s steps(3) infinite}@keyframes tf{50%{filter:brightness(.8)}}
+#xing{background:radial-gradient(circle 80px at 15% 24%,rgba(255,40,40,.85),transparent),radial-gradient(circle 80px at 85% 24%,rgba(255,40,40,.85),transparent);animation:bk .5s steps(2) infinite}@keyframes bk{50%{filter:hue-rotate(40deg) brightness(.3)}}
+#pass{position:fixed;bottom:calc(130px*var(--S));left:100%;width:1100px;height:90px;z-index:3;background:radial-gradient(circle,#ffe9a0 0 7px,transparent 8px) 10px 28px/46px 46px repeat-x,linear-gradient(#0a1620,#0a1620) 0 10px/100% 60px no-repeat}#pass.go{animation:ps 1.7s linear}@keyframes ps{to{transform:translateX(-230vw)}}
+.mt{position:fixed;height:2px;width:120px;background:linear-gradient(90deg,#fff,transparent);z-index:3;animation:mt 1.2s ease-in forwards;transform:rotate(25deg)}@keyframes mt{from{opacity:1}to{transform:translate(-500px,230px) rotate(25deg);opacity:0}}
+#flash{position:fixed;inset:0;background:#fff;z-index:60;opacity:0;pointer-events:none}#flash.on{animation:fl2 .9s}@keyframes fl2{0%{opacity:.95}100%{opacity:0}}
+#panel.zn0{background:radial-gradient(circle at 15% 85%,rgba(255,170,70,.4),transparent 40%),radial-gradient(circle at 85% 25%,rgba(255,110,60,.28),transparent 40%),rgba(22,8,4,.9)}
+#panel.zn1{background:radial-gradient(circle at 50% 105%,rgba(60,170,230,.5),transparent 55%),rgba(2,12,30,.92)}
+#panel.zn2{background:radial-gradient(circle at 50% 95%,rgba(255,150,60,.45),transparent 50%),radial-gradient(circle at 12% 20%,rgba(60,200,120,.22),transparent 40%),rgba(8,18,10,.92)}
+.card.tg{background:repeating-linear-gradient(0deg,rgba(120,90,40,.05) 0 2px,transparent 2px 5px),#efe2bf;font-family:'Courier New',monospace;color:#2a1c10;border-radius:0;box-shadow:0 0 0 2px #8a6b3a,0 30px 80px rgba(0,0,0,.8),0 0 60px rgba(255,200,100,.25);transform:rotate(-1deg)}
+.card.tg::before{inset:8px;border:2px dashed #8a6b3a}.card.tg::after{content:'✉ TELEGRAM ✉';background:#c0313a;color:#fff;box-shadow:none;border-radius:0;letter-spacing:5px;font-size:.8rem}
+.tgh{text-align:center;font-weight:700;letter-spacing:3px;border-bottom:2px solid #2a1c10;padding-bottom:.5rem;margin-top:.6rem}.tgm{margin:.6rem 0;font-size:.85rem;letter-spacing:2px;color:#8a1c24}.tgb{min-height:110px;font-size:1.25rem;line-height:1.6;white-space:pre-wrap}.tgs{text-align:center;margin:1rem 0;font-size:.8rem;letter-spacing:2px}
+.pol{margin:1rem auto;width:min(300px,80%);background:#fff;padding:12px 12px 4px;transform:rotate(-2.5deg);box-shadow:0 10px 24px rgba(0,0,0,.4);position:relative}.pol::before{content:'';position:absolute;top:-12px;left:50%;width:80px;height:24px;margin-left:-40px;background:rgba(246,220,122,.7);transform:rotate(3deg)}.pol img,.ph{width:100%;display:block;aspect-ratio:4/3;object-fit:cover}.ph{display:flex;align-items:center;justify-content:center;background:#e8dcc8;text-align:center;padding:1rem;font:1.2rem Caveat,cursive}.pol b{display:block;text-align:center;font:1.05rem Caveat,cursive;color:#7a5230;padding:.4rem 0}
+#van{position:fixed;inset:0;z-index:30;display:none;background:#05020c;overflow:hidden}#van.on{display:block}
+.vx{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 100%,#2a1850,#05020c 70%)}
+.vlamp{position:absolute;left:10%;bottom:20%;width:9px;height:44vh;background:#222}.vlamp::before{content:'';position:absolute;top:-10px;left:-26px;width:60px;height:20px;background:#ffe9a0;box-shadow:0 0 90px 50px rgba(255,233,160,.3);animation:lf 2.5s infinite}@keyframes lf{0%,100%{opacity:1}20%{opacity:.15}22%{opacity:1}62%{opacity:.4}64%{opacity:1}}
+.vvan{position:absolute;left:50%;bottom:16%;width:min(620px,86vw);transform:translateX(-50%);cursor:pointer;filter:drop-shadow(0 0 40px rgba(123,92,255,.5))}#dr{animation:dp 1.4s infinite alternate}@keyframes dp{to{stroke:#ffe9a0;stroke-width:6}}
+.vint{position:absolute;inset:0;background:linear-gradient(#0d1a1f,#14262b 62%,#1a1510 62%)}.vint .it{position:absolute;font-size:clamp(3rem,8vw,5.5rem);cursor:pointer;transform:translate(-50%,-50%);transition:transform .3s;filter:drop-shadow(0 0 14px #6f6)}.vint .it:hover{transform:translate(-50%,-50%) scale(1.25)}.it.dn{filter:grayscale(1) opacity(.5)!important}
+#dark{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle 190px at var(--mx,50%) var(--my,50%),transparent 0,rgba(0,0,8,.95) 100%)}#van.strobe #dark{animation:sb .2s steps(2) 6}@keyframes sb{50%{opacity:0}}
+.vcap{position:absolute;left:0;right:0;bottom:6%;text-align:center;font:italic 1.5rem 'Playfair Display',serif;color:#cdbfff;text-shadow:0 0 12px #000;z-index:5;padding:0 1rem;pointer-events:none}.vprog{position:absolute;top:5%;left:0;right:0;text-align:center;font:1.3rem Caveat,cursive;letter-spacing:4px;color:#9fe8b4;z-index:5;pointer-events:none}
+.vmod{position:absolute;inset:0;z-index:6;background:rgba(0,0,6,.92);display:none;align-items:center;justify-content:center;flex-direction:column;gap:1rem;padding:1rem;color:#dfe}.vmod.on{display:flex}.vgal{display:flex;gap:1.4rem;flex-wrap:wrap;justify-content:center}.vgal .pol{width:200px;margin:.4rem}.crt{width:min(760px,94vw);border:14px solid #2c3a46;border-radius:22px;box-shadow:0 0 60px #4f8,inset 0 0 40px #000;background:#000;position:relative;overflow:hidden}.crt .cine{border:0;margin:0}
+.vghost{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);font-size:14rem;z-index:4;filter:drop-shadow(0 0 60px #b79bff);animation:gp 1.5s ease-out;pointer-events:none}@keyframes gp{from{transform:translate(-50%,-50%) scale(.1);opacity:0}}
+</style>
+<script>
+(()=>{const E=id=>document.getElementById(id),W=window,B=document.body,rnd=(a,b)=>a+Math.random()*(b-a),sfx=W.sfx,pad=n=>String(n).padStart(2,'0');
+// ====== EDIT ME: story, music, van ======
+const MUSIC_SRC='';                       // optional: path to your own music file (loops). Empty = generated music box score
+const VAN_PHOTOS=['','','',''];           // 4 photo paths for the van camera
+const LORE=['Rule one of the Express: nobody leaves without a snack.','Somewhere behind us, a plushie is still arguing about the window seat.','The conductor swears this route used to be shorter.','Every lantern we light is another reason to keep going.','Passengers are reminded: the Channel is wider than it looks.','The brass is polished, the tea is brewed. The ghosts are, reportedly, in a meeting.','Fun fact: this train runs entirely on in-jokes and spite.','Next stop: something with your name on it.','Please do not feed the Spice King.','If you hear a bell at night, that is just the Bestie Laws being enforced.','The snow outside has been briefed on you.','Tristan wrote the timetable at 3am. Trust it accordingly.'];
+const CH={0:['Chapter One','The Canals'],13:['Chapter Two','The Crossing'],19:['Chapter Three','The Van'],27:['Chapter Four','The Hills'],39:['Finale','The Premiere']};
+// ====== camera scale (fills the screen) ======
+let SC=1;const setSC=()=>{SC=innerWidth<700?1:Math.max(1,Math.min(1.9,innerHeight/540));document.documentElement.style.setProperty('--S',SC);W.TX=()=>30*SC+244*SC;W.TY=()=>innerHeight-168*SC;paint()};
+paint=function(){world.style.transform='translateX('+(-x*SC)+'px) scale('+SC+')';far.style.backgroundPositionX=(-x*.12*SC)+'px';mid.style.backgroundPositionX=(-x*.35*SC)+'px'};addEventListener('resize',setSC);
+B.insertAdjacentHTML('beforeend','<div id="cap"></div><div id="chap"></div><div id="tun"></div><div id="xing"></div><div id="pass"></div><div id="flash"></div><div id="van"></div>');
+E('hud').insertAdjacentHTML('beforeend','<button id="wh" title="whistle (H)" style="background:none;border:1px solid var(--gold);color:var(--gold);border-radius:50%;width:34px;height:34px;cursor:pointer">📯</button><button id="rs" title="reset all progress" style="background:none;border:1px solid var(--gold);color:var(--gold);border-radius:50%;width:34px;height:34px;cursor:pointer">⟲</button>');
+E('wh').onclick=()=>sfx.whistle();addEventListener('keydown',e=>{if(e.key=='h'||e.key=='H')sfx.whistle()});
+E('rs').onclick=()=>{if(confirm('Reset ALL progress and start the journey again?')){try{localStorage.removeItem('xmx_open')}catch(e){}location.href=location.pathname}};
+// ====== music: generated music-box score that changes by zone ======
+let MA,mg,rvIn,mon=false,bar=0,mmode=0,muted=false;const mf=m=>440*2**((m-69)/12);
+const PR={0:[[60,64,67],[57,60,64],[53,57,60],[55,59,62]],1:[[57,60,64],[53,57,60],[48,52,55],[52,55,59]],2:[[53,57,60],[48,52,55],[55,59,62],[50,53,57]],g:[[59,62,65],[55,58,62],[58,61,64],[56,59,62]],f:[[60,64,67],[65,69,72],[67,71,74],[64,67,72]]};
+const note=(m,t,d,ty,v,out)=>{const o=MA.createOscillator(),g=MA.createGain();o.type=ty;o.frequency.value=mf(m);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+(d>2?1:.01));g.gain.exponentialRampToValueAtTime(.0008,t+d);o.connect(g);g.connect(out);o.start(t);o.stop(t+d+.1)};
+const playBar=()=>{if(!mon)return;const ch=PR[mmode][bar%4],t=MA.currentTime+.05,bt=mmode=='g'?.95:mmode==1?.8:.66;
+ ch.forEach(m=>note(m,t,bt*4+1.5,'triangle',.05,mg));note(ch[0]-12,t,bt*4,'sine',.1,mg);
+ for(let i=0;i<8;i++)if(Math.random()<(mmode=='g'?.4:.8)){const m=ch[(i*2+bar)%3]+12+(i%4==3?12:0);note(m,t+i*bt/2,1.5,'sine',.075,rvIn);note(m+12,t+i*bt/2,.5,'triangle',.02,rvIn)}
+ if(mmode=='f'&&bar%4==3)[72,76,79,84].forEach((m,i)=>note(m,t+i*.2,2,'triangle',.06,rvIn));bar++;setTimeout(playBar,bt*4000-50)};
+const startMusic=()=>{if(mon)return;if(MUSIC_SRC){const a=new Audio(MUSIC_SRC);a.loop=true;a.volume=.6;a.play();mon=true;return}
+ MA=W.getAC();if(!MA)return;mon=true;mg=MA.createGain();mg.gain.value=muted?0:.55;mg.connect(MA.destination);const cv2=MA.createConvolver(),n=MA.sampleRate*2.6,b=MA.createBuffer(2,n,MA.sampleRate);
+ for(let c=0;c<2;c++){const d=b.getChannelData(c);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,2.5)}cv2.buffer=b;rvIn=MA.createGain();rvIn.connect(mg);const wt=MA.createGain();wt.gain.value=.9;rvIn.connect(cv2);cv2.connect(wt);wt.connect(mg);playBar()};
+E('mu').onclick=function(){muted=!muted;W.setMute(muted);if(mg)mg.gain.value=muted?0:.55;this.textContent=muted?'🔇':'🔊'};
+const modeFor=i=>i==N-1?'f':i<13?0:i<27?1:2;
+// ====== story helpers ======
+let capT;const cap=(t,delay,dur)=>setTimeout(()=>{const c=E('cap');c.textContent=t;c.classList.add('on');clearTimeout(capT);capT=setTimeout(()=>c.classList.remove('on'),dur)},delay);
+const chap=a=>{const c=E('chap');c.innerHTML='<small>'+a[0]+'</small><b>'+a[1]+'</b>';c.classList.add('on');setTimeout(()=>c.classList.remove('on'),3300)};
+const flash=()=>{const f=E('flash');f.classList.remove('on');void f.offsetWidth;f.classList.add('on')};
+const typeTo=(el,t,cb)=>{let i=0;const iv=setInterval(()=>{el.textContent=t.slice(0,++i);if(i%2==0)sfx.tone(rnd(1500,2200),0,.03,'square',.012);if(i>=t.length){clearInterval(iv);cb&&cb()}},26)};
+const ev=k=>{const f=(id,ms)=>{const e=E(id);e.classList.add('on');setTimeout(()=>e.classList.remove('on'),ms)};
+ if(k==1){f('tun',2000);sfx.hiss(.3);cap('Into the tunnel. Please hold your lanterns.',100,2200)}
+ else if(k==2){f('xing',2000);[0,.5,1,1.5].forEach(t=>sfx.tone(1040,t,.18,'square',.05));cap('A level crossing. Someone is very late for something.',100,2200)}
+ else if(k==3){const p=E('pass');p.classList.remove('go');void p.offsetWidth;p.classList.add('go');sfx.hiss(.35);setTimeout(()=>sfx.hiss(.2),700);cap('The Night Express passes. Nobody waves. Rude.',900,2400)}
+ else for(let i=0;i<7;i++)setTimeout(()=>{const m=document.createElement('div');m.className='mt';m.style.cssText='left:'+rnd(40,95)+'vw;top:'+rnd(2,30)+'vh';B.appendChild(m);setTimeout(()=>m.remove(),1300);sfx.tone(rnd(1800,2600),0,.3,'sine',.02)},i*260)};
+const _tr=travel;travel=function(to){if(busy)return;mmode=modeFor(to);_tr(to);const T=5200;cap((S[to].lore)||LORE[to%LORE.length],500,T*.38);setTimeout(()=>ev(to%4),T*.46);if(CH[to])setTimeout(()=>chap(CH[to]),T*.78)};
+// ====== the 3-step stop: telegram clue -> open it -> reveal + photo ======
+const polH=(s)=>{const n=S.indexOf(s)+1;return '<div class="pol"><img src="'+(s.img||'xmas_images/gift'+pad(n)+'.jpg')+'" alt="" onerror="this.outerHTML=\'<div class=ph>📸 photo of Tristan with this gift goes here</div>\'"><b>stop '+n+' · me with it irl ♡</b></div>'};
+const _o2=openStop;
+openStop=function(){const s=S[cur],P=E('panel'),pc=E('pc');P.className='';P.classList.add('zn'+(cur<13?0:cur<27?1:2));
+ if(s.t=='ghost')return van();
+ pc.className='card tg';pc.innerHTML='<div class="tgh">★ BESTIES EXPRESS TELEGRAPH ★</div><div class="tgm">STOP '+(cur+1)+' OF '+N+' · URGENT · TO: ANN</div><div class="tgb" id="tgb"></div><div class="tgs">— STOP —<br>ONLY WHEN IT’S IN YOUR HANDS, PRESS BELOW</div><div style="text-align:center"><button class="btn" id="op" disabled>I’ve opened it 🎁</button></div>';
+ P.classList.add('on');sfx.tone(300,0,.15,'square',.04);typeTo(E('tgb'),'CLUE: '+(s.hint||'Have a look in the box.'),()=>E('op').disabled=false);
+ E('op').onclick=()=>{flash();sfx.chime();burst(innerWidth/2,innerHeight/2,100);setTimeout(()=>{pc.className='card';
+  if(s.t=='gift'){pc.innerHTML='<div class="tag">'+s.tag+' · stop '+(cur+1)+'</div><h2>'+s.title+'</h2>'+polH(s)+'<p id="dsc" style="display:none">'+(s.desc||'')+'</p><p class="hint" id="hnt" style="display:none"></p><button class="btn" id="dn">Done ✓</button>';E('dn').onclick=finish;showText()}
+  else{_o2();E('dsc').insertAdjacentHTML('beforebegin',polH(s))}},550)}};
+// ====== STOP 20: the Phasmo van (walk up, explore with a flashlight, find evidence, meet the ghost) ======
+function van(){const v=E('van');let found={};v.className='on';mmode='g';
+ v.innerHTML='<div class="vx"><div class="vlamp"></div><svg class="vvan" id="vv" viewBox="0 0 400 220"><rect x="20" y="50" width="340" height="120" rx="20" fill="#e9eef2"/><path d="M300 50h40l24 40v80H300z" fill="#dfe6ec"/><rect x="310" y="60" width="38" height="30" rx="4" fill="#243447"/><rect id="dr" x="120" y="62" width="80" height="104" rx="6" fill="none" stroke="#7b5cff" stroke-width="3"/><rect x="20" y="130" width="340" height="12" fill="#7b5cff"/><text x="215" y="118" font-family="Georgia" font-weight="700" font-size="17" fill="#2a1060" text-anchor="middle">BESTIES PARANORMAL</text><circle cx="90" cy="176" r="22" fill="#222" stroke="#999" stroke-width="4"/><circle cx="300" cy="176" r="22" fill="#222" stroke="#999" stroke-width="4"/><circle cx="362" cy="130" r="8" fill="#fff6c8"/></svg><div class="vcap" id="vc"></div></div>';
+ const say=t=>{const c=E('vc');if(c)c.textContent=t};setTimeout(()=>say('You step off the train. The snow is the wrong shade of blue. Something is humming.'),600);setTimeout(()=>say('A van. Of course there is a van. (click the door)'),4200);
+ E('vv').onclick=()=>{flash();sfx.tone(80,0,1.2,'sawtooth',.06);inside()};
+ function inside(){v.innerHTML='<div class="vint"><div class="it" data-k="cam" style="left:14%;top:64%">📷</div><div class="it" data-k="rad" style="left:34%;top:34%">📻</div><div class="it" data-k="jr" style="left:52%;top:72%">📖</div><div class="it" data-k="emf" style="left:70%;top:64%">📟</div><div class="it" data-k="mon" style="left:85%;top:28%">🖥️</div></div><div id="dark"></div><div class="vprog" id="vp"></div><div class="vcap" id="vc"></div><div class="vmod" id="vm"></div>';
+  v.onpointermove=e=>{v.style.setProperty('--mx',e.clientX+'px');v.style.setProperty('--my',e.clientY+'px')};prog();say('It is dark in here. Use your flashlight (move your mouse / finger) to find the equipment.');
+  v.querySelectorAll('.it').forEach(i=>i.onclick=()=>use(i))}
+ const prog=()=>{const p=E('vp');if(p)p.textContent='EVIDENCE '+Object.keys(found).filter(k=>k!='done').length+' / 5  ·  needed: 📷 + 🖥️'};
+ const modal=(h)=>{const m=E('vm');m.innerHTML=h+'<button class="btn" id="vcl">Close ✕</button>';m.classList.add('on');E('vcl').onclick=()=>{m.classList.remove('on');prog();check()}};
+ const use=i=>{const k=i.dataset.k;i.classList.add('dn');found[k]=1;prog();
+  if(k=='cam')modal('<h2 style="font-family:Playfair Display;font-style:italic">📷 Photos from the camera roll</h2><div class="vgal">'+VAN_PHOTOS.map((p,n)=>'<div class="pol">'+(p?'<img src="'+p+'">':'<div class="ph">photo '+(n+1)+' goes here</div>')+'<b>photo '+(n+1)+'</b></div>').join('')+'</div>');
+  if(k=='mon')modal('<h2 style="font-family:Playfair Display;font-style:italic">🖥️ Truck monitor: incoming transmission</h2><div class="crt"><div class="cine" style="aspect-ratio:16/9;border:0">'+yt(YT_TRAILER,'trailer')+'</div></div>');
+  if(k=='rad'){say('📻 “…m…er…ry… chr…ist…mas… b…est…ie…”');[0,.2,.4,.6].forEach(t=>sfx.hiss(.25))}
+  if(k=='jr')modal('<div class="pol" style="transform:rotate(1deg);color:#2a1c10"><div class="ph" style="aspect-ratio:auto;text-align:left;display:block;font-size:1.3rem;line-height:1.5">GHOST JOURNAL<br>✔ Santa hat sighting<br>✔ Haunted couture (suspicious)<br>✘ Mince pies (missing)<br>Evidence: it is festive.</div></div>');
+  if(k=='emf'){[0,.25,.5,.7,.85,.95].forEach((t,n)=>sfx.tone(600+n*150,t,.12,'square',.05));say('📟 EMF level 5. That is… a lot of tinsel.')}};
+ const check=()=>{if(found.cam&&found.mon&&!found.done){found.done=1;setTimeout(()=>{v.classList.add('strobe');sfx.tone(60,0,2.5,'sawtooth',.08);sfx.tone(64,0,2.5,'sawtooth',.08);v.insertAdjacentHTML('beforeend','<div class="vghost">👻</div>');say('“Haunted Couture 2026.” The ghost smiles. It has a tiny Santa hat.');setTimeout(()=>{v.classList.remove('strobe');sfx.chime();v.insertAdjacentHTML('beforeend','<button class="btn" id="vx2" style="position:absolute;z-index:7;left:50%;bottom:16%;transform:translateX(-50%);font-size:1.2rem;padding:.8rem 1.6rem">Back to the train 🚂</button>');E('vx2').onclick=()=>{v.className='';v.innerHTML='';mmode=modeFor(cur);finish()}},2200)},500)}}}
+// ====== boot ======
+E('aboard').addEventListener('click',()=>{setTimeout(startMusic,150);setTimeout(()=>chap(CH[0]),4000);cap('Welcome aboard the Besties Express. Please keep all plushies inside the carriage.',5400,4200)});
+addEventListener('pointerdown',()=>{if(B.classList.contains('on'))startMusic()},{once:true});
+setSC();
 })();
 </script>
 </body></html>
