@@ -11,55 +11,118 @@
 <link rel="stylesheet" href="css/themes.css">
 <script src="js/theme.js"></script>
 <style>
-/* This page is ALWAYS Christmas, whatever the date (the script at the bottom forces the theme). */
-.xm-hero{position:relative;text-align:center;color:var(--paper);padding:3.2rem 1.5rem 3.6rem;overflow:hidden;
-  background:radial-gradient(ellipse at 50% 0,rgba(246,220,122,.35),transparent 60%),linear-gradient(180deg,#0f3d2b,#176343 70%,#0f3d2b);
-  border-bottom:6px solid var(--gold)}
-.xm-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle,rgba(255,255,255,.55) 0 1.5px,transparent 2px) 0 0/46px 46px,radial-gradient(circle,rgba(255,255,255,.35) 0 1px,transparent 2px) 23px 23px/46px 46px;opacity:.5}
+/* This page is ALWAYS Christmas (script at the bottom forces the theme). Night scene: aurora, stars, snowy firs. */
+html[data-theme="christmas"] body{
+  background:
+    url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='130' viewBox='0 0 260 130'><g fill='%230c2f22'><path d='M45 18L68 62H22zM45 40L76 95H14zM45 66L86 130H4z'/></g><g fill='%230a271c'><path d='M140 4L165 52H115zM140 30L172 90H108zM140 58L182 130H98z'/></g><g fill='%230d3324'><path d='M222 40L242 80H202zM222 60L250 110H194zM222 84L256 130H188z'/></g><g fill='%23e9f3f7'><path d='M140 4L148 19H132zM45 18L51 29H39zM222 40L228 51H216z'/></g></svg>") repeat-x left bottom/260px 130px fixed,
+    radial-gradient(ellipse 60% 38% at 18% 14%,rgba(80,230,160,.28),transparent 70%) fixed,
+    radial-gradient(ellipse 55% 34% at 82% 10%,rgba(230,90,170,.2),transparent 70%) fixed,
+    radial-gradient(circle,#fff 0 1px,transparent 1.7px) 0 0/90px 90px fixed,
+    radial-gradient(circle,rgba(255,235,170,.9) 0 1.3px,transparent 2.1px) 40px 55px/140px 140px fixed,
+    linear-gradient(180deg,#06182b 0,#0b3a3a 55%,#0f3d2b 100%) fixed;
+  color:var(--paper)}
+.xm-hero{position:relative;text-align:center;color:var(--paper);padding:3.4rem 1.5rem 3.2rem;overflow:hidden;border-bottom:6px solid var(--gold);
+  background:radial-gradient(ellipse at 50% 0,rgba(246,220,122,.28),transparent 62%),rgba(8,40,28,.55);backdrop-filter:blur(2px)}
+.xm-garland{position:absolute;left:0;right:0;top:0;height:30px;background:repeating-linear-gradient(90deg,#1f7a4d 0 26px,#135c37 26px 52px);border-radius:0 0 50% 50%/0 0 100% 100%}
 .xm-hero>*{position:relative}
-.xm-kick{font-family:var(--font-hand);font-size:1.5rem;color:var(--gold-light);letter-spacing:1px}
-.xm-title{font-family:var(--font-display);font-style:italic;font-weight:700;font-size:clamp(2.6rem,9vw,5.2rem);line-height:1.05;margin:.2rem 0 .3rem;text-shadow:0 3px 0 rgba(0,0,0,.25)}
+.xm-kick{font-family:var(--font-hand);font-size:1.5rem;color:var(--gold-light);letter-spacing:1px;margin-top:.8rem}
+.xm-title{font-family:var(--font-display);font-style:italic;font-weight:700;font-size:clamp(2.6rem,9vw,5.2rem);line-height:1.05;margin:.2rem 0 .3rem;text-shadow:0 3px 0 rgba(0,0,0,.35)}
 .xm-title b{color:var(--gold-light)}
 .xm-by{font-family:var(--font-display);font-size:1.15rem;opacity:.92}
-.xm-count{display:inline-block;margin-top:1.6rem;padding:1rem 2.2rem 1.1rem;border:3px dashed var(--gold-light);border-radius:14px;background:rgba(0,0,0,.22)}
-.xm-num{font-family:var(--font-display);font-weight:700;font-size:clamp(3.4rem,13vw,6.4rem);line-height:1;color:var(--gold-light);text-shadow:0 0 22px rgba(246,220,122,.65)}
-.xm-sub{font-family:var(--font-hand);font-size:1.5rem}
-.xm-garland{position:absolute;left:0;right:0;top:0;height:30px;background:repeating-linear-gradient(90deg,#1f7a4d 0 26px,#135c37 26px 52px);border-radius:0 0 50% 50%/0 0 100% 100%;opacity:.95}
-.xm-wrap{max-width:980px;margin:0 auto;padding:2rem 1.4rem 7rem}
-.xm-sec{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:clamp(1.7rem,4vw,2.3rem);color:var(--sage-dark);margin:2.2rem 0 .9rem}
-.xm-sec small{font-family:var(--font-hand);font-style:normal;font-size:1.15rem;color:var(--rose);margin-left:.6rem}
-.xm-card{background:var(--paper);border:2px solid var(--sage);padding:1.4rem 1.6rem;position:relative;box-shadow:5px 5px 0 color-mix(in srgb,var(--rose) 35%,var(--warm))}
-.xm-card::before{content:'';position:absolute;inset:-6px;border:1px dashed var(--rose);opacity:.55;pointer-events:none}
-.xm-card h3{font-family:var(--font-hand);font-size:1.3rem;color:var(--rose);font-weight:700}
-.xm-card .s{font-style:italic;font-size:.9rem;color:var(--brown);opacity:.8;margin:.1rem 0 .9rem}
-.xm-letter p{font-size:1.12rem;line-height:1.65;margin-bottom:.7rem}
-.xm-letter .sig{font-family:var(--font-hand);font-size:1.5rem;color:var(--rose);text-align:right}
-.xm-row{display:grid;grid-template-columns:1fr;gap:1.8rem}
-@media(min-width:780px){.xm-row{grid-template-columns:1.3fr 1fr}}
-.xm-advent{display:grid;grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:.6rem}
-.xm-door{aspect-ratio:1;border:2px solid var(--rose-dark);border-radius:7px;font:700 1.1rem var(--font-display);color:var(--paper);background:var(--rose);display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;transition:transform .15s}
-.xm-door:nth-child(even){background:var(--sage);border-color:var(--sage-dark)}
-.xm-door::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:6px;margin-left:-3px;background:var(--gold-light);opacity:.55}
-.xm-door span{position:relative;background:inherit;padding:0 .25em;border-radius:4px}
-.xm-door.open:hover{transform:rotate(-4deg) scale(1.08)}
-.xm-door.shut{filter:grayscale(.6) brightness(.9);opacity:.55;cursor:default}
-.xm-door.done::after{content:'✓';position:absolute;top:1px;right:4px;font-size:.75rem;color:var(--gold-light)}
-.xm-door.today{box-shadow:0 0 0 3px var(--gold-light),0 0 18px var(--gold);animation:xmGlow 1.8s ease-in-out infinite alternate}
-@keyframes xmGlow{to{box-shadow:0 0 0 5px rgba(246,220,122,.5),0 0 28px var(--gold-light)}}
-.xm-tree{display:block;width:100%;max-width:250px;margin:0 auto}
-.xm-bauble{cursor:pointer;transition:transform .2s;transform-box:fill-box;transform-origin:center}
-.xm-bauble:hover{transform:scale(1.25)}
-.xm-bauble.off{opacity:.3}
-.xm-bauble.lit{filter:drop-shadow(0 0 5px var(--gold-light));animation:xmTw 2.2s ease-in-out infinite alternate}
-@keyframes xmTw{to{filter:drop-shadow(0 0 11px var(--gold-light)) brightness(1.3)}}
-.xm-note{font-family:var(--font-hand);font-size:1.2rem;color:var(--brown);text-align:center;min-height:1.6em;margin-top:.5rem}
-.xm-stamps{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:1.2rem}
-.xm-pst{border:3px dotted var(--rose);background:var(--paper);padding:1.1rem .6rem;text-align:center;border-radius:4px;transform:rotate(var(--t,0deg));text-decoration:none;color:var(--ink);display:block}
-.xm-pst .g{font-size:2rem;display:block}
-.xm-pst .l{font-family:var(--font-hand);font-size:1.15rem;color:var(--rose-dark);display:block}
-.xm-pst .d{font-family:var(--font-hand);font-size:.95rem;color:var(--brown);display:block}
-.xm-pst.locked .g{opacity:.55}
-@media(prefers-reduced-motion:reduce){.xm-door.today,.xm-bauble.lit{animation:none}}
+.xm-counts{display:flex;flex-wrap:wrap;gap:1.2rem;justify-content:center;margin-top:1.6rem}
+.xm-count{padding:1rem 2rem 1.1rem;border:3px dashed var(--gold-light);border-radius:14px;background:rgba(0,0,0,.28);min-width:230px}
+.xm-num{font-family:var(--font-display);font-weight:700;font-size:clamp(3rem,11vw,5.4rem);line-height:1;color:var(--gold-light);text-shadow:0 0 22px rgba(246,220,122,.65)}
+.xm-sub{font-family:var(--font-hand);font-size:1.4rem}
+.xm-main{padding:1rem 1.2rem 8rem}
+.xm-w{margin:0 auto;max-width:980px}.xm-w.wide{max-width:1120px}.xm-w.narrow{max-width:700px}
+.xm-sec{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:clamp(1.8rem,4.4vw,2.6rem);color:var(--gold-light);margin:3rem 0 .3rem;text-align:center;text-shadow:0 2px 0 rgba(0,0,0,.4)}
+.xm-sec-s{font-family:var(--font-hand);font-size:1.25rem;color:#ffd9cc;text-align:center;margin-bottom:1.2rem}
+.xm-card{background:var(--paper);color:var(--ink);border:2px solid var(--sage);padding:1.4rem 1.6rem;position:relative;box-shadow:5px 5px 0 var(--rose-dark)}
+.xm-card::before{content:'';position:absolute;inset:-6px;border:1px dashed var(--gold-light);opacity:.8;pointer-events:none}
+.xm-card h3{font-family:var(--font-hand);font-size:1.4rem;color:var(--rose);font-weight:700}
+.xm-letter{margin-top:2.2rem}.xm-letter p{font-size:1.15rem;line-height:1.65;margin-bottom:.7rem}
+.xm-letter .sig{font-family:var(--font-hand);font-size:1.6rem;color:var(--rose);text-align:right}
+
+/* ---------- ADVENT CALENDAR ---------- */
+.ad-frame{padding:20px;border-radius:14px;background:linear-gradient(135deg,#8a5a34,#5b3519 45%,#7a4b27);border:3px solid #3a2010;box-shadow:0 14px 40px rgba(0,0,0,.55),inset 0 0 0 3px #b98a58}
+.ad-board{position:relative;padding:1.2rem 1.2rem 1.5rem;border-radius:8px;background:radial-gradient(circle at 50% 0,#a4192b,#6e0f1d 70%);box-shadow:inset 0 0 40px rgba(0,0,0,.5)}
+.ad-board::before{content:'✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧';position:absolute;left:0;right:0;top:.35rem;text-align:center;color:var(--gold-light);opacity:.7;font-size:.8rem;overflow:hidden;white-space:nowrap}
+.ad-title{font-family:var(--font-display);font-style:italic;font-size:clamp(1.5rem,4vw,2.2rem);color:var(--gold-light);text-align:center;margin:.7rem 0 1rem;text-shadow:0 2px 0 rgba(0,0,0,.4)}
+.ad-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(6px,1.6vw,16px)}
+.ad-cell{position:relative;aspect-ratio:1/1.12;perspective:700px;background:none;border:0;padding:0;font:inherit;cursor:pointer}
+.ad-back{position:absolute;inset:0;border-radius:6px;background:radial-gradient(circle,#fff4c2,#f0c24a 60%,#a9741c);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:inset 0 0 14px rgba(0,0,0,.45);font-size:clamp(1.4rem,5vw,2.6rem);color:var(--ink)}
+.ad-back small{font-family:var(--font-hand);font-size:clamp(.65rem,1.8vw,1rem);color:#5a3510}
+.ad-door{position:absolute;inset:0;border-radius:6px;transform-origin:left center;transition:transform .9s cubic-bezier(.3,.7,.2,1);color:var(--gold-light);display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.35);box-shadow:0 3px 8px rgba(0,0,0,.45),inset 0 0 14px rgba(255,255,255,.18);overflow:hidden}
+.ad-door b{font-family:var(--font-display);font-size:clamp(1.3rem,4.6vw,2.6rem);text-shadow:0 2px 0 rgba(0,0,0,.4);position:relative;z-index:1}
+.ad-door i{position:absolute;font-style:normal;font-size:clamp(.8rem,2.4vw,1.5rem);opacity:.85}
+.ad-door i.a{left:6%;top:4%}.ad-door i.b{right:6%;bottom:4%}
+.ad-door::after{content:'';position:absolute;right:9%;top:50%;width:9px;height:9px;border-radius:50%;background:var(--gold-light);box-shadow:0 0 0 2px rgba(0,0,0,.3)}
+.ad-door.c0{background:linear-gradient(145deg,#1f7a4d,#0f4a2d)}.ad-door.c1{background:linear-gradient(145deg,#d9a21b,#8f6a14);color:#4a0f16}
+.ad-door.c2{background:linear-gradient(145deg,#fffaf3,#e8d6c0);color:#a4192b}.ad-door.c3{background:linear-gradient(145deg,#2b5f9e,#173764)}
+.ad-door.c4{background:linear-gradient(145deg,#c4172a,#7d1020)}.ad-door.c5{background:repeating-linear-gradient(45deg,#c4172a 0 12px,#fffaf3 12px 24px);color:#1f7a4d}
+.ad-door.c5 b{background:rgba(255,250,243,.9);padding:0 .3em;border-radius:6px;color:#a4192b}
+.ad-cell.swung .ad-door{transform:rotateY(-118deg)}
+.ad-cell.shut .ad-door{filter:saturate(.7) brightness(.85)}.ad-cell.shut{cursor:not-allowed}
+.ad-cell.today .ad-door{box-shadow:0 0 0 3px var(--gold-light),0 0 22px var(--gold-light);animation:adGlow 1.6s ease-in-out infinite alternate}
+@keyframes adGlow{to{box-shadow:0 0 0 5px rgba(246,220,122,.5),0 0 32px var(--gold-light)}}
+.ad-cell.nope{animation:adShake .4s}
+@keyframes adShake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.ad-hint{font-family:var(--font-hand);font-size:1.15rem;color:#ffd9cc;text-align:center;margin-top:.9rem}
+
+/* ---------- CABIN TREE ---------- */
+.cb-frame{border:6px solid #5b3519;border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.55),inset 0 0 0 3px #b98a58;overflow:hidden;background:#3a2010}
+.cb-svg{display:block;width:100%;height:auto}
+.cb-bar{background:#2a1a0e;color:var(--paper);padding:.8rem 1.1rem 1rem;text-align:center}
+.cb-bar .t{font-family:var(--font-hand);font-size:1.3rem;color:var(--gold-light)}
+.cb-prog{height:10px;border-radius:6px;background:rgba(255,255,255,.15);margin:.5rem auto;max-width:520px;overflow:hidden}
+.cb-prog i{display:block;height:100%;background:repeating-linear-gradient(90deg,#c4172a 0 14px,#1f7a4d 14px 28px);transition:width 1.2s}
+.cb-bar .n{font-style:italic;opacity:.85}
+.dec{opacity:0;transform:scale(.4);transform-box:fill-box;transform-origin:center bottom;transition:opacity .7s,transform .8s cubic-bezier(.3,1.6,.5,1)}
+.dec.on{opacity:1;transform:none}
+.dec.new{animation:cbNew 1.4s ease-in-out infinite alternate}
+@keyframes cbNew{to{filter:drop-shadow(0 0 7px #f6dc7a)}}
+.cb-flame{transform-box:fill-box;transform-origin:50% 100%;animation:cbFlick .45s ease-in-out infinite alternate}
+.cb-flame.f2{animation-duration:.33s}.cb-flame.f3{animation-duration:.57s}
+@keyframes cbFlick{from{transform:scale(1,.82) skewX(-3deg)}to{transform:scale(1.06,1.08) skewX(3deg)}}
+.cb-snow{animation:cbFall 7s linear infinite}
+@keyframes cbFall{from{transform:translateY(-20px)}to{transform:translateY(190px)}}
+.cb-tw{animation:cbTw 1.3s ease-in-out infinite alternate}
+@keyframes cbTw{from{opacity:.45}to{opacity:1}}
+.cb-glow{animation:cbGlow 2.2s ease-in-out infinite alternate}
+@keyframes cbGlow{from{opacity:.55}to{opacity:.95}}
+.cb-steam{animation:cbSteam 2.4s ease-in-out infinite}
+@keyframes cbSteam{0%{opacity:0;transform:translateY(4px)}50%{opacity:.7}100%{opacity:0;transform:translateY(-10px)}}
+
+/* ---------- CRACKER / DUTCH / UK-NL / GIFT ---------- */
+.xm-two{display:grid;grid-template-columns:1fr;gap:2rem}@media(min-width:780px){.xm-two{grid-template-columns:1fr 1fr}}
+.cr-box{text-align:center}
+.cr-cracker{font-size:4.6rem;display:inline-block;cursor:pointer;transition:transform .2s;user-select:none}
+.cr-cracker:hover{transform:rotate(-8deg) scale(1.08)}
+.cr-cracker.pop{animation:crPop .5s}
+@keyframes crPop{30%{transform:scale(1.4) rotate(14deg)}100%{transform:none}}
+.cr-out{min-height:7.5rem;margin-top:.6rem;font-size:1.1rem;line-height:1.5}
+.cr-out .hat{font-size:2.4rem;display:block}.cr-out .j{font-style:italic;display:block;margin:.3rem 0}.cr-out .p{font-family:var(--font-hand);font-size:1.25rem;color:var(--rose);display:block}
+.btn{font-family:var(--font-hand);font-size:1.15rem;background:var(--rose);color:var(--paper);border:2px solid var(--rose-dark);padding:.4rem 1.1rem;border-radius:99px;cursor:pointer}
+.btn:hover{background:var(--rose-dark)}
+.du-word{font-family:var(--font-display);font-style:italic;font-size:clamp(2rem,6vw,3rem);color:var(--sage-dark);line-height:1.1}
+.du-en{font-family:var(--font-hand);font-size:1.5rem;color:var(--rose);margin-top:.2rem}
+.uk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.6rem}
+.uk-card h3{display:flex;gap:.5rem;align-items:center}.uk-card p{margin-top:.5rem;line-height:1.5}
+.gift-banner{text-align:center;color:var(--paper);padding:2.2rem 1.4rem;border:3px solid var(--gold-light);border-radius:14px;background:repeating-linear-gradient(135deg,rgba(196,23,42,.85) 0 26px,rgba(143,15,30,.9) 26px 52px);box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.gift-banner h2{font-family:var(--font-display);font-style:italic;font-size:clamp(1.8rem,5vw,2.8rem);color:var(--gold-light)}
+.gift-banner p{font-family:var(--font-hand);font-size:1.4rem;margin-top:.3rem}
+.xm-foot{text-align:center;font-family:var(--font-hand);font-size:1.5rem;color:var(--gold-light);margin-top:3rem}
+
+/* ---------- reveal modal (own styles: this page doesn't load the home page css) ---------- */
+.xm-modal{position:fixed;inset:0;z-index:9995;display:none;align-items:center;justify-content:center;padding:1.2rem;background:rgba(5,15,12,.78)}
+.xm-modal.show{display:flex}
+.xm-mc{background:var(--paper);color:var(--ink);max-width:460px;width:100%;border:3px solid var(--gold);border-radius:12px;padding:1.8rem 1.6rem 1.4rem;text-align:center;position:relative;box-shadow:0 0 40px rgba(246,220,122,.4);animation:mIn .4s cubic-bezier(.3,1.5,.5,1)}
+@keyframes mIn{from{transform:scale(.6);opacity:0}}
+.xm-mc .g{font-size:3.2rem}.xm-mc h3{font-family:var(--font-display);font-style:italic;font-size:1.7rem;color:var(--sage-dark);margin:.2rem 0}
+.xm-mc .ty{font-family:var(--font-hand);font-size:1.15rem;color:var(--rose)}.xm-mc .tx{line-height:1.6;margin:.8rem 0;font-size:1.1rem}
+.xm-mc .sg{font-family:var(--font-hand);font-size:1.3rem;color:var(--rose)}
+.xm-x{position:absolute;top:.5rem;right:.7rem;background:none;border:0;font-size:1.3rem;cursor:pointer;color:var(--brown)}
+@media(prefers-reduced-motion:reduce){.ad-cell.today .ad-door,.dec.new,.cb-flame,.cb-snow,.cb-tw,.cb-glow,.cb-steam{animation:none}}
 </style>
 </head>
 <body>
@@ -73,32 +136,57 @@
   <div class="xm-kick">🎄 the winter drop 🎄</div>
   <h1 class="xm-title">Christmas <b>2026</b></h1>
   <div class="xm-by">Tristan &amp; Ann · from the UK, with love</div>
-  <div class="xm-count"><div class="xm-num" id="xm-num">-</div><div class="xm-sub" id="xm-sub"></div></div>
+  <div class="xm-counts">
+    <div class="xm-count"><div class="xm-num" id="xm-num">-</div><div class="xm-sub" id="xm-sub"></div></div>
+    <div class="xm-count"><div class="xm-num" id="xm-num2">-</div><div class="xm-sub" id="xm-sub2"></div></div>
+  </div>
 </header>
 
-<main class="xm-wrap">
-  <div class="xm-card xm-letter">
+<main class="xm-main">
+  <div class="xm-w narrow xm-card xm-letter">
     <p>Merry Christmas, Bestie Ann.</p>
-    <p>Welcome to the festive corner of our little website. Grab a hot chocolate (or a very strong tea), open a door a day, and wander around - there is a lot more on its way this winter.</p>
+    <p>Welcome to the festive corner of our little website. Grab a hot chocolate (or a very strong tea), open a door a day, and watch the cabin fill up with Christmas until the big gift opening.</p>
     <div class="sig">Bestie Tristan xo</div>
   </div>
 
-  <div class="xm-row">
-    <div>
-      <h2 class="xm-sec">The Advent Strip<small>one door a day</small></h2>
-      <div class="xm-card"><h3>December doors</h3><div class="s">door N opens on N December - tap an open one</div><div class="xm-advent" id="xm-advent"></div></div>
-    </div>
-    <div>
-      <h2 class="xm-sec">The Tree<small>light it up</small></h2>
-      <div class="xm-card"><h3>Bauble count</h3><div class="s" id="xm-tree-sub"></div><div id="xm-tree"></div><div class="xm-note" id="xm-note">tap a bauble</div></div>
-    </div>
+  <h2 class="xm-sec">The Advent Calendar</h2>
+  <div class="xm-sec-s">25 doors, all jumbled up - just like a real one</div>
+  <div class="xm-w wide"><div class="ad-frame"><div class="ad-board">
+    <div class="ad-title">Advent 2026</div>
+    <div class="ad-grid" id="ad-grid"></div>
+    <div class="ad-hint" id="ad-hint"></div>
+  </div></div></div>
+
+  <h2 class="xm-sec">The Cosy Cabin</h2>
+  <div class="xm-sec-s">decorations arrive day by day - the star comes last</div>
+  <div class="xm-w wide"><div class="cb-frame">
+    <svg class="cb-svg" id="cb-svg" viewBox="0 0 900 520" role="img" aria-label="A cosy log cabin with a Christmas tree that gets decorated through December"></svg>
+    <div class="cb-bar"><div class="t" id="cb-t"></div><div class="cb-prog"><i id="cb-p" style="width:0"></i></div><div class="n" id="cb-n"></div></div>
+  </div></div>
+
+  <h2 class="xm-sec">Pull a Cracker</h2>
+  <div class="xm-sec-s">a joke, a paper hat and a very bad prediction</div>
+  <div class="xm-two xm-w">
+    <div class="xm-card cr-box"><h3>The cracker</h3><div class="cr-cracker" id="cr-btn" role="button" tabindex="0" aria-label="Pull the cracker">🎉</div><div class="cr-out" id="cr-out">tap the cracker!</div><button class="btn" id="cr-again" type="button">another one</button></div>
+    <div class="xm-card cr-box"><h3>Dutch word of the day</h3><div style="margin-top:1.2rem"><div class="du-word" id="du-w"></div><div class="du-en" id="du-e"></div></div><div class="cr-out" style="min-height:0;margin-top:1rem">a new one each day - say it out loud, Tristan ♡</div></div>
   </div>
 
-  <h2 class="xm-sec">Coming this Christmas<small>unwrapping soon</small></h2>
-  <div class="xm-stamps" id="xm-stamps"></div>
+  <h2 class="xm-sec">UK vs NL Christmas</h2>
+  <div class="xm-sec-s">two countries, two ways to do the holidays</div>
+  <div class="xm-w uk-grid">
+    <div class="xm-card uk-card"><h3>🇳🇱 Sinterklaas first</h3><p>The big gift night is 5 December, with poems and a shoe by the fireplace. Christmas comes after as a cosy second round.</p></div>
+    <div class="xm-card uk-card"><h3>🇬🇧 Crackers &amp; mince pies</h3><p>Paper hats, terrible jokes, a roast dinner and a King's speech nobody quite watches.</p></div>
+    <div class="xm-card uk-card"><h3>🇳🇱 Two Christmas days</h3><p>Eerste and Tweede Kerstdag - 25 and 26 December - are both public holidays, so there's no rushing it.</p></div>
+    <div class="xm-card uk-card"><h3>🇳🇱 Oliebollen</h3><p>Deep-fried doughnut balls with icing sugar, eaten on Oud en Nieuw (New Year's Eve). Stroopwafels are available all winter.</p></div>
+  </div>
+
+  <h2 class="xm-sec">The Big Unwrapping</h2>
+  <div class="xm-w narrow"><div class="gift-banner"><h2 id="gb-h">Gift opening day</h2><p id="gb-p"></p></div></div>
+
+  <div class="xm-foot">happy Christmas, Bestie Ann ♡ 🎅</div>
 </main>
 
-<div id="egg-modal"><div class="egg-backdrop" onclick="closeEgg()"></div><div class="egg-card"><button class="egg-close" onclick="closeEgg()" aria-label="Close">✕</button><div class="egg-title" id="egg-title"></div><p class="egg-text" id="egg-text"></p><span class="egg-sig" id="egg-sig">Bestie Tristan xo</span></div></div>
+<div class="xm-modal" id="xm-modal"><div class="xm-mc"><button class="xm-x" id="xm-x" aria-label="Close">✕</button><div class="g" id="m-g"></div><div class="ty" id="m-ty"></div><h3 id="m-h"></h3><div class="tx" id="m-tx"></div><div class="sg">Bestie Tristan xo</div></div></div>
 
 <script src="js/bestie_storage.js"></script>
 <script src="js/nav.js"></script>
@@ -107,70 +195,160 @@
   if(window.SiteTheme && SiteTheme.active !== 'christmas') SiteTheme.set('christmas');   // always festive here
   const $ = id => document.getElementById(id);
 
-  /* ---- EDIT ME: door messages, bauble notes, coming-soon pages ---- */
-  const ADVENT = {};   // e.g. 1:{title:'Door 1', html:'A song, a memory, a Dutch phrase...'}
-  const BAUBLE_NOTES = ['Thank you for being my bestie.','Hot chocolate energy: you.','Stroopwafels beat mince pies. Fight me.','Another day, another reason.','You make December warmer.','Sending a very long-distance hug.'];
-  const TEASERS = [
-    { label:'Advent Calendar', glyph:'🗓', date:'opens 1 Dec',     live:false, href:'advent.html' },
-    { label:'Christmas Gifts', glyph:'🎁', date:'opens 24 Dec',    live:false, href:'christmas_gifts.html' },
-    { label:'Christmas Day',   glyph:'🎄', date:'25 Dec only',     live:false, href:'christmas_day.html' },
-    { label:'12 Days',         glyph:'🕯', date:'26 Dec - 6 Jan',  live:false, href:'twelve_days.html' }
-  ];
+  /* =============== EDIT ME =============== */
+  const GIFT_DAY = 27;   // the day the star goes on and gifts are opened (December)
+  // door contents. Key = day number. Anything missing shows "still being wrapped" with the door's type.
+  const CONTENT = {
+    25: { title:'Merry Christmas!', html:'You opened the last door. Come back on the 27th for the star and the big unwrapping ♡' },
+    3:  { title:'Vrolijk kerstfeest', html:'<b>Vrolijk kerstfeest</b> means Merry Christmas. Practise it out loud - Ann will be marking the accent.' },
+    9:  { title:'Gezellig', html:'<b>Gezellig</b> is cosy, warm togetherness - candles, friends and tea. There is no English word that fits.' },
+    15: { title:'Sneeuwpop', html:'<b>Sneeuwpop</b> means snowman. Say it three times fast.' },
+    21: { title:'Oliebollen', html:'<b>Oliebollen</b> are deep-fried doughnut balls with icing sugar, eaten on Oud en Nieuw.' }
+  };
+  const TYPES = [ {g:'✉️',n:'a postcard'}, {g:'📸',n:'a memory'}, {g:'💌',n:'a reason'}, {g:'🇳🇱',n:'a Dutch phrase'}, {g:'🎵',n:'a song'}, {g:'🎮',n:'a mini-game'} ];
+  const JOKES = ['What do snowmen eat for breakfast? Snowflakes.','Why did Santa go to music school? To improve his wrapping.','What do you call a reindeer wearing earmuffs? Anything you like - he cannot hear you.','What is a Christmas tree\'s least favourite sewing item? Pine needles.','Why was the turkey in the band? It had the drumsticks.'];
+  const PREDS = ['You will find a biscuit tin containing buttons, not biscuits.','Next year you will win an argument about stroopwafels vs mince pies.','Someone will say "wait, what?" before Boxing Day.','You will eat one more chocolate than you planned. Then another.','A long phone call will happen. It will be longer than planned.'];
+  const HATS = ['🔴','🟢','🟡','🔵','🟣'];
+  const DUTCH = [['kerstboom','Christmas tree'],['sneeuwpop','snowman'],['warme chocolademelk','hot chocolate'],['cadeautje','little present'],['gezellig','cosy, warm togetherness'],['kerstman','Santa Claus'],['sneeuw','snow'],['oliebol','New Year doughnut ball'],['kaars','candle'],['slee','sleigh'],['rendier','reindeer'],['kerstmis','Christmas']];
 
-  /* ---- today (honours ?themedate=MM-DD) ---- */
+  /* =============== today (honours ?themedate=MM-DD) =============== */
   let now = new Date(), fd = null;
   try{ fd = sessionStorage.getItem('site_theme_date'); }catch(e){}
   const m = fd && fd.match(/(\d{1,2})-(\d{1,2})$/);
   if(m) now = new Date(now.getFullYear(), +m[1]-1, +m[2]);
-  const Y = now.getFullYear(), day = now.getDate(), inDec = now.getMonth() === 11;
-  const toXmas = Math.round((new Date(Y,11,25) - new Date(Y,now.getMonth(),day)) / 864e5);
-  const num = $('xm-num'), sub = $('xm-sub');
-  if(toXmas > 1){ num.textContent = toXmas; sub.textContent = 'sleeps until Christmas'; }
-  else if(toXmas === 1){ num.textContent = '1'; sub.textContent = "sleep to go - it's Christmas Eve!"; }
-  else if(toXmas === 0){ num.textContent = '🎅'; sub.textContent = 'Merry Christmas, Bestie Ann!'; }
-  else { num.textContent = '✦'; sub.textContent = 'Christmas is over - Oud en Nieuw is coming'; }
+  const Y = now.getFullYear(), mon = now.getMonth(), day = now.getDate(), inDec = mon === 11;
+  const daysTo = d => Math.round((new Date(Y,11,d) - new Date(Y,mon,day)) / 864e5);
+  const progress = inDec ? Math.min(day, GIFT_DAY) : (mon === 0 ? GIFT_DAY : 0);   // cabin day: 0 before Dec, full in Jan
 
-  /* ---- advent doors ---- */
-  let seen = []; try{ seen = JSON.parse(localStorage.getItem('xmas26_doors')) || []; }catch(e){}
-  for(let d = 1; d <= 25; d++){
-    const open = inDec && d <= day, el = document.createElement('button');
-    el.type = 'button'; el.className = 'xm-door ' + (open ? 'open' : 'shut') + (d === day && inDec ? ' today' : '') + (seen.includes(d) ? ' done' : '');
-    el.innerHTML = '<span>' + d + '</span>'; el.setAttribute('aria-label', 'Advent door ' + d + (open ? '' : ' (not yet)'));
-    if(open) el.onclick = () => {
-      const c = ADVENT[d] || { title:'Door ' + d, html:'This door is still being wrapped. The full Advent calendar is on its way - check back soon ♡' };
-      $('egg-title').textContent = c.title; $('egg-text').innerHTML = c.html; $('egg-modal').classList.add('show');
-      if(!seen.includes(d)){ seen.push(d); el.classList.add('done'); try{ localStorage.setItem('xmas26_doors', JSON.stringify(seen)); }catch(e){} }
-    };
-    $('xm-advent').appendChild(el);
+  /* =============== hero countdowns =============== */
+  function count(nEl, sEl, n, one, many, today, past){
+    if(n > 1){ nEl.textContent = n; sEl.textContent = many; }
+    else if(n === 1){ nEl.textContent = '1'; sEl.textContent = one; }
+    else if(n === 0){ nEl.textContent = '🎅'; sEl.textContent = today; }
+    else { nEl.textContent = '✦'; sEl.textContent = past; }
   }
-  window.closeEgg = () => $('egg-modal').classList.remove('show');
+  const tx = daysTo(25), tg = daysTo(GIFT_DAY);
+  count($('xm-num'), $('xm-sub'), mon===0 ? -1 : tx, "sleep to go - it's Christmas Eve!", 'sleeps until Christmas', 'Merry Christmas, Bestie Ann!', 'Christmas is done - Oud en Nieuw next');
+  count($('xm-num2'), $('xm-sub2'), mon===0 ? -1 : tg, 'sleep until gift opening', 'sleeps until gift opening (' + GIFT_DAY + ' Dec)', "it's gift opening day!", 'gifts opened ♡');
+  $('gb-p').textContent = tg > 0 && mon!==0 ? GIFT_DAY + ' December - ' + tg + (tg === 1 ? ' sleep' : ' sleeps') + ' to go. The star goes on the tree first.' : (tg === 0 ? 'Today is the day. Star on, gifts open!' : 'The gifts have been opened - the star is shining ♡');
 
-  /* ---- tree: one bauble per different December day visited ---- */
-  let visits = []; try{ visits = JSON.parse(localStorage.getItem('xmas26_visits')) || []; }catch(e){}
-  if(inDec && !visits.includes(day)){ visits.push(day); try{ localStorage.setItem('xmas26_visits', JSON.stringify(visits)); }catch(e){} }
-  const spots = [[125,72],[100,108],[150,104],[78,146],[125,142],[172,146],[56,188],[96,182],[140,184],[184,186],[66,220],[176,220]];
-  const cols = ['--rose','--gold','--paper','--rose'];
-  let svg = '<svg class="xm-tree" viewBox="0 0 250 280" role="img" aria-label="Christmas tree: one bauble lights per day you visit"><rect x="113" y="240" width="24" height="30" fill="var(--brown)"/>'
-    + ['M125 22 L178 104 H72 Z','M125 62 L198 166 H52 Z','M125 112 L218 238 H32 Z'].map(p => '<path d="' + p + '" fill="var(--sage)" stroke="var(--sage-dark)" stroke-width="2"/>').join('')
-    + '<path d="M125 6 l6 12 13 1-10 9 3 13-12-7-12 7 3-13-10-9 13-1z" fill="var(--gold-light)" stroke="var(--gold-dark)"/>';
-  spots.forEach((p,i) => { svg += '<circle class="xm-bauble ' + (i < visits.length ? 'lit' : 'off') + '" cx="' + p[0] + '" cy="' + p[1] + '" r="10" fill="var(' + cols[i % 4] + ')" stroke="var(--gold-dark)" stroke-width="1.5" data-i="' + i + '"/>'; });
-  $('xm-tree').innerHTML = svg + '</svg>';
-  $('xm-tree-sub').textContent = Math.min(visits.length, 12) + ' of 12 baubles lit - visit on different days in December';
-  $('xm-tree').addEventListener('click', e => {
-    const b = e.target.closest('.xm-bauble'); if(!b) return;
-    $('xm-note').textContent = b.classList.contains('lit') ? BAUBLE_NOTES[+b.dataset.i % BAUBLE_NOTES.length] : 'not lit yet - come back another day ♡';
-  });
+  /* =============== modal =============== */
+  const modal = $('xm-modal');
+  function showMsg(g, ty, h, html){ $('m-g').textContent = g; $('m-ty').textContent = ty; $('m-h').textContent = h; $('m-tx').innerHTML = html; modal.classList.add('show'); }
+  $('xm-x').onclick = () => modal.classList.remove('show');
+  modal.addEventListener('click', e => { if(e.target === modal) modal.classList.remove('show'); });
 
-  /* ---- coming-soon stamps ---- */
-  TEASERS.forEach((t, i) => {
-    const el = document.createElement(t.live ? 'a' : 'div'); el.className = 'xm-pst' + (t.live ? '' : ' locked');
-    el.style.setProperty('--t', ((i % 3) - 1) * 1.6 + 'deg'); if(t.live) el.href = t.href;
-    el.innerHTML = '<span class="g"></span><span class="l"></span><span class="d"></span>';
-    el.querySelector('.g').textContent = t.live ? t.glyph : '🎁';
-    el.querySelector('.l').textContent = t.live ? t.label : '? ? ?';
-    el.querySelector('.d').textContent = t.date;
-    $('xm-stamps').appendChild(el);
+  /* =============== ADVENT: a fixed random order (same every visit, like a real calendar) =============== */
+  function rng(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  const order = Array.from({length:25}, (_, i) => i + 1), r = rng(2026);
+  for(let i = order.length - 1; i > 0; i--){ const j = Math.floor(r() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+  const DECO = ['🕯','🔔','🎁','🦌','⭐','🍪','🧦','🎅','❄️','🍬','🌲','🧣'];
+  let seen = []; try{ seen = JSON.parse(localStorage.getItem('xmas26_doors')) || []; }catch(e){}
+  const grid = $('ad-grid');
+  order.forEach((d, idx) => {
+    const open = inDec ? d <= day : mon === 0, ty = d === 25 ? {g:'🎄', n:'Christmas Day'} : TYPES[d % 6];
+    const el = document.createElement('button'); el.type = 'button';
+    el.className = 'ad-cell' + (seen.includes(d) || (!inDec && mon === 0) ? ' swung' : '') + (open ? '' : ' shut') + (inDec && d === day ? ' today' : '');
+    el.setAttribute('aria-label', 'Door ' + d);
+    el.innerHTML = '<span class="ad-back">' + ty.g + '<small>' + ty.n + '</small></span><span class="ad-door c' + (idx % 6) + '"><i class="a">' + DECO[(d * 5) % 12] + '</i><b>' + d + '</b><i class="b">' + DECO[(d * 7 + 3) % 12] + '</i></span>';
+    el.onclick = () => {
+      if(!open){ el.classList.remove('nope'); void el.offsetWidth; el.classList.add('nope'); $('ad-hint').textContent = 'Door ' + d + ' opens on ' + d + ' December ♡'; return; }
+      const c = CONTENT[d] || { title:'Door ' + d, html:'This door holds <b>' + ty.n + '</b> - Tristan is still wrapping it. Check back soon ♡' };
+      el.classList.add('swung');
+      setTimeout(() => showMsg(ty.g, ty.n, c.title, c.html), 650);
+      if(!seen.includes(d)){ seen.push(d); try{ localStorage.setItem('xmas26_doors', JSON.stringify(seen)); }catch(e){} }
+    };
+    grid.appendChild(el);
   });
+  $('ad-hint').textContent = inDec ? 'Today is door ' + Math.min(day, 25) + ' - hunt for it in the jumble!' : (mon === 0 ? 'All 25 doors are open - tap any to see it again.' : 'The doors start opening on 1 December.');
+
+  /* =============== CABIN =============== */
+  const CX = 450, S = [];
+  const add = (dayN, name, svg) => S.push({ d: dayN, n: name, s: svg });
+  const tier = (ay, by, hw, c1, c2) => {
+    let p = 'M' + CX + ' ' + ay + ' L' + (CX + hw) + ' ' + by, n = 7;
+    for(let k = 1; k <= n; k++){ const x = CX + hw - k * (2 * hw / n); p += ' Q' + (x + hw / n) + ' ' + (by + 16) + ' ' + x + ' ' + by; }
+    return '<path d="' + p + ' Z" fill="' + c1 + '"/><path d="M' + CX + ' ' + ay + ' L' + (CX + hw) + ' ' + by + ' L' + CX + ' ' + by + ' Z" fill="' + c2 + '" opacity=".55"/>';
+  };
+  const bez = (x0, x2, y, sag, t) => { const cy = y + 2 * sag; return [ (1-t)*(1-t)*x0 + 2*(1-t)*t*CX + t*t*x2, (1-t)*(1-t)*y + 2*(1-t)*t*cy + t*t*y ]; };
+  let o = '';
+  o += '<defs><pattern id="plk" width="150" height="34" patternUnits="userSpaceOnUse"><rect width="150" height="34" fill="#7a4a28"/><rect width="150" height="2" fill="rgba(0,0,0,.35)"/><path d="M48 0v34M118 17v17M0 17h150" stroke="rgba(0,0,0,.14)"/></pattern>'
+    + '<pattern id="flr" width="110" height="30" patternUnits="userSpaceOnUse"><rect width="110" height="30" fill="#4a2a16"/><rect width="110" height="2" fill="rgba(0,0,0,.4)"/><path d="M40 0v30" stroke="rgba(0,0,0,.2)"/></pattern>'
+    + '<radialGradient id="fg" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ffb347" stop-opacity=".9"/><stop offset="1" stop-color="#ff7a1a" stop-opacity="0"/></radialGradient>'
+    + '<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#06182b"/><stop offset="1" stop-color="#1c4a5a"/></linearGradient>'
+    + '<clipPath id="win"><rect x="66" y="96" width="158" height="158"/></clipPath></defs>';
+  // room
+  o += '<rect width="900" height="430" fill="url(#plk)"/><rect y="430" width="900" height="90" fill="url(#flr)"/><rect width="900" height="26" fill="#3a2010"/><rect y="26" width="900" height="6" fill="#241208"/>';
+  [150,450,750].forEach(x => o += '<rect x="' + (x-10) + '" y="26" width="20" height="404" fill="#4a2a16" opacity=".55"/>');
+  o += '<ellipse cx="450" cy="474" rx="300" ry="36" fill="#7d1020"/><ellipse cx="450" cy="474" rx="272" ry="29" fill="none" stroke="#e9cb72" stroke-width="3" stroke-dasharray="10 8"/><ellipse cx="450" cy="474" rx="230" ry="22" fill="#a4192b" opacity=".7"/>';
+  // window with snowfall
+  o += '<rect x="56" y="86" width="178" height="178" fill="#3a2010"/><rect x="66" y="96" width="158" height="158" fill="url(#sky)"/><g clip-path="url(#win)"><circle cx="190" cy="132" r="15" fill="#f4f1d8"/><circle cx="196" cy="128" r="13" fill="#0c2a3d" opacity=".35"/>';
+  for(let i = 0; i < 26; i++){ const sx = 70 + (i * 37) % 150, sy = 90 + (i * 53) % 80; o += '<circle class="cb-snow" cx="' + sx + '" cy="' + sy + '" r="' + (1.4 + (i % 3) * .7) + '" fill="#fff" style="animation-delay:-' + (i * .55).toFixed(1) + 's;animation-duration:' + (5 + i % 4) + 's"/>'; }
+  o += '<path d="M66 250q20-14 40-6t40-4 40 4 38-4v14H66z" fill="#eaf4f8"/></g><path d="M145 96v158M66 175h158" stroke="#3a2010" stroke-width="7"/><rect x="48" y="260" width="194" height="12" rx="3" fill="#5b3519"/><path d="M52 260q12-12 26-2t26-4 28 4 26-4 28 4 26-4 22 6v6H52z" fill="#fff"/>';
+  // fireplace
+  o += '<rect x="640" y="150" width="220" height="280" fill="#8d8a86"/>';
+  for(let r2 = 0; r2 < 7; r2++) for(let c = 0; c < 4; c++) o += '<rect x="' + (644 + c * 54 + (r2 % 2) * 26) + '" y="' + (156 + r2 * 39) + '" width="50" height="35" rx="6" fill="' + ((r2 + c) % 2 ? '#a19d97' : '#7f7b76') + '"/>';
+  o += '<path d="M690 430V300q60-50 120 0v130z" fill="#1a0d07"/><ellipse class="cb-glow" cx="750" cy="470" rx="150" ry="34" fill="url(#fg)"/><ellipse cx="750" cy="420" rx="46" ry="10" fill="#3a2010"/><rect x="706" y="404" width="90" height="14" rx="7" fill="#5b3519"/>'
+    + '<path class="cb-flame" d="M750 408c-30-10-26-44-4-62 2 20 14 22 18 8 14 14 24 40-14 54z" fill="#ff7a1a"/><path class="cb-flame f2" d="M732 410c-20-6-16-30 0-42 2 12 10 14 12 4 10 10 14 28-12 38z" fill="#ffb347"/><path class="cb-flame f3" d="M768 410c-14-6-12-22-2-32 1 8 6 8 8 2 8 8 10 22-6 30z" fill="#ffe08a"/>'
+    + '<rect x="626" y="138" width="248" height="22" rx="4" fill="#5b3519"/><rect x="626" y="156" width="248" height="5" fill="#241208" opacity=".5"/>';
+  // static cosy bits
+  o += '<g><rect x="396" y="396" width="108" height="14" rx="7" fill="#3a2010"/></g>';
+  // ---- decorations that appear by day ----
+  add(2, 'hanging lanterns', '<g><line x1="300" y1="30" x2="300" y2="70" stroke="#241208"/><rect x="288" y="70" width="24" height="34" rx="5" fill="#241208"/><rect x="292" y="75" width="16" height="24" fill="#ffd36a"/><circle class="cb-glow" cx="300" cy="87" r="34" fill="url(#fg)"/><line x1="600" y1="30" x2="600" y2="60" stroke="#241208"/><rect x="588" y="60" width="24" height="34" rx="5" fill="#241208"/><rect x="592" y="65" width="16" height="24" fill="#ffd36a"/><circle class="cb-glow" cx="600" cy="77" r="34" fill="url(#fg)"/></g>');
+  add(3, 'a window wreath', '<g><circle cx="145" cy="175" r="30" fill="none" stroke="#1f7a4d" stroke-width="13"/><circle cx="145" cy="175" r="30" fill="none" stroke="#135c37" stroke-width="5" stroke-dasharray="4 6"/><circle cx="160" cy="150" r="4" fill="#c4172a"/><circle cx="128" cy="198" r="4" fill="#c4172a"/><path d="M145 146l-12-10 12 4 12-4z M133 136l12 14 12-14-12 4z" fill="#c4172a"/></g>');
+  add(4, 'a mug of hot chocolate', '<g transform="translate(236 456)"><rect x="-14" y="-18" width="28" height="22" rx="5" fill="#fffaf3" stroke="#a4192b" stroke-width="2"/><path d="M14 -12h8a6 6 0 010 14h-8" fill="none" stroke="#fffaf3" stroke-width="3"/><rect x="-11" y="-16" width="22" height="6" fill="#5b3519"/><path class="cb-steam" d="M-4-24q-6-8 0-14M4-24q6-8 0-14" stroke="#fff" stroke-width="2" fill="none"/></g>');
+  const sk = (x, c, dd, nm) => add(dd, nm, '<g transform="translate(' + x + ' 162)"><path d="M0 0h18v28c0 9-6 13-15 15-10 3-18-2-13-9 3-5 10-3 10-13z" fill="' + c + '"/><rect x="-2" y="-4" width="22" height="10" rx="3" fill="#fffaf3"/></g>');
+  sk(660, '#c4172a', 5, 'a stocking'); sk(724, '#1f7a4d', 6, 'a stocking'); sk(790, '#d9a21b', 7, 'a stocking');
+  add(8, 'mantel candles', '<g><rect x="680" y="108" width="12" height="30" fill="#fffaf3"/><path class="cb-flame" d="M686 102q-5 -7 0 -14 5 7 0 14z" fill="#ffb347"/><rect x="800" y="116" width="12" height="22" fill="#fffaf3"/><path class="cb-flame f2" d="M806 110q-5 -7 0 -14 5 7 0 14z" fill="#ffb347"/></g>');
+  add(10, 'fairy lights on the window', '<g><path d="M56 88Q145 112 234 88" fill="none" stroke="#244d36" stroke-width="2"/>' + [0,1,2,3,4,5,6].map(i => { const t = i / 6, p = bez(56, 234, 88, 12, t); return '<circle class="cb-tw" cx="' + (56 + t * 178).toFixed(0) + '" cy="' + p[1].toFixed(0) + '" r="5" fill="' + ['#e0343c','#f6c84e','#3fb36f','#4a9ae8'][i % 4] + '" style="animation-delay:-' + i * .3 + 's"/>'; }).join('') + '</g>');
+  add(14, 'a holly garland on the mantel', '<g><path d="M630 150Q750 190 870 150" fill="none" stroke="#1f7a4d" stroke-width="12" stroke-linecap="round"/><path d="M630 150Q750 190 870 150" fill="none" stroke="#135c37" stroke-width="4" stroke-dasharray="3 8"/>' + [660,700,750,800,840].map((x, i) => '<circle cx="' + x + '" cy="' + (i % 2 ? 176 : 170) + '" r="4.5" fill="#c4172a"/>').join('') + '</g>');
+  add(16, 'a plate of stroopwafels', '<g transform="translate(580 458)"><ellipse rx="30" ry="8" fill="#fffaf3" stroke="#d9a98c"/><ellipse cx="-6" cy="-3" rx="14" ry="5" fill="#c98a3c" stroke="#8f5a1c"/><ellipse cx="8" cy="-6" rx="14" ry="5" fill="#d9a05a" stroke="#8f5a1c"/></g>');
+  // the tree (always there, bare)
+  const treeBase = '<rect x="428" y="392" width="44" height="34" fill="#5b3519"/>'
+    + tier(205, 395, 190, '#1f7a4d', '#0f4a2d') + tier(130, 290, 140, '#238653', '#0f4a2d') + tier(70, 190, 95, '#2a9560', '#0f4a2d')
+    + '<path d="M390 426h120l-12-22H402z" fill="#a4192b" stroke="#6e0f1d" stroke-width="2"/>';
+  // star (final day) with ghost outline until then
+  const starP = 'M450 40l9 18 20 3-14 14 3 20-18-10-18 10 3-20-14-14 20-3z';
+  const ghost = '<path d="' + starP + '" fill="none" stroke="#f6dc7a" stroke-width="2" stroke-dasharray="4 4" opacity=".7" id="cb-ghost"/>';
+  // baubles
+  const BP = [[430,120],[472,128],[410,165],[488,160],[415,215],[485,225],[365,262],[450,248],[535,262],[390,305],[500,310],[330,350],[420,342],[480,352],[570,348],[300,382],[600,380],[450,168]];
+  const BC = ['#c4172a','#d9a21b','#fffaf3','#2b8fb0'];
+  BP.forEach((p, i) => add(1 + Math.floor(i * 19 / BP.length), 'a bauble', '<g><line x1="' + p[0] + '" y1="' + (p[1] - 14) + '" x2="' + p[0] + '" y2="' + (p[1] - 8) + '" stroke="#e9cb72"/><circle cx="' + p[0] + '" cy="' + p[1] + '" r="10" fill="' + BC[i % 4] + '" stroke="rgba(0,0,0,.35)"/><circle cx="' + (p[0] - 3) + '" cy="' + (p[1] - 3) + '" r="3" fill="#fff" opacity=".7"/></g>'));
+  // tinsel
+  const tinsel = (y, hw, sag, col, dd) => { let pts = []; for(let k = 0; k <= 44; k++){ const t = k / 44, p = bez(CX - hw, CX + hw, y, sag, t); pts.push((p[0]).toFixed(1) + ',' + (p[1] + (k % 2 ? 4 : -4)).toFixed(1)); } add(dd, 'tinsel', '<g><polyline points="' + pts.join(' ') + '" fill="none" stroke="' + col + '" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><polyline points="' + pts.join(' ') + '" fill="none" stroke="#fff" stroke-width="1.4" stroke-dasharray="2 7" opacity=".8"/></g>'); };
+  tinsel(150, 74, 14, '#d9a21b', 6); tinsel(236, 118, 18, '#dfe8ee', 11); tinsel(330, 160, 22, '#c4172a', 17); tinsel(386, 178, 22, '#d9a21b', 22);
+  // lights (three rows)
+  [[172, 74, 18, 9], [270, 118, 22, 15], [366, 168, 26, 21]].forEach((L, ri) => {
+    let g = '<path d="M' + (CX - L[1]) + ' ' + L[0] + ' Q' + CX + ' ' + (L[0] + 2 * L[2]) + ' ' + (CX + L[1]) + ' ' + L[0] + '" fill="none" stroke="#244d36" stroke-width="2"/>';
+    const n = 7 + ri * 2;
+    for(let i = 0; i <= n; i++){ const t = i / n, p = bez(CX - L[1], CX + L[1], L[0], L[2], t), c = ['#e0343c','#f6c84e','#3fb36f','#4a9ae8'][(i + ri) % 4]; g += '<circle class="cb-tw" cx="' + p[0].toFixed(1) + '" cy="' + (p[1] + 4).toFixed(1) + '" r="5.5" fill="' + c + '" style="animation-delay:-' + ((i * .37) % 1.3).toFixed(2) + 's"/><circle cx="' + p[0].toFixed(1) + '" cy="' + (p[1] + 4).toFixed(1) + '" r="11" fill="' + c + '" opacity=".25"/>'; }
+    add(L[3], 'tree lights', '<g>' + g + '</g>');
+  });
+  // presents
+  [[318,404,48,38,'#c4172a','#f6dc7a',12],[372,410,40,32,'#2b8fb0','#fffaf3',15],[528,404,52,40,'#1f7a4d','#e0343c',18],[484,414,38,28,'#d9a21b','#a4192b',21],[582,414,44,32,'#8a6fa8','#f6dc7a',23],[270,416,40,30,'#fffaf3','#c4172a',25],[622,422,36,26,'#c4172a','#fffaf3',26]]
+    .forEach(g => add(g[6], 'a present', '<g><rect x="' + g[0] + '" y="' + g[1] + '" width="' + g[2] + '" height="' + g[3] + '" fill="' + g[4] + '" stroke="rgba(0,0,0,.3)"/><rect x="' + (g[0] + g[2] / 2 - 4) + '" y="' + g[1] + '" width="8" height="' + g[3] + '" fill="' + g[5] + '"/><rect x="' + g[0] + '" y="' + (g[1] + g[3] / 2 - 4) + '" width="' + g[2] + '" height="8" fill="' + g[5] + '"/><path d="M' + (g[0] + g[2] / 2) + ' ' + g[1] + 'q-12-14-14-4 4 6 14 4 10 2 14-4-2-10-14 4z" fill="' + g[5] + '"/></g>'));
+  add(GIFT_DAY, 'the star', '<g><circle class="cb-glow" cx="450" cy="62" r="56" fill="url(#fg)"/><path d="' + starP + '" fill="#f6dc7a" stroke="#a8741f" stroke-width="2"/></g>');
+  const order2 = S.slice().sort((a, b) => a.d - b.d);
+  o += treeBase + ghost;
+  order2.forEach(it => { o += '<g class="dec" data-d="' + it.d + '" data-n="' + it.n + '">' + it.s + '</g>'; });
+  $('cb-svg').innerHTML = o;
+  const decs = Array.from(document.querySelectorAll('#cb-svg .dec'));
+  decs.forEach((el, i) => { if(+el.dataset.d <= progress) setTimeout(() => { el.classList.add('on'); if(+el.dataset.d === progress && progress < GIFT_DAY) el.classList.add('new'); }, 250 + i * 70); });
+  if(progress >= GIFT_DAY) $('cb-ghost').style.display = 'none';
+  const nextD = order2.find(x => x.d > progress);
+  $('cb-p').style.width = Math.round(progress / GIFT_DAY * 100) + '%';
+  $('cb-t').textContent = progress === 0 ? 'The cabin is waiting for December...' : (progress >= GIFT_DAY ? 'The star is on - the cabin is complete ♡' : 'Day ' + progress + ' of ' + GIFT_DAY + ' - ' + decs.filter(e => +e.dataset.d <= progress).length + ' decorations up');
+  $('cb-n').textContent = nextD ? 'Next to arrive: ' + nextD.n + ' (' + nextD.d + ' Dec)' + (nextD.d < GIFT_DAY ? ' - and the star on ' + GIFT_DAY + ' Dec' : '') : 'Everything is up!';
+
+  /* =============== cracker + Dutch word =============== */
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  function pull(){
+    const b = $('cr-btn'); b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
+    $('cr-out').innerHTML = '<span class="hat">' + pick(HATS) + '👑</span><span class="j">' + pick(JOKES) + '</span><span class="p">Prediction: ' + pick(PREDS) + '</span>';
+  }
+  $('cr-btn').onclick = pull; $('cr-again').onclick = pull;
+  $('cr-btn').onkeydown = e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); pull(); } };
+  const dw = DUTCH[(inDec ? day : 0) % DUTCH.length]; $('du-w').textContent = dw[0]; $('du-e').textContent = dw[1];
 })();
 </script>
 </body>
