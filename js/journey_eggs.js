@@ -376,7 +376,7 @@
         await r.wait(650); r.thud(0.2, 200); r.bell(PENTA[i + 2], 0, 0.1, 1.6); t.style.opacity = '1'; r.sparks(gx, base, 6, ['✦', '❄']);
         await r.wait(i === 1 ? 2400 : 1300);
       }
-      const gx = cx + Math.min(W * 0.28, 112) * 2, g4 = r.el('je-gift dashed'); place(g4, cx, base + 76); g4.style.width = '4rem'; g4.style.opacity = '1'; g4.textContent = '2026?'; g4.style.cssText += ';display:flex;align-items:center;justify-content:center;color:#fff3d6;font-family:Caveat,cursive;font-weight:700;font-size:1.3rem;transform:translate(-50%,-50%) scale(0)';
+      const gx = cx + Math.min(W * 0.28, 112) * 2, g4 = r.el('je-gift dashed'); place(g4, cx, base + 122); g4.style.width = '4rem'; g4.style.opacity = '1'; g4.textContent = '2026?'; g4.style.cssText += ';display:flex;align-items:center;justify-content:center;color:#fff3d6;font-family:Caveat,cursive;font-weight:700;font-size:1.3rem;transform:translate(-50%,-50%) scale(0)';
       await r.nextFrame(); g4.style.transition = 'transform .6s cubic-bezier(.34,1.8,.5,1)'; g4.style.transform = 'translate(-50%,-50%) scale(1)';
       r.cap('this year\u2019s isn\u2019t wrapped yet'); r.heartBurst(); r.bell(PENTA[5], 0, 0.1, 2.4);
       await r.wait(4200); r.stopEvery(fl); r.cap('');
@@ -442,7 +442,7 @@
     // 13 - the line itself: a spark runs the whole timeline and lights every moment
     async spine(r){
       const W = r.W(), H = r.H(), cx = W / 2, y0 = H * 0.13, y1 = H * 0.84;
-      const evs = typeof EVENTS !== 'undefined' ? EVENTS : null, n = evs ? evs.length : 38;
+      const evs = typeof EVENTS !== 'undefined' ? EVENTS : null, n = evs ? evs.length : 31;
       const line = r.el(''); line.style.cssText = 'position:absolute;left:' + (cx - 1) + 'px;top:' + y0 + 'px;width:2px;height:' + (y1 - y0) + 'px;background:' + col('--tan') + ';opacity:.5;z-index:40';
       const fill = r.el(''); fill.style.cssText = 'position:absolute;left:' + (cx - 1) + 'px;top:' + y0 + 'px;width:2px;height:0;background:' + col('--gold-light') + ';box-shadow:0 0 12px ' + col('--gold-light') + ';z-index:41';
       const dots = [];
