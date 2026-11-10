@@ -127,7 +127,7 @@ const act=new Map();
 function chunk(c){const r=rng(c*7919+3),x0=c*CW;let h='';for(let p=r()*90;p<CW;p+=90+r()*170){const x=x0+p,a=r(),d=((x-X0)%SP+SP)%SP;if(Math.min(d,SP-d)<560||x<400)continue;const z=zoneX(x);
  if(z==1){if(a>.9)h+=`<div class="sc sea" style="left:${x}px">${lh(40+r()*25)}</div>`;else if(a>.8)h+=`<div class="sc sea" style="left:${x}px;bottom:50px">${berg(60+r()*80)}</div>`}
  else if(z==0&&a>.8)h+=`<div class="sc" style="left:${x}px">${mill(80+r()*50)}</div>`;else if(z==2&&a>.8)h+=`<div class="sc" style="left:${x}px">${house(80+r()*40)}</div>`;
- else h+=`<div class="sc" style="left:${x}px;opacity:${.7+r()*.3}">${fir(70+r()*120,['#0c2f22','#0f3d2b','#124a33'][a*30|0%3])}</div>`}
+ else h+=`<div class="sc" style="left:${x}px;opacity:${.7+r()*.3}">${fir(70+r()*120,['#0c2f22','#0f3d2b','#124a33'][(a*30|0)%3])}</div>`}
  const d=document.createElement('div');d.innerHTML=h;scn.appendChild(d);act.set(c,d)}
 /* sea + tunnels + stations */
 let h0='';h0+=`<div id="sea" style="left:${Z1a}px;width:${Z1b-Z1a}px"></div>`;
@@ -153,7 +153,7 @@ for(let i=0;i<N;i++){const z=zoneS(i),k=PICK[z][(i-(z==0?0:z==1?13:27)+z)%PICK[z
  else if(S[i].t=='premiere')inner=`<rect x="40" y="90" width="440" height="250" fill="#3a0f16"/><rect x="40" y="90" width="440" height="40" fill="#7a1a24"/><text x="260" y="118" text-anchor="middle" font-family="Georgia" font-style="italic" font-weight="700" font-size="22" fill="#f6dc7a">THE PREMIERE</text><g fill="#f6dc7a">${Array.from({length:21},(_,j)=>`<circle class="tw" cx="${52+j*21}" cy="140" r="4" style="animation-delay:${j%3*.3}s"/>`).join('')}</g><rect x="210" y="220" width="100" height="120" fill="#14080a" stroke="#f6dc7a" stroke-width="4"/><path d="M40 90L260 20L480 90Z" fill="#5a1520"/>`;
  else inner=svg;
  const sp=S[i].t=='van'||S[i].t=='premiere',pkx=sp?'':`<div class="pk" style="--pc:${pc};left:${px}px;bottom:${py}px"><i></i><u>open me</u></div>`;
- h0+=`<div class="st ${fx||''}" id="st${i}" style="left:${stX(i)-130}px"><svg viewBox="0 0 520 340" ${fx?'':''}>${inner}</svg>${lampy}<div class="lbl">Stop ${i+1}</div>${pkx}</div>`}
+ h0+=`<div class="st" id="st${i}" style="left:${stX(i)-130}px"><svg viewBox="0 0 520 340" ${fx?'':''}>${inner}</svg>${lampy}<div class="lbl">Stop ${i+1}</div>${pkx}</div>`}
 world.insertAdjacentHTML('afterbegin',h0);
 train.innerHTML=`<svg viewBox="0 0 330 110"><defs><linearGradient id="rg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e0434b"/><stop offset="1" stop-color="#7a1820"/></linearGradient><linearGradient id="gg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f8d62"/><stop offset="1" stop-color="#0f4a32"/></linearGradient></defs><rect x="4" y="30" width="96" height="54" rx="6" fill="url(#gg)"/><rect x="4" y="30" width="96" height="6" fill="#c99a2e"/><rect x="108" y="30" width="96" height="54" rx="6" fill="url(#gg)"/><rect x="108" y="30" width="96" height="6" fill="#c99a2e"/><g fill="#ffe9a0"><rect x="14" y="42" width="20" height="18" rx="3"/><rect x="42" y="42" width="20" height="18" rx="3"/><rect x="70" y="42" width="20" height="18" rx="3"/><rect x="118" y="42" width="20" height="18" rx="3"/><rect x="146" y="42" width="20" height="18" rx="3"/><rect x="174" y="42" width="20" height="18" rx="3"/></g><path d="M100 60h8" stroke="#555" stroke-width="4"/><rect x="212" y="26" width="58" height="58" rx="4" fill="url(#rg)"/><rect x="268" y="42" width="50" height="42" rx="20" fill="url(#rg)"/><rect x="236" y="4" width="16" height="30" fill="#2a1c10"/><path d="M230 10H258L252 2H236Z" fill="#c99a2e"/><rect x="216" y="34" width="22" height="22" fill="#ffe9a0"/><circle cx="322" cy="60" r="6" fill="#fff6c8"/><path d="M292 84L324 98V84Z" fill="#c99a2e"/><rect x="2" y="84" width="318" height="6" fill="#2a1c10"/><g fill="#333" stroke="#bbb" stroke-width="3">${[36,80,140,184,246,292].map(c=>`<g class="wh"><circle cx="${c}" cy="96" r="12"/><path d="M${c} 84v24M${c-12} 96h24" stroke-width="2"/></g>`).join('')}</g></svg>`;
 /* ================= audio ================= */
@@ -184,15 +184,15 @@ for(let i=0;i<240;i++)P.push({k:'s',x:rnd(0,innerWidth),y:rnd(0,innerHeight),z:r
 const burst=(x,y,n,col)=>{for(let i=0;i<n;i++){const a=rnd(0,6.28),s=rnd(1,7);P.push({k:'g',x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-1,l:rnd(50,100),m:100,col:col||(Math.random()<.5?'#f6dc7a':'#fff')})}};
 /* ================= camera + state ================= */
 let SC=1;const setSC=()=>{SC=innerWidth<700?1:Math.max(1,Math.min(1.8,innerHeight/560))};setSC();addEventListener('resize',setSC);
-let tx=0,cam=0,zc=1,fxc=.3,foc=0,zT=1,fxT=.3,focT=0,v=0,fr=0,lastT=0,st='intro',cur=-1,go0=0,goD=1,goFrom=0,goTo=0,said=0,chugD=0;
+let tx=0,cam=0,zc=1,fxc=.3,foc=0,zT=1,fxT=.3,focT=0,v=0,fr=0,lastT=0,st='intro',cur=-1,go0=0,goD=1,goFrom=0,goTarget=0,said=0,chugD=0;
 let opened=new Set();try{opened=new Set(JSON.parse(localStorage.getItem('xmx2_open')||'[]'))}catch(e){}
 const q=new URLSearchParams(location.search);
 const ease=p=>p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
 function hud(){const zn=['the Dutch canals','the Channel','the Lancashire hills'];$('hs').textContent='STOP '+pad(Math.max(1,cur+1))+' / '+N;$('hz').textContent=zn[zoneX(tx)];$('bar').style.width=(opened.size/N*100)+'%';$('aur').style.opacity=.1+Math.min(.9,opened.size/N);B.dataset.z=zoneX(tx);
  for(let i=0;i<N;i++){const e=$('st'+i);e.classList.toggle('lit',opened.has(i));e.classList.toggle('done',opened.has(i))}}
-function goTo(i){cur=i;st='go';goFrom=tx;goTo=trX(i);goD=Math.max(6500,(goTo-goFrom)*2.9);go0=performance.now();said=0;train.classList.add('run');whistle();hiss(.25);
+function goTo(i){cur=i;st='go';goFrom=tx;goTarget=trX(i);goD=Math.max(6500,(goTarget-goFrom)*2.9);go0=performance.now();said=0;train.classList.add('run');whistle();hiss(.25);
  const prev=document.querySelector('.st.act');prev&&prev.classList.remove('act');if(i==19)document.documentElement.classList.add('haunt');if(CH[i])setTimeout(()=>chap(CH[i]),goD*.55);mmode=i==N-1?'f':i==19?'g':zoneS(i);hud()}
-function arrive(){st='idle';v=0;train.classList.remove('run');hiss(.3);tunnelAudio(false);focT=stX(cur)-340;zT=1.3;fxT=.5;$('st'+cur).classList.add('act');hud();say(cur==19?'Something is humming in the dark…':'Next to the track, something is waiting for you.',4200)}
+function arrive(){st='idle';v=0;train.classList.remove('run');hiss(.3);tunnelAudio(false);focT=stX(cur)+20;zT=1.22;fxT=.5;$('st'+cur).classList.add('act');hud();say(cur==19?'Something is humming in the dark…':'Next to the track, something is waiting for you.',4200)}
 function finish(){const i=cur;opened.add(i);try{localStorage.setItem('xmx2_open',JSON.stringify([...opened]))}catch(e){}
  $('ov').classList.remove('on');$('van').className='';$('van').innerHTML='';$('pm').classList.remove('on');$('pm').innerHTML='';document.documentElement.classList.remove('haunt');mmode=zoneS(i);
  chime();burst(innerWidth*.55,innerHeight*.5,90);hud();zT=1.15;
@@ -200,7 +200,7 @@ function finish(){const i=cur;opened.add(i);try{localStorage.setItem('xmx2_open'
  st='wait';setTimeout(()=>{if(st=='wait')goTo(i+1)},2000)}
 /* ================= main loop ================= */
 function frame(t){const dt=Math.min(.05,(t-lastT)/1000||.016);lastT=t;fr++;
- if(st=='go'){const p=Math.min(1,(t-go0)/goD),np=goFrom+(goTo-goFrom)*ease(p);v=(np-tx)/dt;tx=np;focT=tx+380;fxT=.34;zT=1;
+ if(st=='go'){const p=Math.min(1,(t-go0)/goD),np=goFrom+(goTarget-goFrom)*ease(p);v=(np-tx)/dt;tx=np;focT=tx+380;fxT=.34;zT=1;
   if(p>.2&&said==0){said=1;say(LORE[(cur*2)%LORE.length],5200)}if(p>.62&&said==1){said=2;say(LORE[(cur*2+1)%LORE.length],5200)}
   chugD+=Math.abs(tx-(frame.l||tx));if(chugD>150){chugD=0;hiss(.05+Math.min(.1,Math.abs(v)/5000))}if(p>=1)arrive()}
  frame.l=tx;
@@ -222,7 +222,7 @@ function frame(t){const dt=Math.min(.05,(t-lastT)/1000||.016);lastT=t;fr++;
  requestAnimationFrame(frame)}
 /* ================= stops ================= */
 const polH=i=>{const s=S[i];return '<div class="pol"><img src="'+(s.img||'xmas_images/gift'+pad(i+1)+'.jpg')+'" alt="" onerror="this.outerHTML=\'<div class=ph>📸 photo of Tristan with this gift goes here</div>\'"><b>stop '+(i+1)+' · me with it irl ♡</b></div>'};
-function openStop(i){if(st!='idle')return;st='ui';const s=S[i];zT=1.55;focT=stX(i)+60;
+function openStop(i){if(st!='idle')return;st='ui';const s=S[i];zT=1.45;focT=stX(i)+140;
  if(s.t=='van')return van(i);if(s.t=='premiere')return premiere(i);
  const ov=$('ov'),pc=$('pc');ov.className='on zn'+zoneS(i);pc.className='card tg';
  pc.innerHTML='<div class="tgh">★ BESTIES EXPRESS TELEGRAPH ★</div><div class="tgm">STOP '+(i+1)+' OF '+N+' · URGENT · TO: ANN</div><div class="tgb" id="tgb"></div><div class="tgs">— STOP —<br>ONLY WHEN IT’S IN YOUR HANDS, PRESS BELOW</div><div style="text-align:center"><button class="btn" id="op" disabled>I’ve opened it 🎁</button></div>';
