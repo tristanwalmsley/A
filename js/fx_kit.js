@@ -22,6 +22,9 @@ window.FxKit = (function(){
   const esc = s => String(s).replace(/[&<>]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[c]));
 
   const CSS = `
+.fk-layer{position:fixed;inset:0;z-index:4800;background:radial-gradient(ellipse at 50% 40%,color-mix(in srgb,var(--brown,#7a5230) 50%,#0a0402),color-mix(in srgb,var(--deep,#3a2010) 72%,#050201) 85%);opacity:0;transition:opacity .5s;cursor:pointer}
+.fk-layer.on{opacity:1}
+.fk-live{position:absolute;inset:0}
 .fk-stage *{box-sizing:border-box}
 .fk-stage{position:absolute;inset:0;overflow:hidden;font-family:'EB Garamond',Georgia,serif;color:#fff3d6}
 .fk-stage.fk-quake{animation:fkQuake .45s ease-in-out}
@@ -225,5 +228,33 @@ window.FxKit = (function(){
     return r;
   }
 
-  return { DEAD, reduced, mk, rnd, esc, createRun, injectCSS, ac, audioReady, unmute, mtof, music, stopMusic, PIECES, CH, toneAt, bellAt };
+  // a colour from the active site theme (css/theme.js), with a fallback. Use it for anything drawn from JS so seasons restyle it too.
+  const FALLBACK = { '--gold':'#c8943a', '--gold-light':'#e8b95a', '--rose':'#b86858', '--sage':'#7a9870', '--brown':'#7a5230', '--deep':'#3a2010', '--paper':'#fffdf5', '--cream':'#faf4e8', '--tan':'#d4b483' };
+  const col = name => { try{ const v = window.SiteTheme && window.SiteTheme.color(name); if(v) return v; }catch(e){} return FALLBACK[name] || '#ffd76a'; };
+
+  // plays ONE moment (an async function(run, anchor)) on a full-screen themed layer over the page, then calls done().
+  // Click (after a moment) or Escape skips it. Returns { finish } so callers can end it early.
+  function playLive(moment, anchor, done){
+    const fin = typeof done === 'function' ? done : () => {};
+    if(reduced()){ fin(); return { finish(){} }; }
+    injectCSS();
+    const layer = mk('fk-layer'); document.body.appendChild(layer);
+    const stage = mk('fk-live', null, layer);
+    const r = createRun(stage);
+    ac(); unmute();
+    requestAnimationFrame(() => layer.classList.add('on'));
+    const t0 = performance.now(); let over = false;
+    const onKey = e => { if(e.key === 'Escape') finish(); };
+    const finish = () => {
+      if(over) return; over = true;
+      r.abort(); window.removeEventListener('keydown', onKey); stopMusic(0.5);
+      layer.classList.remove('on'); setTimeout(() => { layer.remove(); fin(); }, 480);
+    };
+    layer.addEventListener('click', () => { if(performance.now() - t0 > 1800) finish(); });
+    window.addEventListener('keydown', onKey);
+    moment(r, anchor).then(() => finish(), e => { if(e !== DEAD) console.warn('[fx] moment failed', e); finish(); });
+    return { finish };
+  }
+
+  return { DEAD, reduced, mk, rnd, esc, col, createRun, playLive, injectCSS, ac, audioReady, unmute, mtof, music, stopMusic, PIECES, CH, toneAt, bellAt };
 })();
