@@ -30,8 +30,8 @@
       home: { greeting: '🎁 Sinterklaas edition - zet je schoentje, Bestie Ann! 🥾',
               postmark: 'Fijne<br>Sint ✦<br>from UK', corner: 'Gold<br>star<br>bestie' } },
     { id: 'christmas',   label: 'Christmas',   start: '12-06', end: '12-31',
-      flakes: { glyphs: ['❄', '❅', '❆', '🎄', '⭐', '🔔', '•'],  count: 38, size: [10, 24] },
-      drift: true, caps: true, lights: true, burst: ['❄', '✦', '❅', '🎄', '⭐', '🎁'],
+      flakes: { glyphs: ['❄', '❅', '•'],  count: 16, size: [9, 17] },
+      drift: true, caps: true, lights: true, burst: ['❄', '✦', '❅'],
       home: { greeting: '🎄 the Christmas edition - merry Christmas, Bestie Ann 🎅🎁',
               postmark: 'Merry<br>Christmas<br>from UK', corner: 'Festive<br>class<br>bestie' } }
   ];
