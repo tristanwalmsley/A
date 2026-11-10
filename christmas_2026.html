@@ -95,6 +95,10 @@ html[data-theme="christmas"] body{
 @keyframes dcalGlow{to{box-shadow:0 0 0 5px rgba(246,220,122,.5),0 0 32px #f6dc7a}}
 .dcal-cell.nope{animation:dcalShake .4s}
 @keyframes dcalShake{25%{transform:rotate(var(--rot,0deg)) translateX(-5px)}75%{transform:rotate(var(--rot,0deg)) translateX(5px)}}
+.gq{font-size:1.15rem;margin:.4rem 0}.gem{font-size:2.6rem;margin:.6rem 0}.gopts{display:grid;gap:.5rem;margin:.6rem 0}
+.gbtn{font-family:var(--font-hand);font-size:1.2rem;padding:.35rem 1rem;border-radius:99px;border:2px solid var(--sage);background:var(--paper);color:var(--ink);cursor:pointer}.gbtn:hover{background:#e7f3ea}.gbtn:disabled{opacity:.45;cursor:default}
+.gin{font:inherit;font-size:1.1rem;padding:.4rem .8rem;border:2px solid var(--sage);border-radius:10px;width:min(210px,60%)}.gfb{min-height:1.6em;font-family:var(--font-hand);font-size:1.3rem;color:var(--rose);margin-top:.5rem}
+.glink{background:none;border:0;text-decoration:underline;color:var(--brown);cursor:pointer;font-size:.95rem;margin-top:.4rem}.dph{max-width:100%;max-height:50vh;border:6px solid #fff;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.35);transform:rotate(-1.5deg)}
 .dcal-reset{background:none;border:0;color:#ffd9cc;font-family:var(--font-hand);font-size:1.05rem;text-decoration:underline;cursor:pointer;opacity:.75;margin-top:.3rem}.dcal-reset:hover{opacity:1}
 .dcal-hint{font-family:var(--font-hand);font-size:1.2rem;color:#ffd9cc;text-align:center;margin-top:1rem}
 
@@ -127,7 +131,10 @@ html[data-theme="christmas"] body{
 /* ---------- CRACKER ---------- */
 .cr-stage{position:relative;max-width:760px;margin:0 auto;padding:1.2rem .6rem 1rem;border-radius:50% / 22%;background:radial-gradient(ellipse at 50% 55%,rgba(246,220,122,.22),transparent 62%),radial-gradient(ellipse at 50% 100%,rgba(143,15,30,.7),rgba(60,8,18,.55));box-shadow:inset 0 0 0 3px rgba(246,220,122,.35);overflow:hidden;touch-action:none;user-select:none}
 .cr-svg{display:block;width:100%;height:auto;overflow:visible}
-#cr-r{cursor:grab}#cr-r:active{cursor:grabbing}
+#hitL,#hitR{cursor:grab}#hitL:active,#hitR:active{cursor:grabbing}
+.cr-ring{fill:none;stroke:#f6dc7a;stroke-width:3;stroke-dasharray:7 6;animation:crRing 1.3s ease-in-out infinite alternate}.cr-lbl{font-family:Caveat,cursive;font-size:22px;fill:#f6dc7a}
+@keyframes crRing{from{opacity:.3}to{opacity:1}}
+#cr-all{transition:transform .3s}#cr-all.drag{transition:none}
 .cr-halfmove{transition:transform .8s cubic-bezier(.2,.8,.3,1)}
 .cr-hint{text-align:center;font-family:var(--font-hand);font-size:1.35rem;color:var(--gold-light);margin:.3rem 0 .2rem;min-height:1.6em}
 #cr-fx{opacity:0;transform-box:fill-box;transform-origin:center}
@@ -214,10 +221,10 @@ html[data-theme="christmas"] body{
   </div>
 
   <h2 class="xm-sec">Pull a Cracker</h2>
-  <div class="xm-sec-s">grab the right end and pull - Tristan's holding the other one</div>
+  <div class="xm-sec-s">pick an end and pull - Tristan holds the other. The bigger half wins the goodies!</div>
   <div class="xm-w">
     <div class="cr-stage" id="cr-stage">
-      <svg class="cr-svg" id="cr-svg" viewBox="-130 0 900 200" aria-label="A Christmas cracker">
+      <svg class="cr-svg" id="cr-svg" viewBox="-70 0 780 200" aria-label="A Christmas cracker - grab an end and pull">
         <defs>
           <pattern id="crp" width="30" height="30" patternUnits="userSpaceOnUse"><rect width="30" height="30" style="fill:var(--cr1)"/><path d="M15 6l2.4 5 5.4.6-4 3.7 1.1 5.4-4.9-2.7-4.9 2.7 1.1-5.4-4-3.7 5.4-.6z" style="fill:var(--cr2)" opacity=".85"/><circle cx="2" cy="2" r="1.6" fill="#fff" opacity=".55"/><circle cx="30" cy="30" r="1.6" fill="#fff" opacity=".55"/></pattern>
           <linearGradient id="crs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".3" stop-color="#fff" stop-opacity="0"/><stop offset=".72" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".42"/></linearGradient>
@@ -228,16 +235,19 @@ html[data-theme="christmas"] body{
             <path d="M320 52H170C150 52 140 70 118 88V112C140 130 150 148 170 148H320Z" fill="url(#crs)"/>
             <rect x="108" y="84" width="14" height="32" rx="4" fill="#f6dc7a" stroke="#a8741f"/>
             <path d="M115 84C98 64 86 80 100 88ZM115 116C98 136 86 120 100 112Z" fill="#f6dc7a" stroke="#a8741f"/>
-            <path d="M235 80l5 11 12 1.4-9 8.2 2.5 12-10.5-6-10.5 6 2.5-12-9-8.2 12-1.4z" fill="#fffaf3" opacity=".92"/>
-            <rect x="302" y="52" width="18" height="96" style="fill:var(--cr2)"/><path d="M308 52v96M314 52v96" stroke="rgba(0,0,0,.25)"/>
           </g>
+          <g id="crfull"><use href="#crhalf"/><use href="#crhalf" transform="translate(640 0) scale(-1 1)"/><circle cx="320" cy="100" r="19" style="fill:var(--cr2)" stroke="rgba(0,0,0,.3)" stroke-width="1.5"/><path d="M320 86l4 8.5 9.4 1-7 6.4 2 9.2-8.4-4.8-8.4 4.8 2-9.2-7-6.4 9.4-1z" fill="#fffaf3" opacity=".95"/></g>
+          <clipPath id="clBody"><rect x="-200" y="52" width="1200" height="96"/></clipPath><clipPath id="clL"><polygon id="clLp" points=""/></clipPath><clipPath id="clR"><polygon id="clRp" points=""/></clipPath>
         </defs>
-        <rect id="cr-neck" x="312" y="62" width="0" height="76" rx="6" style="fill:var(--cr2)" opacity=".9"/>
-        <g id="cr-l" class="cr-halfmove"><use href="#crhalf"/></g>
-        <g id="cr-r" class="cr-halfmove"><use href="#crhalf" transform="translate(640 0) scale(-1 1)"/><rect x="320" y="40" width="330" height="120" fill="transparent"/></g>
-        <g id="cr-fx"><polygon points="320,10 338,60 392,36 366,86 420,100 366,114 392,164 338,140 320,190 302,140 248,164 274,114 220,100 274,86 248,36 302,60" fill="#f6dc7a" stroke="#fffaf3" stroke-width="4"/><text x="320" y="112" text-anchor="middle" font-family="Caveat,cursive" font-weight="700" font-size="44" fill="#a4192b">BANG!</text></g>
+        <g id="cr-all">
+          <g id="cr-l" class="cr-halfmove"><g clip-path="url(#clL)"><use href="#crfull"/></g><polyline id="cr-ejL" clip-path="url(#clBody)" points="" fill="none" stroke="#fffaf3" stroke-width="5" stroke-linejoin="round"/></g>
+          <g id="cr-r" class="cr-halfmove"><g clip-path="url(#clR)"><use href="#crfull"/></g><polyline id="cr-ejR" clip-path="url(#clBody)" points="" fill="none" stroke="#fffaf3" stroke-width="5" stroke-linejoin="round"/></g>
+        </g>
+        <g id="cr-rings"><circle class="cr-ring" cx="38" cy="100" r="36"/><circle class="cr-ring" cx="602" cy="100" r="36"/><text x="38" y="164" text-anchor="middle" class="cr-lbl">grab me</text><text x="602" y="164" text-anchor="middle" class="cr-lbl">or me</text></g>
+        <rect id="hitL" x="-20" y="40" width="190" height="120" fill="transparent"/><rect id="hitR" x="470" y="40" width="190" height="120" fill="transparent"/>
+        <g id="cr-fxpos"><g id="cr-fx"><polygon points="320,10 338,60 392,36 366,86 420,100 366,114 392,164 338,140 320,190 302,140 248,164 274,114 220,100 274,86 248,36 302,60" fill="#f6dc7a" stroke="#fffaf3" stroke-width="4"/><text x="320" y="112" text-anchor="middle" font-family="Caveat,cursive" font-weight="700" font-size="44" fill="#a4192b">BANG!</text></g></g>
       </svg>
-      <div class="cr-hint" id="cr-hint">hold the right end and drag away →</div>
+      <div class="cr-hint" id="cr-hint">pick an end, hold it and pull away</div>
     </div>
     <div class="cr-btns"><button class="btn" id="cr-auto" type="button">or pull it for me</button></div>
     <div class="cr-prize" id="cr-prize"></div>
@@ -266,15 +276,27 @@ html[data-theme="christmas"] body{
 
   /* =============== EDIT ME =============== */
   const GIFT_DAY = 27;   // the day the star goes on and gifts are opened (December)
-  // door contents. Key = day number. Anything missing shows "still being wrapped".
+  // Door contents. Key = day number. Types by day: photo (5,10,15,20) - memory (2,7,12,17,22) - reason (4,9,14,19,24) - mini-game (the rest, see GAMES) - door 25 is the Christmas Day door.
+  // Photo door example:  5: { title:'Look at this', photo:'media/christmas_2026/advent_05.jpg', caption:'the funniest one yet' }
+  // Memory / reason door example:  2: { title:'A memory', html:'The time we ...' }
   const CONTENT = {
-    25: { title:'Merry Christmas!', html:'You opened the last door. Come back on the 27th for the star and the big unwrapping ♡' },
-    3:  { title:'Vrolijk kerstfeest', html:'<b>Vrolijk kerstfeest</b> means Merry Christmas. Practise it out loud - Ann will be marking the accent.' },
-    9:  { title:'Gezellig', html:'<b>Gezellig</b> is cosy, warm togetherness - candles, friends and tea. There is no English word that fits.' },
-    15: { title:'Sneeuwpop', html:'<b>Sneeuwpop</b> means snowman. Say it three times fast.' },
-    21: { title:'Oliebollen', html:'<b>Oliebollen</b> are deep-fried doughnut balls with icing sugar, eaten on Oud en Nieuw.' }
+    25: { title:'Merry Christmas!', html:'You opened the last door. Come back on the 27th for the star and the big unwrapping ♡' }
   };
-  const TYPES = [ {g:'✉️',n:'a postcard'}, {g:'📸',n:'a memory'}, {g:'💌',n:'a reason'}, {g:'🇳🇱',n:'a Dutch phrase'}, {g:'🎵',n:'a song'}, {g:'🎮',n:'a mini-game'} ];
+  const TYPES = [ {g:'🖼️',n:'a funny photo'}, {g:'🎮',n:'a mini-game'}, {g:'💭',n:'a memory'}, {g:'🎮',n:'a mini-game'}, {g:'💌',n:'a reason'} ];   // chosen by day % 5
+  // Mini-games: k 'choice' (pick the right answer), 'emoji' (guess the film), 'scr' (unscramble the word)
+  const GAMES = {
+    1:  { k:'emoji', e:'🏠🧒😱', a:['homealone'] },
+    3:  { k:'choice', q:'Which Christmas song is usually named the best-selling single of all time?', o:['White Christmas','Jingle Bells','Last Christmas'], a:0, f:'Bing Crosby\'s "White Christmas" is the one usually quoted.' },
+    6:  { k:'scr', w:'REINDEER' },
+    8:  { k:'choice', q:'In which year was the very first Christmas card sent?', o:['1776','1843','1901'], a:1, f:'1843 - Sir Henry Cole had them printed in London.' },
+    11: { k:'emoji', e:'🚂🎅❄️', a:['thepolarexpress','polarexpress'] },
+    13: { k:'scr', w:'STOCKING' },
+    16: { k:'choice', q:'How many gifts are given in total across every verse of "The Twelve Days of Christmas"?', o:['78','144','364'], a:2, f:'364 - one for every day of the year bar one!' },
+    18: { k:'emoji', e:'💚😈🎄', a:['thegrinch','grinch','howthegrinchstolechristmas'] },
+    21: { k:'scr', w:'SNOWFLAKE' },
+    23: { k:'choice', q:'Which plant do people traditionally kiss under at Christmas?', o:['Holly','Mistletoe','Ivy'], a:1, f:'Mistletoe, of course ♡' }
+  };
+  const WIN_CHANCE = 0.5;   // chance you get the big half of the cracker
   const JOKES = [
     ['What do snowmen eat for breakfast?','Snowflakes.'],['Why did Santa go to music school?','To improve his wrapping.'],
     ['What do you call a reindeer wearing earmuffs?','Anything you like - he cannot hear you.'],['What is a Christmas tree\'s least favourite sewing item?','Pine needles.'],
@@ -325,6 +347,24 @@ html[data-theme="christmas"] body{
   $('xm-x').onclick = () => modal.classList.remove('show');
   modal.addEventListener('click', e => { if(e.target === modal) modal.classList.remove('show'); });
 
+  /* =============== mini-game engine (inside the door popup) =============== */
+  const norm = t => t.toLowerCase().replace(/[^a-z0-9]/g, '');
+  function scramble(w, seed){ const r = rng(seed * 13 + 5), a = w.split(''); let t; do{ for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } t = a.join(''); }while(t === w); return t; }
+  function gameHTML(g, d){
+    const inp = '<div><input class="gin" id="gin" autocomplete="off" placeholder="your answer"> <button class="gbtn" id="gchk" type="button">check</button></div><div class="gfb" id="gfb"></div><button class="glink" id="gshow" type="button">show me the answer</button>';
+    if(g.k === 'choice') return '<p class="gq">' + g.q + '</p><div class="gopts">' + g.o.map((x, i) => '<button type="button" class="gbtn" data-i="' + i + '">' + x + '</button>').join('') + '</div><div class="gfb" id="gfb"></div>';
+    if(g.k === 'emoji') return '<p class="gq">Which Christmas film?</p><div class="gem">' + g.e + '</div>' + inp;
+    return '<p class="gq">Unscramble this Christmas word</p><div class="gem" style="letter-spacing:.22em;font-family:var(--font-display)">' + scramble(g.w, d) + '</div>' + inp;
+  }
+  function bindGame(g){
+    const box = $('m-tx'), fb = () => box.querySelector('#gfb');
+    if(g.k === 'choice'){ box.querySelectorAll('.gopts .gbtn').forEach(b => b.onclick = () => { if(+b.dataset.i === g.a){ fb().textContent = 'Correct! ✨ ' + g.f; box.querySelectorAll('.gopts .gbtn').forEach(x => x.disabled = true); } else { b.disabled = true; fb().textContent = 'Not quite - try another!'; } }); return; }
+    const ok = g.k === 'scr' ? [norm(g.w)] : g.a, inp = box.querySelector('#gin'), ans = g.k === 'scr' ? g.w : g.a[g.a.length > 1 ? 1 : 0];
+    const check = () => { const v = norm(inp.value); if(!v) return; if(ok.includes(v)){ fb().textContent = 'Yes!! 🎉'; } else fb().textContent = 'Not quite - have another go!'; };
+    box.querySelector('#gchk').onclick = check; inp.onkeydown = e => { if(e.key === 'Enter') check(); };
+    box.querySelector('#gshow').onclick = () => { fb().textContent = 'It was: ' + ans.replace(/^./, c => c.toUpperCase()); };
+  }
+
   /* =============== ADVENT: irregular doors, fixed shuffled order =============== */
   function rng(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
   // [col,row,colSpan,rowSpan,shape]  - a hand-made 6x7 jigsaw of 25 doors
@@ -337,7 +377,7 @@ html[data-theme="christmas"] body{
   let seen = []; try{ seen = JSON.parse(localStorage.getItem('xmas26_doors')) || []; }catch(e){}
   const grid = $('dcal-grid');
   SLOTS.forEach((s, i) => {
-    const d = assign[i], open = inDec ? d <= day : jan, ty = d === 25 ? {g:'🎄', n:'Christmas Day'} : TYPES[d % 6], two = s[2] > 1 && s[3] > 1;
+    const d = assign[i], open = inDec ? d <= day : jan, ty = d === 25 ? {g:'🎄', n:'Christmas Day'} : TYPES[d % 5], two = s[2] > 1 && s[3] > 1;
     const el = document.createElement('div'); el.setAttribute('role', 'button'); el.tabIndex = 0;
     el.className = 'dcal-cell shape-' + s[4] + (open ? ' open' : ' shut') + (seen.includes(d) && open ? ' swung' : '') + (inDec && d === day ? ' today' : '');
     el.style.cssText = 'grid-column:' + s[0] + '/span ' + s[2] + ';grid-row:' + s[1] + '/span ' + s[3] + ';--rot:' + (((d * 7) % 5 - 2) * .55) + 'deg';
@@ -348,8 +388,9 @@ html[data-theme="christmas"] body{
         el.classList.remove('swung'); seen = seen.filter(x => x !== d); try{ localStorage.setItem('xmas26_doors', JSON.stringify(seen)); }catch(e){} return;
       }
       if(!open){ el.classList.remove('nope'); void el.offsetWidth; el.classList.add('nope'); $('dcal-hint').textContent = 'Door ' + d + ' opens on ' + d + ' December ♡'; return; }
-      const c = CONTENT[d] || { title:'Door ' + d, html:'This door holds <b>' + ty.n + '</b> - Tristan is still wrapping it. Check back soon ♡' };
-      el.classList.add('swung'); setTimeout(() => showMsg(ty.g, ty.n, c.title, c.html), 650);
+      const g = GAMES[d], cc = CONTENT[d];
+      const c = g ? { title:'Mini-game', html:gameHTML(g, d) } : (cc && cc.photo ? { title:cc.title || ('Door ' + d), html:'<img class="dph" src="' + cc.photo + '" alt="" onerror="this.replaceWith(document.createTextNode(\'(photo coming soon)\'))"><p>' + (cc.caption || '') + '</p>' } : (cc || { title:'Door ' + d, html:'This door holds <b>' + ty.n + '</b> - Tristan is still wrapping it. Check back soon ♡' }));
+      el.classList.add('swung'); setTimeout(() => { showMsg(ty.g, ty.n, c.title, c.html); if(g) bindGame(g); }, 650);
       if(!seen.includes(d)){ seen.push(d); try{ localStorage.setItem('xmas26_doors', JSON.stringify(seen)); }catch(e){} }
     };
     el.onclick = act; el.onkeydown = e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); act(); } };
@@ -437,45 +478,55 @@ html[data-theme="christmas"] body{
   }
   if(pending.length){ if('IntersectionObserver' in window){ const io = new IntersectionObserver(es => { if(es[0].isIntersecting){ io.disconnect(); arrive(); } }, { threshold: .5 }); io.observe($('cb-svg')); } else arrive(); }
 
-  /* =============== CRACKER: drag to pull, bang, confetti, crown, joke, trinket =============== */
-  const svg = $('cr-svg'), L = $('cr-l'), R = $('cr-r'), neck = $('cr-neck'), fx = $('cr-fx'), stage = $('cr-stage'), hint = $('cr-hint');
-  let dx = 0, drag = false, sx = 0, done = false, scheme = 0, bag = [];
+  /* =============== CRACKER: pick an end, pull, it tears unevenly - the bigger half wins =============== */
+  const svg = $('cr-svg'), ALL = $('cr-all'), L = $('cr-l'), R = $('cr-r'), fx = $('cr-fx'), stage = $('cr-stage'), hint = $('cr-hint'), rings = $('cr-rings');
+  let drag = false, sx = 0, done = false, side = null, scheme = 0, bag = [];
   const pick = a => a[Math.floor(Math.random() * a.length)];
-  function applyScheme(){ const s = SCHEMES[scheme % SCHEMES.length]; svg.style.setProperty('--cr1', s[0]); svg.style.setProperty('--cr2', s[1]); }
-  applyScheme();
-  function setDx(v){ dx = v; R.style.transform = 'translate(' + v + 'px,0)'; neck.setAttribute('width', Math.max(0, v + 12)); const j = v > 60 ? (v - 60) / 90 * 2.4 : 0; svg.style.transform = j ? 'translate(' + ((Math.random() - .5) * j).toFixed(2) + 'px,' + ((Math.random() - .5) * j).toFixed(2) + 'px)' : ''; hint.textContent = v < 8 ? 'hold the right end and drag away →' : (v < 70 ? 'keep pulling...' : 'almost... PULL!'); }
-  R.addEventListener('pointerdown', e => { if(done) return; drag = true; sx = e.clientX; R.classList.remove('cr-halfmove'); try{ R.setPointerCapture(e.pointerId); }catch(_){} });
-  R.addEventListener('pointermove', e => { if(!drag || done) return; const sc = 900 / svg.getBoundingClientRect().width, v = Math.max(0, Math.min(150, (e.clientX - sx) * sc)); setDx(v); if(v >= 128) bang(); });
-  const release = () => { if(!drag || done) return; drag = false; R.classList.add('cr-halfmove'); setDx(0); };
-  R.addEventListener('pointerup', release); R.addEventListener('pointercancel', release);
-  $('cr-auto').onclick = () => { if(done){ reset(); return; } R.classList.remove('cr-halfmove'); const t0 = performance.now(); (function step(t){ const k = Math.min(1, (t - t0) / 800); setDx(k * k * 132); if(k < 1) requestAnimationFrame(step); else bang(); })(t0); };
-  function confetti(){
-    const sr = stage.getBoundingClientRect(), vr = svg.getBoundingClientRect(), ox = vr.left - sr.left + vr.width * .5, oy = vr.top - sr.top + vr.height * .5, cols = ['#c4172a','#f6dc7a','#1f7a4d','#fffaf3','#2b8fb0','#e8a6c4'], ps = [];
+  const JAG = [0,7,-6,8,-7,6,-8,7,-5,6,-7,5,0], edge = x => JAG.map((o, i) => (x + o) + ',' + (-20 + i * 20));
+  function setClips(x){ $('clLp').setAttribute('points', '-200,-20 ' + edge(x).join(' ') + ' -200,220'); $('clRp').setAttribute('points', edge(x).join(' ') + ' 1000,220 1000,-20'); $('cr-ejL').setAttribute('points', edge(x).join(' ')); $('cr-ejR').setAttribute('points', edge(x).join(' ')); }
+  function whole(){ $('clLp').setAttribute('points', '-200,-20 1000,-20 1000,220 -200,220'); $('clRp').setAttribute('points', '-200,-20 -190,-20 -190,-10'); $('cr-ejL').setAttribute('points', ''); $('cr-ejR').setAttribute('points', ''); }
+  function applyScheme(){ const s2 = SCHEMES[scheme % SCHEMES.length]; svg.style.setProperty('--cr1', s2[0]); svg.style.setProperty('--cr2', s2[1]); }
+  applyScheme(); whole();
+  function stretch(val){ const pivot = side === 'L' ? 622 : 18, sc = 1 + val / 650, j = val > 60 ? (val - 60) / 90 * 2.6 : 0;
+    ALL.style.transform = val ? 'translate(' + pivot + 'px,0) scale(' + sc + ',1) translate(' + (-pivot) + 'px,0)' : '';
+    svg.style.transform = j ? 'translate(' + ((Math.random() - .5) * j).toFixed(2) + 'px,' + ((Math.random() - .5) * j).toFixed(2) + 'px)' : '';
+    hint.textContent = val < 8 ? 'pick an end, hold it and pull away' : (val < 70 ? 'Tristan is holding on tight...' : 'almost... PULL!'); }
+  function grab(which, e){ if(done) return; side = which; drag = true; sx = e.clientX; rings.style.display = 'none'; ALL.classList.add('drag'); try{ e.target.setPointerCapture(e.pointerId); }catch(_){} }
+  ['hitL', 'hitR'].forEach(id => { const h = $(id), w = id === 'hitL' ? 'L' : 'R';
+    h.addEventListener('pointerdown', e => grab(w, e));
+    h.addEventListener('pointermove', e => { if(!drag || done || side !== w) return; const sc = 780 / svg.getBoundingClientRect().width, raw = (e.clientX - sx) * sc, val = Math.max(0, Math.min(150, w === 'L' ? -raw : raw)); stretch(val); if(val >= 130) bang(); });
+    const rel = () => { if(!drag || done) return; drag = false; ALL.classList.remove('drag'); stretch(0); rings.style.display = ''; side = null; };
+    h.addEventListener('pointerup', rel); h.addEventListener('pointercancel', rel); });
+  $('cr-auto').onclick = () => { if(done){ reset(); return; } side = Math.random() < .5 ? 'L' : 'R'; rings.style.display = 'none'; ALL.classList.add('drag'); const t0 = performance.now(); (function step(t){ const k = Math.min(1, (t - t0) / 850); stretch(k * k * 134); if(k < 1) requestAnimationFrame(step); else bang(); })(t0); };
+  function confetti(tx){
+    const sr = stage.getBoundingClientRect(), vr = svg.getBoundingClientRect(), ox = vr.left - sr.left + vr.width * ((tx + 70) / 780), oy = vr.top - sr.top + vr.height * .5, cols = ['#c4172a','#f6dc7a','#1f7a4d','#fffaf3','#2b8fb0','#e8a6c4'], ps = [];
     for(let i = 0; i < 80; i++){ const e = document.createElement('i'); e.className = 'cf'; const w = 5 + Math.random() * 7; e.style.cssText = 'width:' + w + 'px;height:' + (w * (Math.random() > .5 ? 1 : 2.2)).toFixed(1) + 'px;background:' + pick(cols) + ';border-radius:' + (Math.random() > .6 ? '50%' : '1px'); stage.appendChild(e);
-      const a = Math.random() * Math.PI * 2, sp = 3 + Math.random() * 9; ps.push({ e, x: ox, y: oy, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 4, r: Math.random() * 360, vr: (Math.random() - .5) * 24 }); }
+      const a2 = Math.random() * Math.PI * 2, sp = 3 + Math.random() * 9; ps.push({ e, x: ox, y: oy, vx: Math.cos(a2) * sp, vy: Math.sin(a2) * sp - 4, r: Math.random() * 360, vr: (Math.random() - .5) * 24 }); }
     const t0 = performance.now(); (function step(t){ const k = (t - t0) / 2600; ps.forEach(p => { p.vy += .32; p.vx *= .985; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.e.style.transform = 'translate(' + p.x.toFixed(1) + 'px,' + p.y.toFixed(1) + 'px) rotate(' + p.r.toFixed(0) + 'deg)'; p.e.style.opacity = Math.max(0, 1 - Math.max(0, k - .55) / .45); }); if(k < 1) requestAnimationFrame(step); else ps.forEach(p => p.e.remove()); })(t0);
   }
   function crownSvg(c){ return '<svg class="crown" viewBox="0 0 120 80"><path d="M10 70L10 28 32 46 60 10 88 46 110 28 110 70Z" fill="' + c + '" stroke="rgba(0,0,0,.4)" stroke-width="2.5" stroke-linejoin="round"/><rect x="10" y="56" width="100" height="14" fill="rgba(255,255,255,.35)"/><circle cx="10" cy="28" r="6" fill="#f6dc7a"/><circle cx="60" cy="10" r="6.5" fill="#f6dc7a"/><circle cx="110" cy="28" r="6" fill="#f6dc7a"/><circle cx="35" cy="63" r="4" fill="#fffaf3"/><circle cx="60" cy="63" r="4" fill="#fffaf3"/><circle cx="85" cy="63" r="4" fill="#fffaf3"/></svg>'; }
-  function prizes(){
+  function prizes(win){
     if(!bag.length) bag = JOKES.slice().sort(() => Math.random() - .5);
-    const j = bag.pop(), t = pick(TRINKETS), p = $('cr-prize');
-    p.innerHTML = '<div class="cr-face"><svg viewBox="0 0 130 150" width="130" height="150"><path d="M16 150Q18 108 65 104Q112 108 114 150Z" fill="#c4172a"/><circle cx="65" cy="70" r="36" fill="#f1c9a5"/><path d="M30 64Q32 30 65 30Q98 30 100 64Q84 48 65 50Q46 48 30 64Z" fill="#5b3519"/><circle cx="52" cy="72" r="3.4" fill="#2a1a0e"/><circle cx="78" cy="72" r="3.4" fill="#2a1a0e"/><path d="M50 86Q65 100 80 86" fill="none" stroke="#8f0f1e" stroke-width="3" stroke-linecap="round"/><circle cx="44" cy="82" r="5" fill="#f08a8a" opacity=".5"/><circle cx="86" cy="82" r="5" fill="#f08a8a" opacity=".5"/></svg>' + crownSvg(pick(CROWNS)) + '<small>very regal, Ann</small></div>'
-      + '<div class="cr-trinket">' + t[0] + '<small>' + t[1] + '</small></div>'
-      + '<div class="cr-joke"><h4>Cracker joke</h4><p>' + j[0] + '</p><div class="pl" id="cr-pl"></div><button class="btn gold" id="cr-rev" type="button">...and the punchline?</button></div>';
+    const j = bag.pop(), t = pick(TRINKETS), p = $('cr-prize'), mouth = win ? 'M50 86Q65 100 80 86' : 'M50 94Q65 82 80 94', brow = win ? '' : '<path d="M44 62l14 4M86 62l-14 4" stroke="#5b3519" stroke-width="3" stroke-linecap="round"/>';
+    p.innerHTML = '<div class="cr-face"><svg viewBox="0 0 130 150" width="130" height="150"><path d="M16 150Q18 108 65 104Q112 108 114 150Z" fill="#c4172a"/><circle cx="65" cy="70" r="36" fill="#f1c9a5"/><path d="M30 64Q32 30 65 30Q98 30 100 64Q84 48 65 50Q46 48 30 64Z" fill="#5b3519"/><circle cx="52" cy="72" r="3.4" fill="#2a1a0e"/><circle cx="78" cy="72" r="3.4" fill="#2a1a0e"/>' + brow + '<path d="' + mouth + '" fill="none" stroke="#8f0f1e" stroke-width="3" stroke-linecap="round"/><circle cx="44" cy="82" r="5" fill="#f08a8a" opacity=".5"/><circle cx="86" cy="82" r="5" fill="#f08a8a" opacity=".5"/></svg>' + (win ? crownSvg(pick(CROWNS)) : '') + '<small>' + (win ? 'very regal, Ann' : 'Tristan took the big half...') + '</small></div>'
+      + (win ? '<div class="cr-trinket">' + t[0] + '<small>' + t[1] + '</small></div>' : '')
+      + '<div class="cr-joke"><h4>Cracker joke' + (win ? '' : ' (consolation prize)') + '</h4><p>' + j[0] + '</p><div class="pl" id="cr-pl"></div><button class="btn gold" id="cr-rev" type="button">...and the punchline?</button></div>';
     p.classList.add('show'); $('cr-rev').onclick = function(){ $('cr-pl').textContent = j[1]; this.remove(); };
   }
   function bang(){
-    if(done) return; done = true; drag = false; svg.style.transform = ''; hint.textContent = '';
-    L.classList.add('cr-halfmove'); R.classList.add('cr-halfmove'); fx.classList.remove('go'); void fx.getBoundingClientRect(); fx.classList.add('go');
-    L.style.transformBox = 'fill-box'; R.style.transformBox = 'fill-box'; L.style.transformOrigin = 'center'; R.style.transformOrigin = 'center';
-    L.style.transform = 'translate(-60px,12px) rotate(-9deg)'; R.style.transform = 'translate(' + (dx + 66) + 'px,-8px) rotate(11deg)';
-    confetti(); setTimeout(prizes, 750);
-    $('cr-auto').textContent = 'pull another cracker'; hint.textContent = 'BANG! ✨'; setTimeout(() => { hint.textContent = ''; }, 1800);
+    if(done) return; done = true; drag = false; svg.style.transform = ''; ALL.classList.remove('drag'); ALL.style.transform = '';
+    const win = Math.random() < WIN_CHANCE, tearX = ((side === 'L') === win) ? 400 : 240;   // your piece is the bigger one when you win
+    setClips(tearX); $('cr-fxpos').setAttribute('transform', 'translate(' + (tearX - 320) + ' 0)'); fx.classList.remove('go'); void fx.getBoundingClientRect(); fx.classList.add('go');
+    [L, R].forEach(g => { g.style.transformBox = 'fill-box'; g.style.transformOrigin = 'center'; });
+    L.style.transform = 'translate(-62px,12px) rotate(-8deg)'; R.style.transform = 'translate(62px,-8px) rotate(8deg)';
+    confetti(tearX); setTimeout(() => prizes(win), 750);
+    hint.textContent = win ? 'BANG! You got the big half! 🎉' : 'BANG! ...Tristan got the big half 😅';
+    $('cr-auto').textContent = 'pull another cracker';
   }
   function reset(){
-    done = false; $('cr-prize').classList.remove('show'); $('cr-prize').innerHTML = ''; scheme++; applyScheme();
-    L.style.transform = ''; R.style.transform = ''; neck.setAttribute('width', 0); fx.classList.remove('go'); dx = 0;
-    hint.textContent = 'hold the right end and drag away →'; $('cr-auto').textContent = 'or pull it for me';
+    done = false; side = null; $('cr-prize').classList.remove('show'); $('cr-prize').innerHTML = ''; scheme++; applyScheme(); whole();
+    L.style.transform = ''; R.style.transform = ''; fx.classList.remove('go'); rings.style.display = '';
+    hint.textContent = 'pick an end, hold it and pull away'; $('cr-auto').textContent = 'or pull it for me';
   }
 
   /* =============== Dutch word of the day =============== */
