@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Besties ♡</title>
+<title>Christmas 2026 ♡ Besties</title>
 <link rel="icon" type="image/x-icon" href="media/shared/images/site_icon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/tokens.css">
@@ -95,6 +95,7 @@ html[data-theme="christmas"] body{
 @keyframes dcalGlow{to{box-shadow:0 0 0 5px rgba(246,220,122,.5),0 0 32px #f6dc7a}}
 .dcal-cell.nope{animation:dcalShake .4s}
 @keyframes dcalShake{25%{transform:rotate(var(--rot,0deg)) translateX(-5px)}75%{transform:rotate(var(--rot,0deg)) translateX(5px)}}
+.dcal-reset{background:none;border:0;color:#ffd9cc;font-family:var(--font-hand);font-size:1.05rem;text-decoration:underline;cursor:pointer;opacity:.75;margin-top:.3rem}.dcal-reset:hover{opacity:1}
 .dcal-hint{font-family:var(--font-hand);font-size:1.2rem;color:#ffd9cc;text-align:center;margin-top:1rem}
 
 /* ---------- CABIN ---------- */
@@ -199,7 +200,7 @@ html[data-theme="christmas"] body{
   <div class="xm-sec-s">25 doors, all jumbled up - just like a real one</div>
   <div class="xm-w wide">
     <svg class="dcal-hang" viewBox="0 0 400 70" aria-hidden="true"><path d="M50 70L200 14M350 70L200 14" stroke="#c4172a" stroke-width="7" fill="none"/><path d="M50 70L200 14M350 70L200 14" stroke="#f6dc7a" stroke-width="2" stroke-dasharray="3 6" fill="none"/><circle cx="200" cy="12" r="9" fill="#f6dc7a" stroke="#a8741f" stroke-width="2"/><path d="M200 18C170 -2 160 22 186 26ZM200 18C230 -2 240 22 214 26Z" fill="#c4172a" stroke="#7d1020"/><circle cx="200" cy="20" r="5" fill="#a4192b"/></svg>
-    <div class="dcal-board"><div class="dcal-title">Advent 2026<span>open today's door!</span></div><div class="dcal-grid" id="dcal-grid"></div><div class="dcal-hint" id="dcal-hint"></div></div>
+    <div class="dcal-board"><div class="dcal-title">Advent 2026<span>open today's door!</span></div><div class="dcal-grid" id="dcal-grid"></div><div class="dcal-hint" id="dcal-hint"></div><div style="text-align:center"><button class="dcal-reset" id="dcal-reset" type="button">close all doors</button></div></div>
   </div>
 
   <h2 class="xm-sec">The Cosy Cabin</h2>
@@ -338,11 +339,14 @@ html[data-theme="christmas"] body{
   SLOTS.forEach((s, i) => {
     const d = assign[i], open = inDec ? d <= day : jan, ty = d === 25 ? {g:'🎄', n:'Christmas Day'} : TYPES[d % 6], two = s[2] > 1 && s[3] > 1;
     const el = document.createElement('div'); el.setAttribute('role', 'button'); el.tabIndex = 0;
-    el.className = 'dcal-cell shape-' + s[4] + (open ? ' open' : ' shut') + (seen.includes(d) || jan ? ' swung' : '') + (inDec && d === day ? ' today' : '');
+    el.className = 'dcal-cell shape-' + s[4] + (open ? ' open' : ' shut') + (seen.includes(d) && open ? ' swung' : '') + (inDec && d === day ? ' today' : '');
     el.style.cssText = 'grid-column:' + s[0] + '/span ' + s[2] + ';grid-row:' + s[1] + '/span ' + s[3] + ';--rot:' + (((d * 7) % 5 - 2) * .55) + 'deg';
     el.setAttribute('aria-label', 'Door ' + d);
     el.innerHTML = '<span class="dcal-back">' + ty.g + '<small>' + ty.n + '</small></span><span class="dcal-door p' + ((d * 3 + i) % 8) + ' ' + (two || s[2] * s[3] > 2 ? 'sz2' : 'sz1') + '"><b>' + d + '</b></span>';
     const act = () => {
+      if(open && el.classList.contains('swung')){   // tap an open door again to close it
+        el.classList.remove('swung'); seen = seen.filter(x => x !== d); try{ localStorage.setItem('xmas26_doors', JSON.stringify(seen)); }catch(e){} return;
+      }
       if(!open){ el.classList.remove('nope'); void el.offsetWidth; el.classList.add('nope'); $('dcal-hint').textContent = 'Door ' + d + ' opens on ' + d + ' December ♡'; return; }
       const c = CONTENT[d] || { title:'Door ' + d, html:'This door holds <b>' + ty.n + '</b> - Tristan is still wrapping it. Check back soon ♡' };
       el.classList.add('swung'); setTimeout(() => showMsg(ty.g, ty.n, c.title, c.html), 650);
@@ -351,9 +355,10 @@ html[data-theme="christmas"] body{
     el.onclick = act; el.onkeydown = e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); act(); } };
     grid.appendChild(el);
   });
+  $('dcal-reset').onclick = () => { seen = []; try{ localStorage.removeItem('xmas26_doors'); }catch(e){} grid.querySelectorAll('.dcal-cell.swung').forEach(c => c.classList.remove('swung')); $('dcal-hint').textContent = 'All doors closed again ♡'; };
   function sizeRows(){ const gap = parseFloat(getComputedStyle(grid).columnGap) || 10, u = (grid.clientWidth - 5 * gap) / 6; if(u > 20) grid.style.gridAutoRows = (u * 1.08).toFixed(1) + 'px'; }
   sizeRows(); window.addEventListener('resize', sizeRows);
-  $('dcal-hint').textContent = inDec ? "Today is door " + Math.min(day, 25) + " - hunt for it in the jumble!" : (jan ? 'All 25 doors are open - tap any to see it again.' : 'The doors start opening on 1 December.');
+  $('dcal-hint').textContent = inDec ? "Today is door " + Math.min(day, 25) + " - hunt for it in the jumble!" : (jan ? 'All the doors are open for you - tap any one, tap again to close it.' : 'The doors start opening on 1 December.');
 
   /* =============== CABIN =============== */
   const CX = 450, S = [];
