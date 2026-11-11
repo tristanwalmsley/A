@@ -1146,7 +1146,8 @@ const CAT_COLOR = { story:'#b86858', media:'#6f9466', fun:'#c8943a', bday26:'#8a
 const GLYPH = {
   'our_journey.html':'🗺', 'us.html':'♡', 'reasons.html':'💌',
   'passport.html':'✈', 'postcard_gallery.html':'🏞', 'letters_archive.html':'✉',
-  'tier_list.html':'🏆', 'birthday_2026_showcase.html':'🕰️', 'birthday_2026.html':'🎈', 'birthday_2026_gifts.html':'🎁',
+  'bestle.html':'🔤', 'christmas_2026.html':'🎄'. 'christmas_2026_gifts.html':'🎁', 
+  'tier_list.html':'🏆', 'birthday_2026_showcase.html':'📺', 'birthday_2026.html':'🎈', 'birthday_2026_gifts.html':'🎁',
   'birthday_2026_quiz.html':'❓', 'birthday_2026_thank_you.html':'💛', 'membership.html':'📜', 'contract.html':'✎'
 };
 function renderSheet(){
@@ -1206,6 +1207,7 @@ const SETTINGS = [
   { label:'Reset data', danger:true, run(){ if(confirm('Reset ALL progress? This clears everything.')){ localStorage.clear(); location.reload(); } } },
   { label:'Reset secrets', run(){ if(confirm('Reset just the hidden secrets progress? Your gifts/letters stay untouched.')){ localStorage.removeItem('ann_eggs_found'); localStorage.removeItem('ann_page_eggs_v1'); try{ const c = bdgJSON(BK.celebrated, {}); if(!Array.isArray(c)){ delete c.secrets; localStorage.setItem(BK.celebrated, JSON.stringify(c)); } }catch(e){} location.reload(); } } },
   { label:'Migrate', run(){ location.href = '/migrate'; } },
+  { label:'Sync Check', run(){ location.href = '/sync_check'; } },
   { label:'Log out', run(){ location.href = '/cdn-cgi/access/logout'; } },
 ];
 function initSettings(){
