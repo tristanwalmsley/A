@@ -69,6 +69,7 @@ const NAV = [
     blurb: 'lots of silliness',
     items: [
       { href: 'tier_list.html', label: 'Tier Lists' },
+      { href: 'bestle.html', label: 'Bestle' },
     ],
   },
   {
