@@ -99,6 +99,19 @@ html[data-theme="christmas"] body{
 .gbtn{font-family:var(--font-hand);font-size:1.2rem;padding:.35rem 1rem;border-radius:99px;border:2px solid var(--sage);background:var(--paper);color:var(--ink);cursor:pointer}.gbtn:hover{background:#e7f3ea}.gbtn:disabled{opacity:.45;cursor:default}
 .gin{font:inherit;font-size:1.1rem;padding:.4rem .8rem;border:2px solid var(--sage);border-radius:10px;width:min(210px,60%)}.gfb{min-height:1.6em;font-family:var(--font-hand);font-size:1.3rem;color:var(--rose);margin-top:.5rem}
 .glink{background:none;border:0;text-decoration:underline;color:var(--brown);cursor:pointer;font-size:.95rem;margin-top:.4rem}.dph{max-width:100%;max-height:50vh;border:6px solid #fff;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.35);transform:rotate(-1.5deg)}
+.dcal-cell.grand .dcal-door{background:linear-gradient(120deg,#f6dc7a,#c8921f 28%,#fff6c4 50%,#c8921f 72%,#f6dc7a);background-size:220% 220%;animation:grandShine 3.4s linear infinite;--bd:#7d1020;--fg:#f6dc7a;border-color:#fff6c4;box-shadow:0 0 22px rgba(246,220,122,.65),0 4px 10px rgba(0,0,0,.5)}
+.dcal-cell.grand .gstar{position:absolute;top:8%;left:50%;margin-left:-.6em;font-size:clamp(1rem,3.6vw,2.2rem);filter:drop-shadow(0 0 6px #fff6c4)}
+@keyframes grandShine{to{background-position:220% 220%}}
+.dcal-cell.won .dcal-back::after{content:'⭐';position:absolute;top:4px;right:6px;font-size:.9rem}
+.gtf{margin:.6rem 0;text-align:left}.gtf span{display:block;font-size:1.05rem;margin-bottom:.25rem}
+.gmatch{display:grid;gap:.4rem;margin:.7rem auto;max-width:300px}.gcard{aspect-ratio:1;font-size:1.6rem;border-radius:10px;border:2px solid var(--sage);background:#e9f3ec;cursor:pointer;padding:0}.gcard.up{background:#fff}.gcard.ok{background:#cfeedd}
+.gcatch{position:relative;height:220px;margin:.7rem 0;border-radius:12px;background:linear-gradient(#0b2d4a,#1c4a5a);overflow:hidden;display:grid;place-items:center}
+.gtgt{position:absolute;font-size:2rem;background:none;border:0;cursor:pointer;animation:gPop .25s}@keyframes gPop{from{transform:scale(.2)}}
+.ghud{position:absolute;top:6px;left:0;right:0;font-family:var(--font-hand);font-size:1.25rem;text-align:center;color:#f6dc7a}
+.gsim{display:grid;grid-template-columns:repeat(2,72px);gap:.7rem;justify-content:center;margin:.8rem 0}.gsb{width:72px;height:72px;border-radius:50%;border:3px solid rgba(0,0,0,.25);background:var(--c);opacity:.5;cursor:pointer;padding:0}.gsb.lit{opacity:1;box-shadow:0 0 18px var(--c),0 0 0 4px #fff}
+.gstage{font-family:var(--font-hand);color:var(--rose);font-size:1.3rem}.gwin{font-family:var(--font-display);font-style:italic;font-size:1.45rem;color:var(--sage-dark);margin:.9rem 0 .3rem}
+.gbonus-in{border-top:2px dashed var(--gold);margin-top:.6rem;padding-top:.7rem}.gh{font-family:var(--font-hand);font-size:1.3rem;color:var(--rose)}
+.xm-mc{max-height:92vh;overflow:auto}.mcf{position:absolute;left:50%;top:26%;width:8px;height:12px;border-radius:2px;pointer-events:none;animation:mcf 1.7s ease-out forwards}@keyframes mcf{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
 .dcal-reset{background:none;border:0;color:#ffd9cc;font-family:var(--font-hand);font-size:1.05rem;text-decoration:underline;cursor:pointer;opacity:.75;margin-top:.3rem}.dcal-reset:hover{opacity:1}
 .dcal-hint{font-family:var(--font-hand);font-size:1.2rem;color:#ffd9cc;text-align:center;margin-top:1rem}
 
@@ -207,7 +220,7 @@ html[data-theme="christmas"] body{
   <div class="xm-sec-s">25 doors, all jumbled up - just like a real one</div>
   <div class="xm-w wide">
     <svg class="dcal-hang" viewBox="0 0 400 70" aria-hidden="true"><path d="M50 70L200 14M350 70L200 14" stroke="#c4172a" stroke-width="7" fill="none"/><path d="M50 70L200 14M350 70L200 14" stroke="#f6dc7a" stroke-width="2" stroke-dasharray="3 6" fill="none"/><circle cx="200" cy="12" r="9" fill="#f6dc7a" stroke="#a8741f" stroke-width="2"/><path d="M200 18C170 -2 160 22 186 26ZM200 18C230 -2 240 22 214 26Z" fill="#c4172a" stroke="#7d1020"/><circle cx="200" cy="20" r="5" fill="#a4192b"/></svg>
-    <div class="dcal-board"><div class="dcal-title">Advent 2026<span>open today's door!</span></div><div class="dcal-grid" id="dcal-grid"></div><div class="dcal-hint" id="dcal-hint"></div><div style="text-align:center"><button class="dcal-reset" id="dcal-reset" type="button">close all doors</button></div></div>
+    <div class="dcal-board"><div class="dcal-title">Advent 2026<span>open today's door!</span></div><div class="dcal-grid" id="dcal-grid"></div><div class="dcal-hint" id="dcal-hint"></div><div style="text-align:center"><button class="dcal-reset" id="dcal-reset" type="button">reset all doors</button></div></div>
   </div>
 
   <h2 class="xm-sec">The Cosy Cabin</h2>
@@ -276,26 +289,44 @@ html[data-theme="christmas"] body{
 
   /* =============== EDIT ME =============== */
   const GIFT_DAY = 27;   // the day the star goes on and gifts are opened (December)
-  // Door contents. Key = day number. Types by day: photo (5,10,15,20) - memory (2,7,12,17,22) - reason (4,9,14,19,24) - mini-game (the rest, see GAMES) - door 25 is the Christmas Day door.
-  // Photo door example:  5: { title:'Look at this', photo:'media/christmas_2026/advent_05.jpg', caption:'the funniest one yet' }
-  // Memory / reason door example:  2: { title:'A memory', html:'The time we ...' }
+  // Door contents. Every door is a mini-game (GAMES below). Winning unlocks a prize:
+  //   photo (days 5,10,15,20) - memory (2,7,12,17,22) - reason (4,9,14,19,24) - other doors just get a cheer - door 25 is the grand finale.
+  // Photo prize:   5: { title:'Look at this', photo:'media/christmas_2026/advent_05.jpg', caption:'the funniest one yet' }
+  // Memory/reason: 2: { title:'A memory', html:'<p>The time we ...</p>' }
   const CONTENT = {
-    25: { title:'Merry Christmas!', html:'You opened the last door. Come back on the 27th for the star and the big unwrapping ♡' }
+    25: { title:'Merry Christmas, Ann ♡', html:'<p>You made it all the way to the very last door.</p><p>This is the best one of all - Tristan saved it for last. See you at the star on the ' + GIFT_DAY + 'th!</p>' }   // EDIT door 25: put your best surprise here
   };
-  const TYPES = [ {g:'🖼️',n:'a funny photo'}, {g:'🎮',n:'a mini-game'}, {g:'💭',n:'a memory'}, {g:'🎮',n:'a mini-game'}, {g:'💌',n:'a reason'} ];   // chosen by day % 5
-  // Mini-games: k 'choice' (pick the right answer), 'emoji' (guess the film), 'scr' (unscramble the word)
+  const PRAISE = ['Nicely done ♡','You are so good at this.','Ten out of ten, no notes.','Gold star for you ⭐','Christmas spirit: confirmed.'];
+  const GL = { choice:'🤔', emoji:'🎬', scr:'🔤', riddle:'🧩', match:'🃏', catch:'❄️', simon:'🔔', tf:'✅', finale:'🌟' };
+  // k: choice | emoji | scr (unscramble) | riddle | tf (true/false) | match (memory cards) | catch (tap the targets) | simon (copy the pattern) | finale (door 25: 3 rounds)
   const GAMES = {
-    1:  { k:'emoji', e:'🏠🧒😱', a:['homealone'] },
+    1:  { k:'emoji', e:'🏠🧒😱', a:['homealone'], ans:'Home Alone' },
+    2:  { k:'match', set:['🎅','🎄','🔔','🧦','🍪','⭐'] },
     3:  { k:'choice', q:'Which Christmas song is usually named the best-selling single of all time?', o:['White Christmas','Jingle Bells','Last Christmas'], a:0, f:'Bing Crosby\'s "White Christmas" is the one usually quoted.' },
+    4:  { k:'catch', goal:10, sec:15, t:['❄️','❅'] },
+    5:  { k:'riddle', q:'I am tall when I am young and short when I am old, and I glow when it gets dark. What am I?', a:['candle','acandle'], ans:'a candle' },
     6:  { k:'scr', w:'REINDEER' },
+    7:  { k:'simon', len:4 },
     8:  { k:'choice', q:'In which year was the very first Christmas card sent?', o:['1776','1843','1901'], a:1, f:'1843 - Sir Henry Cole had them printed in London.' },
-    11: { k:'emoji', e:'🚂🎅❄️', a:['thepolarexpress','polarexpress'] },
+    9:  { k:'tf', s:[['Poinsettias come originally from Mexico.', true], ['Holly berries are safe to eat.', false], ['Rudolph was one of the original reindeer in the famous poem.', false]] },
+    10: { k:'catch', goal:14, sec:15, t:['🔔','⭐'] },
+    11: { k:'emoji', e:'🚂🎅❄️', a:['thepolarexpress','polarexpress'], ans:'The Polar Express' },
+    12: { k:'riddle', q:'What can you catch in winter but never throw?', a:['cold','acold'], ans:'a cold' },
     13: { k:'scr', w:'STOCKING' },
+    14: { k:'tf', s:[['Mistletoe grows on other trees.', true], ['Christmas crackers were invented in the UK.', true], ['The Christmas tree tradition began in Australia.', false]] },
+    15: { k:'match', set:['🎅','🎄','🔔','🧦','🍪','⭐','🦌','🎁'] },
     16: { k:'choice', q:'How many gifts are given in total across every verse of "The Twelve Days of Christmas"?', o:['78','144','364'], a:2, f:'364 - one for every day of the year bar one!' },
-    18: { k:'emoji', e:'💚😈🎄', a:['thegrinch','grinch','howthegrinchstolechristmas'] },
+    17: { k:'simon', len:5 },
+    18: { k:'emoji', e:'💚😈🎄', a:['thegrinch','grinch','howthegrinchstolechristmas'], ans:'The Grinch' },
+    19: { k:'riddle', q:'What falls from the sky in winter but never gets hurt?', a:['snow','snowfall','thesnow'], ans:'snow' },
+    20: { k:'choice', q:'What is the name of the Grinch\'s dog?', o:['Max','Rex','Buddy'], a:0, f:'Max - his long-suffering sidekick.' },
     21: { k:'scr', w:'SNOWFLAKE' },
-    23: { k:'choice', q:'Which plant do people traditionally kiss under at Christmas?', o:['Holly','Mistletoe','Ivy'], a:1, f:'Mistletoe, of course ♡' }
+    22: { k:'emoji', e:'🧝🍝🗽', a:['elf','buddytheelf'], ans:'Elf' },
+    23: { k:'choice', q:'Which plant do people traditionally kiss under at Christmas?', o:['Holly','Mistletoe','Ivy'], a:1, f:'Mistletoe, of course ♡' },
+    24: { k:'catch', goal:16, sec:15, t:['❄️','🎁'] },
+    25: { k:'finale' }
   };
+  const FINALE = [ { k:'simon', len:5 }, { k:'scr', w:'CHRISTMAS' }, { k:'choice', q:'On which day do we open the gifts?', o:['25 Dec','26 Dec', GIFT_DAY + ' Dec'], a:2, f:'Yes! The star goes on first ✨' } ];
   const WIN_CHANCE = 0.5;   // chance you get the big half of the cracker
   const JOKES = [
     ['What do snowmen eat for breakfast?','Snowflakes.'],['Why did Santa go to music school?','To improve his wrapping.'],
@@ -347,22 +378,72 @@ html[data-theme="christmas"] body{
   $('xm-x').onclick = () => modal.classList.remove('show');
   modal.addEventListener('click', e => { if(e.target === modal) modal.classList.remove('show'); });
 
-  /* =============== mini-game engine (inside the door popup) =============== */
+  /* =============== mini-games (inside the door popup) =============== */
   const norm = t => t.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const pickR = a => a[Math.floor(Math.random() * a.length)];
   function scramble(w, seed){ const r = rng(seed * 13 + 5), a = w.split(''); let t; do{ for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } t = a.join(''); }while(t === w); return t; }
+  const INP = '<div><input class="gin" id="gin" autocomplete="off" placeholder="your answer"> <button class="gbtn" id="gchk" type="button">check</button></div><div class="gfb" id="gfb"></div><button class="glink" id="gshow" type="button">show me the answer</button>';
   function gameHTML(g, d){
-    const inp = '<div><input class="gin" id="gin" autocomplete="off" placeholder="your answer"> <button class="gbtn" id="gchk" type="button">check</button></div><div class="gfb" id="gfb"></div><button class="glink" id="gshow" type="button">show me the answer</button>';
-    if(g.k === 'choice') return '<p class="gq">' + g.q + '</p><div class="gopts">' + g.o.map((x, i) => '<button type="button" class="gbtn" data-i="' + i + '">' + x + '</button>').join('') + '</div><div class="gfb" id="gfb"></div>';
-    if(g.k === 'emoji') return '<p class="gq">Which Christmas film?</p><div class="gem">' + g.e + '</div>' + inp;
-    return '<p class="gq">Unscramble this Christmas word</p><div class="gem" style="letter-spacing:.22em;font-family:var(--font-display)">' + scramble(g.w, d) + '</div>' + inp;
+    switch(g.k){
+      case 'choice': return '<p class="gq">' + g.q + '</p><div class="gopts">' + g.o.map((x, i) => '<button type="button" class="gbtn" data-i="' + i + '">' + x + '</button>').join('') + '</div><div class="gfb" id="gfb"></div>';
+      case 'emoji': return '<p class="gq">Which Christmas film?</p><div class="gem">' + g.e + '</div>' + INP;
+      case 'scr': return '<p class="gq">Unscramble this Christmas word</p><div class="gem" style="letter-spacing:.22em;font-family:var(--font-display)">' + scramble(g.w, d) + '</div>' + INP;
+      case 'riddle': return '<p class="gq">' + g.q + '</p>' + INP;
+      case 'tf': return '<p class="gq">True or false? Get 2 out of 3 to win.</p>' + g.s.map((x, i) => '<div class="gtf" data-i="' + i + '"><span>' + x[0] + '</span><button type="button" class="gbtn" data-v="1">true</button> <button type="button" class="gbtn" data-v="0">false</button></div>').join('') + '<div class="gfb" id="gfb"></div>';
+      case 'match': return '<p class="gq">Flip the cards and find every pair</p><div class="gmatch"></div><div class="gfb" id="gfb"></div>';
+      case 'catch': return '<p class="gq">Tap ' + g.goal + ' in ' + g.sec + ' seconds!</p><div class="gcatch"><button class="gbtn" id="gstart" type="button">start</button></div><div class="gfb" id="gfb"></div>';
+      case 'simon': return '<p class="gq">Watch the baubles, then copy the pattern</p><div class="gsim"></div><div class="gfb" id="gfb"></div><button class="gbtn" id="gstart" type="button">watch</button>';
+      default: return '<div class="gfin"></div>';
+    }
   }
-  function bindGame(g){
-    const box = $('m-tx'), fb = () => box.querySelector('#gfb');
-    if(g.k === 'choice'){ box.querySelectorAll('.gopts .gbtn').forEach(b => b.onclick = () => { if(+b.dataset.i === g.a){ fb().textContent = 'Correct! ✨ ' + g.f; box.querySelectorAll('.gopts .gbtn').forEach(x => x.disabled = true); } else { b.disabled = true; fb().textContent = 'Not quite - try another!'; } }); return; }
-    const ok = g.k === 'scr' ? [norm(g.w)] : g.a, inp = box.querySelector('#gin'), ans = g.k === 'scr' ? g.w : g.a[g.a.length > 1 ? 1 : 0];
-    const check = () => { const v = norm(inp.value); if(!v) return; if(ok.includes(v)){ fb().textContent = 'Yes!! 🎉'; } else fb().textContent = 'Not quite - have another go!'; };
-    box.querySelector('#gchk').onclick = check; inp.onkeydown = e => { if(e.key === 'Enter') check(); };
-    box.querySelector('#gshow').onclick = () => { fb().textContent = 'It was: ' + ans.replace(/^./, c => c.toUpperCase()); };
+  function mount(box, g, d, win){ box.innerHTML = gameHTML(g, d); bindGame(box, g, d, win, () => mount(box, g, d, win)); }
+  function bindGame(box, g, d, win, again){
+    const fb = () => box.querySelector('#gfb'), q = s => box.querySelector(s), retry = msg => { fb().innerHTML = msg + ' <button class="glink" id="gretry" type="button">try again</button>'; q('#gretry').onclick = again; };
+    if(g.k === 'finale'){ let st = 0; const next = () => { if(st >= FINALE.length){ win(); return; } box.innerHTML = '<div class="gstage">Round ' + (st + 1) + ' of ' + FINALE.length + '</div><div class="gsub"></div>'; mount(box.querySelector('.gsub'), FINALE[st], d + st, () => { st++; setTimeout(next, 900); }); }; next(); return; }
+    if(g.k === 'choice'){ box.querySelectorAll('.gopts .gbtn').forEach(b => b.onclick = () => { if(+b.dataset.i === g.a){ fb().textContent = 'Correct! ✨ ' + g.f; box.querySelectorAll('.gopts .gbtn').forEach(x => x.disabled = true); win(); } else { b.disabled = true; fb().textContent = 'Not quite - try another!'; } }); return; }
+    if(g.k === 'tf'){ let n = 0, right = 0; box.querySelectorAll('.gtf').forEach(row => row.querySelectorAll('.gbtn').forEach(b => b.onclick = () => { const truth = g.s[+row.dataset.i][1], got = b.dataset.v === '1'; row.querySelectorAll('.gbtn').forEach(x => x.disabled = true); b.style.background = got === truth ? '#cfeedd' : '#f6d0d0'; n++; if(got === truth) right++; if(n === g.s.length){ if(right >= 2){ fb().textContent = right + ' out of ' + n + '!'; win(); } else retry('Only ' + right + ' out of ' + n + '.'); } })); return; }
+    if(g.k === 'match'){ const cards = g.set.concat(g.set).sort(() => Math.random() - .5), gm = q('.gmatch'); let first = null, lock = false, found = 0; gm.style.gridTemplateColumns = 'repeat(4,1fr)';
+      cards.forEach(sym => { const b = document.createElement('button'); b.type = 'button'; b.className = 'gcard'; b.textContent = '❔'; gm.appendChild(b);
+        b.onclick = () => { if(lock || b.classList.contains('up')) return; b.classList.add('up'); b.textContent = sym; if(!first){ first = b; return; }
+          if(first.textContent === sym){ first.classList.add('ok'); b.classList.add('ok'); first = null; if(++found === g.set.length){ fb().textContent = 'All matched!'; win(); } }
+          else { lock = true; const a = first; first = null; setTimeout(() => { a.classList.remove('up'); b.classList.remove('up'); a.textContent = '❔'; b.textContent = '❔'; lock = false; }, 700); } }; }); return; }
+    if(g.k === 'catch'){ const area = q('.gcatch'); q('#gstart').onclick = () => { area.innerHTML = '<div class="ghud"></div>'; const hud = area.firstChild; let score = 0, t = g.sec, alive = true; const upd = () => { hud.textContent = score + ' / ' + g.goal + '  ·  ' + t + 's'; }; upd();
+        const end = w => { if(!alive) return; alive = false; clearInterval(iv); clearInterval(tm); area.querySelectorAll('.gtgt').forEach(x => x.remove()); if(w){ fb().textContent = 'Caught them all! ✨'; win(); } else retry('Time is up!'); };
+        const iv = setInterval(() => { if(!alive) return; const b = document.createElement('button'); b.type = 'button'; b.className = 'gtgt'; b.textContent = pickR(g.t); b.style.left = (Math.random() * 80 + 2) + '%'; b.style.top = (Math.random() * 70 + 14) + '%'; area.appendChild(b);
+          b.onclick = () => { if(!alive) return; score++; b.remove(); upd(); if(score >= g.goal) end(true); }; setTimeout(() => b.remove(), 1500); }, 520);
+        const tm = setInterval(() => { if(!document.body.contains(area)){ end(false); return; } t--; upd(); if(t <= 0) end(false); }, 1000); }; return; }
+    if(g.k === 'simon'){ const cols = ['#c4172a','#d9a21b','#1f7a4d','#2b8fb0'], gs = q('.gsim'); gs.innerHTML = cols.map((c, i) => '<button type="button" class="gsb" data-i="' + i + '" style="--c:' + c + '" aria-label="bauble ' + (i + 1) + '"></button>').join('');
+      const btns = Array.from(gs.children), seq = Array.from({length: g.len}, () => Math.floor(Math.random() * 4)); let pos = 0, ok = false;
+      const flash = i => { btns[i].classList.add('lit'); setTimeout(() => btns[i].classList.remove('lit'), 380); };
+      const play = () => { ok = false; pos = 0; fb().textContent = 'watch...'; seq.forEach((s, k) => setTimeout(() => flash(s), 500 + k * 650)); setTimeout(() => { ok = true; fb().textContent = 'your turn!'; }, 500 + seq.length * 650); };
+      btns.forEach((b, i) => b.onclick = () => { if(!ok) return; flash(i); if(i === seq[pos]){ if(++pos === seq.length){ ok = false; fb().textContent = 'Perfect! 🔔'; win(); } } else { ok = false; retry('Oops!'); } });
+      q('#gstart').onclick = () => { q('#gstart').textContent = 'watch again'; play(); }; return; }
+    // typed answers: emoji / scr / riddle
+    const accept = g.k === 'scr' ? [norm(g.w)] : g.a, shown = g.ans || g.w || g.a[0], inp = q('#gin');
+    const check = () => { const v = norm(inp.value); if(!v) return; if(accept.includes(v)){ fb().textContent = 'Yes!! 🎉'; win(); } else fb().textContent = 'Not quite - have another go!'; };
+    q('#gchk').onclick = check; inp.onkeydown = e => { if(e.key === 'Enter') check(); };
+    q('#gshow').onclick = () => { fb().textContent = 'It was: ' + shown.replace(/^./, c => c.toUpperCase()); };
+  }
+  // what you unlock when you win a door
+  const LBL = { photo:'a funny photo', memory:'a memory', reason:'a reason' };
+  const bonusType = d => d === 25 ? 'grand' : (d % 5 === 0 ? 'photo' : (d % 5 === 2 ? 'memory' : (d % 5 === 4 ? 'reason' : null)));
+  function bonusHTML(d){
+    const t = bonusType(d), c = CONTENT[d];
+    if(!t) return '<div class="gwin">Solved! ✨</div><p>' + pickR(PRAISE) + '</p>';
+    const inner = c ? (c.photo ? '<img class="dph" src="' + c.photo + '" alt="" onerror="this.replaceWith(document.createTextNode(\'(photo coming soon)\'))">' + (c.caption ? '<p>' + c.caption + '</p>' : '') : (c.html || '')) : '<p>(Tristan is still wrapping this prize ♡)</p>';
+    return '<div class="gwin">' + (t === 'grand' ? 'You did it!! 🌟' : 'Solved! Your prize: ' + LBL[t]) + '</div><div class="gbonus-in">' + (c && c.title ? '<h4 class="gh">' + c.title + '</h4>' : '') + inner + '</div>';
+  }
+  function modalConfetti(){ const card = document.querySelector('.xm-mc'), cols = ['#c4172a','#f6dc7a','#1f7a4d','#2b8fb0','#e8a6c4']; for(let i = 0; i < 46; i++){ const e = document.createElement('i'); e.className = 'mcf'; e.style.background = cols[i % cols.length]; e.style.setProperty('--x', ((Math.random() - .5) * 460).toFixed(0) + 'px'); e.style.setProperty('--y', (60 + Math.random() * 360).toFixed(0) + 'px'); e.style.setProperty('--r', ((Math.random() - .5) * 720).toFixed(0) + 'deg'); e.style.animationDelay = (Math.random() * .25).toFixed(2) + 's'; card.appendChild(e); setTimeout(() => e.remove(), 2200); } }
+  let won = []; try{ won = JSON.parse(localStorage.getItem('xmas26_won')) || []; }catch(e){}
+  function openDoor(d){
+    const g = GAMES[d], grand = d === 25;
+    showMsg(GL[g.k], grand ? 'the grand finale' : 'mini-game', grand ? 'The Grand Finale' : 'Door ' + d, '<div id="ggame"></div><div id="gbonus"></div>');
+    const play = () => { $('gbonus').innerHTML = ''; mount($('ggame'), g, d, () => {
+      if(!won.includes(d)){ won.push(d); try{ localStorage.setItem('xmas26_won', JSON.stringify(won)); }catch(e){} }
+      const cell = document.querySelector('.dcal-cell[aria-label="Door ' + d + '"]'); if(cell) cell.classList.add('won');
+      setTimeout(() => { $('gbonus').innerHTML = bonusHTML(d); modalConfetti(); }, 500); }); };
+    if(won.includes(d)){ $('ggame').innerHTML = ''; $('gbonus').innerHTML = bonusHTML(d) + '<button class="glink" id="gagain" type="button">play the game again</button>'; $('gagain').onclick = play; }
+    else play();
   }
 
   /* =============== ADVENT: irregular doors, fixed shuffled order =============== */
@@ -370,33 +451,31 @@ html[data-theme="christmas"] body{
   // [col,row,colSpan,rowSpan,shape]  - a hand-made 6x7 jigsaw of 25 doors
   const SLOTS = [[1,1,2,2,'arch'],[3,1,1,1,'round'],[4,1,1,2,'tall'],[5,1,1,1,'sq'],[6,1,1,1,'round'],[3,2,1,1,'sq'],[5,2,1,1,'arch'],[6,2,1,1,'sq'],[1,3,2,1,'wide'],[3,3,2,2,'big'],[5,3,1,1,'round'],[6,3,1,1,'arch'],[1,4,1,2,'tall'],[2,4,1,1,'sq'],[5,4,2,1,'wide'],[2,5,1,1,'round'],[3,5,1,1,'arch'],[4,5,1,1,'sq'],[5,5,2,2,'arch'],[1,6,2,1,'wide'],[3,6,2,2,'big'],[1,7,1,1,'round'],[2,7,1,1,'sq'],[5,7,1,1,'arch'],[6,7,1,1,'round']];
   const r = rng(2026), big = [9, 20], assign = new Array(25), rest = [];
-  assign[big[0]] = 24; assign[big[1]] = 25;
+  assign[big[0]] = 25; assign[big[1]] = 24;   // 25 sits in the big middle door
   for(let d = 1; d <= 25; d++) if(d !== 24 && d !== 25) rest.push(d);
   for(let i = rest.length - 1; i > 0; i--){ const j = Math.floor(r() * (i + 1)); [rest[i], rest[j]] = [rest[j], rest[i]]; }
   let ri = 0; for(let i = 0; i < 25; i++) if(!assign[i]) assign[i] = rest[ri++];
   let seen = []; try{ seen = JSON.parse(localStorage.getItem('xmas26_doors')) || []; }catch(e){}
   const grid = $('dcal-grid');
   SLOTS.forEach((s, i) => {
-    const d = assign[i], open = inDec ? d <= day : jan, ty = d === 25 ? {g:'🎄', n:'Christmas Day'} : TYPES[d % 5], two = s[2] > 1 && s[3] > 1;
+    const d = assign[i], open = inDec ? d <= day : jan, ty = { g: GL[GAMES[d].k], n: d === 25 ? 'the grand finale' : 'a mini-game' }, two = s[2] > 1 && s[3] > 1;
     const el = document.createElement('div'); el.setAttribute('role', 'button'); el.tabIndex = 0;
-    el.className = 'dcal-cell shape-' + s[4] + (open ? ' open' : ' shut') + (seen.includes(d) && open ? ' swung' : '') + (inDec && d === day ? ' today' : '');
+    el.className = 'dcal-cell shape-' + s[4] + (open ? ' open' : ' shut') + (seen.includes(d) && open ? ' swung' : '') + (inDec && d === day ? ' today' : '') + (d === 25 ? ' grand' : '') + (won.includes(d) ? ' won' : '');
     el.style.cssText = 'grid-column:' + s[0] + '/span ' + s[2] + ';grid-row:' + s[1] + '/span ' + s[3] + ';--rot:' + (((d * 7) % 5 - 2) * .55) + 'deg';
     el.setAttribute('aria-label', 'Door ' + d);
-    el.innerHTML = '<span class="dcal-back">' + ty.g + '<small>' + ty.n + '</small></span><span class="dcal-door p' + ((d * 3 + i) % 8) + ' ' + (two || s[2] * s[3] > 2 ? 'sz2' : 'sz1') + '"><b>' + d + '</b></span>';
+    el.innerHTML = '<span class="dcal-back">' + ty.g + '<small>' + ty.n + '</small></span><span class="dcal-door p' + ((d * 3 + i) % 8) + ' ' + (two || s[2] * s[3] > 2 ? 'sz2' : 'sz1') + '"><b>' + d + '</b>' + (d === 25 ? '<i class="gstar">⭐</i>' : '') + '</span>';
     const act = () => {
       if(open && el.classList.contains('swung')){   // tap an open door again to close it
         el.classList.remove('swung'); seen = seen.filter(x => x !== d); try{ localStorage.setItem('xmas26_doors', JSON.stringify(seen)); }catch(e){} return;
       }
       if(!open){ el.classList.remove('nope'); void el.offsetWidth; el.classList.add('nope'); $('dcal-hint').textContent = 'Door ' + d + ' opens on ' + d + ' December ♡'; return; }
-      const g = GAMES[d], cc = CONTENT[d];
-      const c = g ? { title:'Mini-game', html:gameHTML(g, d) } : (cc && cc.photo ? { title:cc.title || ('Door ' + d), html:'<img class="dph" src="' + cc.photo + '" alt="" onerror="this.replaceWith(document.createTextNode(\'(photo coming soon)\'))"><p>' + (cc.caption || '') + '</p>' } : (cc || { title:'Door ' + d, html:'This door holds <b>' + ty.n + '</b> - Tristan is still wrapping it. Check back soon ♡' }));
-      el.classList.add('swung'); setTimeout(() => { showMsg(ty.g, ty.n, c.title, c.html); if(g) bindGame(g); }, 650);
+      el.classList.add('swung'); setTimeout(() => openDoor(d), 650);
       if(!seen.includes(d)){ seen.push(d); try{ localStorage.setItem('xmas26_doors', JSON.stringify(seen)); }catch(e){} }
     };
     el.onclick = act; el.onkeydown = e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); act(); } };
     grid.appendChild(el);
   });
-  $('dcal-reset').onclick = () => { seen = []; try{ localStorage.removeItem('xmas26_doors'); }catch(e){} grid.querySelectorAll('.dcal-cell.swung').forEach(c => c.classList.remove('swung')); $('dcal-hint').textContent = 'All doors closed again ♡'; };
+  $('dcal-reset').onclick = () => { seen = []; try{ localStorage.removeItem('xmas26_doors'); localStorage.removeItem('xmas26_won'); }catch(e){} won = []; grid.querySelectorAll('.dcal-cell.won').forEach(c => c.classList.remove('won')); grid.querySelectorAll('.dcal-cell.swung').forEach(c => c.classList.remove('swung')); $('dcal-hint').textContent = 'All doors closed again ♡'; };
   function sizeRows(){ const gap = parseFloat(getComputedStyle(grid).columnGap) || 10, u = (grid.clientWidth - 5 * gap) / 6; if(u > 20) grid.style.gridAutoRows = (u * 1.08).toFixed(1) + 'px'; }
   sizeRows(); window.addEventListener('resize', sizeRows);
   $('dcal-hint').textContent = inDec ? "Today is door " + Math.min(day, 25) + " - hunt for it in the jumble!" : (jan ? 'All the doors are open for you - tap any one, tap again to close it.' : 'The doors start opening on 1 December.');
