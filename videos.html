@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Videos ♡ Besties</title>
+<link rel="icon" type="image/x-icon" href="media/shared/images/site_icon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/themes.css">
+<script src="js/theme.js"></script>
+<style>
+/* ==========================================================================
+   VIDEOS PAGE
+   To add a video: add one line to VIDEOS in the <script> at the bottom. That's it.
+   All colours come from css/tokens.css, so the seasonal themes restyle this page for free.
+   ========================================================================== */
+
+.page-header{text-align:center;padding:3rem 2rem 1.5rem;animation:headerIn .7s ease both}
+@keyframes headerIn{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+
+/* ---------- THE SCREEN (now showing) ---------- */
+.cinema{max-width:960px;margin:0 auto;padding:0 1.5rem;scroll-margin-top:4.5rem}
+.marquee{position:relative;background:var(--deep);border:3px solid var(--gold);border-radius:6px;padding:1.4rem 1.2rem 1.2rem;
+  box-shadow:6px 6px 0 var(--tan),0 14px 30px color-mix(in srgb,var(--deep) 30%,transparent)}
+/* the little marquee bulbs along the top edge */
+.marquee::before{content:'';position:absolute;top:.45rem;left:1rem;right:1rem;height:7px;
+  background:radial-gradient(circle,var(--gold-light) 0 2.5px,transparent 3.2px) 0 50%/18px 7px repeat-x;
+  filter:drop-shadow(0 0 3px var(--gold));animation:bulbs 2.4s steps(2,jump-none) infinite}
+@keyframes bulbs{50%{opacity:.55}}
+.marquee-label{text-align:center;font-family:var(--font-hand);font-size:.95rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold-light);margin:.35rem 0 .8rem}
+
+.screen{position:relative;aspect-ratio:16/9;background:#000;border:2px solid color-mix(in srgb,var(--gold) 55%,var(--deep));overflow:hidden}
+.screen video,.screen iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}
+.screen-idle{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;text-align:center;padding:1rem;
+  background:radial-gradient(ellipse at 50% 40%,color-mix(in srgb,var(--gold) 22%,var(--deep)),var(--deep) 75%);color:var(--cream)}
+.screen-idle .big{font-size:clamp(2.2rem,8vw,3.6rem);line-height:1}
+.screen-idle p{font-family:var(--font-hand);font-size:clamp(1.05rem,3vw,1.4rem);letter-spacing:.5px;color:var(--warm)}
+
+.now-playing{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-top:1rem;flex-wrap:wrap}
+.np-text{flex:1 1 260px;min-width:0}
+.np-kicker{font-family:var(--font-hand);font-size:.85rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold-light)}
+.np-title{font-family:var(--font-display);font-size:clamp(1.15rem,3vw,1.5rem);font-style:italic;color:var(--paper);line-height:1.25}
+.np-blurb{font-size:1rem;line-height:1.6;color:var(--warm);margin-top:.3rem}
+.np-ctrl{display:flex;gap:.5rem;flex-shrink:0}
+.ctrl-btn{font-family:var(--font-hand);font-size:1rem;letter-spacing:.5px;padding:.35rem 1rem;border:1.5px solid var(--gold);background:transparent;color:var(--warm);cursor:pointer;transition:all .2s}
+.ctrl-btn:hover:not(:disabled){background:var(--gold);color:var(--deep)}
+.ctrl-btn:disabled{opacity:.35;cursor:default}
+.ctrl-btn:focus-visible{outline:2px solid var(--gold-light);outline-offset:2px}
+
+/* ---------- FILTERS ---------- */
+.filter-wrap{max-width:960px;margin:0 auto;padding:1.8rem 1.5rem 1rem;display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center}
+.filter-btn{font-family:var(--font-hand);font-size:1rem;letter-spacing:.5px;padding:.34rem 1rem;border:1.5px solid var(--tan);background:transparent;color:var(--brown);cursor:pointer;transition:all .2s}
+.filter-btn:hover{background:var(--warm)}
+.filter-btn.active{background:var(--deep);color:var(--cream);border-color:var(--deep)}
+.filter-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.filter-btn small{font-size:.8em;opacity:.7;margin-left:.25em}
+
+/* ---------- THE SHELF (cards) ---------- */
+.shelf{max-width:960px;margin:0 auto;padding:0 1.5rem 2rem}
+.shelf-section{margin-bottom:2.4rem}
+.shelf-title{font-family:var(--font-display);font-size:1.05rem;font-style:italic;color:var(--brown);margin-bottom:1.1rem;padding-bottom:.5rem;border-bottom:1px dashed var(--warm);display:flex;align-items:center;gap:.8rem}
+.shelf-title span{font-family:var(--font-hand);font-size:.8rem;color:var(--tan);letter-spacing:2px;text-transform:uppercase;font-style:normal}
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.4rem}
+
+.vid-card{all:unset;box-sizing:border-box;display:block;cursor:pointer;background:var(--paper);border:1px solid var(--tan);box-shadow:4px 4px 0 var(--warm);
+  opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s cubic-bezier(.22,1,.36,1),box-shadow .2s}
+.vid-card.visible{opacity:1;transform:none}
+.vid-card.visible:hover{transform:translate(-2px,-4px);box-shadow:6px 8px 0 var(--tan)}
+.vid-card:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.vid-card.playing{border-color:var(--gold);box-shadow:4px 4px 0 var(--gold)}
+
+.thumb{position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--deep);border-bottom:1px solid var(--tan)}
+.thumb img,.thumb video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.thumb .fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2.6rem}
+.thumb .play{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:color-mix(in srgb,var(--deep) 72%,transparent);border:2px solid var(--paper);display:flex;align-items:center;justify-content:center;transition:transform .2s,background .2s}
+.thumb .play::after{content:'';border-left:14px solid var(--paper);border-top:9px solid transparent;border-bottom:9px solid transparent;margin-left:4px}
+.vid-card:hover .play{transform:scale(1.12);background:var(--rose)}
+.vid-card.playing .play{background:var(--gold)}
+.badge{position:absolute;right:.45rem;bottom:.45rem;font-family:var(--font-hand);font-size:.85rem;letter-spacing:1px;padding:.05rem .45rem;background:color-mix(in srgb,var(--deep) 82%,transparent);color:var(--paper);border-radius:2px}
+.badge.left{right:auto;left:.45rem;text-transform:uppercase;font-size:.72rem;letter-spacing:1.5px;padding:.1rem .45rem}
+
+.vid-body{padding:.65rem .85rem .8rem}
+.vid-meta{font-family:var(--font-hand);font-size:.85rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--brown)}
+.vid-title{font-family:var(--font-display);font-size:1.02rem;font-weight:700;color:var(--deep);line-height:1.3;margin-top:.1rem}
+.vid-blurb{font-size:.95rem;line-height:1.5;color:var(--brown);font-style:italic;margin-top:.25rem}
+
+/* cards for tapes that don't exist yet */
+.vid-card.soon{cursor:default;box-shadow:none;border-style:dashed;background:transparent}
+.vid-card.soon.visible:hover{transform:none;box-shadow:none}
+.vid-card.soon .thumb{background:color-mix(in srgb,var(--warm) 60%,transparent);border-bottom:1px dashed var(--tan)}
+.vid-card.soon .fallback{opacity:.55;filter:grayscale(.4)}
+.vid-card.soon .play{display:none}
+
+/* ---------- EMPTY / FOOTER NOTE ---------- */
+.empty{font-family:var(--font-hand);color:var(--brown);text-align:center;padding:2rem;font-size:1.1rem}
+.future{max-width:640px;margin:1rem auto 4.5rem;padding:1.5rem 2rem;background:var(--paper);border:1.5px dashed var(--tan);text-align:center}
+.future h3{font-family:var(--font-display);font-style:italic;color:var(--deep);margin-bottom:.5rem;font-weight:400;font-size:1.2rem}
+.future p{font-family:var(--font-hand);font-size:1.05rem;color:var(--brown);letter-spacing:.5px}
+
+@media (max-width:560px){
+  .cinema,.shelf,.filter-wrap{padding-left:1rem;padding-right:1rem}
+  .marquee{padding:1.3rem .7rem .9rem}
+  .np-ctrl{width:100%}.ctrl-btn{flex:1}
+}
+@media (prefers-reduced-motion:reduce){.marquee::before{animation:none}.vid-card{transition:none}}
+</style>
+</head>
+<body>
+<nav id="site-nav">
+  <a href="index.html" class="nav-brand">Besties ♡</a>
+  <div class="nav-links"></div>
+</nav>
+
+<div class="page-header page-header--std">
+  <h1>Videos</h1>
+  <p>clips, compilations &amp; recordings ♡</p>
+</div>
+
+<!-- THE SCREEN -->
+<section class="cinema" aria-label="Video player">
+  <div class="marquee">
+    <div class="marquee-label">★ Now Showing ★</div>
+    <div class="screen" id="screen">
+      <div class="screen-idle" id="idle">
+        <div class="big">🎬</div>
+        <p>pick a tape from the shelf below ♡</p>
+      </div>
+    </div>
+    <div class="now-playing">
+      <div class="np-text">
+        <div class="np-kicker" id="np-kicker">Besties Cinema</div>
+        <div class="np-title" id="np-title">Nothing playing yet</div>
+        <div class="np-blurb" id="np-blurb">Press any tape below and it plays right here.</div>
+      </div>
+      <div class="np-ctrl">
+        <button class="ctrl-btn" id="btn-prev" type="button" disabled>◂ Previous</button>
+        <button class="ctrl-btn" id="btn-next" type="button" disabled>Next ▸</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FILTERS -->
+<div class="filter-wrap" id="filters" role="group" aria-label="Filter videos"></div>
+
+<!-- THE SHELF -->
+<div class="shelf" id="shelf"></div>
+
+<div class="future">
+  <h3>More tapes on the way</h3>
+  <p>every clip, every compilation, every recording that's worth keeping lands here ♡</p>
+</div>
+
+<script src="js/nav.js"></script>
+<script>
+// ══════════════════════════════════════════════════════════════════
+// VIDEO DATA - add a video by adding one line.
+//
+//   id        unique, no spaces                      (used in the share link #id)
+//   cat       'clips' | 'compilations' | 'recordings'
+//   title     shown on the card + screen
+//   date      free text, e.g. 'Dec 2026'
+//   blurb     one line under the title (optional)
+//   length    '2:31' badge (optional)
+//   emoji     shown if there's no thumbnail (optional)
+//   -- ONE of these two sources --
+//   src       path to an mp4/webm on the site, e.g. 'media/videos/first_stream.mp4'
+//             (keep files under 25 MB each - that's the Cloudflare assets limit.
+//              Bigger than that? Put it on YouTube as Unlisted and use yt below.)
+//   yt        a YouTube video ID, e.g. 'dQw4w9WgXcQ'   (plays via youtube-nocookie)
+//   poster    optional thumbnail image for src videos (otherwise the first frame is used)
+//   ready     set false for a slot that's planned but not uploaded yet (shows as "coming soon")
+// ══════════════════════════════════════════════════════════════════
+const CATS = [
+  { id: 'clips',        label: 'Clips',        blurb: 'the little moments' },
+  { id: 'compilations', label: 'Compilations', blurb: 'the greatest hits' },
+  { id: 'recordings',   label: 'Recordings',   blurb: 'the full-length stuff' },
+];
+
+const VIDEOS = [
+  // ---- Compilations: the five birthday trailers that already live on the site ----
+  { id: 'trailer-1', cat: 'compilations', title: 'Birthday Trailer 1', date: 'Jul 2026', blurb: 'The first of the birthday trailers.',  emoji: '🎞️', src: 'media/birthday_2026/trailers/trailer_01.mp4' },
+  { id: 'trailer-2', cat: 'compilations', title: 'Birthday Trailer 2', date: 'Jul 2026', blurb: 'Part two.',                            emoji: '🎞️', src: 'media/birthday_2026/trailers/trailer_02.mp4' },
+  { id: 'trailer-3', cat: 'compilations', title: 'Birthday Trailer 3', date: 'Jul 2026', blurb: 'Part three.',                          emoji: '🎞️', src: 'media/birthday_2026/trailers/trailer_03.mp4' },
+  { id: 'trailer-4', cat: 'compilations', title: 'Birthday Trailer 4', date: 'Jul 2026', blurb: 'Part four.',                           emoji: '🎞️', src: 'media/birthday_2026/trailers/trailer_04.mp4' },
+  { id: 'trailer-5', cat: 'compilations', title: 'Birthday Trailer 5', date: 'Jul 2026', blurb: 'The last one.',                        emoji: '🎞️', src: 'media/birthday_2026/trailers/trailer_05.mp4' },
+
+  // ---- Planned slots: they show as dashed "coming soon" tapes until you fill them in ----
+  { id: 'soon-clips',      cat: 'clips',      title: 'First clip goes here',      date: 'soon', blurb: 'A funny moment worth keeping.', emoji: '✂️', ready: false },
+  { id: 'soon-recordings', cat: 'recordings', title: 'First recording goes here', date: 'soon', blurb: 'A whole call, stream or film.', emoji: '📼', ready: false },
+
+  // ---- Example of a finished entry (copy, paste, edit) ----
+  // { id: 'phasmo-film', cat: 'recordings', title: 'The Phasmophobia Film', date: 'Dec 2026', blurb: 'The full thing.', length: '24:10', emoji: '👻', yt: 'PASTE_YOUTUBE_ID' },
+];
+
+// ══════════════════════════════════════════════════════════════════
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const isReady = v => v.ready !== false && (v.src || v.yt);
+
+let activeCat = 'all';
+let currentId = null;
+
+function visibleVideos() {
+  return VIDEOS.filter(v => activeCat === 'all' || v.cat === activeCat);
+}
+function playableList() { return visibleVideos().filter(isReady); }
+
+/* ---------- thumbnails ---------- */
+function thumbHTML(v) {
+  const fb = `<div class="fallback">${esc(v.emoji || '🎬')}</div>`;
+  if (!isReady(v)) return fb;
+  if (v.poster) return fb + `<img src="${esc(v.poster)}" alt="" loading="lazy">`;
+  if (v.yt)     return fb + `<img src="https://i.ytimg.com/vi/${encodeURIComponent(v.yt)}/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()">`;
+  // #t=0.5 makes the browser show a frame instead of a black box
+  return fb + `<video src="${esc(v.src)}#t=0.5" preload="metadata" muted playsinline tabindex="-1" onerror="this.remove()"></video>`;
+}
+
+/* ---------- filters ---------- */
+function renderFilters() {
+  const wrap = $('filters');
+  const count = c => VIDEOS.filter(v => (c === 'all' || v.cat === c) && isReady(v)).length;
+  const items = [{ id: 'all', label: 'All' }, ...CATS];
+  wrap.innerHTML = items.map(c =>
+    `<button type="button" class="filter-btn${c.id === activeCat ? ' active' : ''}" data-cat="${c.id}" aria-pressed="${c.id === activeCat}">${esc(c.label)}<small>${count(c.id)}</small></button>`
+  ).join('');
+  wrap.querySelectorAll('.filter-btn').forEach(b => b.addEventListener('click', () => {
+    activeCat = b.dataset.cat;
+    renderFilters();
+    renderShelf();
+    updateNav();
+  }));
+}
+
+/* ---------- shelf ---------- */
+function renderShelf() {
+  const shelf = $('shelf');
+  shelf.innerHTML = '';
+  const list = visibleVideos();
+  if (!list.length) { shelf.innerHTML = '<p class="empty">No tapes here yet ♡</p>'; return; }
+
+  CATS.filter(c => list.some(v => v.cat === c.id)).forEach((cat, gi) => {
+    const items = list.filter(v => v.cat === cat.id);
+    const real = items.filter(isReady).length;
+    const sec = document.createElement('div');
+    sec.className = 'shelf-section';
+    sec.innerHTML = `<div class="shelf-title">${esc(cat.label)} <span>${real} video${real !== 1 ? 's' : ''} · ${esc(cat.blurb)}</span></div>`;
+    const grid = document.createElement('div');
+    grid.className = 'vid-grid';
+
+    items.forEach((v, i) => {
+      const ready = isReady(v);
+      const el = document.createElement(ready ? 'button' : 'div');
+      el.className = 'vid-card' + (ready ? '' : ' soon') + (v.id === currentId ? ' playing' : '');
+      el.dataset.id = v.id;
+      el.style.transitionDelay = (i * 0.05 + gi * 0.06) + 's';
+      if (ready) { el.type = 'button'; el.setAttribute('aria-label', 'Play ' + v.title); }
+      el.innerHTML = `
+        <div class="thumb">${thumbHTML(v)}<span class="play"></span>
+          ${v.length && ready ? `<span class="badge">${esc(v.length)}</span>` : ''}
+          ${!ready ? '<span class="badge left">coming soon</span>' : ''}
+        </div>
+        <div class="vid-body">
+          <div class="vid-meta">${esc(v.date || '')}</div>
+          <div class="vid-title">${esc(v.title)}</div>
+          ${v.blurb ? `<div class="vid-blurb">${esc(v.blurb)}</div>` : ''}
+        </div>`;
+      if (ready) el.addEventListener('click', () => play(v.id, true));
+      grid.appendChild(el);
+      setTimeout(() => el.classList.add('visible'), 40 + i * 50 + gi * 70);
+    });
+    sec.appendChild(grid);
+    shelf.appendChild(sec);
+  });
+}
+
+/* ---------- the player ---------- */
+function play(id, scroll) {
+  const v = VIDEOS.find(x => x.id === id);
+  if (!v || !isReady(v)) return;
+  currentId = id;
+
+  const screen = $('screen');
+  screen.innerHTML = '';   // removing the old element also stops its sound
+  let node;
+  if (v.yt) {
+    node = document.createElement('iframe');
+    node.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(v.yt) + '?autoplay=1&rel=0';
+    node.title = v.title;
+    node.allow = 'autoplay; fullscreen; picture-in-picture';
+    node.allowFullscreen = true;
+  } else {
+    node = document.createElement('video');
+    node.src = v.src;
+    if (v.poster) node.poster = v.poster;
+    node.controls = true;
+    node.autoplay = true;
+    node.playsInline = true;
+    node.preload = 'auto';
+    node.addEventListener('error', () => {
+      screen.innerHTML = '<div class="screen-idle"><div class="big">📼</div><p>this tape won\'t play yet - the file might not be uploaded</p></div>';
+    });
+  }
+  screen.appendChild(node);
+
+  const cat = CATS.find(c => c.id === v.cat);
+  $('np-kicker').textContent = (cat ? cat.label : 'Video') + (v.date ? ' · ' + v.date : '');
+  $('np-title').textContent = v.title;
+  $('np-blurb').textContent = v.blurb || '';
+
+  document.querySelectorAll('.vid-card').forEach(c => c.classList.toggle('playing', c.dataset.id === id));
+  updateNav();
+  try { history.replaceState(null, '', '#' + encodeURIComponent(id)); } catch (e) {}
+  if (scroll) $('screen').closest('.cinema').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function step(dir) {
+  const list = playableList();
+  if (!list.length) return;
+  const i = list.findIndex(v => v.id === currentId);
+  const next = list[(i + dir + list.length) % list.length];
+  if (next) play(next.id, false);
+}
+
+function updateNav() {
+  const n = playableList().length;
+  $('btn-prev').disabled = $('btn-next').disabled = n < 2;
+}
+
+/* ---------- init ---------- */
+window.addEventListener('DOMContentLoaded', () => {
+  buildNav('videos.html');
+  $('btn-prev').addEventListener('click', () => step(-1));
+  $('btn-next').addEventListener('click', () => step(1));
+
+  // #video-id in the link opens that tape (so a single video can be sent to someone)
+  let hash = '';
+  try { hash = decodeURIComponent(location.hash.slice(1)); } catch (e) {}
+  const linked = VIDEOS.find(v => v.id === hash && isReady(v));
+  if (linked) activeCat = 'all';
+
+  renderFilters();
+  renderShelf();
+  updateNav();
+  if (linked) play(linked.id, false);   // no autoplay-blocked surprises: browsers just show the player ready to press
+});
+</script>
+</body>
+</html>
