@@ -85,7 +85,7 @@ const NAV = [
   {
     id: 'xmas26',
     label: 'Christmas 2026',
-    glyph: '🎄',
+    glyph: ':christmas_tree:',
     blurb: 'the winter drop',
     items: [
       { href: 'christmas_2026.html', label: 'Christmas 2026' },
@@ -136,17 +136,8 @@ function isContractSigned() {   // YOUR half of the contract
   return !!(u && s.contract && s.contract[u]);
 }
 
-// Christmas 2026 page is listed from 6 Nov to 6 Jan (visitor's date, or ?themedate=MM-DD preview)
-function xmasWindowOpen() {
-  let t = new Date(), fd = null;
-  try { fd = sessionStorage.getItem('site_theme_date'); } catch (e) {}
-  const m = fd && fd.match(/(\d{1,2})-(\d{1,2})$/);
-  const k = m ? (+m[1]) * 100 + (+m[2]) : (t.getMonth() + 1) * 100 + t.getDate();
-  return k >= 1106 || k <= 106;
-}
 function isPageUnlocked(page) {
   if (page === 'index.html' || page === 'membership.html') return true;
-  if (page === 'christmas_2026.html') return xmasWindowOpen();
   if (page === 'contract.html') return hasMembership();
   // contract-gated pages also open if she has already reached the final gift
   // (anyone who got to Thank You must have done the contract + gifts)
