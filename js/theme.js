@@ -22,18 +22,18 @@
     { id: 'winter',      label: 'Winter',      start: '11-06', end: '11-30',
       flakes: { glyphs: ['❄', '❅', '❆', '•'], count: 24, size: [9, 20] },
       drift: true, frost: true, caps: true, burst: ['❄', '❅', '✦'],
-      home: { greeting: '❄ the winter edition is here - stay cosy, Bestie Ann ❄',
+      home: { greeting: '❄ the winter edition is here, stay cosy!',
               postmark: 'Winter<br>love from<br>the UK', corner: 'Frosty<br>class<br>bestie' } },
     { id: 'sinterklaas', label: 'Sinterklaas', start: '12-01', end: '12-05',
       flakes: { glyphs: ['✦', '✧', '•'], count: 20, size: [10, 20] },
       burst: ['✦', '✧', '★'],
-      home: { greeting: '🎁 Sinterklaas edition - zet je schoentje, Bestie Ann! 🥾',
+      home: { greeting: '🎁 Happy Sinterklaas! 🥾',
               postmark: 'Fijne<br>Sint ✦<br>from UK', corner: 'Gold<br>star<br>bestie' } },
     { id: 'christmas',   label: 'Christmas',   start: '12-06', end: '12-31',
       flakes: { glyphs: ['❄', '❅', '•'],  count: 16, size: [9, 17] },
       drift: true, caps: true, lights: true, burst: ['❄', '✦', '❅'],
-      home: { greeting: '🎄 the Christmas edition - merry Christmas, Bestie Ann 🎅🎁',
-              postmark: 'Merry<br>Christmas<br>from UK', corner: 'Festive<br>class<br>bestie' } }
+      home: { greeting: '🎄 the Christmas edition, merry Christmas! 🎅🎁',
+              postmark: 'Merry<br>Christmas<br>from the UK', corner: 'Festive<br>class<br>bestie' } }
   ];
 
   var KEY = 'site_theme_preview', KEY_DATE = 'site_theme_date';
