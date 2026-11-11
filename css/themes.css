@@ -60,6 +60,23 @@ html[data-theme="christmas"]{
 }
 
 
+/* ---------- Remembrance  (10-12 Nov): poppy red, charcoal, soft parchment. Quiet on purpose. ---------- */
+html[data-theme="remembrance"]{
+  --cream:#f3eee4; --warm:#e2d9c8; --tan:#b3a68f; --brown:#4a4540; --deep:#1b1919;
+  --rose:#b01c2e;  --gold:#8a7a55; --sage:#6b7468; --paper:#faf7f1; --ink:#151414;
+  --gold-hover:#a08e63; --gold-light:#c9bb94; --gold-dark:#6c5e3d; --rose-dark:#7d1220; --sage-dark:#4d564b;
+  --mat:#ded4c1; --nav-dark-bg:rgba(20,18,18,.95); --nav-dark-menu-bg:#1e1b1b;
+  --brand-glyph:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 32 32'><g fill='%23c8102e' stroke='%238f0c20' stroke-width='.7'><circle cx='16' cy='9' r='8'/><circle cx='23' cy='16' r='8'/><circle cx='16' cy='23' r='8'/><circle cx='9' cy='16' r='8'/></g><circle cx='16' cy='16' r='4.2' fill='%23161616'/></svg>");
+  --ribbon:linear-gradient(90deg,#8f0c20,#c8102e 50%,#8f0c20);
+}
+/* the falling flakes become little poppies, slow and few */
+html[data-theme="remembrance"] #theme-deco .td-flake{width:var(--s);height:var(--s);font-size:0;
+  background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><g fill='%23c8102e' stroke='%238f0c20' stroke-width='.7'><circle cx='16' cy='9' r='8'/><circle cx='23' cy='16' r='8'/><circle cx='16' cy='23' r='8'/><circle cx='9' cy='16' r='8'/></g><circle cx='16' cy='16' r='4.2' fill='%23161616'/></svg>") center/contain no-repeat;
+  filter:drop-shadow(0 1px 1px rgba(20,18,18,.35))}
+/* the home-page line */
+html[data-theme="remembrance"] .td-greeting{color:var(--rose-dark)}
+
+
 /* ==========================================================================
    Fun stuff: trims along the nav, snow drift, frost, snow caps, sparkle bursts.
    Elements are created by js/theme.js; everything here is theme-scoped.
@@ -71,6 +88,8 @@ html.td-no-nav[data-theme] #theme-ribbon::after{content:'';position:absolute;lef
 html[data-theme="winter"] #site-nav::after,
 html.td-no-nav[data-theme="winter"] #theme-ribbon::after{height:26px;background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 26' width='150' height='26'><g fill='%23eef7fd' stroke='%239fbfd8' stroke-width='.8' stroke-linejoin='round'><path d='M0 0h18l-9 13z'/><path d='M22 0h12l-6 24z'/><path d='M40 0h16l-8 9z'/><path d='M62 0h14l-7 18z'/><path d='M84 0h18l-9 12z'/><path d='M108 0h12l-6 26z'/><path d='M126 0h16l-8 15z'/></g></svg>") repeat-x 0 -1px;
   filter:drop-shadow(0 2px 2px rgba(60,100,140,.25))}
+html[data-theme="remembrance"] #site-nav::after,
+html.td-no-nav[data-theme="remembrance"] #theme-ribbon::after{height:24px;background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 24' width='96' height='24'><path d='M0 1Q24 6 48 1T96 1' fill='none' stroke='%23332f2f' stroke-width='1.1'/><g stroke='%23332f2f' stroke-width='.8'><path d='M22 3.4V10'/><path d='M70 3.4V10'/></g><g fill='%23c8102e' stroke='%238f0c20' stroke-width='.4'><circle cx='22' cy='12.2' r='2.7'/><circle cx='25' cy='15' r='2.7'/><circle cx='22' cy='17.8' r='2.7'/><circle cx='19' cy='15' r='2.7'/><circle cx='70' cy='12.2' r='2.7'/><circle cx='73' cy='15' r='2.7'/><circle cx='70' cy='17.8' r='2.7'/><circle cx='67' cy='15' r='2.7'/></g><g fill='%23161616'><circle cx='22' cy='15' r='1.5'/><circle cx='70' cy='15' r='1.5'/></g></svg>") repeat-x}
 html[data-theme="christmas"] #site-nav::after,
 html.td-no-nav[data-theme="christmas"] #theme-ribbon::after{height:26px;background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 26' width='80' height='26'><path d='M0 1Q20 9 40 1T80 1' fill='none' stroke='%232b2b2b' stroke-width='1.2'/><g stroke='%232b2b2b' stroke-width='.6'><g fill='%23e0343c'><rect x='7' y='6' width='4' height='3' fill='%23444'/><ellipse cx='9' cy='13' rx='3.6' ry='5'/></g><g fill='%23f2c14e'><rect x='27' y='8' width='4' height='3' fill='%23444'/><ellipse cx='29' cy='15' rx='3.6' ry='5'/></g><g fill='%233fa66a'><rect x='47' y='8' width='4' height='3' fill='%23444'/><ellipse cx='49' cy='15' rx='3.6' ry='5'/></g><g fill='%234a8fe0'><rect x='67' y='6' width='4' height='3' fill='%23444'/><ellipse cx='69' cy='13' rx='3.6' ry='5'/></g></g></svg>") repeat-x;
   animation:tdTwinkle 2.6s ease-in-out infinite alternate}

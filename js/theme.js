@@ -19,6 +19,12 @@
        home    texts swapped in on the home page (greeting line, postmark, corner stamp)            */
   var CAP_SELECTORS = '.letter, .keepsake-card, .sheet';
   var THEMES = [
+    /* Remembrance: 10-12 Nov. Listed first so it wins over winter (6-30 Nov) on these days.
+       silence: true  ->  loads js/remembrance.js (the two minutes' silence; settings are at the top of that file). */
+    { id: 'remembrance', label: 'Remembrance', start: '11-10', end: '11-12', silence: true,
+      flakes: { glyphs: [''], count: 14, size: [11, 20] },
+      home: { greeting: 'we will remember them ♡ Remembrance Day, Bestie Ann',
+              postmark: 'Poppy<br>day from<br>the UK', corner: 'Lest<br>we<br>forget' } },
     { id: 'winter',      label: 'Winter',      start: '11-06', end: '11-30',
       flakes: { glyphs: ['❄', '❅', '❆', '•'], count: 24, size: [9, 20] },
       drift: true, frost: true, caps: true, burst: ['❄', '❅', '✦'],
@@ -68,6 +74,12 @@
   else active = chooseByDate();
 
   if (active) root.setAttribute('data-theme', active.id); else root.removeAttribute('data-theme');
+
+  /* themes with silence:true load the silence script right here, while <head> is still being read,
+     so it can see (and quieten) every sound the page makes */
+  if (active && active.silence && document.readyState === 'loading') {
+    document.write('<script src="js/remembrance.js"><\/script>');
+  }
 
   /* ---------------- decorations (ribbon + falling flakes) ---------------- */
   function rnd(a, b) { return a + Math.random() * (b - a); }
