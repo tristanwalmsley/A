@@ -89,6 +89,7 @@ const NAV = [
     blurb: 'the winter drop',
     items: [
       { href: 'christmas_2026.html', label: 'Christmas 2026' },
+      { href: 'christmas_2026_gifts.html', label: 'Gifts' },
     ],
   },
   {
@@ -96,10 +97,10 @@ const NAV = [
     label: 'Birthday 2026',
     soloLabel: 'Birthday 2026',   // label used when only "Start here" is unlocked
     glyph: '✦',
-    blurb: 'the whole experience',
+    blurb: 'the whole birthday experience',
     items: [
       { href: 'birthday_2026_showcase.html',  label: 'The Showcase' },
-      { href: 'birthday_2026.html',           label: 'Gift Box Entry' },
+      { href: 'birthday_2026.html',           label: 'Birthday 2026' },
       { href: 'birthday_2026_gifts.html',     label: 'Gifts' },
       { href: 'birthday_2026_quiz.html',      label: 'Quiz' },
       { href: 'birthday_2026_thank_you.html', label: 'Thank You' },
