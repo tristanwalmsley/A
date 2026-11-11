@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Besties ♡</title>
+<link rel="icon" type="image/x-icon" href="media/shared/images/site_icon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/themes.css">
+<script src="js/theme.js"></script>
+<style>
+.page-header{text-align:center;padding:3rem 2rem 0.5rem}
+.page-header .instructions{font-size:.95rem;line-height:1.7;color:var(--brown);font-style:italic;max-width:480px;margin:1rem auto 0}
+.bestle{max-width:460px;margin:1rem auto 4rem;padding:0 1rem;display:flex;flex-direction:column;align-items:center;gap:.7rem}
+.bar{display:flex;gap:.6rem;align-items:center;justify-content:center;flex-wrap:wrap}
+.pill{font-family:var(--font-hand);font-size:1.05rem;letter-spacing:.5px;padding:.3rem 1.1rem;border:1.5px solid var(--tan);background:var(--paper);color:var(--brown);cursor:pointer;border-radius:999px}
+.pill:hover{background:var(--warm);color:var(--deep)}
+.pill:focus-visible,.key:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.pill.main{background:var(--gold);border-color:var(--gold-dark);color:var(--paper);font-weight:700}
+.catline{font-family:var(--font-hand);font-size:1rem;color:var(--brown);opacity:.8;letter-spacing:1px}
+#hint{min-height:1.5em;font-family:var(--font-hand);font-size:1.25rem;color:var(--brown);text-align:center}
+#board{display:grid;gap:6px}
+.row{display:grid;gap:6px;justify-content:center}
+.tile{--s:min(54px,calc((100vw - 2rem - 6px*(var(--n) - 1))/var(--n)));width:var(--s);height:var(--s);border:2px solid var(--tan);background:var(--paper);display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:calc(var(--s)*.55);color:var(--deep);text-transform:uppercase}
+.tile.f{border-color:var(--brown)}
+.tile.ok{background:var(--sage-dark);border-color:var(--sage-dark);color:var(--paper)}
+.tile.near{background:var(--gold);border-color:var(--gold-dark);color:var(--paper)}
+.tile.miss{background:var(--brown);border-color:var(--brown);color:var(--cream);opacity:.85}
+.tile.flip{animation:flip .45s ease both}
+@keyframes flip{50%{transform:rotateX(90deg)}}
+.shake{animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+#kb{width:100%;display:flex;flex-direction:column;gap:6px;margin-top:.4rem}
+.kr{display:flex;gap:5px;justify-content:center}
+.key{flex:1;max-width:42px;height:50px;border:0;background:var(--warm);color:var(--deep);font-family:var(--font-body);font-weight:700;font-size:1rem;text-transform:uppercase;cursor:pointer;padding:0}
+.key.w{flex:1.6;max-width:66px;font-size:.8rem}
+.key.ok{background:var(--sage-dark);color:var(--paper)}
+.key.near{background:var(--gold);color:var(--paper)}
+.key.miss{background:var(--brown);color:var(--cream);opacity:.75}
+#end{display:none;width:100%;text-align:center;background:var(--paper);border:1px solid var(--tan);box-shadow:4px 4px 0 var(--tan);padding:1.1rem 1rem}
+#end h2{font-family:var(--font-display);font-style:italic;font-weight:400;color:var(--deep);font-size:1.5rem}
+#end p{margin:.5rem 0 .9rem;line-height:1.6;color:var(--brown)}
+#toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:var(--deep);color:var(--cream);padding:.5rem 1rem;font-family:var(--font-hand);font-size:1.1rem;opacity:0;pointer-events:none;transition:opacity .2s;z-index:10000}
+#toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){.tile.flip,.shake{animation:none}}
+</style>
+</head>
+<body>
+<nav id="site-nav">
+  <a href="index.html" class="nav-brand">Besties ♡</a>
+  <div class="nav-links"></div>
+</nav>
+<div class="page-header page-header--std">
+  <h1>Bestle</h1>
+  <p>guess the in-joke in six tries ♡</p>
+  <p class="instructions">One word a day, pulled from everything we've made. Any letters count as a guess, so no dictionary to hide behind.</p>
+</div>
+
+<div class="bestle">
+  <div class="bar">
+    <button class="pill" id="hintBtn">show hint</button>
+    <button class="pill" id="next">another word</button>
+  </div>
+  <div id="cat" class="catline"></div>
+  <div id="hint"></div>
+  <div id="board" aria-label="Guess board"></div>
+  <section id="end" aria-live="polite">
+    <h2 id="endTitle"></h2>
+    <p id="endNote"></p>
+    <button class="pill main" id="share">copy result</button>
+  </section>
+  <div id="kb"></div>
+</div>
+<div id="toast" role="status"></div>
+
+<script>
+
+/* ======================= THE WORD BANK =======================
+   One line per word:  ['WORD', 'theme', 'hint', 'note shown at the end (optional)']
+   WORD = letters only, 3 to 9 long. Delete or edit any line freely.
+   Mix the absurd in-jokes with everyday words so it is not too easy.
+   Lines marked (guess) are ones where I only know the phrase, not the story. */
+const RAW = [
+  /* in-jokes */
+  ['HEINZ','in-jokes','Beans Meanz ___','The plushie travelled inside a Heinz Beans can, because it\u2019s objectively funny.'],
+  ['BEANS','in-jokes','Meanz Heinz, and a plushie\u2019s hiding place','Beans Means Heinz: one of the site\u2019s badges.'],
+  ['CUSTARD','in-jokes','The biscuit sent in four flavours this year','Coconut, lemon, strawberry and digestive, plus its own spot on the tier list.'],
+  ['PLUSHIE','in-jokes','Supposed to travel between us twice a year','Supposed to travel twice a year. Realistically it stays put unless Ann remembers to send it back.'],
+  ['WREN','in-jokes','Still missing, and probably married','Prediction for next year: Wren will still be missing, and probably MARRIED?'],
+  ['PHAS','in-jokes','___ Monday','Phas Monday will continue to live on.'],
+  ['ADAM','in-jokes','Rejected, with a long and proud tradition','Hating on Adam together is a long and proud tradition.'],
+  ['NEST','in-jokes','Where it all began, November 2022','Where you started chatting, before DMs even began.'],
+  ['DUTCHISH','in-jokes','What Tristan has been learning','Months of Tristan learning Dutchish, with evidence required.'],
+  ['MOGSWEEP','in-jokes','Etsy artist behind the custom postcards','Went back to them after last year\u2019s incredible packaging.'],
+  ['JAMMY','in-jokes','___ Dodgers: they do little dodging','Jammy Dodgers on the tier list: they do little dodging.'],
+  ['GINGER','in-jokes','Gingernut biscuits, loudly','The sub on the tier list just says GINGER.'],
+  ['MALTED','in-jokes','___ Milk, classic British','One of the bonus biscuit packs.'],
+  ['CHILLIN','in-jokes','Bing ___ innit','Bing chillin\u2019 innit. Also the S tier of the biscuit list.'],
+  ['INSYNC','in-jokes','Inexplicably, and getting more so','Prediction: we become even more inexplicably insync.'],
+  ['DARS','in-jokes','Ann\u2019s ___ (guess)','Ann\u2019s Dars. I only know it from the quiz, so add the real story!'],
+  ['CROYDON','in-jokes','London bus simulator location','Croydon London Bus Simulator: never has a trip been so bing chillin.'],
+  ['NOODLES','in-jokes','They unite us','Noodles Unite Us, one of the badges.'],
+  ['BADDIE','in-jokes','Big muscle ___','BIG MUSCLE BADDIE, one of the badges.'],
+  /* biscuits & tea */
+  ['BISCUIT','biscuits & tea','Officially tier-listed, and rigorously tested',''],
+  ['BOURBON','biscuits & tea','The chocolate one on the tier list',''],
+  ['DIGESTIVE','biscuits & tea','One of the custard cream flavours (weirdly)','Yes, there is a digestive-flavoured custard cream.'],
+  ['DUNK','biscuits & tea','What you do to a biscuit, briefly',''],
+  ['KETTLE','biscuits & tea','Step one of any call involving tea',''],
+  ['YORKSHIRE','biscuits & tea','The British tea on the tea tier list',''],
+  ['PICKWICK','biscuits & tea','The fruity Dutch tea, in many flavours','Pickwick fills most of the tea tier list.'],
+  ['LIPTON','biscuits & tea','Black tea, and also peach mango',''],
+  ['BREW','biscuits & tea','Milk, no milk, whatever heresy you prefer',''],
+  ['MILK','biscuits & tea','Heresy or essential, depending on who you ask',''],
+  ['COCONUT','biscuits & tea','A custard cream flavour you did not ask for',''],
+  ['LEMON','biscuits & tea','A custard cream flavour, and also a green tea one',''],
+  ['RASPBERRY','biscuits & tea','Pickwick, doubled up and then tripled',''],
+  ['MANGO','biscuits & tea','Pickwick, and a Lipton pairing with peach',''],
+  ['PEACH','biscuits & tea','Fruit that shows up in the tea tier list',''],
+  ['CHOCOLATE','biscuits & tea','What a bourbon is flavoured with',''],
+  /* post */
+  ['POSTCARD','post','Hundreds sent each way','Postcards sent to Ann, postcards sent to Tristan, and a gallery to prove it.'],
+  ['POSTMARK','post','A new one is stamped each month','The Ledger stamps a new postmark the first time you visit each month.'],
+  ['ENVELOPE','post','The thing you open on the loading screen',''],
+  ['LETTER','post','Handwritten, and archived',''],
+  ['PARCEL','post','Where the very first gift exchange started','The first gift was a Christmas parcel in 2023.'],
+  ['STAMP','post','What the postmark sits next to on the homepage',''],
+  ['STICKER','post','Free with last year\u2019s packaging',''],
+  ['AEROPLANE','post','Covers the envelopes holding the WWI postcards','Each WWI postcard is wrapped in its own envelope covered in aeroplane stickers. Obviously.'],
+  ['COURIER','post','The one holding your box hostage',''],
+  ['TRACKING','post','Refreshed far too often',''],
+  ['ETSY','post','Where the custom illustrations come from',''],
+  /* christmas */
+  ['TINSEL','christmas','Sparkly and sheds everywhere',''],
+  ['ELVES','christmas','Santa\u2019s staff',''],
+  ['SPROUT','christmas','Divisive dinner veg',''],
+  ['MISTLETOE','christmas','Hang it and wait',''],
+  ['CRACKER','christmas','Bad jokes inside',''],
+  ['SANTA','christmas','Delivers, unlike some couriers',''],
+  ['REINDEER','christmas','Ten out of ten for pulling power',''],
+  ['TURKEY','christmas','Bird of the big dinner',''],
+  ['STOCKING','christmas','Hung up, filled overnight',''],
+  ['BAUBLE','christmas','Hangs on the tree, breaks on the floor',''],
+  ['WREATH','christmas','Round, and on the door',''],
+  ['CAROL','christmas','Sung loudly and slightly off key',''],
+  ['SLEIGH','christmas','Santa\u2019s ride',''],
+  ['SNOWMAN','christmas','Built in a hurry, melts by lunch',''],
+  ['ADVENT','christmas','Calendar with a door a day',''],
+  ['PRESENT','christmas','Wrapped, and the reason for the parcel',''],
+  ['GRAVY','christmas','Goes on everything, allegedly',''],
+  ['PUDDING','christmas','Set alight at the table',''],
+  /* the site */
+  ['PASSPORT','the site','It gets stamped','Stamps, postmarks and the page that tracks them.'],
+  ['JOURNEY','the site','Our ___ so far','Every moment, right from the very beginning.'],
+  ['REASONS','the site','For when you\u2019re feeling down','Reasons you\u2019re my favourite person: open one, or a few.'],
+  ['SHOWCASE','the site','The birthday experience, replayed',''],
+  ['SECRET','the site','You found one',''],
+  ['BADGE','the site','Earned for what you uncover',''],
+  ['LEDGER','the site','Stamped once a month',''],
+  ['CORKBOARD','the site','One sticker per week',''],
+  ['CONTRACT','the site','Signed every year, officially','Official bestie contracts signed: yearly.'],
+  ['QUIZ','the site','An official examination, five rounds',''],
+  ['FIREFLY','the site','Glows around the page',''],
+  ['LEAF','the site','A very brave stunt performer',''],
+  ['LEGEND','the site','Something about a leaf',''],
+  ['KEEPER','the site','The secret one, with a badge',''],
+  ['MEDAL','the site','Bronze, Silver, Gold, Ruby\u2026',''],
+  ['PRISMATIC','the site','A medal tier past ruby',''],
+  ['CELESTIAL','the site','The top medal tier',''],
+  ['GIFTS','the site','Forty-one stops of them',''],
+  /* us, calls & games */
+  ['DISCORD','calls & games','Where the ten-hour calls happen',''],
+  ['MONDAY','calls & games','The day with a reserved bit',''],
+  ['SCHEDULE','calls & games','Weekly, and surviving \u201Cjust about\u201D',''],
+  ['HOURS','calls & games','Counted in the hundreds',''],
+  ['LAUGH','calls & games','Normal evenings turn into uncontrollable ones',''],
+  ['GAMES','calls & games','The list only ever grows',''],
+  ['SLAY','calls & games','What Ann always does at everything',''],
+  ['GRADUATE','calls & games','What Tristan is predicted to do',''],
+  ['JANUARY','calls & games','First DM, 2023',''],
+  ['NOVEMBER','calls & games','When the chatting began',''],
+  ['BIRTHDAY','calls & games','Celebrated together, more than once',''],
+  ['CHRISTMAS','calls & games','Celebrated together, more than once',''],
+  ['BESTIE','calls & games','What both of you are, on the letterhead',''],
+  ['COMPUTING','calls & games','The society Tristan sits on the committee for',''],
+  ['TUTOR','calls & games','A side hustle alongside everything else',''],
+  /* dutch */
+  ['HOLLAND','dutch','Where you\u2019ll meet in person, supposedly',''],
+  ['AMSTERDAM','dutch','A very likely first stop',''],
+  ['GEZELLIG','dutch','Cosy, and impossible to translate neatly',''],
+  ['TULIP','dutch','Stereotypical flower of the Netherlands',''],
+  ['WINDMILL','dutch','Stereotypical building of the Netherlands','']
+];
+const WORDS = RAW.map(([w,cat,clue,note]) => ({w,cat,clue,note}));
+const MAX = 6;
+/* ============================================================= */
+
+const $ = id => document.getElementById(id);
+const KEY = 'bestle_v1';
+const dayNum = Math.floor((Date.now() - new Date().getTimezoneOffset()*6e4)/864e5);
+const gcd = (a,b) => b ? gcd(b,a%b) : a;
+let step = 7; while (gcd(step, WORDS.length) !== 1) step++;
+const base = (dayNum*step) % WORDS.length;
+let offset = 0, answer, guesses, cur, done, keyState;
+
+const entry = () => WORDS[(base+offset) % WORDS.length];
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify({day:dayNum, offset, guesses, done})); }catch(e){} }
+function load(){ try{ const s = JSON.parse(localStorage.getItem(KEY)||'null'); if(s && s.day===dayNum){ offset=s.offset||0; return s; } }catch(e){} return null; }
+
+function start(saved){
+  answer = entry().w.toUpperCase().replace(/[^A-Z]/g,'');
+  guesses = saved ? saved.guesses.slice() : [];
+  done = saved ? !!saved.done : false;
+  cur = ''; keyState = {};
+  $('cat').textContent = 'theme: '+(entry().cat||'mixed'); $('hint').textContent = ''; $('hintBtn').textContent = 'show hint';
+  $('end').style.display = 'none';
+  const b = $('board'); b.innerHTML = ''; b.style.setProperty('--n', answer.length);
+  for(let r=0;r<MAX;r++){
+    const row = document.createElement('div'); row.className='row';
+    row.style.gridTemplateColumns = 'repeat('+answer.length+',auto)';
+    for(let c=0;c<answer.length;c++){ const t=document.createElement('div'); t.className='tile'; t.style.setProperty('--n', answer.length); row.appendChild(t); }
+    b.appendChild(row);
+  }
+  guesses.forEach((g,i)=>paintRow(i,g,false));
+  paintKeys();
+  if(done) finish();
+  save();
+}
+
+function score(g){
+  const res = Array(g.length).fill('miss'), left = {};
+  for(let i=0;i<g.length;i++){ if(g[i]===answer[i]) res[i]='ok'; else left[answer[i]]=(left[answer[i]]||0)+1; }
+  for(let i=0;i<g.length;i++){ if(res[i]!=='ok' && left[g[i]]>0){ res[i]='near'; left[g[i]]--; } }
+  return res;
+}
+function paintRow(r,g,animate){
+  const tiles = $('board').children[r].children, res = score(g), rank = {miss:1,near:2,ok:3};
+  for(let i=0;i<g.length;i++){
+    const t = tiles[i]; t.textContent = g[i];
+    const apply = () => { t.className = 'tile '+res[i]+(animate?' flip':''); };
+    animate ? setTimeout(apply, i*250) : apply();
+    if(!keyState[g[i]] || rank[res[i]]>rank[keyState[g[i]]]) keyState[g[i]] = res[i];
+  }
+  setTimeout(paintKeys, animate ? g.length*250+300 : 0);
+}
+function paintCur(){
+  const row = $('board').children[guesses.length]; if(!row) return;
+  [...row.children].forEach((t,i)=>{ t.textContent = cur[i]||''; t.className = 'tile'+(cur[i]?' f':''); });
+}
+function paintKeys(){
+  document.querySelectorAll('.key').forEach(k=>{
+    const s = keyState[k.dataset.k];
+    k.className = 'key'+(k.classList.contains('w')?' w':'')+(s?' '+s:'');
+  });
+}
+function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('on'); setTimeout(()=>t.classList.remove('on'),1600); }
+
+function press(k){
+  if(done) return;
+  if(k==='ENTER'){
+    if(cur.length<answer.length){ const r=$('board').children[guesses.length]; r.classList.remove('shake'); void r.offsetWidth; r.classList.add('shake'); return toast('not enough letters'); }
+    const g = cur; guesses.push(g); cur = '';
+    paintRow(guesses.length-1, g, true);
+    if(g===answer || guesses.length===MAX){ done = true; setTimeout(finish, answer.length*250+500); }
+    save();
+  } else if(k==='\u232B'){ cur = cur.slice(0,-1); paintCur(); }
+  else if(/^[A-Z]$/.test(k) && cur.length<answer.length){ cur += k; paintCur(); }
+}
+function finish(){
+  const won = guesses[guesses.length-1]===answer;
+  $('endTitle').textContent = won ? 'Got it in '+guesses.length+' of '+MAX+'!' : 'It was '+answer;
+  $('endNote').textContent = entry().note || 'Nothing sneaky behind this one, just a good word.';
+  $('end').style.display = 'block';
+}
+function shareText(){
+  const em = {ok:'\uD83D\uDFE9',near:'\uD83D\uDFE8',miss:'\u2B1B'}, won = guesses[guesses.length-1]===answer;
+  return 'Bestle \u2665 '+(won?guesses.length:'X')+'/'+MAX+'\n'+guesses.map(g=>score(g).map(s=>em[s]).join('')).join('\n');
+}
+
+['QWERTYUIOP','ASDFGHJKL','\u23CEZXCVBNM\u232B'].forEach(r=>{
+  const d = document.createElement('div'); d.className='kr';
+  [...r].forEach(ch=>{
+    const b = document.createElement('button'), key = ch==='\u23CE' ? 'ENTER' : ch;
+    b.className = 'key'+(ch==='\u23CE'||ch==='\u232B'?' w':''); b.dataset.k = key;
+    b.textContent = ch==='\u23CE' ? 'Enter' : ch;
+    b.setAttribute('aria-label', key==='ENTER'?'Enter':ch==='\u232B'?'Delete':ch);
+    b.onclick = () => press(key); d.appendChild(b);
+  });
+  $('kb').appendChild(d);
+});
+document.addEventListener('keydown', e=>{
+  if(e.ctrlKey||e.metaKey||e.altKey) return;
+  if(e.key==='Enter') press('ENTER');
+  else if(e.key==='Backspace') press('\u232B');
+  else if(/^[a-zA-Z]$/.test(e.key)) press(e.key.toUpperCase());
+});
+let hintOn = false;
+$('hintBtn').onclick = () => { hintOn=!hintOn; $('hint').textContent = hintOn ? (entry().clue||'no hint for this one') : ''; $('hintBtn').textContent = hintOn?'hide hint':'show hint'; };
+$('share').onclick = async () => { try{ await navigator.clipboard.writeText(shareText()); toast('copied'); }catch(e){ toast('couldn\u2019t copy, select it manually'); } };
+$('next').onclick = () => { offset++; hintOn=false; start(null); };
+start(load());
+</script>
+<script src="js/nav.js"></script>
+</body>
+</html>
