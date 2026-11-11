@@ -295,18 +295,12 @@ function play(id, scroll) {
     node.allow = 'autoplay; fullscreen; picture-in-picture';
     node.allowFullscreen = true;
   } else {
-    node = document.createElement('video');
-    node.src = v.src;
-    if (v.poster) node.poster = v.poster;
-    node.controls = true;
-    node.autoplay = true;
-    node.playsInline = true;
-    node.preload = 'auto';
-    node.addEventListener('error', () => {
-      screen.innerHTML = '<div class="screen-idle"><div class="big">📼</div><p>this tape won\'t play yet - the file might not be uploaded</p></div>';
-    });
+    // Load the whole file first, then play it from memory. This makes the seek bar
+    // always work (some hosts don't support "jump ahead" requests for streamed video).
+    loadVideoFile(v, screen);
+    node = null;
   }
-  screen.appendChild(node);
+  if (node) screen.appendChild(node);
 
   const cat = CATS.find(c => c.id === v.cat);
   $('np-kicker').textContent = (cat ? cat.label : 'Video') + (v.date ? ' · ' + v.date : '');
@@ -317,6 +311,59 @@ function play(id, scroll) {
   updateNav();
   try { history.replaceState(null, '', '#' + encodeURIComponent(id)); } catch (e) {}
   if (scroll) $('screen').closest('.cinema').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+const blobCache = new Map();   // src -> blob URL, so a tape you've already loaded replays instantly
+
+function failScreen(screen) {
+  screen.innerHTML = '<div class="screen-idle"><div class="big">📼</div><p>this tape won\'t play yet - the file might not be uploaded</p></div>';
+}
+function mountVideo(v, screen, url) {
+  const node = document.createElement('video');
+  node.src = url;
+  if (v.poster) node.poster = v.poster;
+  node.controls = true;
+  node.autoplay = true;
+  node.playsInline = true;
+  node.preload = 'auto';
+  node.addEventListener('error', () => failScreen(screen));
+  screen.innerHTML = '';
+  screen.appendChild(node);
+}
+
+async function loadVideoFile(v, screen) {
+  const token = v.id;
+  if (blobCache.has(v.src)) { mountVideo(v, screen, blobCache.get(v.src)); return; }
+
+  screen.innerHTML = '<div class="screen-idle"><div class="big">📼</div><p id="load-msg">loading tape… 0%</p></div>';
+  try {
+    const res = await fetch(v.src);
+    if (!res.ok) throw new Error(res.status);
+    const total = +res.headers.get('Content-Length') || 0;
+    const parts = [];
+    let got = 0;
+    if (res.body && res.body.getReader) {
+      const reader = res.body.getReader();
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        parts.push(value);
+        got += value.length;
+        if (currentId !== token) { reader.cancel(); return; }   // switched to another tape meanwhile
+        const msg = document.getElementById('load-msg');
+        if (msg) msg.textContent = total ? 'loading tape… ' + Math.round(got / total * 100) + '%' : 'loading tape… ' + (got / 1048576).toFixed(1) + ' MB';
+      }
+    } else {
+      parts.push(new Uint8Array(await res.arrayBuffer()));
+    }
+    const type = res.headers.get('Content-Type') || 'video/mp4';
+    const url = URL.createObjectURL(new Blob(parts, { type }));
+    blobCache.set(v.src, url);
+    if (currentId === token) mountVideo(v, screen, url);
+  } catch (e) {
+    // couldn't pre-load (offline, blocked...) - fall back to normal streaming
+    if (currentId === token) mountVideo(v, screen, v.src);
+  }
 }
 
 function step(dir) {
