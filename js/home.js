@@ -351,6 +351,14 @@ const SECRET_TIERS = {
       lgxGrandFinale(o); setTimeout(next, 6800);
     }
   },
+  // the Our Journey page: sixteen moments replayed on a timeline (js/journey_reel.js), then the 3+ Years stamp
+  journey: {
+    info: 'Every secret on the Our Journey page: a nest, a first hello, a very long call, a very slow bus, a tree with a dishrack drainer under it, a made-up business and a train that has not reached its destination. Sixteen moments, found along a timeline that started in 2022.<br><br>There is no last one. That is the whole point.',
+    anim(o, next){
+      if(window.JourneyReel && !matchMedia('(prefers-reduced-motion: reduce)').matches) return JourneyReel.play(o, next);
+      launchConfetti(); launchHeartBurst(); setTimeout(next, 2200);          // journey_reel.js didn't load: a small celebration instead
+    }
+  },
   // a wall of reasons flips over, flies into a heart, beats three times, then bursts
   reasons: {
     info: 'Every secret on the reasons page: a song, a shooting star, a tin of beans, a doorbell, a 2am text and more. You read the small print of a list that was already meant to cheer you up.<br><br>There really are so many more reasons. I will keep adding them.',
