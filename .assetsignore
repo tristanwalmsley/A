@@ -1,7 +1,6 @@
 .git
 .github
 src
-data
 node_modules
 wrangler.jsonc
 .assetsignore
