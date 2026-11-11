@@ -8,11 +8,12 @@
      synth sounds in the secret reels). Afterwards the sound is allowed again and anything
      that was playing carries on. It runs off the visitor's own clock, so 11:00 means
      11:00 wherever they are, and it works on whichever page they happen to be on.
-     Five minutes before, a small note appears so nobody is taken by surprise.
+     A small countdown pill ("next silence in 23:41") sits at the bottom of every page all day.
+     There is deliberately no way to skip a silence.
 
-   CHANGE THE TIMES (the three settings just below):
-     only 11am (the traditional one):   SILENCE_HOURS = [11]
-     every hour from 8am to 10pm:       SILENCE_HOURS = [8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]
+   CHANGE THE TIMES (the settings just below):
+     only 11am:                         SILENCE_HOURS = [11]
+     every hour of the day:             SILENCE_HOURS = [0,1,2,...,23]
 
    TRY IT WITHOUT WAITING:
      ?silence=now   a full 2 minute silence starting right now (follows you from page to page)
@@ -23,15 +24,13 @@
   'use strict';
 
   var SILENCE_DAY   = '11-11';   // MM-DD
-  var SILENCE_HOURS = [11];      // 24h clock, local time of whoever is visiting
+  var SILENCE_HOURS = [8,9,10,11,12,13,14,15,16,17,18,19,20,21,22];      // 24h clock, local time of whoever is visiting
   var SILENCE_MINS  = 2;
 
-  var WARN_MINS = 5;             // small heads-up this many minutes before
-  var TAIL_MS   = 8000;          // "We will remember them" stays up this long after the silence ends
+    var TAIL_MS   = 8000;          // "We will remember them" stays up this long after the silence ends
 
   var root = document.documentElement;
   var DEMO_KEY = 'remembrance_demo';          // sessionStorage: "<start>|<end>" of a preview
-  var LEFT_KEY = 'remembrance_left_';         // sessionStorage: this silence was left early
 
   function store(k, v) { try { v == null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch (e) {} }
   function load(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
@@ -44,7 +43,7 @@
     if (v === 'off') store(DEMO_KEY, null);
     else {
       var secs = v === 'now' || v === '' ? SILENCE_MINS * 60 : Math.max(5, Math.min(600, parseInt(v, 10) || 0));
-      if (secs) { store(DEMO_KEY, now0 + '|' + (now0 + secs * 1000)); store(LEFT_KEY + 'demo' + now0, null); }
+      if (secs) { store(DEMO_KEY, now0 + '|' + (now0 + secs * 1000)); }
     }
   }
 
@@ -139,16 +138,13 @@
     "#rem-silence .rem-bar{width:min(240px,60vw);height:2px;background:#2a2727;border-radius:2px;overflow:hidden}" +
     "#rem-silence .rem-bar i{display:block;height:100%;width:0;background:#8f1a2b;transition:width .5s linear}" +
     "#rem-silence .rem-lest{font-family:var(--font-display,Georgia,serif);font-style:italic;color:#8d8678;font-size:1rem;margin-top:.4rem}" +
-    "#rem-silence .rem-leave{position:absolute;bottom:1.1rem;left:50%;transform:translateX(-50%);background:none;border:0;color:#6f695e;" +
-    "font:inherit;font-size:.9rem;letter-spacing:.5px;padding:.5rem .8rem;cursor:pointer;opacity:.7}" +
-    "#rem-silence .rem-leave:hover,#rem-silence .rem-leave:focus-visible{color:#b9b0a0;opacity:1;outline:none;text-decoration:underline}" +
     "#rem-silence.rem-after .rem-time,#rem-silence.rem-after .rem-bar,#rem-silence.rem-after .rem-lest{display:none}" +
     "#rem-silence.rem-out{animation:remOut 1.6s ease both}" +
     "@keyframes remIn{from{opacity:0}to{opacity:1}}@keyframes remOut{from{opacity:1}to{opacity:0}}" +
     "html.rem-lock,html.rem-lock body{overflow:hidden}" +
-    "#rem-heads-up{position:fixed;left:50%;bottom:.9rem;transform:translateX(-50%);z-index:9993;max-width:92vw;text-align:center;" +
-    "background:#1c1a1a;color:#e9e3d6;border:1px solid #8f1a2b;border-radius:99px;padding:.5rem 1rem;" +
-    "font:italic 1rem/1.3 var(--font-body,Georgia,serif);box-shadow:0 2px 10px rgba(0,0,0,.3);pointer-events:none}" +
+    "#rem-heads-up{position:fixed;left:50%;bottom:.6rem;transform:translateX(-50%);z-index:9993;max-width:92vw;text-align:center;" +
+    "background:#1c1a1a;color:#e9e3d6;border:1px solid #8f1a2b;border-radius:99px;padding:.25rem .75rem;" +
+    "font:italic .8rem/1.3 var(--font-body,Georgia,serif);opacity:.9;font-variant-numeric:tabular-nums;box-shadow:0 2px 10px rgba(0,0,0,.3);pointer-events:none}" +
     "@media (prefers-reduced-motion:reduce){#rem-silence,#rem-silence.rem-out{animation:none}#rem-silence .rem-bar i{transition:none}}";
 
   var overlay = null, headsUp = null, inerted = [];
@@ -173,8 +169,7 @@
       '<p class="rem-sub" id="rem-sub">Remembrance Day · 11 November</p>' +
       '<div class="rem-time" id="rem-time" aria-hidden="true"></div>' +
       '<div class="rem-bar" aria-hidden="true"><i id="rem-bar"></i></div>' +
-      '<p class="rem-lest">Lest we forget</p>' +
-      '<button type="button" class="rem-leave" id="rem-leave">leave early</button>';
+      '<p class="rem-lest">Lest we forget</p>';
     document.body.appendChild(overlay);
     root.classList.add('rem-lock');
     // nothing behind the screen can be reached with the keyboard or a screen reader meanwhile
@@ -182,7 +177,6 @@
     Array.prototype.forEach.call(document.body.children, function (el) {
       if (el !== overlay && el.tagName !== 'SCRIPT' && !el.inert) { el.inert = true; inerted.push(el); }
     });
-    document.getElementById('rem-leave').addEventListener('click', leaveEarly);
     try { overlay.focus({ preventScroll: true }); } catch (e) {}
   }
 
@@ -196,8 +190,6 @@
 
   /* ---------------- the loop ---------------- */
   var cur = null, afterShown = false;
-
-  function leaveEarly() { if (cur) store(LEFT_KEY + cur.key, '1'); tick(); }
 
   function begin(w) {
     silent = true; cur = w; afterShown = false;
@@ -220,7 +212,7 @@
       afterShown = true;
       overlay.classList.add('rem-after');
       document.getElementById('rem-title').textContent = 'We will remember them';
-      document.getElementById('rem-sub').textContent = '♡';
+      document.getElementById('rem-sub').textContent = '🌺';
     }
   }
 
@@ -237,21 +229,19 @@
 
   function tick() {
     var now = Date.now(), w = current(now);
-    if (w && load(LEFT_KEY + w.key)) w = null;
     if (w) {
       if (!silent) begin(w);
       showHeadsUp(null);
       update(w, now);
       return;
     }
-    if (silent) {                         // over, or left early
-      var left = cur && load(LEFT_KEY + cur.key);
-      finish(!left);
+    if (silent) {                         // over
+      finish(true);
     }
     var next = nextStart(now);
-    if (next && next - now <= WARN_MINS * 60000) {
-      var d = new Date(next);
-      showHeadsUp('A two minute silence begins at ' + pad(d.getHours()) + ':' + pad(d.getMinutes()));
+    if (next) {
+      var secs = Math.ceil((next - now) / 1000), h = Math.floor(secs / 3600), m = Math.floor((secs % 3600) / 60), sc = secs % 60;
+      showHeadsUp('Two minutes’ silence in ' + (h ? h + ':' + pad(m) : m) + ':' + pad(sc));
     } else showHeadsUp(null);
   }
 

@@ -75,6 +75,11 @@ html[data-theme="remembrance"] #theme-deco .td-flake{width:var(--s);height:var(-
   filter:drop-shadow(0 1px 1px rgba(20,18,18,.35))}
 /* the home-page line */
 html[data-theme="remembrance"] .td-greeting{color:var(--rose-dark)}
+/* the whole site gets a poppy-field backdrop (css/rem-bg.svg) instead of plain cream */
+html[data-theme="remembrance"]{background:var(--cream)}
+html[data-theme="remembrance"] body{background:transparent}
+html[data-theme="remembrance"]::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:url("rem-bg.svg") center bottom/cover no-repeat}
 
 
 /* ==========================================================================

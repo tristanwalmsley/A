@@ -23,7 +23,7 @@
        silence: true  ->  loads js/remembrance.js (the two minutes' silence; settings are at the top of that file). */
     { id: 'remembrance', label: 'Remembrance', start: '11-10', end: '11-12', silence: true,
       flakes: { glyphs: [''], count: 14, size: [11, 20] },
-      home: { greeting: 'we will remember them ♡ Remembrance Day, Bestie Ann',
+      home: { greeting: 'we will remember them 🌺',
               postmark: 'Poppy<br>day from<br>the UK', corner: 'Lest<br>we<br>forget' } },
     { id: 'winter',      label: 'Winter',      start: '11-06', end: '11-30',
       flakes: { glyphs: ['❄', '❅', '❆', '•'], count: 24, size: [9, 20] },
