@@ -343,6 +343,22 @@ const SECRET_TIERS = {
       setTimeout(() => { ring.remove(); launchHeartBurst(); next(); }, 2500);
     }
   },
+  // the five showcase eggs: the Leaf Legend reel replays them (js/leaf_legend_reel.js), then the golden finale
+  showcase: {
+    info: 'Every secret hiding on the Birthday 2026 showcase: a wishing star, a sign that loves attention, a clock that hates being poked, a constellation and a very impatient last minute.<br><br>Five more, found. You are unreasonable.',
+    anim(o, next){
+      if(window.LeafLegendReel) return LeafLegendReel.play(o, next, { banner:'ALL FIVE FOUND' });
+      lgxGrandFinale(o); setTimeout(next, 6800);
+    }
+  },
+  // the Our Journey page: sixteen moments replayed on a timeline (js/journey_reel.js), then the 3+ Years stamp
+  journey: {
+    info: 'Every secret on the Our Journey page: a nest, a first hello, a very long call, a very slow bus, a tree with a dishrack drainer under it, a made-up business and a train that has not reached its destination. Sixteen moments, found along a timeline that started in 2022.<br><br>There is no last one. That is the whole point.',
+    anim(o, next){
+      if(window.JourneyReel && !matchMedia('(prefers-reduced-motion: reduce)').matches) return JourneyReel.play(o, next);
+      launchConfetti(); launchHeartBurst(); setTimeout(next, 2200);          // journey_reel.js didn't load: a small celebration instead
+    }
+  },
   // a wall of reasons flips over, flies into a heart, beats three times, then bursts
   reasons: {
     info: 'Every secret on the reasons page: a song, a shooting star, a tin of beans, a doorbell, a 2am text and more. You read the small print of a list that was already meant to cheer you up.<br><br>There really are so many more reasons. I will keep adding them.',
@@ -395,14 +411,6 @@ const SECRET_TIERS = {
         launchConfetti(); launchHeartBurst();
       }, 5100);
       setTimeout(() => { stage.remove(); next(); }, 6000);
-    }
-  },
-  // the Our Journey page: sixteen moments replayed on a timeline (js/journey_reel.js), then the 3+ Years stamp
-  journey: {
-    info: 'Every secret on the Our Journey page: a nest, a first hello, a very long call, a very slow bus, a tree with a dishrack drainer under it, a made-up business and a train that has not reached its destination. Sixteen moments, found along a timeline that started in 2022.<br><br>There is no last one. That is the whole point.',
-    anim(o, next){
-      if(window.JourneyReel && !matchMedia('(prefers-reduced-motion: reduce)').matches) return JourneyReel.play(o, next);
-      launchConfetti(); launchHeartBurst(); setTimeout(next, 2200);          // journey_reel.js didn't load: a small celebration instead
     }
   }
 };
@@ -1134,11 +1142,11 @@ function initWeeklyCorkboard(){
 }
 
 // ---------- EVERYWHERE TO GO: every page in NAV as a postage stamp ----------
-const CAT_COLOR = { story:'#b86858', media:'#6f9466', fun:'#c8943a', xmas26:'#b3262e', bday26:'#8a6fa8', contract:'#7a5230' };
+const CAT_COLOR = { story:'#b86858', media:'#6f9466', fun:'#c8943a', bday26:'#8a6fa8', contract:'#7a5230' };
 const GLYPH = {
   'our_journey.html':'🗺', 'us.html':'♡', 'reasons.html':'💌',
   'passport.html':'✈', 'postcard_gallery.html':'🏞', 'letters_archive.html':'✉',
-  'tier_list.html':'🏆', 'christmas_2026.html':'🎄', 'birthday_2026_showcase.html':'🕰️', 'birthday_2026.html':'🎈', 'birthday_2026_gifts.html':'🎁',
+  'tier_list.html':'🏆', 'birthday_2026_showcase.html':'🕰️', 'birthday_2026.html':'🎈', 'birthday_2026_gifts.html':'🎁',
   'birthday_2026_quiz.html':'❓', 'birthday_2026_thank_you.html':'💛', 'membership.html':'📜', 'contract.html':'✎'
 };
 function renderSheet(){
