@@ -6,6 +6,14 @@
    unlockAmbient(); or add ?scene=14 to any page URL.
    ========================================================================== */
 
+/* ---- READABILITY: text that sits directly on the page background follows the scene ----
+   Night scenes are dark indigo, so headings/captions that are normally dark green/brown turn warm cream; the
+   sunset scene is mixed (purple top, peach bottom) so it keeps its colours and gets a soft light halo instead.
+   Text inside paper cards, the nav and the letter keeps its own colours. To cover another page-level element,
+   add its selector to AMB_TEXT / AMB_ACCENT below. */
+const SCENE_TONE = { midnight:'dark', 'witching-hour':'dark', 'pre-dawn':'dark', dusk:'dark', evening:'dark', sunset:'mid' };
+const AMB_TEXT = '.hello,.sec-title,.page-header h1,.page-header h2,.page-header p,.page-header .sub,.page-header .subtitle';
+const AMB_ACCENT = '.since,#where,.sec-count,.resume,.page-header .eyebrow,.page-header .kicker';
 function injectAmbientStyles(){
   if(document.getElementById('ambient-styles')) return;
   const st = document.createElement('style');
@@ -27,6 +35,11 @@ function injectAmbientStyles(){
 #ambient-stars{position:absolute;inset:0;opacity:0;transition:opacity 60s linear}
 .amb-star{position:absolute;border-radius:50%;background:#fff;animation:ambStarTwinkle ease-in-out infinite}
 @keyframes ambStarTwinkle{0%,100%{opacity:var(--s-min,0.15)}50%{opacity:var(--s-max,0.85)}}
+/* readability overrides (see SCENE_TONE) */
+html[data-amb-tone="dark"] :is(${AMB_TEXT}){color:#fff1d6!important;text-shadow:0 1px 16px rgba(8,4,30,.65)}
+html[data-amb-tone="dark"] :is(${AMB_ACCENT}){color:#ffd98a!important;text-shadow:0 1px 12px rgba(8,4,30,.65);border-color:rgba(255,217,138,.5)!important}
+html[data-amb-tone="mid"] :is(${AMB_TEXT},${AMB_ACCENT}){text-shadow:0 0 12px rgba(255,248,235,.95),0 0 3px rgba(255,248,235,.9)}
+html.amb-ready :is(${AMB_TEXT},${AMB_ACCENT}){transition:color 60s linear,text-shadow 60s linear}
 `;
   document.head.appendChild(st);
 }
@@ -272,6 +285,7 @@ function applyScene(idx){
   });
   const starField = document.getElementById('ambient-stars');
   if(starField) starField.style.opacity = String(scene.stars);
+  document.documentElement.dataset.ambTone = SCENE_TONE[scene.name] || 'light';
   currentSceneIdx = idx;
 }
 function updateAmbientWash(){
@@ -293,6 +307,7 @@ function initAmbientWash(){
   } else {
     updateAmbientWash();
   }
+  requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.add('amb-ready')));
   setInterval(updateAmbientWash, 60000); // check every minute for the 2-hourly scene change
 }
 // ---------- console helpers for previewing scenes without waiting ----------
