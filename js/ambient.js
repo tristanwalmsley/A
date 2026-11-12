@@ -12,6 +12,8 @@
    Text inside paper cards, the nav and the letter keeps its own colours. To cover another page-level element,
    add its selector to AMB_TEXT / AMB_ACCENT below. */
 const SCENE_TONE = { midnight:'dark', 'witching-hour':'dark', 'pre-dawn':'dark', dusk:'dark', evening:'dark', sunset:'mid' };
+/* soft gold glow layer (bokeh + dust motes + grain) - the calm cousin of the 2026 Wrapped hero. Colour per tone: */
+const GLOW = { dark:'rgba(255,216,150,.55)', mid:'rgba(255,200,150,.45)', light:'rgba(235,175,70,.38)' };
 const AMB_TEXT = '.hello,.sec-title,.page-header h1,.page-header h2,.page-header p,.page-header .sub,.page-header .subtitle';
 const AMB_ACCENT = '.since,#where,.sec-count,.resume,.page-header .eyebrow,.page-header .kicker';
 function injectAmbientStyles(){
@@ -35,6 +37,17 @@ function injectAmbientStyles(){
 #ambient-stars{position:absolute;inset:0;opacity:0;transition:opacity 60s linear}
 .amb-star{position:absolute;border-radius:50%;background:#fff;animation:ambStarTwinkle ease-in-out infinite}
 @keyframes ambStarTwinkle{0%,100%{opacity:var(--s-min,0.15)}50%{opacity:var(--s-max,0.85)}}
+/* glow layer: drifting gold bokeh, rising dust motes, fine grain (all CSS, no canvas) */
+@property --bk{syntax:'<color>';inherits:true;initial-value:rgba(235,175,70,.38)}
+#ambient-glow{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;opacity:.55;--bk:rgba(235,175,70,.38);transition:--bk 60s linear,opacity 60s linear}
+html[data-amb-tone="dark"] #ambient-glow{opacity:.95}
+html[data-amb-tone="mid"] #ambient-glow{opacity:.75}
+.amb-bokeh{position:absolute;border-radius:50%;background:radial-gradient(circle,var(--bk),transparent 68%);animation:ambBk var(--bd,30s) ease-in-out infinite alternate}
+@keyframes ambBk{to{transform:translate(var(--bx,40px),var(--by,-60px)) scale(1.12)}}
+.amb-mote{position:absolute;top:104%;border-radius:50%;background:var(--bk);box-shadow:0 0 6px 1px var(--bk);animation:ambMote var(--bd,30s) linear infinite,ambStarTwinkle var(--bt,4s) ease-in-out infinite}
+@keyframes ambMote{to{transform:translateY(-112vh)}}
+#ambient-grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.08;mix-blend-mode:soft-light;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+@media(prefers-reduced-motion:reduce){.amb-bokeh,.amb-mote{animation:none}.amb-mote{display:none}}
 /* readability overrides (see SCENE_TONE) */
 html[data-amb-tone="dark"] :is(${AMB_TEXT}){color:#fff1d6!important;text-shadow:0 1px 16px rgba(8,4,30,.65)}
 html[data-amb-tone="dark"] :is(${AMB_ACCENT}){color:#ffd98a!important;text-shadow:0 1px 12px rgba(8,4,30,.65);border-color:rgba(255,217,138,.5)!important}
@@ -51,6 +64,12 @@ function ensureAmbientDOM(){
     '<div class="accent-blob accent-blob-1"></div><div class="accent-blob accent-blob-2"></div>' +
     '<div class="accent-blob accent-blob-3"></div><div class="accent-blob accent-blob-4"></div>';
   document.body.prepend(wash);
+  // soft glow layer: bokeh + motes, then a grain sheet (sits just above the wash, below all content)
+  const R = (lo, hi) => lo + Math.random() * (hi - lo), glow = document.createElement('div'); glow.id = 'ambient-glow'; let g = '';
+  for(let i = 0; i < 11; i++) g += `<i class="amb-bokeh" style="width:${R(70,230)|0}px;height:${R(70,230)|0}px;left:${R(-5,100)|0}%;top:${R(-5,100)|0}%;--bd:${R(26,48)|0}s;--bx:${R(-60,60)|0}px;--by:${R(-80,40)|0}px;animation-delay:-${R(0,30)|0}s"></i>`;
+  for(let i = 0; i < 24; i++){ const z = R(2,4.5).toFixed(1), bd = R(26,60)|0; g += `<i class="amb-mote" style="width:${z}px;height:${z}px;left:${R(0,100)|0}%;--bd:${bd}s;--bt:${R(3,6).toFixed(1)}s;--s-min:.2;--s-max:.9;animation-delay:-${R(0,bd)|0}s,-${R(0,5).toFixed(1)}s"></i>`; }
+  glow.innerHTML = g; wash.after(glow);
+  const grain = document.createElement('div'); grain.id = 'ambient-grain'; glow.after(grain);
 }
 
 // ---------- AMBIENT WASH: 12 hand-crafted scenes, one per 2-hour block ----------
@@ -286,6 +305,7 @@ function applyScene(idx){
   const starField = document.getElementById('ambient-stars');
   if(starField) starField.style.opacity = String(scene.stars);
   document.documentElement.dataset.ambTone = SCENE_TONE[scene.name] || 'light';
+  const gl = document.getElementById('ambient-glow'); if(gl) gl.style.setProperty('--bk', GLOW[SCENE_TONE[scene.name] || 'light']);
   currentSceneIdx = idx;
 }
 function updateAmbientWash(){
