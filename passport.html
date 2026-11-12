@@ -29,7 +29,9 @@
 .holder-field span{font-family:'Caveat',cursive;font-size:1.05rem;color:rgba(255,255,255,0.85)}
 .holder-photo{width:70px;height:84px;border:2px solid rgba(212,168,48,0.4);display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:rgba(0,0,0,0.2);flex-shrink:0}
 .holder-row{display:flex;gap:1rem;align-items:flex-start}
-.holder-info{flex:1}
+.holder-info{flex:1;min-width:0}
+.holder-names{display:grid;gap:.55rem;margin-bottom:.9rem;padding-bottom:.9rem;border-bottom:1px dashed rgba(255,255,255,.12)}
+.holder-names .holder-field span{font-size:1.2rem}
 /* STAMPS SECTION */
 .stamps-section{padding:1.5rem 2rem}
 .stamps-title{font-family:'Caveat',cursive;font-size:0.8rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:1.2rem;padding-bottom:0.5rem;border-bottom:1px dashed rgba(255,255,255,0.1)}
@@ -105,7 +107,8 @@
 //   subtitle    small line under the title
 //   cover       optional colours: { bg: '#1a4a2a', gold: '#d4a830' }
 //   fields      the holder details, as [label, value] pairs, in order.
-//               Keep 'Legal Name' and 'Nickname' first; the rest is up to you.
+//               Anything whose label ends in "name" (Birth Name, Legal Name, Nickname...)
+//               is listed as a name row; the rest sit in two columns below.
 //   stamps      the journey, oldest first. Numbers (STAMP 001...) are added for you.
 //                 type: 'departure' | 'arrival' | 'visit'
 //                 place, date, note
@@ -114,13 +117,14 @@
 //   mrz         optional two lines for the bottom strip. Left out = made up from the fields.
 //   about       { title, paragraphs: [...] }       the card under the passport
 //   counters    optional, replaces the three numbers. Left out = trips taken / homes visited
-//               are counted from the stamps, plus "Many more to go".
+//               are counted from the stamps, plus "Many more to go". Each one is either
+//               { auto: 'trips' }  { auto: 'homes' }  (counted for you)  or  { num: 'SO', label: 'more to go' }
 // ══════════════════════════════════════════════════════════════════
 const PASSPORTS = [
   { id: 'beans', tabLabel: 'Beans', emoji: '🧸',
     country: 'Lord Nooks Republic', title: 'TRAVEL DOCUMENT', subtitle: 'Bestie Ambassador',
     fields: [
-      ['Legal Name', 'Tristan'], ['Nickname', 'lil Beans Guy'],
+      ['Birth Name', 'Tristan'], ['Legal Name', 'lil Beans Guy'], ['Nickname', 'Beans'],
       ['Nationality', 'Anglo-Dutch'], ['Issued', '15 Jul 2025'],
       ['Status', 'Ambassador'], ['Passport No.', 'JVM-327'],
     ],
@@ -140,12 +144,11 @@ const PASSPORTS = [
   },
 
   // ---- The second plushie ----
-  // Fill in the "???" bits, then delete the line "ready: false" to show it. Until then nobody sees it.
-  { id: 'second', ready: true, tabLabel: '???', emoji: '🧸',
+  { id: 'second', ready: true, tabLabel: 'Kiki', emoji: '🧸',
     country: 'Lord Nooks Republic', title: 'TRAVEL DOCUMENT', subtitle: 'Bestie Ambassador',
     cover: { bg: '#1b2f55', gold: '#d9b44a' },
     fields: [
-      ['Legal Name', 'Kiki'], ['Nickname', 'lil Diva'],
+      ['Birth Name', 'Kiki'], ['Legal Name', '???'], ['Nickname', 'lil Diva'],
       ['Nationality', 'Bri\'ish'], ['Issued', '12 Nov 2026'],
       ['Status', 'Ambassador'], ['Passport No.', 'RLE-235'],
     ],
@@ -161,8 +164,8 @@ const PASSPORTS = [
       'After searching far and wide for 3 months, the perfect plushie was finally found and they joined the plushie tradition in October 2026.',
     ],
     counters: [
-      { num: trips, label: trips === 1 ? 'trip taken' : 'trips taken' },
-      { num: homes, label: homes === 2 ? 'home visited' : 'homes visited' },
+      { auto: 'trips' },
+      { auto: 'homes' },
       { num: 'SO', label: 'more to go' },
     ], },
   },
@@ -210,6 +213,9 @@ function bookHTML(p) {
         ${s.note ? `<div class="stamp-note">${esc(s.note)}</div>` : ''}
       </div>`;
   };
+  const fieldHTML = ([l, v]) => `<div class="holder-field"><label>${esc(l)}</label><span>${esc(v)}</span></div>`;
+  const isName = ([l]) => /name$/i.test(String(l).trim());
+  const names = (p.fields || []).filter(isName), others = (p.fields || []).filter(f => !isName(f));
   const mrz = (p.mrz && p.mrz.length ? p.mrz : makeMrz(p)).map(esc).join('<br>\n      ');
   const cov = p.cover || {};
   const style = (cov.bg ? `--pp-bg:${esc(cov.bg)};` : '') + (cov.gold ? `--pp-gold:${esc(cov.gold)};` : '');
@@ -223,9 +229,10 @@ function bookHTML(p) {
     </div>
     <div class="holder-section"><div class="holder-row">
       <div class="holder-photo">${esc(p.emoji || '🧸')}</div>
-      <div class="holder-info"><div class="holder-grid">
-        ${(p.fields || []).map(([l, v]) => `<div class="holder-field"><label>${esc(l)}</label><span>${esc(v)}</span></div>`).join('')}
-      </div></div>
+      <div class="holder-info">
+        ${names.length ? `<div class="holder-names">${names.map(fieldHTML).join('')}</div>` : ''}
+        <div class="holder-grid">${others.map(fieldHTML).join('')}</div>
+      </div>
     </div></div>
     <div class="stamps-section">
       <div class="stamps-title">Entry / Exit Stamps</div>
@@ -243,11 +250,12 @@ function aboutHTML(p) {
   const stamps = (p.stamps || []).filter(s => !s.future);
   const trips = stamps.filter(s => s.type === 'arrival').length;
   const homes = new Set(stamps.map(s => s.place).filter(Boolean)).size;
-  const counters = p.counters || [
-    { num: trips, label: trips === 1 ? 'trip taken' : 'trips taken' },
-    { num: homes, label: homes === 1 ? 'home visited' : 'homes visited' },
-    { num: 'Many', label: 'more to go' },
-  ];
+  const auto = {
+    trips: { num: trips, label: trips === 1 ? 'trip taken' : 'trips taken' },
+    homes: { num: homes, label: homes === 1 ? 'home visited' : 'homes visited' },
+  };
+  const counters = (p.counters || a.counters || [{ auto: 'trips' }, { auto: 'homes' }, { num: 'Many', label: 'more to go' }])
+    .map(c => (c.auto && auto[c.auto]) || c);
   return `
   <div class="about-section">
     <h2>${esc(a.title)}</h2>
