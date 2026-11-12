@@ -14,7 +14,7 @@
 .page-header{text-align:center;padding:3rem 2rem 1rem;animation:headerIn 0.7s ease both}
 @keyframes headerIn{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
 /* PASSPORT BOOK */
-.passport-wrap{max-width:680px;margin:2rem auto 5rem;padding:0 1.5rem;display:flex;flex-direction:column;align-items:center;gap:2.5rem}
+.passport-wrap{margin:2rem auto 5rem;padding:0 1.5rem;display:flex;flex-direction:column;align-items:center;gap:2.5rem}
 .passport-book{width:100%;max-width:500px;background:var(--passport);box-shadow:6px 8px 40px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,0.08);position:relative;animation:bookIn 0.9s cubic-bezier(0.22,1,0.36,1) 0.2s both}
 @keyframes bookIn{from{opacity:0;transform:translateY(30px) rotate(-1deg)}to{opacity:1;transform:translateY(0) rotate(0deg)}}
 .passport-cover{padding:2.5rem 2rem;text-align:center;border-bottom:2px solid rgba(212,168,48,0.3);position:relative}
@@ -60,13 +60,13 @@
 .counter-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--gold);line-height:1}
 .counter-label{font-family:'Caveat',cursive;font-size:0.8rem;color:var(--brown);letter-spacing:1px}
 
-/* PLUSHIE TABS (only shown when there is more than one passport) */
-.pp-tabs{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center}
-.pp-tab{font-family:'Caveat',cursive;font-size:1.05rem;letter-spacing:.5px;padding:.4rem 1.1rem;border:1.5px solid var(--tan);background:transparent;color:var(--brown);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.4rem}
-.pp-tab:hover{background:var(--warm)}
-.pp-tab.active{background:var(--deep);color:var(--cream);border-color:var(--deep)}
-.pp-tab:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-.pp-stage{width:100%;display:flex;flex-direction:column;align-items:center;gap:2.5rem}
+/* PASSPORTS SIDE BY SIDE: one passport = centred like before; 2+ = share the full width */
+.passport-wrap{max-width:none}
+.pp-stage{width:100%;max-width:520px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr);gap:2.5rem;align-items:start}
+.pp-stage.multi{max-width:1500px;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:2.5rem 2rem}
+.pp-col{display:flex;flex-direction:column;align-items:center;gap:2.2rem;min-width:0;scroll-margin-top:5rem}
+.pp-stage.multi .passport-book,.pp-stage.multi .about-section{max-width:none}
+.pp-col .passport-book,.pp-col .about-section{width:100%}
 /* per-passport colours: set by the data (cover: {bg, light, gold}) */
 .passport-book{--passport:var(--pp-bg,#1a4a2a);--passport-gold:var(--pp-gold,#d4a830)}
 .stamp-entry.visit .stamp-circle{border-color:var(--passport-gold);color:var(--passport-gold)}
@@ -86,7 +86,6 @@
 </div>
 
 <div class="passport-wrap">
-  <div class="pp-tabs" id="pp-tabs" role="tablist" aria-label="Choose a passport" hidden></div>
   <div class="pp-stage" id="pp-stage"></div>
 </div>
 
@@ -94,17 +93,19 @@
 <script>
 // ══════════════════════════════════════════════════════════════════
 // PASSPORTS - one entry per plushie. Add a plushie by copying an entry.
-// Only entries with ready !== false are shown. With 2+ ready passports a tab bar appears.
+// Only entries with ready !== false are shown. One passport sits centred; two or more
+// sit side by side across the whole page (stacking on phones).
 //
 //   id          unique, no spaces                  (share link: passport.html#id)
 //   ready       false = hidden completely (use it to keep a plushie secret until its reveal)
-//   tabLabel    name on the tab                    (e.g. 'Beans')
+//   tabLabel    short name (used as the fallback nickname)
 //   emoji       on the cover and the photo box
 //   country     line above the title on the cover
 //   title       big cover title
 //   subtitle    small line under the title
 //   cover       optional colours: { bg: '#1a4a2a', gold: '#d4a830' }
-//   fields      the holder details, as [label, value] pairs, in order
+//   fields      the holder details, as [label, value] pairs, in order.
+//               Keep 'Legal Name' and 'Nickname' first; the rest is up to you.
 //   stamps      the journey, oldest first. Numbers (STAMP 001...) are added for you.
 //                 type: 'departure' | 'arrival' | 'visit'
 //                 place, date, note
@@ -119,7 +120,7 @@ const PASSPORTS = [
   { id: 'beans', tabLabel: 'Beans', emoji: '🧸',
     country: 'Lord Nooks Republic', title: 'TRAVEL DOCUMENT', subtitle: 'Bestie Ambassador · First Class',
     fields: [
-      ['Legal Name', 'Tristan'], ['Given name', 'Lil Beans Guy'],
+      ['Legal Name', 'Tristan'], ['Nickname', 'Beans'],
       ['Nationality', 'Anglo-Dutch'], ['Issued', '15 Jul 2025'],
       ['Status', 'Ambassador'], ['Passport No.', 'BFF-003'],
     ],
@@ -141,11 +142,11 @@ const PASSPORTS = [
 
   // ---- The second plushie ----
   // Fill in the "???" bits, then delete the line "ready: false" to show it. Until then nobody sees it.
-  { id: 'second', ready: true, tabLabel: '???', emoji: '🧸',
+  { id: 'second', ready: false, tabLabel: '???', emoji: '🧸',
     country: 'Lord Nooks Republic', title: 'TRAVEL DOCUMENT', subtitle: 'Bestie Ambassador · ???',
     cover: { bg: '#1b2f55', gold: '#d9b44a' },
     fields: [
-      ['Legal Name', '???'], ['Given name', '???'],
+      ['Legal Name', '???'], ['Nickname', '???'],
       ['Nationality', '???'], ['Issued', '???'],
       ['Status', 'Ambassador'], ['Passport No.', 'BFF-004'],
     ],
@@ -163,7 +164,6 @@ const PASSPORTS = [
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const shown = () => PASSPORTS.filter(p => p.ready !== false);
-let currentId = null;
 
 const STAMP_KINDS = {
   departure: { word: 'DEPARTURE', circle: 'Dept<br>✈' },
@@ -176,7 +176,7 @@ function makeMrz(p) {
   const pad = (t, n) => (t + '<'.repeat(n)).slice(0, n);
   const f = Object.fromEntries((p.fields || []).map(([k, v]) => [k, v]));
   return [
-    pad('P<LNR<' + clean(f['Given name'] || p.tabLabel) + '<<THE<PLUSHIE', 44),
+    pad('P<LNR<' + clean(f['Nickname'] || f['Given name'] || p.tabLabel) + '<<THE<PLUSHIE', 44),
     pad(clean(f['Passport No.'] || p.id) + clean(f['Issued']), 44),
   ];
 }
@@ -250,31 +250,22 @@ function aboutHTML(p) {
   </div>`;
 }
 
-function show(id) {
-  const p = shown().find(x => x.id === id) || shown()[0];
-  if (!p) { $('pp-stage').innerHTML = '<p style="font-family:Caveat,cursive;color:var(--brown);font-size:1.2rem">no passports issued yet ♡</p>'; return; }
-  currentId = p.id;
-  $('pp-stage').innerHTML = bookHTML(p) + aboutHTML(p);
-  document.querySelectorAll('.pp-tab').forEach(t => {
-    const on = t.dataset.id === p.id;
-    t.classList.toggle('active', on);
-    t.setAttribute('aria-selected', String(on));
-  });
-  if (shown().length > 1) { try { history.replaceState(null, '', '#' + encodeURIComponent(p.id)); } catch (e) {} }
+function renderAll() {
+  const list = shown();
+  const stage = $('pp-stage');
+  if (!list.length) { stage.innerHTML = '<p style="font-family:Caveat,cursive;color:var(--brown);font-size:1.2rem;text-align:center">no passports issued yet ♡</p>'; return; }
+  stage.classList.toggle('multi', list.length > 1);
+  stage.innerHTML = list.map(p => `<div class="pp-col" id="pp-${esc(p.id)}">${bookHTML(p)}${aboutHTML(p)}</div>`).join('');
 }
 
 window.addEventListener('DOMContentLoaded', () => {
   buildNav('passport.html');
-  const list = shown();
-  if (list.length > 1) {
-    const tabs = $('pp-tabs');
-    tabs.hidden = false;
-    tabs.innerHTML = list.map(p => `<button type="button" class="pp-tab" role="tab" data-id="${esc(p.id)}">${esc(p.emoji || '🧸')} ${esc(p.tabLabel || p.id)}</button>`).join('');
-    tabs.querySelectorAll('.pp-tab').forEach(b => b.addEventListener('click', () => show(b.dataset.id)));
-  }
+  renderAll();
+  // passport.html#second scrolls to that passport
   let hash = '';
   try { hash = decodeURIComponent(location.hash.slice(1)); } catch (e) {}
-  show(hash);
+  const target = hash && document.getElementById('pp-' + hash);
+  if (target && shown().length > 1) setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 400);
 });
 </script>
 </body>
