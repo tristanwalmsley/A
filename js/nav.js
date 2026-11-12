@@ -148,6 +148,10 @@ function isContractSigned() {   // YOUR half of the contract
 }
 
 function isPageUnlocked(page) {
+  if (page === 'year_in_review.html') {   // 2026 Wrapped opens on 27 Dec (test with ?date=YYYY-MM-DD)
+    const m = location.search.match(/[?&]date=(\d{4}-\d{2}-\d{2})/);
+    return (m ? new Date(m[1] + 'T12:00:00') : new Date()) >= new Date('2026-12-27T00:00:00');
+  }
   if (page === 'index.html' || page === 'membership.html') return true;
   if (page === 'contract.html') return hasMembership();
   // contract-gated pages also open if she has already reached the final gift
