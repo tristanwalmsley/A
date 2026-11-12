@@ -78,7 +78,7 @@ const NAV = [
     id: 'contract',
     label: 'Contracts',
     glyph: '✎',
-    blurb: 'the yearly agreements',
+    blurb: 'yearly agreements',
     items: [
       { href: 'membership.html', label: '2026-27 Membership' },
       { href: 'contract.html',   label: '2026-27 Contract' },
@@ -102,15 +102,6 @@ const NAV = [
     items: [
       { href: 'christmas_2026.html', label: 'Christmas 2026' },
       { href: 'christmas_2026_gifts.html', label: 'Gifts' },
-    ],
-  },
-  {
-    id: 'wrapped26',
-    label: '2026 Wrapped',
-    glyph: '✨',
-    blurb: 'your year, played back',
-    items: [
-      { href: 'year_in_review.html', label: '2026 Wrapped' },
     ],
   },
   {
