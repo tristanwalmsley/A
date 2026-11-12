@@ -239,9 +239,9 @@ function aboutHTML(p) {
   const trips = stamps.filter(s => s.type === 'arrival').length;
   const homes = new Set(stamps.map(s => s.place).filter(Boolean)).size;
   const counters = p.counters || [
-    { num: trips, label: trips === 1 ? 'trip taken' : 'trips taken' },
-    { num: homes, label: homes === 1 ? 'home visited' : 'homes visited' },
-    { num: 'Many', label: 'more to go' },
+    { num: trips, label: trips === 2 ? 'trip taken' : 'trips taken' },
+    { num: homes, label: homes === 2 ? 'home visited' : 'homes visited' },
+    { num: 'SO', label: 'more to go' },
   ];
   return `
   <div class="about-section">
