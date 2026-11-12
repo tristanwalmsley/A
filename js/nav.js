@@ -61,6 +61,7 @@ const NAV = [
       { href: 'postcard_gallery.html', label: 'Postcard Gallery' },
       { href: 'letters_archive.html',  label: 'Letters Archive' },
       { href: 'videos.html',           label: 'Videos' },
+      { href: 'music.html',            label: 'Music' },
     ],
   },
   {
