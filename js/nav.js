@@ -95,6 +95,15 @@ const NAV = [
     ],
   },
   {
+    id: 'wrapped26',
+    label: '2026 Wrapped',
+    glyph: '✨',
+    blurb: 'your year, played back',
+    items: [
+      { href: 'year_in_review.html', label: '2026 Wrapped' },
+    ],
+  },
+  {
     id: 'bday26',
     label: 'Birthday 2026',
     soloLabel: 'Birthday 2026',   // label used when only "Start here" is unlocked
