@@ -85,6 +85,16 @@ const NAV = [
     ],
   },
   {
+    id: 'recap',
+    label: 'Wrapped',
+    glyph: '🕛',
+    blurb: 'yearly recaps',
+    items: [
+      { href: 'year_in_review.html', label: '2026 Wrapped' },
+      { href: 'year_in_review2.html', label: '2027 Wrapped' },
+    ],
+  },
+  {
     id: 'xmas26',
     label: 'Christmas 2026',
     glyph: ':christmas_tree:',
