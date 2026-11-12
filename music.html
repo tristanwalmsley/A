@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Music ♡ Besties</title>
+<title>Besties ♡</title>
 <link rel="icon" type="image/x-icon" href="media/shared/images/site_icon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/tokens.css">
@@ -23,6 +23,7 @@
 .wrap{max-width:960px;margin:0 auto;padding:0 1.5rem}
 
 /* ---------- THE RECORD PLAYER ---------- */
+.deck[hidden]{display:none}
 .deck{scroll-margin-top:4.5rem;display:grid;grid-template-columns:minmax(200px,280px) 1fr;gap:2rem;align-items:center;
   background:var(--paper);border:1px solid var(--tan);box-shadow:6px 6px 0 var(--warm);padding:1.8rem 2rem;position:relative}
 .deck::before{content:'';position:absolute;inset:8px;border:1px dashed var(--warm);pointer-events:none}
@@ -72,11 +73,43 @@
 .lyrics{grid-column:1/-1;display:none;border-top:1px dashed var(--tan);padding-top:1.2rem;position:relative}
 .lyrics.open{display:block;animation:fadeUp .4s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.lyrics pre{font-family:var(--font-body);font-style:italic;font-size:1.12rem;line-height:1.85;color:var(--deep);white-space:pre-wrap;text-align:center;max-width:36rem;margin:0 auto}
+.ly{position:relative;max-width:36rem;margin:0 auto;font-family:var(--font-body);font-style:italic;font-size:1.12rem;line-height:1.85;color:var(--deep);text-align:center}
+.ly-sec{margin:0 0 1.6rem;padding:.2rem .8rem}
+.ly-sec:last-child{margin-bottom:0}
+.ly-label{display:block;font-family:var(--font-hand);font-style:normal;font-size:.95rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--rose);margin-bottom:.35rem}
+.ly-stanza{white-space:pre-line}
+.ly-stanza+.ly-stanza{margin-top:1rem}
+.ly-sec.chorus{background:color-mix(in srgb,var(--gold) 13%,transparent);border-top:1px solid color-mix(in srgb,var(--gold) 45%,transparent);border-bottom:1px solid color-mix(in srgb,var(--gold) 45%,transparent);padding:.9rem 1.2rem;font-weight:600}
+.ly-sec.chorus .ly-label{color:var(--gold-dark)}
 
 /* ---------- SECTIONS ---------- */
 .sec-title{font-family:var(--font-display);font-size:1.05rem;font-style:italic;color:var(--brown);margin:2.6rem 0 1.1rem;padding-bottom:.5rem;border-bottom:1px dashed var(--warm);display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}
 .sec-title span{font-family:var(--font-hand);font-size:.8rem;color:var(--tan);letter-spacing:2px;text-transform:uppercase;font-style:normal}
+
+/* ---------- SONGBOOK (written songs: lyrics, no audio needed) ---------- */
+.book{display:flex;flex-direction:column;gap:.9rem}
+.sheet{background:var(--paper);border:1px solid var(--tan);box-shadow:4px 4px 0 var(--warm);scroll-margin-top:4.5rem;
+  opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s cubic-bezier(.22,1,.36,1),box-shadow .2s}
+.sheet.visible{opacity:1;transform:none}
+.sheet summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:2.6rem 1fr auto;gap:.9rem;align-items:center;padding:1rem 1.2rem;transition:background .2s}
+.sheet summary::-webkit-details-marker{display:none}
+.sheet summary:hover{background:var(--warm)}
+.sheet summary:focus-visible{outline:3px solid var(--gold);outline-offset:-3px}
+.sh-emoji{font-size:1.9rem;text-align:center}
+.sh-title{font-family:var(--font-display);font-size:1.15rem;font-weight:700;color:var(--deep);line-height:1.3}
+.sh-sub{font-family:var(--font-hand);font-size:.95rem;letter-spacing:.5px;color:var(--brown);margin-top:.1rem}
+.sh-blurb{font-size:.98rem;line-height:1.5;color:var(--brown);font-style:italic;margin-top:.2rem}
+.sh-open{font-family:var(--font-hand);font-size:.95rem;letter-spacing:1px;color:var(--rose);white-space:nowrap}
+.sh-open::after{content:' ▾'}
+.sheet[open] .sh-open::after{content:' ▴'}
+.sheet[open]{box-shadow:5px 5px 0 var(--gold);border-color:var(--gold)}
+.sheet-body{position:relative;padding:1.6rem 1.5rem 1.8rem;border-top:1px dashed var(--tan);animation:fadeUp .4s ease}
+.sheet-body::before{content:'';position:absolute;inset:8px;border:1px dashed var(--warm);pointer-events:none}
+.sheet-body .ly{font-size:1.15rem;line-height:1.9}
+.sheet-body .soon-note{position:relative;text-align:center;font-family:var(--font-hand);font-size:1.15rem;color:var(--brown)}
+.sheet-sig{position:relative;display:block;text-align:center;font-family:var(--font-hand);font-size:1.7rem;font-weight:700;color:var(--rose);margin-top:1.2rem}
+.sheet-listen{position:relative;display:block;margin:1.1rem auto 0;font-family:var(--font-hand);font-size:1rem;letter-spacing:.5px;padding:.3rem 1.1rem;border:1.5px solid var(--rose);background:transparent;color:var(--rose);cursor:pointer;transition:all .2s}
+.sheet-listen:hover{background:var(--rose);color:var(--paper)}
 
 /* ---------- TRACKLIST ---------- */
 .tracks{display:flex;flex-direction:column;gap:.55rem}
@@ -148,9 +181,12 @@
   .info{text-align:center}
   .controls{justify-content:center}
   .track{grid-template-columns:1.8rem 1fr;gap:.7rem}
+  .sheet summary{grid-template-columns:2.2rem 1fr;gap:.7rem}
+  .sh-open{display:none}
+  .sheet-body{padding:1.4rem 1rem 1.6rem}
   .tk-len{display:none}
 }
-@media (prefers-reduced-motion:reduce){.vinyl{animation:none}.arm,.track{transition:none}.eq i{animation:none;height:70%}}
+@media (prefers-reduced-motion:reduce){.vinyl{animation:none}.arm,.track,.sheet{transition:none}.eq i{animation:none;height:70%}}
 </style>
 </head>
 <body>
@@ -166,7 +202,7 @@
 
 <!-- THE RECORD PLAYER -->
 <div class="wrap">
-  <section class="deck" id="deck" aria-label="Music player">
+  <section class="deck" id="deck" aria-label="Music player" hidden>
     <div class="platter">
       <div class="vinyl"><div class="vinyl-label" id="label">🎵</div></div>
       <div class="arm"></div>
@@ -188,9 +224,10 @@
       </div>
       <button class="lyr-toggle" id="lyr-toggle" type="button" aria-expanded="false" aria-controls="lyrics" hidden>♪ Lyrics</button>
     </div>
-    <div class="lyrics" id="lyrics"><pre id="lyrics-text"></pre></div>
+    <div class="lyrics" id="lyrics"><div class="ly" id="lyrics-text"></div></div>
   </section>
 
+  <div id="book-sec"></div>
   <div id="tracks-sec"></div>
   <div id="pl-sec"></div>
   <div id="mv-sec"></div>
@@ -207,39 +244,141 @@
 <script src="js/video_data.js"></script>
 <script>
 // ══════════════════════════════════════════════════════════════════
-// SONGS - add a song by adding one line. Order = order on the page.
+// SONGS - written songs are shown as lyric sheets. Add a recording later and the
+// record player + a "Listen" button switch on automatically for that song.
+// Order = order on the page.
 //
 //   id        unique, no spaces                (used in the share link: music.html#id)
 //   cat       'originals' | 'remixes'          (see SONG_CATS below)
-//   title     shown on the record + list
+//   title     shown on the sheet
 //   by        optional credit line, e.g. 'written by Tristan'
 //   date      free text, e.g. 'Dec 2026'
 //   blurb     one line under the title (optional)
-//   length    '3:21' (optional)
-//   emoji     what's printed on the record label (optional)
-//   cover     optional image path, printed on the record label instead of the emoji
+//   emoji     shown on the sheet (and on the record label once there is audio)
+//   lyrics    the words. Use backticks so line breaks are kept. Empty = "lyrics coming soon".
+//             Mark the parts with a line in square brackets, e.g. [Verse 1] [Pre-Chorus] [Chorus]
+//             [Verse 2] [Bridge] [Final Chorus] [Outro]. Anything called "Chorus" is highlighted.
+//             A blank line starts a new stanza. Lines with no label above them just show as plain lines.
+//   sign      optional sign-off shown under the lyrics, e.g. '- Tristan'
+//   -- OPTIONAL, only once you have a recording --
 //   src       path to an mp3/m4a on the site, e.g. 'media/music/22_remix.mp3'
 //             (keep each file under 25 MB - the Cloudflare assets limit)
-//   lyrics    optional. Use backticks for several lines. Shows under the player.
-//   ready     set false while the file isn't uploaded yet (shows as "coming soon")
+//   length    '3:21'
+//   cover     image path printed on the record label instead of the emoji
 // ══════════════════════════════════════════════════════════════════
 const SONG_CATS = [
   { id: 'originals', label: 'Written for you', blurb: 'songs from scratch' },
-  { id: 'remixes',   label: 'Remixes',         blurb: 'old favourites, reimagined' },
+  { id: 'remixes',   label: 'Remixes',         blurb: 'old favourites, rewritten' },
 ];
 
 const SONGS = [
   // ---- Written for you ----
-  // Rename the title, upload the file to media/music/, then delete "ready: false" to switch it on.
-  { id: 'christmas-song', cat: 'originals', title: 'Ann\'s Christmas Song', by: 'written for Christmas 2026', date: 'Dec 2026',
+  // Rename the title and paste the lyrics between the backticks.
+  { id: 'christmas-song', cat: 'originals', title: 'Thank You For Being You', by: 'written for Christmas 2026', date: 'Dec 2026',
     blurb: 'A song written for Ann, for this drop.', emoji: '🎄',
-    src: 'media/music/christmas_song.mp3', ready: false,
-    lyrics: `` },
+    lyrics: `[Verse 1]
+I'd grown accustomed to the quiet,
+To keeping half my world unseen,
+To being who I thought I had to be,
+Not knowing who I might have been.
+
+Then you came in without a warning,
+No grand arrival, nothing new;
+Just little moments, slowly changing
+What I thought a day could do.
+
+[Pre-Chorus]
+You couldn't have known what you were changing.
+I doubt you thought that much at all.
+But sometimes the smallest things can reach us
+When we have nothing left to spare.
+
+[Chorus 1]
+So thank you for the things you never noticed,
+The days you made a little less alone;
+For every laugh that found me in the silence,
+For making somewhere feel a little like home.
+
+You may never see the difference from your side,
+Or know the weight of what you gave;
+But there are parts of me that might have stayed in hiding
+If you hadn't helped me make them space.
+
+[Verse 2]
+Somewhere between the jokes and stories,
+The conversations without end,
+I found myself becoming someone
+I was no longer scared to let you see.
+
+And now the memories come in fragments:
+The kind of things that sound so small,
+But somehow, when I think about them,
+They're not so small at all.
+
+You never tried to be a saviour.
+You never asked to change my life.
+You simply let me know you as you are,
+And gave me room to do the same.
+
+[Chorus 2]
+So thank you for the things you never noticed,
+For all the ordinary days made bright;
+For knowing how to make me laugh at nothing,
+For being there without needing to know why.
+
+I used to think that change arrived like thunder,
+That you'd recognise it when it came;
+But sometimes it is someone being themselves
+Who leaves you different all the same.
+
+[Bridge]
+There were days I couldn't see beyond the day,
+When tomorrow felt too distant to imagine.
+And I don't know if you could ever understand
+How much it meant to have you there to laugh with.
+
+You gave me something small to look towards,
+A conversation, some ridiculous thing to say;
+A little thread that ran through all the darkness,
+And quietly connected me to another day.
+
+You might remember none of this the way I do.
+To you, perhaps, it was just another evening.
+But I was learning there was still so much to feel,
+In moments I might otherwise have let slip by unseen.
+
+And if I could give you one thing in return,
+It wouldn't be a promise or a grand design;
+Just the chance to see yourself, for once, through my eyes,
+And understand what you've meant to this life of mine.
+
+[Final Chorus]
+So thank you for the things you never noticed,
+For every light you left without a name;
+For all the times you made the world feel different
+Without even knowing anything had changed.
+
+And if the words still fall a little short,
+If this song can't hold the whole of what I mean,
+Then know that somewhere in the person I've become
+Are all the ways you've helped me find myself.
+
+[Outro]
+You never had to move a mountain.
+You never had to know the way.
+You were just there, and that was something
+I could carry into one more day.
+
+So if you ever doubt the good you do,
+Or wonder if the little things come through,
+I hope this song reminds you, when it does,
+That being you was more than enough.`, sign: '' },
 
   // ---- Remixes ----
-  { id: '22-remix', cat: 'remixes', title: '22 (Remix)', date: '',
-    blurb: 'A remix of "22", made for Ann\'s 22nd birthday.', emoji: '💿',
-    src: 'media/music/22_remix.mp3', ready: false },
+  { id: '22-remix', cat: 'remixes', title: '22 (Remix)', by: 'written for Ann\'s 22nd birthday',
+    blurb: 'A remixed version of "22", rewritten for Ann.', emoji: '💿',
+    // Paste the lyrics between the backticks, with [Verse 1] / [Chorus] / etc. lines above each part.
+    lyrics: ``, sign: '' },
 ];
 
 // ══════════════════════════════════════════════════════════════════
@@ -254,6 +393,12 @@ const SONGS = [
 //   YouTube:  open the playlist, copy the address bar   e.g. https://www.youtube.com/playlist?list=PLxxxxxxxx
 // ══════════════════════════════════════════════════════════════════
 const PLAYLISTS = [
+  { id: 'yt-showcase', title: 'Ann Birthday 2026 Showcase Music', blurb: 'The music from the birthday showcase.', emoji: '🎂',
+    url: 'https://www.youtube.com/watch?v=j3Vb7fJqrEc&list=PLFas4EZ2mc-E' },
+  { id: 'sp-24', title: '24 (Ann\'s Version)', emoji: '🎧',
+    url: 'https://open.spotify.com/playlist/0ToueTltbyycE8AWzYZBNx' },
+  { id: 'sp-25', title: '25 (Ann\'s Version)', emoji: '🎧',
+    url: 'https://open.spotify.com/playlist/2JSScTVqFSxlMwt6LysNM0' },
   // { id: 'christmas-spotify', title: 'Christmas Besties', blurb: 'Songs for the winter drop.', emoji: '🎁', url: 'https://open.spotify.com/playlist/PASTE_ID' },
   // { id: 'christmas-youtube', title: 'Christmas (YouTube)', blurb: 'The same vibes, on YouTube.', emoji: '📺', url: 'https://www.youtube.com/playlist?list=PASTE_ID' },
 ];
@@ -275,17 +420,89 @@ const blobCache = new Map();
 const fmt = s => { if (!isFinite(s)) return '0:00'; s = Math.max(0, Math.floor(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 const setStatus = m => { $('status').textContent = m || ''; };
 
-/* ---------- tracklist ---------- */
+/* ---------- lyrics with [Section] labels ---------- */
+function renderLyrics(text, into) {
+  const host = into || document.createElement('div');
+  host.innerHTML = '';
+  let sec = null, stanza = [];
+  const flush = () => { if (stanza.length && sec) { const p = document.createElement('p'); p.className = 'ly-stanza'; p.textContent = stanza.join('\n'); sec.appendChild(p); } stanza = []; };
+  const open = label => {
+    flush();
+    sec = document.createElement('div');
+    sec.className = 'ly-sec' + (label && /chorus|hook|refrain/i.test(label) ? ' chorus' : '');
+    if (label) { const l = document.createElement('span'); l.className = 'ly-label'; l.textContent = label; sec.appendChild(l); }
+    host.appendChild(sec);
+  };
+  String(text || '').replace(/\r/g, '').split('\n').forEach(line => {
+    const m = line.match(/^\s*\[(.+?)\]\s*$/);
+    if (m) { open(m[1].trim()); return; }
+    if (!line.trim()) { flush(); return; }
+    if (!sec) open('');
+    stanza.push(line.trim());
+  });
+  flush();
+  return host;
+}
+
+/* ---------- songbook (lyric sheets) ---------- */
+function renderSongbook() {
+  const host = $('book-sec');
+  host.innerHTML = '';
+  SONG_CATS.forEach((cat, gi) => {
+    const items = SONGS.filter(s => s.cat === cat.id);
+    if (!items.length) return;
+    const sec = document.createElement('div');
+    sec.innerHTML = `<div class="sec-title">${esc(cat.label)} <span>${items.length} song${items.length !== 1 ? 's' : ''} · ${esc(cat.blurb)}</span></div>`;
+    const list = document.createElement('div');
+    list.className = 'book';
+    items.forEach((s, i) => {
+      const el = document.createElement('details');
+      el.className = 'sheet';
+      el.id = 'song-' + s.id;
+      el.style.transitionDelay = (i * .06 + gi * .08) + 's';
+      const hasLyrics = !!(s.lyrics && s.lyrics.trim());
+      const sub = [s.by, s.date].filter(Boolean).join(' · ');
+      el.innerHTML = `
+        <summary>
+          <div class="sh-emoji">${esc(s.emoji || '🎵')}</div>
+          <div><div class="sh-title">${esc(s.title)}</div>
+            ${sub ? `<div class="sh-sub">${esc(sub)}</div>` : ''}
+            ${s.blurb ? `<div class="sh-blurb">${esc(s.blurb)}</div>` : ''}</div>
+          <div class="sh-open">read</div>
+        </summary>
+        <div class="sheet-body"></div>`;
+      const body = el.querySelector('.sheet-body');
+      if (hasLyrics) {
+        const ly = renderLyrics(s.lyrics); ly.className = 'ly'; body.appendChild(ly);
+        if (s.sign) { const sg = document.createElement('span'); sg.className = 'sheet-sig'; sg.textContent = s.sign; body.appendChild(sg); }
+      } else {
+        body.innerHTML = '<p class="soon-note">the lyrics are coming soon ♡</p>';
+      }
+      if (isReady(s)) {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'sheet-listen'; b.textContent = '▶ Listen to it';
+        b.addEventListener('click', () => loadTrack(s.id, true, true));
+        body.appendChild(b);
+      }
+      list.appendChild(el);
+      setTimeout(() => el.classList.add('visible'), 40 + i * 60 + gi * 80);
+    });
+    sec.appendChild(list);
+    host.appendChild(sec);
+  });
+}
+
+/* ---------- tracklist (only songs that have a recording) ---------- */
 function renderTracks() {
   const host = $('tracks-sec');
   host.innerHTML = '';
   let n = 0, shown = 0;
   SONG_CATS.forEach((cat, gi) => {
-    const items = SONGS.filter(s => s.cat === cat.id);
+    const items = SONGS.filter(s => s.cat === cat.id && isReady(s));
     if (!items.length) return;
     const sec = document.createElement('div');
-    const real = items.filter(isReady).length;
-    sec.innerHTML = `<div class="sec-title">${esc(cat.label)} <span>${real} song${real !== 1 ? 's' : ''} · ${esc(cat.blurb)}</span></div>`;
+    const real = items.length;
+    sec.innerHTML = `<div class="sec-title">Recordings: ${esc(cat.label)} <span>${real} track${real !== 1 ? 's' : ''} to listen to</span></div>`;
     const list = document.createElement('div');
     list.className = 'tracks';
     items.forEach((s, i) => {
@@ -326,7 +543,7 @@ function showTrack(s) {
   const hasLyrics = !!(s.lyrics && s.lyrics.trim());
   const tog = $('lyr-toggle');
   tog.hidden = !hasLyrics;
-  $('lyrics-text').textContent = hasLyrics ? s.lyrics.trim() : '';
+  renderLyrics(hasLyrics ? s.lyrics : '', $('lyrics-text'));
   if (!hasLyrics) { $('lyrics').classList.remove('open'); tog.setAttribute('aria-expanded', 'false'); }
 
   document.querySelectorAll('.track').forEach(t => t.classList.toggle('playing', t.dataset.id === s.id));
@@ -505,21 +722,28 @@ function renderMusicVideos() {
 window.addEventListener('DOMContentLoaded', () => {
   buildNav('music.html');
 
+  $('deck').hidden = !playable().length;   // the record player only appears once there is a recording
+  renderSongbook();
   renderTracks();
   renderPlaylists();
   renderMusicVideos();
   syncButtons();
 
   const missing = [];
-  if (!SONGS.some(isReady)) missing.push('Songs');
+  if (!SONGS.length) missing.push('Songs');
+  if (!SONGS.some(isReady)) missing.push('Recordings');
   if (!PLAYLISTS.some(p => parsePlaylist(p))) missing.push('Playlists');
   if (!(typeof VIDEOS !== 'undefined' && VIDEOS.some(v => v.cat === 'music' && v.ready !== false && (v.src || v.yt)))) missing.push('Music Videos');
   if (missing.length) $('future-text').textContent = 'coming soon: ' + missing.join(' · ') + ' ♡';
 
   let hash = '';
   try { hash = decodeURIComponent(location.hash.slice(1)); } catch (e) {}
-  const linked = SONGS.find(s => s.id === hash && isReady(s));
-  if (linked) loadTrack(linked.id, false, false);   // opens it ready to press play (browsers block autoplay on page load)
+  const linked = SONGS.find(s => s.id === hash);
+  if (linked && isReady(linked)) loadTrack(linked.id, false, false);   // opens it ready to press play (browsers block autoplay on page load)
+  else if (linked) {                                                   // written song: open its lyric sheet
+    const sheet = document.getElementById('song-' + linked.id);
+    if (sheet) { sheet.open = true; setTimeout(() => sheet.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300); }
+  }
 });
 </script>
 </body>
