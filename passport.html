@@ -117,11 +117,11 @@
 //               are counted from the stamps, plus "Many more to go".
 // ══════════════════════════════════════════════════════════════════
 const PASSPORTS = [
-  { id: 'beans', tabLabel: 'Beans', emoji: ':teddy_bear:',
+  { id: 'beans', tabLabel: 'Beans', emoji: '🧸',
     country: 'Lord Nooks Republic', title: 'TRAVEL DOCUMENT', subtitle: 'Bestie Ambassador',
     fields: [
-      ['Legal Name', 'Tristan'], ['Given name', 'lil Beans Guy'],
-      ['Nationality', 'Anglo-Dutch'], ['Issued', '15 Jul 2026'],
+      ['Legal Name', 'Tristan'], ['Nickname', 'lil Beans Guy'],
+      ['Nationality', 'Anglo-Dutch'], ['Issued', '15 Jul 2025'],
       ['Status', 'Ambassador'], ['Passport No.', 'JVM-327'],
     ],
     stamps: [
@@ -136,21 +136,16 @@ const PASSPORTS = [
     ],
     about: { title: 'About the Plushie Tradition', paragraphs: [
       'This little plushie is the start of something that will hopefully go on for a long time. It lives at your place for six months, then comes home to me for six months - back and forth, moving twice a year, accumulating stamps in this passport.',
-    ],
-    counters: [
-      { num: trips, label: trips === 2 ? 'trip taken' : 'trips taken' },
-      { num: homes, label: homes === 2 ? 'home visited' : 'homes visited' },
-      { num: 'SO', label: 'more to go' },
-    ], },
+    ] },
   },
 
   // ---- The second plushie ----
   // Fill in the "???" bits, then delete the line "ready: false" to show it. Until then nobody sees it.
-  { id: 'second', ready: true, tabLabel: '???', emoji: ':teddy_bear:',
+  { id: 'second', ready: true, tabLabel: '???', emoji: '🧸',
     country: 'Lord Nooks Republic', title: 'TRAVEL DOCUMENT', subtitle: 'Bestie Ambassador',
     cover: { bg: '#1b2f55', gold: '#d9b44a' },
     fields: [
-      ['Legal Name', 'Kiki'], ['Given name', 'lil Diva'],
+      ['Legal Name', 'Kiki'], ['Nickname', 'lil Diva'],
       ['Nationality', 'Bri\'ish'], ['Issued', '12 Nov 2026'],
       ['Status', 'Ambassador'], ['Passport No.', 'RLE-235'],
     ],
@@ -249,9 +244,9 @@ function aboutHTML(p) {
   const trips = stamps.filter(s => s.type === 'arrival').length;
   const homes = new Set(stamps.map(s => s.place).filter(Boolean)).size;
   const counters = p.counters || [
-    { num: trips, label: trips === 2 ? 'trip taken' : 'trips taken' },
-    { num: homes, label: homes === 2 ? 'home visited' : 'homes visited' },
-    { num: 'SO', label: 'more to go' },
+    { num: trips, label: trips === 1 ? 'trip taken' : 'trips taken' },
+    { num: homes, label: homes === 1 ? 'home visited' : 'homes visited' },
+    { num: 'Many', label: 'more to go' },
   ];
   return `
   <div class="about-section">
