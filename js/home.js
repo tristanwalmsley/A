@@ -1142,11 +1142,11 @@ function initWeeklyCorkboard(){
 }
 
 // ---------- EVERYWHERE TO GO: every page in NAV as a postage stamp ----------
-const CAT_COLOR = { story:'#b86858', media:'#6f9466', fun:'#c8943a', bday26:'#8a6fa8', contract:'#7a5230' };
+const CAT_COLOR = { story:'#b86858', media:'#6f9466', fun:'#c8943a', bday26:'#8a6fa8', contract:'#7a5230', wrapped26:'#d9783f' };
 const GLYPH = {
   'our_journey.html':'🗺', 'us.html':'♡', 'reasons.html':'💌',
   'passport.html':'✈', 'postcard_gallery.html':'🏞', 'letters_archive.html':'✉',
-  'bestle.html':'🔤', 'christmas_2026.html':'🎄', 'christmas_2026_gifts.html':'🎁', 
+  'bestle.html':'🔤', 'christmas_2026.html':'🎄', 'year_in_review.html':'✨', 'christmas_2026_gifts.html':'🎁', 
   'tier_list.html':'🏆', 'birthday_2026_showcase.html':'📺', 'birthday_2026.html':'🎈', 'birthday_2026_gifts.html':'🎁',
   'birthday_2026_quiz.html':'❓', 'birthday_2026_thank_you.html':'💛', 'membership.html':'📜', 'contract.html':'✎'
 };
