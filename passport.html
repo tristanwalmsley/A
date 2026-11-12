@@ -136,7 +136,12 @@ const PASSPORTS = [
     ],
     about: { title: 'About the Plushie Tradition', paragraphs: [
       'This little plushie is the start of something that will hopefully go on for a long time. It lives at your place for six months, then comes home to me for six months - back and forth, moving twice a year, accumulating stamps in this passport.',
-    ] },
+    ],
+    counters: [
+      { num: trips, label: trips === 2 ? 'trip taken' : 'trips taken' },
+      { num: homes, label: homes === 2 ? 'home visited' : 'homes visited' },
+      { num: 'SO', label: 'more to go' },
+    ], },
   },
 
   // ---- The second plushie ----
@@ -159,7 +164,12 @@ const PASSPORTS = [
     ],
     about: { title: 'About this plushie', paragraphs: [
       'After searching far and wide for 3 months, the perfect plushie was finally found and they joined the plushie tradition in October 2026.',
-    ] },
+    ],
+    counters: [
+      { num: trips, label: trips === 1 ? 'trip taken' : 'trips taken' },
+      { num: homes, label: homes === 2 ? 'home visited' : 'homes visited' },
+      { num: 'SO', label: 'more to go' },
+    ], },
   },
 ];
 
