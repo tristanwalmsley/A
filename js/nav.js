@@ -175,7 +175,7 @@ function getNavCategories() {
     label: cat.label,
     glyph: cat.glyph || '♡',
     blurb: cat.blurb || '',
-    items: cat.items.map(i => {
+    items: cat.items.filter(i => i.href !== 'year_in_review.html' || isPageUnlocked('year_in_review.html')).map(i => {   // Wrapped stays invisible until it opens
       const key = i.matchHref || i.href;
       return { href: i.href, label: i.label, key, unlocked: isPageUnlocked(key) };
     }),
