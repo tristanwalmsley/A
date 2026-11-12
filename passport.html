@@ -117,18 +117,18 @@
 //               are counted from the stamps, plus "Many more to go".
 // ══════════════════════════════════════════════════════════════════
 const PASSPORTS = [
-  { id: 'beans', tabLabel: 'Beans', emoji: '🧸',
-    country: 'Lord Nooks Republic', title: 'TRAVEL DOCUMENT', subtitle: 'Bestie Ambassador · First Class',
+  { id: 'beans', tabLabel: 'Beans', emoji: ':teddy_bear:',
+    country: 'Lord Nooks Republic', title: 'TRAVEL DOCUMENT', subtitle: 'Bestie Ambassador',
     fields: [
-      ['Legal Name', 'Tristan'], ['Nickname', 'Beans'],
-      ['Nationality', 'Anglo-Dutch'], ['Issued', '15 Jul 2025'],
-      ['Status', 'Ambassador'], ['Passport No.', 'BFF-003'],
+      ['Legal Name', 'Tristan'], ['Given name', 'Lil Beans Guy'],
+      ['Nationality', 'Anglo-Dutch'], ['Issued', '15 Jul 2026'],
+      ['Status', 'Ambassador'], ['Passport No.', 'JVM-327'],
     ],
     stamps: [
       { type: 'departure', place: 'Preston, UK',     date: 'Jul 2025', note: 'First ever departure. The plushie begins its journey - packed carefully inside a Heinz Beans can, which is a perfect home.' },
       { type: 'arrival',   place: 'The Netherlands', date: 'Aug 2025', note: 'First landing at Ann\'s, to hide in a box until ready to be opened.' },
-      { type: 'departure', place: 'The Netherlands', date: 'Christmas 2026', future: true, note: 'First return journey - heading back to Tristan for Christmas.' },
-      { type: 'arrival',   place: 'Preston, UK',     date: 'Christmas 2026', future: true, note: 'Home for Christmas. First full round trip complete.' },
+      { type: 'departure', place: 'The Netherlands', date: 'Dec 2026', note: 'First return journey - heading back to Tristan for Christmas.' },
+      { type: 'arrival',   place: 'Preston, UK',     date: 'Dec 2026', note: 'Home for Christmas. First full round trip complete.' },
     ],
     mrz: [
       'P<FRP<LITTLE<GUY<<THE<PLUSHIE<<<<<<<<<<<<<<<<<',
@@ -136,26 +136,25 @@ const PASSPORTS = [
     ],
     about: { title: 'About the Plushie Tradition', paragraphs: [
       'This little plushie is the start of something that will hopefully go on for a long time. It lives at your place for six months, then comes home to me for six months - back and forth, moving twice a year, accumulating stamps in this passport.',
-      'Every journey it makes is a tiny physical reminder that we\'re still very much in each other\'s lives, even when we\'re hundreds of miles apart.',
     ] },
   },
 
   // ---- The second plushie ----
   // Fill in the "???" bits, then delete the line "ready: false" to show it. Until then nobody sees it.
-  { id: 'second', ready: false, tabLabel: '???', emoji: '🧸',
-    country: 'Lord Nooks Republic', title: 'TRAVEL DOCUMENT', subtitle: 'Bestie Ambassador · ???',
+  { id: 'second', ready: true, tabLabel: '???', emoji: ':teddy_bear:',
+    country: 'Lord Nooks Republic', title: 'TRAVEL DOCUMENT', subtitle: 'Bestie Ambassador',
     cover: { bg: '#1b2f55', gold: '#d9b44a' },
     fields: [
-      ['Legal Name', '???'], ['Nickname', '???'],
-      ['Nationality', '???'], ['Issued', '???'],
-      ['Status', 'Ambassador'], ['Passport No.', 'BFF-004'],
+      ['Birth Name', 'Kiki'], ['Legal name', '???'], ['Nickname', '???'],
+      ['Nationality', '???'], ['Issued', '12 Nov 2026'],
+      ['Status', 'Ambassador'], ['Passport No.', 'RLE-235'],
     ],
     stamps: [
-      // { type: 'departure', place: '???', date: 'Dec 2026', note: '???' },
-      // { type: 'arrival',   place: '???', date: 'Dec 2026', note: '???' },
+      { type: 'departure', place: 'Preston, UK',     date: 'Dec 2026', note: 'First ever departure. This plushie begins its journey packed carefully, joining the tradition.' },
+      { type: 'arrival',   place: 'The Netherlands', date: 'Dec 2026', note: 'First landing at Ann\'s, to hide in a box until ready to be opened.' },
     ],
     about: { title: 'About this plushie', paragraphs: [
-      '???',
+      'After searching far and wide for 3 months, the perfect plushie was finally found and they joined the plushie tradition in October 2026.',
     ] },
   },
 ];
