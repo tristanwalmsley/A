@@ -4,10 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#1c1204">
-<title>2026 Wrapped ♡ Besties</title>
+<title>Besties ♡</title>
 <link rel="icon" type="image/x-icon" href="media/shared/images/site_icon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500..800;1,9..144,400..700&family=DM+Sans:wght@400;500;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
 <script src="js/bestie_storage.js"></script>
+<script src="js/nav.js"></script>
 <style>
 *{box-sizing:border-box}
 html,body{height:100%;margin:0;overflow:hidden;background:#120a03;color:#fff8ea;font-family:'DM Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
@@ -78,7 +79,7 @@ html,body{height:100%;margin:0;overflow:hidden;background:#120a03;color:#fff8ea;
 <script>
 (function(){
 /* ================= EDIT ME ================= */
-const YEAR = 2026, MET = '2023-01-15', UNLOCK = '2026-12-01';   // add ?preview to the URL to view early, ?s=3 to jump to a slide
+const YEAR = 2026, MET = '2023-01-15', UNLOCK = '2026-12-27';   // opens on this day. ?preview skips the lock, ?date=2026-12-27 fakes the date, ?s=3 jumps to a slide
 const ST = { hours:588, postcards:7, videos:7, birthdays:2, businesses:1 };   // one place for every number
 // pal = [dark, glow, accent]; mode = bokeh | stars | confetti; dur = ms on screen. Slides with no data are skipped.
 const PAL = { warm:['#1c0f05','#8a4a14','#ffc95e'], rose:['#210a16','#9c3358','#ff9db9'], sage:['#06180f','#1f6a50','#9ff2c6'], night:['#070b22','#2e3590','#a9c0ff'], gold:['#171003','#7a5510','#ffe08a'] };
@@ -101,9 +102,10 @@ const SLIDES = [
 ].filter(s => s.t !== 'awards' || s.items.length);
 /* ============================================ */
 
+try{ recordVisit('year_in_review.html'); }catch(e){}   // lets the home page clear its "new" tag and remember this page
 const $ = id => document.getElementById(id), esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, stage = $('stage'), story = $('story');
-const now = new Date(), unlock = new Date(UNLOCK + 'T00:00:00'), preview = /preview/.test(location.search);
+const dm = location.search.match(/[?&]date=(\d{4}-\d{2}-\d{2})/), now = dm ? new Date(dm[1] + 'T12:00:00') : new Date(), unlock = new Date(UNLOCK + 'T00:00:00'), preview = /preview/.test(location.search);
 const A = (d, c) => 'class="a' + (c ? ' ' + c : '') + '" style="--d:' + d + 's"';
 
 /* ---------- canvas backdrop ---------- */
@@ -178,6 +180,7 @@ addEventListener('keydown', e => { if(e.key === 'ArrowRight' || e.key === ' '){ 
 $('pz').onclick = () => { paused = !paused; $('pz').textContent = paused ? 'play ▶' : 'pause ❚❚'; };
 if(reduce) $('pz').textContent = 'play ▶';
 const q = +(location.search.match(/[?&]s=(\d+)/) || [])[1] || 0;
+try{ localStorage.setItem('wrapped26_seen', '1'); }catch(e){}   // lets the home card switch to "watch again"
 go(q); requestAnimationFrame(frame);
 })();
 </script>
