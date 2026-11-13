@@ -995,7 +995,7 @@ const BADGES = [
     } },
 
   // ---- Bestle: the weekly word game. Solve it (and solve it faster) to prestige. Results come from bestle.html ----
-  { id:'bestle', name:'Bestle Beginner', glyph:'\uD83D\uDFE9', celebrateOnVisit:true,
+  { id:'bestle', name:'Bestle Beginner', glyph:'\uD83D\uDD24', celebrateOnVisit:true,
     ladder:['Bestle Beginner', 'Wordsmith', 'Word Wizard', 'Lexicon Legend', 'Dictionary Defier', 'Celestial Linguist'],
     hint:'solve the weekly Bestle',
     level: () => bdgBestleLevel(),
@@ -1008,33 +1008,80 @@ const BADGES = [
       'Twenty-six words. Half a year of Mondays, fourteen of them in four guesses or fewer and six in three or fewer.<br><br>The dictionary is scared of you.',
       'Forty words solved, twenty-four in four guesses or fewer, twelve in three or fewer.<br><br>There is nothing left to teach you. Celestial, obviously.'
     ][Math.min(lv, 6) - 1],
-    // six tiles flip over one by one to spell BESTLE, then her real numbers appear underneath
+    // a real Wordle board plays out - LISTEN, then BESTLE (scored with the game's own rules) - the winning row bounces,
+    // then a guess-distribution chart of her actual solves slides in beneath it, and the medal rises
     play(done, lv){
       const o = dimOverlay();
       const stage = bdgEl('div');
-      stage.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.1rem;pointer-events:none';
-      const row = bdgEl('div');
-      row.style.cssText = 'display:flex;gap:8px';
-      const letters = 'BESTLE', colours = ['var(--sage-dark)', 'var(--gold)', 'var(--sage-dark)', 'var(--sage-dark)', 'var(--gold)', 'var(--sage-dark)'];
-      const tiles = letters.split('').map(() => {
-        const t = bdgEl('div');
-        t.style.cssText = 'width:clamp(40px,12vw,56px);aspect-ratio:1;display:grid;place-items:center;border:2px solid var(--tan);background:var(--paper);color:var(--paper);font-family:var(--font-display);font-weight:700;font-size:clamp(1.4rem,6vw,1.9rem)';
-        row.appendChild(t); return t;
+      stage.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.3rem;pointer-events:none;padding:1rem';
+
+      const ANSWER = 'BESTLE', GUESSES = ['LISTEN', 'BESTLE'];
+      const COLOURS = { ok:'var(--sage-dark)', near:'var(--gold)', miss:'var(--brown)' };
+      const scoreGuess = g => {
+        const res = Array(g.length).fill('miss'), left = {};
+        for(let i = 0; i < g.length; i++){ if(g[i] === ANSWER[i]) res[i] = 'ok'; else left[ANSWER[i]] = (left[ANSWER[i]] || 0) + 1; }
+        for(let i = 0; i < g.length; i++){ if(res[i] !== 'ok' && left[g[i]] > 0){ res[i] = 'near'; left[g[i]]--; } }
+        return res;
+      };
+      const board = bdgEl('div');
+      board.style.cssText = 'display:grid;gap:6px';
+      const rows = GUESSES.map(g => {
+        const r = bdgEl('div'); r.style.cssText = 'display:flex;gap:6px;justify-content:center';
+        const tiles = g.split('').map(() => {
+          const t = bdgEl('div');
+          t.style.cssText = 'width:clamp(40px,12vw,62px);aspect-ratio:1;display:grid;place-items:center;border:2px solid var(--tan);background:var(--paper);color:var(--deep);font-family:var(--font-display);font-weight:700;font-size:clamp(1.3rem,5.5vw,2rem)';
+          r.appendChild(t); return t;
+        });
+        board.appendChild(r); return tiles;
       });
+
+      // her real results as a Wordle-style guess distribution
       const wins = bdgBestleWins();
-      const cap = bdgEl('div', null, wins.length + (wins.length === 1 ? ' word solved' : ' words solved') + (bdgBestleCount(wins, 3) ? ' \u00b7 ' + bdgBestleCount(wins, 3) + ' in three or fewer' : ''));
-      cap.style.cssText = 'font-family:var(--font-hand);font-size:1.5rem;color:var(--cream);opacity:0;transition:opacity .6s';
-      stage.append(row, cap); o.appendChild(stage);
-      tiles.forEach((t, i) => setTimeout(() => {
-        const a = t.animate([{ transform:'rotateX(0)' }, { transform:'rotateX(90deg)' }], { duration:220, fill:'forwards' });
-        a.onfinish = () => {
-          t.textContent = letters[i]; t.style.background = colours[i]; t.style.borderColor = colours[i];
-          t.animate([{ transform:'rotateX(90deg)' }, { transform:'rotateX(0)' }], { duration:220, fill:'forwards' });
-        };
-      }, 500 + i * 260));
-      setTimeout(() => { cap.style.opacity = 1; launchConfetti(); }, 2300);
-      setTimeout(() => stage.animate([{ opacity:1 }, { opacity:0 }], { duration:400, fill:'forwards' }), 3400);
-      bdgPrestige(o, 'bestle', lv, 3700, done);
+      const dist = [1, 2, 3, 4, 5, 6].map(g => wins.filter(x => x === g).length);
+      const peak = Math.max(1, ...dist);
+      const panel = bdgEl('div');
+      panel.style.cssText = 'width:min(320px,86vw);background:var(--paper);border:1px solid var(--tan);box-shadow:5px 5px 0 var(--brown);padding:.8rem 1rem .9rem;opacity:0';
+      const head = bdgEl('div', null, wins.length + (wins.length === 1 ? ' word solved' : ' words solved'));
+      head.style.cssText = 'font-family:var(--font-display);font-style:italic;font-size:1.3rem;color:var(--deep);text-align:center';
+      const sub = bdgEl('div', null, 'how many guesses each one took');
+      sub.style.cssText = 'font-family:var(--font-hand);font-size:1.15rem;color:var(--brown);text-align:center;margin-bottom:.45rem';
+      panel.append(head, sub);
+      const bars = dist.map((n, i) => {
+        const line = bdgEl('div'); line.style.cssText = 'display:flex;align-items:center;gap:.5rem;margin:.2rem 0';
+        const lab = bdgEl('span', null, String(i + 1)); lab.style.cssText = 'width:1.1ch;font-size:.95rem;color:var(--brown)';
+        const bar = bdgEl('div', null, n ? String(n) : '');
+        bar.style.cssText = 'height:20px;display:flex;align-items:center;justify-content:flex-end;padding:0 .45rem;font-size:.85rem;font-weight:700;color:var(--paper);width:0;background:' + (n ? (i < 3 ? 'var(--gold)' : 'var(--sage-dark)') : 'var(--tan)');
+        line.append(lab, bar); panel.appendChild(line);
+        return { bar, w: n ? Math.max(14, Math.round(n / peak * 100)) + '%' : '7px' };
+      });
+      stage.append(board, panel); o.appendChild(stage);
+
+      const at = (ms, fn) => setTimeout(fn, ms);
+      const FLIP = 150;
+      GUESSES.forEach((g, r) => {
+        const t0 = 300 + r * 1550, res = scoreGuess(g), tiles = rows[r];
+        tiles.forEach((t, i) => at(t0 + i * 60, () => {     // type each letter in with a little pop
+          t.textContent = g[i]; t.style.borderColor = 'var(--brown)';
+          t.animate([{ transform:'scale(1.14)' }, { transform:'scale(1)' }], { duration:110 });
+        }));
+        tiles.forEach((t, i) => at(t0 + 610 + i * 110, () => {   // then flip each tile to its colour
+          const a = t.animate([{ transform:'rotateX(0)' }, { transform:'rotateX(90deg)' }], { duration:FLIP, fill:'forwards' });
+          a.onfinish = () => {
+            t.style.background = COLOURS[res[i]]; t.style.borderColor = COLOURS[res[i]]; t.style.color = 'var(--paper)';
+            t.animate([{ transform:'rotateX(90deg)' }, { transform:'rotateX(0)' }], { duration:FLIP, fill:'forwards' });
+          };
+        }));
+      });
+      at(3450, () => {                                      // the winning row bounces, Wordle style
+        rows[1].forEach((t, i) => setTimeout(() => t.animate([{ transform:'translateY(0)' }, { transform:'translateY(-16px)' }, { transform:'translateY(0)' }], { duration:420, easing:'ease-out' }), i * 80));
+        launchConfetti();
+      });
+      at(3900, () => {                                      // her real numbers
+        panel.animate([{ opacity:0, transform:'translateY(14px)' }, { opacity:1, transform:'none' }], { duration:450, fill:'forwards' });
+        bars.forEach(({ bar, w }, i) => setTimeout(() => bar.animate([{ width:'0' }, { width:w }], { duration:500, easing:'ease-out', fill:'forwards' }), 250 + i * 90));
+      });
+      at(5600, () => stage.animate([{ opacity:1 }, { opacity:0 }], { duration:400, fill:'forwards' }));
+      bdgPrestige(o, 'bestle', lv, 6000, done);
     } },
 
 ];
