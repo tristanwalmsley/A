@@ -13,7 +13,15 @@
    add its selector to AMB_TEXT / AMB_ACCENT below. */
 const SCENE_TONE = { midnight:'dark', 'witching-hour':'dark', 'pre-dawn':'dark', dusk:'dark', evening:'dark', sunset:'mid' };
 /* soft gold glow layer (bokeh + dust motes + grain) - the calm cousin of the 2026 Wrapped hero. Colour per tone: */
-const GLOW = { dark:'rgba(255,225,170,.22)', mid:'rgba(255,205,160,.18)', light:'rgba(235,180,80,.16)' };   // bokeh discs: kept faint
+/* how dark each tone is under the wash (drives the navy base layer) and a 3-colour aurora per scene, in scene order.
+   Everything is blended continuously between neighbouring scenes, so nothing ever hard-cuts. */
+const DARKNESS = { dark:1, mid:.25, light:0 };
+const AURORA = [
+  ['#2e3590','#6a2fa0','#c06a1c'], ['#2a2f88','#7a2f9a','#b8601c'], ['#3a3a9a','#a8325a','#d98a3c'],   // midnight, witching hour, pre-dawn
+  ['#ffb8a0','#ffd7a8','#c9a6e8'], ['#bfe3a8','#ffe9a0','#9fd4f0'], ['#ffe28a','#bfe3a8','#ffd0a0'],   // dawn, morning, late morning
+  ['#9fd4f0','#fff2b0','#c8e8d8'], ['#ffd9a0','#f6c8a0','#f0e0a0'], ['#f0a840','#f4b890','#e8806a'],   // midday, afternoon, golden hour
+  ['#d97a7a','#f2a878','#7a5a86'], ['#5a3a9a','#a8325a','#c06a1c'], ['#2e3590','#a8325a','#c06a1c']    // sunset, dusk, evening
+];
 const MOTE = { dark:'rgba(255,232,190,.9)', mid:'rgba(255,215,170,.8)', light:'rgba(225,165,55,.65)' };   // dust motes: small but brighter
 const AMB_TEXT = '.hello,.sec-title,.page-header h1,.page-header h2,.page-header p,.page-header .sub,.page-header .subtitle';
 const AMB_ACCENT = '.since,#where,.sec-count,.resume,.page-header .eyebrow,.page-header .kicker';
@@ -22,7 +30,7 @@ function injectAmbientStyles(){
   const st = document.createElement('style');
   st.id = 'ambient-styles';
   st.textContent = `
-#ambient-wash{position:fixed;inset:0;z-index:-1;pointer-events:none;transition:background 60s linear,opacity 60s linear;overflow:hidden}
+#ambient-wash,#ambient-wash-b{position:fixed;inset:0;z-index:-1;pointer-events:none;transition:background 60s linear,opacity 60s linear;overflow:hidden}
 .ambient-blob{position:absolute;border-radius:50%;filter:blur(65px);opacity:0.45;animation:ambientDrift ease-in-out infinite alternate;transition:background 30s linear}
 @keyframes ambientDrift{from{transform:translate(0,0) scale(1)}to{transform:translate(var(--abx),var(--aby)) scale(1.15)}}
 /* accent blobs - position, size AND colour are all set per-scene by JS, so
@@ -35,22 +43,23 @@ function injectAmbientStyles(){
 .accent-blob-4{--abx:-50px;--aby:65px;animation-duration:31s}
 /* star field - built once, reused by every night-leaning scene; each
    scene just dials the container's opacity up or down (0 by day) */
-#ambient-stars{position:absolute;inset:0;opacity:0;transition:opacity 60s linear}
+#ambient-stars{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity 60s linear}
 .amb-star{position:absolute;border-radius:50%;background:#fff;animation:ambStarTwinkle ease-in-out infinite}
 @keyframes ambStarTwinkle{0%,100%{opacity:var(--s-min,0.15)}50%{opacity:var(--s-max,0.85)}}
 /* glow layer: drifting gold bokeh, rising dust motes, fine grain (all CSS, no canvas) */
-@property --bk{syntax:'<color>';inherits:true;initial-value:rgba(235,180,80,.16)}
+@property --a1{syntax:'<color>';inherits:true;initial-value:#2e3590}
+@property --a2{syntax:'<color>';inherits:true;initial-value:#a8325a}
+@property --a3{syntax:'<color>';inherits:true;initial-value:#c06a1c}
 @property --mk{syntax:'<color>';inherits:true;initial-value:rgba(225,165,55,.65)}
 #ambient-base{position:fixed;inset:0;z-index:-1;pointer-events:none;background:#0e0a28;opacity:0;transition:opacity 60s linear}
-html[data-amb-tone="dark"] #ambient-base{opacity:1}
-html[data-amb-tone="mid"] #ambient-base{opacity:.25}
-#ambient-glow{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;--bk:rgba(235,180,80,.16);--mk:rgba(225,165,55,.65);transition:--bk 60s linear,--mk 60s linear}
-.amb-bokeh{position:absolute;border-radius:50%;background:radial-gradient(circle,var(--bk),transparent 68%);animation:ambBk var(--bd,30s) ease-in-out infinite alternate}
-@keyframes ambBk{to{transform:translate(var(--bx,40px),var(--by,-60px)) scale(1.12)}}
+#ambient-glow{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;--a1:#2e3590;--a2:#a8325a;--a3:#c06a1c;--ao:.34;--mk:rgba(225,165,55,.65);transition:--a1 60s linear,--a2 60s linear,--a3 60s linear,--mk 60s linear}
+.amb-au{position:absolute;width:62vmax;height:62vmax;border-radius:50%;background:var(--c);filter:blur(90px);opacity:var(--ao,.34);transition:opacity 60s linear;animation:ambAu 22s ease-in-out infinite alternate}
+.amb-au:nth-child(1){--c:var(--a1);left:-16vmax;top:-24vmax}.amb-au:nth-child(2){--c:var(--a2);right:-24vmax;top:6vmax;animation-delay:-7s}.amb-au:nth-child(3){--c:var(--a3);left:20vw;bottom:-40vmax;animation-delay:-14s}
+@keyframes ambAu{to{transform:translate(8vmax,6vmax) scale(1.18)}}
 .amb-mote{position:absolute;top:104%;border-radius:50%;background:var(--mk);box-shadow:0 0 6px 1px var(--mk);animation:ambMote var(--bd,30s) linear infinite,ambStarTwinkle var(--bt,4s) ease-in-out infinite}
 @keyframes ambMote{to{transform:translateY(-112vh)}}
 #ambient-grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.08;mix-blend-mode:soft-light;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
-@media(prefers-reduced-motion:reduce){.amb-bokeh,.amb-mote{animation:none}.amb-mote{display:none}}
+@media(prefers-reduced-motion:reduce){.amb-au{animation:none}.amb-mote{animation:none;display:none}}
 /* readability overrides (see SCENE_TONE) */
 html[data-amb-tone="dark"] :is(${AMB_TEXT}){color:#fff1d6!important;text-shadow:0 1px 16px rgba(8,4,30,.65)}
 html[data-amb-tone="dark"] :is(${AMB_ACCENT}){color:#ffd98a!important;text-shadow:0 1px 12px rgba(8,4,30,.65);border-color:rgba(255,217,138,.5)!important}
@@ -63,16 +72,18 @@ function ensureAmbientDOM(){
   if(document.getElementById('ambient-wash')) return;
   const wash = document.createElement('div');
   wash.id = 'ambient-wash';
-  wash.innerHTML = '<div id="ambient-stars"></div>' +
+  wash.innerHTML =
     '<div class="accent-blob accent-blob-1"></div><div class="accent-blob accent-blob-2"></div>' +
     '<div class="accent-blob accent-blob-3"></div><div class="accent-blob accent-blob-4"></div>';
   document.body.prepend(wash);
+  const washB = wash.cloneNode(true); washB.id = 'ambient-wash-b'; wash.after(washB);   // two layers (even/odd scenes) crossfade continuously
+  const stars = document.createElement('div'); stars.id = 'ambient-stars'; washB.after(stars);
   const base = document.createElement('div'); base.id = 'ambient-base'; wash.before(base);   // deep navy under the wash at night, so it reads rich instead of washed-out
   // soft glow layer: bokeh + motes, then a grain sheet (sits just above the wash, below all content)
   const R = (lo, hi) => lo + Math.random() * (hi - lo), glow = document.createElement('div'); glow.id = 'ambient-glow'; let g = '';
-  for(let i = 0; i < 7; i++) g += `<i class="amb-bokeh" style="width:${R(40,130)|0}px;height:${R(40,130)|0}px;left:${R(-5,100)|0}%;top:${R(-5,100)|0}%;--bd:${R(26,48)|0}s;--bx:${R(-60,60)|0}px;--by:${R(-80,40)|0}px;animation-delay:-${R(0,30)|0}s"></i>`;
+  g += '<i class="amb-au"></i><i class="amb-au"></i><i class="amb-au"></i>';   // big soft colour fields, like the Wrapped hero
   for(let i = 0; i < 24; i++){ const z = R(2,4.5).toFixed(1), bd = R(26,60)|0; g += `<i class="amb-mote" style="width:${z}px;height:${z}px;left:${R(0,100)|0}%;--bd:${bd}s;--bt:${R(3,6).toFixed(1)}s;--s-min:.2;--s-max:.9;animation-delay:-${R(0,bd)|0}s,-${R(0,5).toFixed(1)}s"></i>`; }
-  glow.innerHTML = g; wash.after(glow);
+  glow.innerHTML = g; stars.after(glow);
   const grain = document.createElement('div'); grain.id = 'ambient-grain'; glow.after(grain);
 }
 
@@ -290,84 +301,57 @@ function buildAmbientStars(){
   }
   starsBuilt = true;
 }
-function applyScene(idx){
-  const el = document.getElementById('ambient-wash');
-  if(!el) return;
-  const scene = SCENES[idx];
-  el.style.background = scene.wash;
-  el.style.opacity = String(scene.opacity);
-  ['1','2','3','4'].forEach((n, i) => {
-    const blobEl = el.querySelector('.accent-blob-' + n);
-    const b = scene.blobs[i];
-    if(!blobEl || !b) return;
-    blobEl.style.top = b.top;
-    blobEl.style.left = b.left;
-    blobEl.style.width = b.width + 'px';
-    blobEl.style.height = b.height + 'px';
-    blobEl.style.background = b.fill;
-  });
-  const starField = document.getElementById('ambient-stars');
-  if(starField) starField.style.opacity = String(scene.stars);
-  document.documentElement.dataset.ambTone = SCENE_TONE[scene.name] || 'light';
-  const gl = document.getElementById('ambient-glow'); if(gl) { const tn = SCENE_TONE[scene.name] || 'light'; gl.style.setProperty('--bk', GLOW[tn]); gl.style.setProperty('--mk', MOTE[tn]); }
-  currentSceneIdx = idx;
+/* ---- continuous time-of-day blend ----
+   CSS can't animate gradients, so the old version hard-cut at every 2-hour boundary. Now two layers (even and odd scenes)
+   crossfade: each scene is fully itself in the middle of its 2-hour block and melts into the next over the following 2 hours.
+   p is the "scene position": whole numbers are a pure scene (0 = the midnight scene, centred on 01:00), fractions are blends. */
+const ambEl = id => document.getElementById(id), ambTone = k => SCENE_TONE[SCENES[k].name] || 'light';
+const ambHex = c => [1, 3, 5].map(i => parseInt(c.slice(i, i + 2), 16)), ambMix = (a, b, w) => { const A = ambHex(a), B = ambHex(b); return 'rgb(' + A.map((v, k) => Math.round(v + (B[k] - v) * w)).join(',') + ')'; };
+function setSlot(el, idx, alpha){
+  if(el.dataset.si !== String(idx)){   // a layer is only re-assigned while it is (almost) invisible, so nothing visibly pops
+    const sc = SCENES[idx]; el.style.background = sc.wash;
+    ['1','2','3','4'].forEach((n, i) => { const b = el.querySelector('.accent-blob-' + n), d = sc.blobs[i]; if(!b || !d) return;
+      b.style.top = d.top; b.style.left = d.left; b.style.width = d.width + 'px'; b.style.height = d.height + 'px'; b.style.background = d.fill; });
+    el.dataset.si = idx;
+  }
+  el.style.opacity = alpha.toFixed(3);
 }
+function blendAt(p){
+  const n = SCENES.length; p = ((p % n) + n) % n; const i = Math.floor(p), j = (i + 1) % n, w = p - i, L = (a, b) => a + (b - a) * w;
+  const A = ambEl('ambient-wash'), B = ambEl('ambient-wash-b'); if(!A || !B) return;
+  setSlot(i % 2 ? B : A, i, (1 - w) * SCENES[i].opacity); setSlot(j % 2 ? B : A, j, w * SCENES[j].opacity);
+  const st = ambEl('ambient-stars'); if(st) st.style.opacity = L(SCENES[i].stars, SCENES[j].stars).toFixed(3);
+  const ti = ambTone(i), tj = ambTone(j), tone = w < .5 ? ti : tj, dk = L(DARKNESS[ti], DARKNESS[tj]);   // text colours flip at the halfway point
+  document.documentElement.dataset.ambTone = tone;
+  const bs = ambEl('ambient-base'); if(bs) bs.style.opacity = dk.toFixed(3);
+  const gl = ambEl('ambient-glow'); if(gl){ AURORA[i].forEach((c, k) => gl.style.setProperty('--a' + (k + 1), ambMix(c, AURORA[j][k], w))); gl.style.setProperty('--ao', (.3 + .2 * dk).toFixed(3)); gl.style.setProperty('--mk', MOTE[tone]); }
+  currentSceneIdx = i;
+}
+const clockPos = () => { const d = new Date(); return (d.getHours() + d.getMinutes() / 60 + d.getSeconds() / 3600) / 2 - .5; };
+function applyScene(idx){ blendAt(idx); }
 function updateAmbientWash(){
   if(window.__ambientLocked) return; // a manual preview is active - leave it alone
-  const hour = new Date().getHours();
-  const idx = Math.floor(hour / 2) % SCENES.length;
-  if(idx !== currentSceneIdx) applyScene(idx); // background/blob/star changes crossfade via the 60s CSS transition
+  blendAt(clockPos());
 }
 function initAmbientWash(){
   injectAmbientStyles();
   ensureAmbientDOM();
   buildAmbientStars();
-  // ?scene=14 (or any hour 0-23) in the URL jumps straight to that scene on
-  // load, for testing - e.g. index.html?scene=14 for the midday one
+  // ?scene=20 (any clock time 0-24, decimals ok e.g. 20.5) shows what the site looks like at that time, for testing
   const urlHour = new URLSearchParams(location.search).get('scene');
-  if(urlHour !== null && !isNaN(urlHour)){
-    applyScene(Math.floor(Number(urlHour) / 2) % SCENES.length);
-    window.__ambientLocked = true;
-  } else {
-    updateAmbientWash();
-  }
+  if(urlHour !== null && urlHour !== '' && !isNaN(urlHour)){ blendAt(Number(urlHour) / 2 - .5); window.__ambientLocked = true; }
+  else updateAmbientWash();
   requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.add('amb-ready')));
-  setInterval(updateAmbientWash, 60000); // check every minute for the 2-hourly scene change
+  setInterval(updateAmbientWash, 60000);   // the 60s CSS transitions glide between each minute's step
 }
-// ---------- console helpers for previewing scenes without waiting ----------
-// open devtools console and run e.g. previewScene(6) for the dawn scene, or
-// cycleScenes() to step through all 12 one at a time (press again to advance,
-// or pass a number of seconds to auto-advance). unlockAmbient() hands control
-// back to the real clock.
-window.previewScene = function(hour){
-  window.__ambientLocked = true;
-  applyScene(Math.floor(hour / 2) % SCENES.length);
-  console.log(`scene ${Math.floor(hour/2)%SCENES.length}: "${SCENES[Math.floor(hour/2)%SCENES.length].name}" (covers ${Math.floor(hour/2)*2}:00-${Math.floor(hour/2)*2+2}:00)`);
-};
+// ---------- console helpers ----------
+// previewScene(20) shows 20:00 (blends are real: 20:00 is halfway from sunset into dusk); cycleScenes(3) steps through
+// the 12 pure scenes every 3s; unlockAmbient() hands control back to the real clock.
+window.previewScene = function(hour){ window.__ambientLocked = true; blendAt(hour / 2 - .5); console.log('previewing ' + hour + ':00'); };
 window.cycleScenes = function(seconds){
-  window.__ambientLocked = true;
-  let i = 0;
-  applyScene(i);
-  console.log(`scene ${i}: "${SCENES[i].name}"`);
-  if(seconds){
-    clearInterval(window.__cycleTimer);
-    window.__cycleTimer = setInterval(() => {
-      i = (i + 1) % SCENES.length;
-      applyScene(i);
-      console.log(`scene ${i}: "${SCENES[i].name}"`);
-    }, seconds * 1000);
-  } else {
-    window.nextScene = function(){
-      i = (i + 1) % SCENES.length;
-      applyScene(i);
-      console.log(`scene ${i}: "${SCENES[i].name}"`);
-    };
-    console.log('call nextScene() to step forward');
-  }
+  window.__ambientLocked = true; let i = 0; applyScene(i); console.log(`scene ${i}: "${SCENES[i].name}"`);
+  const step = () => { i = (i + 1) % SCENES.length; applyScene(i); console.log(`scene ${i}: "${SCENES[i].name}"`); };
+  if(seconds){ clearInterval(window.__cycleTimer); window.__cycleTimer = setInterval(step, seconds * 1000); }
+  else { window.nextScene = step; console.log('call nextScene() to step forward'); }
 };
-window.unlockAmbient = function(){
-  clearInterval(window.__cycleTimer);
-  window.__ambientLocked = false;
-  updateAmbientWash();
-  console.log('back to the real clock');
-};
+window.unlockAmbient = function(){ clearInterval(window.__cycleTimer); window.__ambientLocked = false; updateAmbientWash(); console.log('back to the real clock'); };
