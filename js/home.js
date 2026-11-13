@@ -890,7 +890,7 @@ const BADGES = [
     } },
 
   // ---- Two Candles: visiting on BOTH birthdays in the same year (one level per year) ----
-  { id:'candles', name:'Two Candles', glyph:'🎂', animVersion:2, celebrateOnVisit:true,
+  { id:'candles', name:'Two Candles', glyph:'🎂', animVersion:3, celebrateOnVisit:true,
     ladder:['Two Candles', 'Double Wish', 'Birthday Tradition', 'Never Missed One', 'Every Candle', 'Lifelong Guest'],
     hint:'some days are worth showing up for',
     level: () => bdgBothBirthdayYears().length,
@@ -898,27 +898,81 @@ const BADGES = [
     info: lv => lv > 1
       ? 'That is ' + lv + ' years you have turned up for both birthdays. I do not take a single one of them for granted.'
       : 'Your birthday and mine, both in the same year, and you came by for each one. Two candles, one very happy me.<br><br>Thank you for showing up for both.',
-    // two candles get lit, one after the other
+    // the rarest one, so the slowest and quietest: the room goes dark, his candle is lit, one dot per day of waiting
+    // trails across to hers, hers is lit, both flare and sparks rise, and a pill per year she has made both days appears
     play(done, lv){
       const o = dimOverlay();
+      setTimeout(() => { o.style.background = 'rgba(10,4,2,.9)'; }, 60);   // darker and hushed, unlike the other badges
+      const wrap = bdgEl('div');
+      wrap.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4rem;pointer-events:none;padding:1rem;transition:opacity .6s';
+      const caption = bdgEl('div');
+      caption.style.cssText = 'min-height:2.4rem;font-family:var(--font-hand);font-size:clamp(1.5rem,5.5vw,2rem);color:var(--cream);text-align:center;opacity:0;transition:opacity .45s';
+      const longDay = md => new Date(2001, parseInt(md.slice(0, 2), 10) - 1, parseInt(md.slice(3), 10)).toLocaleDateString('en-GB', { day:'numeric', month:'long' });
+      const say = t => { caption.style.opacity = 0; setTimeout(() => { caption.textContent = t; caption.style.opacity = 1; }, 380); };
+
+      // the two candles (reusing the .tc- look) with a trail of one dot per day between the two birthdays
+      const dayOf = md => Date.UTC(2001, parseInt(md.slice(0, 2), 10) - 1, parseInt(md.slice(3), 10));
+      const gap = Math.max(2, Math.round(Math.abs(dayOf(BK.annBday) - dayOf(BK.tristanBday)) / 864e5));
       const stage = bdgEl('div', 'tc-stage');
+      stage.style.cssText = 'width:min(560px,94vw);justify-content:space-between;gap:0;padding-top:3.2rem' + (innerWidth >= 800 ? ';transform:scale(1.25);transform-origin:50% 100%;margin-top:2rem' : '');
       stage.appendChild(bdgEl('div', 'tc-glow'));
-      const ones = [[BK.tristanBday, '#c97a68'], [BK.annBday, '#e8b95a']].map(([md, color]) => {
-        const one = bdgEl('div', 'tc-one');
-        const c = bdgEl('div', 'tc-candle');
-        c.style.setProperty('--cc', color);
-        c.appendChild(bdgEl('div', 'tc-flame'));
-        one.append(c, bdgEl('div', 'tc-date', bdgDayLabel(md)));
-        stage.appendChild(one);
-        return one;
+      const make = (md, color, who) => {
+        const one = bdgEl('div', 'tc-one'), c = bdgEl('div', 'tc-candle');
+        c.style.setProperty('--cc', color); c.appendChild(bdgEl('div', 'tc-flame'));
+        const d = bdgEl('div', 'tc-date', who + '\n' + bdgDayLabel(md)); d.style.cssText = 'white-space:pre-line;text-align:center;line-height:1.15';
+        one.append(c, d); return one;
+      };
+      const mine = make(BK.tristanBday, '#c97a68', 'mine'), yours = make(BK.annBday, '#e8b95a', 'yours');
+      const trail = bdgEl('div');
+      trail.style.cssText = 'flex:1;display:flex;justify-content:space-between;align-items:center;align-self:flex-end;margin:0 .6rem calc(2.4rem + 38px)';
+      const dots = Array.from({ length: gap }, () => {
+        const d = bdgEl('span');
+        d.style.cssText = 'flex:none;width:3px;height:3px;border-radius:50%;background:var(--gold-light);opacity:.15';
+        trail.appendChild(d); return d;
       });
-      o.appendChild(stage);
-      setTimeout(() => ones[0].classList.add('lit'), 700);
-      setTimeout(() => ones[1].classList.add('lit'), 1500);
-      setTimeout(() => stage.classList.add('glow'), 1700);
-      setTimeout(() => stage.classList.add('flare'), 2500);
-      setTimeout(() => stage.classList.add('out'), 3000);
-      bdgPrestige(o, 'candles', lv, 3200, done);
+      stage.append(mine, trail, yours);
+
+      // a pill (two little flames + the year) for every year she has made both days
+      const years = bdgBothBirthdayYears().slice().sort((x, y) => x - y);
+      const list = years.length ? years : [new Date().getFullYear()];
+      const row = bdgEl('div');
+      row.style.cssText = 'display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;max-width:min(460px,92vw);min-height:2rem';
+      const pills = list.map((yr, i) => {
+        const p = bdgEl('div');
+        p.style.cssText = 'display:flex;align-items:center;gap:.4rem;padding:.2rem .75rem;border:1px solid var(--gold);border-radius:999px;color:var(--cream);font-family:var(--font-display);font-size:1.05rem;opacity:0' + (i === list.length - 1 ? ';box-shadow:0 0 14px rgba(255,190,80,.45)' : '');
+        for(let k = 0; k < 2; k++){
+          const f = bdgEl('span');
+          f.style.cssText = 'width:7px;height:11px;border-radius:50% 50% 50% 50%/62% 62% 38% 38%;background:radial-gradient(ellipse at 50% 72%,#fff3b0,#ffb23e);box-shadow:0 0 6px rgba(255,170,60,.8)';
+          p.appendChild(f);
+        }
+        p.appendChild(bdgEl('span', null, String(yr))); row.appendChild(p); return p;
+      });
+      wrap.append(caption, stage, row); o.appendChild(wrap);
+
+      const at = (ms, fn) => setTimeout(fn, ms);
+      at(900,  () => { mine.classList.add('lit'); say(longDay(BK.tristanBday) + '. You turned up.'); });
+      at(2700, () => say(gap + ' days later\u2026'));
+      dots.forEach((d, i) => at(3000 + i * 42, () => d.animate([{ opacity:.15, transform:'scale(1)' }, { opacity:1, transform:'scale(1.9)' }, { opacity:1, transform:'scale(1)' }], { duration:320, fill:'forwards' })));
+      const lit2 = 3000 + gap * 42 + 200;
+      at(lit2,       () => { yours.classList.add('lit'); stage.classList.add('glow'); say(longDay(BK.annBday) + '. You turned up again.'); });
+      at(lit2 + 1500, () => {                           // both flames flare, sparks rise from them
+        stage.classList.add('flare');
+        wrap.querySelectorAll('.tc-flame').forEach(fl => {
+          const r = fl.getBoundingClientRect();
+          for(let k = 0; k < 14; k++){
+            const sp = bdgEl('span');
+            sp.style.cssText = 'position:absolute;width:4px;height:4px;border-radius:50%;background:#ffd27a;box-shadow:0 0 8px 2px rgba(255,190,80,.8);left:' + (r.left + r.width / 2) + 'px;top:' + (r.top + r.height / 2) + 'px';
+            wrap.appendChild(sp);
+            const dx = (Math.random() - 0.5) * 120, dy = 90 + Math.random() * 170, dur = 1400 + Math.random() * 1400;
+            sp.animate([{ transform:'translate(0,0)', opacity:1 }, { transform:'translate(' + dx + 'px,' + (-dy) + 'px)', opacity:0 }], { duration:dur, delay:k * 60, easing:'ease-out', fill:'forwards' }).onfinish = () => sp.remove();
+          }
+        });
+      });
+      at(lit2 + 2300, () => say(lv > 1 ? 'Both birthdays, ' + lv + ' years now.' : 'Both birthdays. That never happens by accident.'));
+      pills.forEach((p, i) => at(lit2 + 2800 + i * 160, () => p.animate([{ opacity:0, transform:'translateY(10px)' }, { opacity:1, transform:'none' }], { duration:450, fill:'forwards' })));
+      const end = lit2 + 2800 + list.length * 160 + 1800;
+      at(end, () => { wrap.style.opacity = 0; });
+      bdgPrestige(o, 'candles', lv, end + 500, done);
     } },
   // ---- Front Row: sat through the whole showcase replay, no skipping (earned on the showcase page) ----
   { id:'frontrow', name:'Front Row', glyph:'🎟️', animVersion:2, celebrateOnVisit:true,
