@@ -153,31 +153,179 @@ function playEggHatch(callback){
 
 
 // ---------- BADGE CLUES ----------
-// a nudge for every badge she hasn't earned yet (shown as "?", never the badge name), plus one for the next level of any she has.
-// returns a clue string, or null when there is nothing more to chase. Add a line here whenever a badge is added.
+// The "give me a badge clue" button opens a clue board (its own popup, styled below) with every badge in one of three groups:
+//   still hidden  - a riddle that never names the badge, plus a "stronger clue" the reader can tap (that badge's own hint: text in BADGES)
+//   keep going    - earned, with something left to chase: what to do next, and a progress bar when there is a number to count
+//   finished      - earned and nothing left to chase
+// One entry per badge, keyed by badge id. Add an entry whenever a badge is added (a badge with no entry still gets a generic card).
+//   clue            = the riddle while the badge is hidden
+//   nudge(lv)       = what to chase for the NEXT level once earned. Return null when there is nothing left to chase
+//   progress(lv)    = { have, need, label } for the bar toward the next level. Leave it out when there is nothing to count
 const BADGE_CLUES = {
-  secrets:       lv => lv < 1 ? 'Empty a page of every last hiding place.' : (lv < Object.keys(PageEggs.PAGES).length ? 'Another page has just as much tucked away.' : null),
-  birthday26:    lv => lv < 1 ? 'Unwrap everything from one very special celebration.' : null,
-  signed:        lv => lv < 1 ? 'Your word, put down properly, with ink.' : null,
-  habit:         lv => lv < 1 ? 'Turn up so often it becomes a routine.' : (lv < BDG_STREAK_STEPS.length ? 'Make that routine last far longer.' : null),
-  penpal:        lv => lv < 1 ? 'Come back whenever the calendar turns over, and keep doing it.' : (lv < BDG_LEDGER_STEPS.length ? 'Keep coming back as the months pile up.' : null),
-  stickers:      lv => lv < 1 ? 'Drop by regularly and a certain board slowly fills.' : (lv < bdgCorkSteps().length ? 'There is still room on that board.' : null),
-  cartographer:  lv => lv < 1 ? 'Find every corner of this place.' : 'When something new is built, go and find it.',
-  friendiversary:lv => lv < 1 ? 'There is one date each year that is worth turning up for.' : 'Same date, next year.',
-  candles:       lv => lv < 1 ? 'Two particular days, both worth showing up for.' : 'Both of those days again, next year.'
+  secrets: {
+    clue: 'Empty a page of every last hiding place.',
+    nudge: lv => lv < Object.keys(PageEggs.PAGES).length ? 'Another page has just as much tucked away.' : null,
+    progress: () => ({ have: PageEggs.foundTotal(), need: PageEggs.grandTotal(), label: 'secrets found across the site' }) },
+  birthday26: {
+    clue: 'Unwrap everything from one very special celebration.',
+    nudge: () => null,
+    progress: () => ({ have: Array.from(getOpenedGifts()).filter(id => id >= 1 && id <= TOTAL_GIFTS).length, need: TOTAL_GIFTS, label: 'gifts opened' }) },
+  signed: {
+    clue: 'Your word, put down properly, with ink.',
+    nudge: () => null },
+  habit: {
+    clue: 'Turn up so often it becomes a routine.',
+    nudge: lv => BDG_STREAK_STEPS[lv] ? 'Make that routine last far longer.' : null,
+    progress: lv => ({ have: bdgBestStreak(), need: BDG_STREAK_STEPS[lv], label: 'days in a row (your best so far)' }) },
+  penpal: {
+    clue: 'Come back whenever the calendar turns over, and keep doing it.',
+    nudge: lv => BDG_LEDGER_STEPS[lv] ? 'Keep coming back as the months pile up.' : null,
+    progress: lv => ({ have: bdgArr(BK.ledger).length, need: BDG_LEDGER_STEPS[lv], label: 'months stamped' }) },
+  stickers: {
+    clue: 'Drop by regularly and a certain board slowly fills.',
+    nudge: lv => bdgCorkSteps()[lv] ? 'There is still room on that board.' : null,
+    progress: lv => ({ have: bdgArr(BK.cork).length, need: bdgCorkSteps()[lv], label: 'weeks of stickers' }) },
+  cartographer: {
+    clue: 'Find every corner of this place.',
+    nudge: lv => CARTO_STEPS[lv] ? 'When something new is built, go and find it.' : null,
+    progress: lv => ({ have: cartoUnlocked(), need: CARTO_STEPS[lv], label: 'pages unlocked' }) },
+  friendiversary: {
+    clue: 'There is one date each year that is worth turning up for.',
+    nudge: () => 'Same date, next year.' },
+  candles: {
+    clue: 'Two particular days, both worth showing up for.',
+    nudge: () => 'Both of those days again, next year.' },
+  frontrow: {
+    clue: 'Be a very good audience for a very particular show.',
+    nudge: () => null },
+  showcase: {
+    clue: 'Replay one big night and tick off everything it dares you to do.',
+    nudge: lv => SHOWCASE_STEPS[lv] ? 'The replay still has goals you have not hit.' : null,
+    progress: lv => ({ have: bdgShowcaseGoals(), need: SHOWCASE_STEPS[lv], label: 'showcase goals' }) },
+  bestle: {
+    clue: 'A new word turns up every Monday. Guess it.',
+    nudge: lv => BESTLE_STEPS[lv] ? (bdgBestleNext(lv) ? 'Still needed: ' + bdgBestleNext(lv) + '.' : 'Keep solving, and solve it in fewer guesses.') : null,
+    progress: lv => ({ have: bdgBestleWins().length, need: (BESTLE_STEPS[lv] || {}).solves, label: 'words solved' }) }
 };
+
+function injectClueStyles(){
+  if(document.getElementById('clue-styles')) return;
+  const st = document.createElement('style'); st.id = 'clue-styles';
+  st.textContent = `
+#clue-modal{position:fixed;inset:0;z-index:5200;display:flex;align-items:center;justify-content:center;padding:1rem}
+.cl-back{position:absolute;inset:0;background:rgba(20,8,2,.8)}
+.cl-card{position:relative;width:min(560px,100%);max-height:90vh;overflow-y:auto;overscroll-behavior:contain;background:var(--paper);border:1px solid var(--tan);box-shadow:8px 8px 0 var(--brown);padding:2rem 1.5rem 1.4rem;animation:clIn .3s ease both}
+@keyframes clIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.cl-x{position:absolute;top:.6rem;right:.6rem;width:34px;height:34px;border:0;border-radius:50%;background:var(--deep);color:var(--cream);font-size:1.3rem;line-height:1;cursor:pointer;z-index:2}
+.cl-x:hover{background:var(--brown)}
+.cl-x:focus-visible,.cl-more:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.cl-title{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:1.7rem;color:var(--rose);margin:0 2rem .2rem 0}
+.cl-sum{font-family:'Caveat',cursive;font-size:1.35rem;color:var(--brown);margin:0 0 .6rem}
+.cl-bar,.cl-prog-bar{height:8px;background:var(--warm);border:1px solid var(--tan)}
+.cl-bar i,.cl-prog-bar i{display:block;height:100%;background:var(--sage-dark)}
+.cl-bar{margin-bottom:1.1rem}
+.cl-h{font-family:'Caveat',cursive;font-size:1.45rem;color:var(--rose-dark);margin:1.2rem 0 .4rem;display:flex;align-items:center;gap:.5rem;border-bottom:1px dashed var(--tan)}
+.cl-h b{font-family:'EB Garamond',serif;font-size:.95rem;background:var(--warm);border:1px solid var(--tan);color:var(--deep);padding:0 .5rem}
+.cl-item{display:flex;gap:.9rem;align-items:flex-start;padding:.75rem 0;border-bottom:1px solid var(--warm)}
+.cl-item:last-child{border-bottom:0}
+.cl-ico{flex:0 0 48px;width:48px;height:48px;display:grid;place-items:center}
+.cl-q{width:46px;height:46px;border-radius:50%;border:2px dashed var(--tan);color:var(--tan);font-family:'Playfair Display',serif;font-size:1.6rem;display:grid;place-items:center}
+.cl-g{width:46px;height:46px;border-radius:50%;border:2px solid var(--gold);background:var(--warm);font-size:1.4rem;display:grid;place-items:center}
+.cl-body{flex:1;min-width:0}
+.cl-name{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--deep);line-height:1.25}
+.cl-name small{font-family:'Caveat',cursive;font-weight:400;font-size:1.15rem;color:var(--rose-dark);margin-left:.4rem}
+.cl-text{font-family:'EB Garamond',serif;font-size:1.1rem;font-style:italic;line-height:1.5;color:var(--brown);margin:.15rem 0 0}
+.cl-strong{font-family:'EB Garamond',serif;font-size:1.05rem;line-height:1.5;color:var(--deep);background:var(--warm);border-left:3px solid var(--gold);padding:.35rem .7rem;margin:.5rem 0 0}
+.cl-riddle{font-size:1.15rem;color:var(--deep);margin-top:0}
+.cl-more{font-family:'Caveat',cursive;font-size:1.2rem;color:var(--rose-dark);background:none;border:0;padding:.2rem 0;margin-top:.2rem;cursor:pointer;text-decoration:underline dotted}
+.cl-prog-bar{margin-top:.5rem}
+.cl-prog-txt{font-family:'Caveat',cursive;font-size:1.15rem;color:var(--brown);margin-top:.1rem}
+.cl-done .cl-name{font-size:1rem}
+.cl-done .cl-ico{flex-basis:40px;width:40px;height:40px}
+.cl-sig{display:block;font-family:'Caveat',cursive;font-size:1.5rem;font-weight:700;color:var(--rose);margin-top:1.1rem}
+@media (prefers-reduced-motion:reduce){.cl-card{animation:none}}`;
+  document.head.appendChild(st);
+}
+
 function showBadgeClues(){
-  let html = '', n = 0;
-  BADGES.forEach(bd => {
-    const f = BADGE_CLUES[bd.id]; if(!f) return;
-    const lv = badgeLevel(bd), clue = f(lv);
-    if(!clue) return;
-    n++;
-    const mark = lv < 1 ? '?' : bd.glyph + ' <small>next level</small>';
-    html += '<div style="text-align:left;margin:.6rem 0;line-height:1.5"><b style="color:var(--rose,#b86858);margin-right:.4rem">' + mark + '</b><i>' + clue + '</i></div>';
+  injectClueStyles();
+  const cap = t => t ? t.charAt(0).toUpperCase() + t.slice(1) + (/[.!?]$/.test(t) ? '' : '.') : '';
+  const info = BADGES.map(bd => {
+    const lv = badgeLevel(bd), c = BADGE_CLUES[bd.id] || {};
+    const nudge = lv < 1 ? null : (c.nudge ? c.nudge(lv) : (bd.next ? bd.next(lv) : null));
+    let prog = null;
+    if(lv >= 1 && nudge && c.progress){ try{ prog = c.progress(lv); }catch(e){ prog = null; } }
+    if(prog && !(prog.need > 0)) prog = null;
+    return { bd, lv, c, nudge, prog };
   });
-  if(!n) html = '<p>Every badge, every level, for now. More will turn up as the site grows.</p>';
-  showModal(n ? 'A clue for each badge' : 'Nothing left to chase', html, 'Bestie Tristan');
+  const hidden = info.filter(i => i.lv < 1), active = info.filter(i => i.lv >= 1 && i.nudge), finished = info.filter(i => i.lv >= 1 && !i.nudge);
+  const found = info.length - hidden.length;
+
+  const prev = document.activeElement;
+  const old = document.getElementById('clue-modal'); if(old) old.remove();
+  const root = bdgEl('div'); root.id = 'clue-modal';
+  root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true'); root.setAttribute('aria-labelledby', 'cl-title');
+  const back = bdgEl('div', 'cl-back'), card = bdgEl('div', 'cl-card');
+  const x = bdgEl('button', 'cl-x', '\u00d7'); x.type = 'button'; x.setAttribute('aria-label', 'Close');
+  const title = bdgEl('h2', 'cl-title', 'Badge clues'); title.id = 'cl-title';
+  const sum = bdgEl('p', 'cl-sum', found + ' of ' + info.length + ' badges found' + (finished.length ? ' \u00b7 ' + finished.length + ' finished' : ''));
+  const bar = bdgEl('div', 'cl-bar'), fill = document.createElement('i'); fill.style.width = Math.round(found / Math.max(info.length, 1) * 100) + '%'; bar.appendChild(fill);
+  card.append(x, title, sum, bar);
+
+  const heading = (t, n) => { const h = bdgEl('div', 'cl-h', t); h.appendChild(bdgEl('b', null, n)); return h; };
+  const medal = (bd, lv, size) => {
+    const ico = bdgEl('div', 'cl-ico');
+    if(bd.ladder) ico.appendChild(skMedal(bd, lv, size)); else ico.appendChild(bdgEl('div', 'cl-g', bd.glyph));
+    return ico;
+  };
+  const nameOf = (bd, lv) => { const n = bdgEl('div', 'cl-name', badgeTitle(bd, lv)); if(bd.ladder) n.appendChild(bdgEl('small', null, 'prestige ' + skRoman(lv) + ' \u00b7 ' + skLook(lv).metal.toLowerCase())); return n; };
+
+  if(hidden.length){
+    card.appendChild(heading('Still hidden', hidden.length));
+    hidden.forEach(({ bd, c }) => {
+      const item = bdgEl('div', 'cl-item'), body = bdgEl('div', 'cl-body');
+      item.appendChild(bdgEl('div', 'cl-ico')).appendChild(bdgEl('div', 'cl-q', '?'));
+      body.append(bdgEl('p', 'cl-text cl-riddle', c.clue || 'Something here is still waiting to be found.'));
+      if(bd.hint){
+        const more = bdgEl('button', 'cl-more', 'give me a stronger clue'); more.type = 'button'; more.setAttribute('aria-expanded', 'false');
+        const strong = bdgEl('p', 'cl-strong', cap(bd.hint)); strong.hidden = true;
+        more.onclick = () => { strong.hidden = !strong.hidden; more.setAttribute('aria-expanded', String(!strong.hidden)); more.textContent = strong.hidden ? 'give me a stronger clue' : 'hide the stronger clue'; };
+        body.append(more, strong);
+      }
+      item.appendChild(body); card.appendChild(item);
+    });
+  }
+  if(active.length){
+    card.appendChild(heading('Keep going', active.length));
+    active.forEach(({ bd, lv, nudge, prog }) => {
+      const item = bdgEl('div', 'cl-item'), body = bdgEl('div', 'cl-body');
+      body.append(nameOf(bd, lv), bdgEl('p', 'cl-text', nudge));
+      if(prog){
+        const have = Math.min(prog.have, prog.need), b = bdgEl('div', 'cl-prog-bar'), f = document.createElement('i');
+        f.style.width = Math.round(have / prog.need * 100) + '%'; b.appendChild(f);
+        body.append(b, bdgEl('div', 'cl-prog-txt', have + ' / ' + prog.need + ' ' + prog.label));
+      }
+      item.append(medal(bd, lv, 46), body); card.appendChild(item);
+    });
+  }
+  if(finished.length){
+    card.appendChild(heading('Finished', finished.length));
+    finished.forEach(({ bd, lv }) => {
+      const item = bdgEl('div', 'cl-item cl-done'), body = bdgEl('div', 'cl-body');
+      body.append(nameOf(bd, lv), bdgEl('p', 'cl-text', bd.ladder ? 'Every level, done.' : 'Earned.'));
+      item.append(medal(bd, lv, 38), body); card.appendChild(item);
+    });
+  }
+  if(!hidden.length && !active.length) card.appendChild(bdgEl('p', 'cl-text', 'Every badge, every level, for now. More will turn up as the site grows.'));
+  card.appendChild(bdgEl('span', 'cl-sig', 'Bestie Tristan'));
+  root.append(back, card); document.body.appendChild(root);
+
+  const prevOverflow = document.body.style.overflow; document.body.style.overflow = 'hidden';
+  const close = () => { document.removeEventListener('keydown', onKey); root.remove(); document.body.style.overflow = prevOverflow; if(prev && prev.focus) prev.focus(); };
+  const onKey = e => { if(e.key === 'Escape') close(); };
+  document.addEventListener('keydown', onKey);
+  x.onclick = close; back.onclick = close;
+  x.focus();
 }
 
 // ---------- BADGES ----------
@@ -208,12 +356,51 @@ const BK = {
   carto:       'ann_cartographer_v1',      // { level, covered:[page keys] }
   celebrated:  'ann_badges_celebrated_v1', // { badgeId: level that has already been celebrated }
   animVer:     'ann_badges_animver_v1',    // { badgeId: animVersion she has already been shown } (see animVersion on BADGES)
+  bestle:      'ann_bestle_results_v1',    // { weeks:{ weekNumber:{ won, guesses, at } } } - written by bestle.html when a week's word is finished
   annBday:     '08-05',                    // MM-DD  Ann's birthday
   tristanBday: '06-27',                    // MM-DD  Tristan's birthday
 };
 const BDG_STREAK_STEPS = [7, 30, 100];       // days in a row  -> levels 1, 2, 3
 const BDG_LEDGER_STEPS = [6, 12, 24];        // months stamped -> levels 1, 2, 3
 const bdgCorkSteps = () => [10, CORK_STICKERS.length, 52];   // weekly stickers (middle one = the full set)
+
+// ---- Bestle: one word a week, so the numbers are small. Each prestige is a set of targets that must ALL be met:
+//   solves = weekly words solved in total (any number of guesses)
+//   within = { guesses: count } -> that many of those solves took that many guesses OR FEWER (a 3-guess solve also counts for 4)
+// Targets only ever grow, results are never deleted, so a level can never be lost. To add a prestige, append a step here
+// (and a title to the badge's ladder + a line to its info). Roughly: week 1, a month, two months, four months, half a year, nine months.
+const BESTLE_STEPS = [
+  { solves: 1 },
+  { solves: 4 },
+  { solves: 8,  within: { 4: 3 } },
+  { solves: 15, within: { 4: 8,  3: 3 } },
+  { solves: 26, within: { 4: 14, 3: 6 } },
+  { solves: 40, within: { 4: 24, 3: 12 } }
+];
+// every solved week's guess count, from the results bestle.html saves
+function bdgBestleWins(){
+  const d = bdgJSON(BK.bestle, {}), w = d && d.weeks && typeof d.weeks === 'object' ? d.weeks : {};
+  return Object.keys(w).map(k => w[k]).filter(r => r && r.won && r.guesses > 0).map(r => r.guesses);
+}
+const bdgBestleCount = (wins, g) => wins.filter(x => x <= g).length;
+const bdgBestleMet = (step, wins) => wins.length >= step.solves && Object.keys(step.within || {}).every(g => bdgBestleCount(wins, +g) >= step.within[g]);
+function bdgBestleLevel(){
+  const wins = bdgBestleWins();
+  let lv = 0;
+  while(lv < BESTLE_STEPS.length && bdgBestleMet(BESTLE_STEPS[lv], wins)) lv++;
+  return lv;
+}
+// what is still missing for the next prestige, e.g. "3 more solves, and 2 more in 4 guesses or fewer"
+function bdgBestleNext(lv){
+  const step = BESTLE_STEPS[lv]; if(!step) return null;
+  const wins = bdgBestleWins(), parts = [];
+  if(wins.length < step.solves){ const n = step.solves - wins.length; parts.push(n + ' more solve' + (n === 1 ? '' : 's')); }
+  Object.keys(step.within || {}).forEach(g => {
+    const n = step.within[g] - bdgBestleCount(wins, +g);
+    if(n > 0) parts.push(n + ' more in ' + g + ' guesses or fewer');
+  });
+  return parts.length ? (parts.length > 1 ? parts.slice(0, -1).join(', ') + ' and ' + parts[parts.length - 1] : parts[0]) : null;
+}
 
 const bdgEl = (tag, cls, text) => {
   const e = document.createElement(tag);
@@ -807,6 +994,49 @@ const BADGES = [
       } else bdgPrestige(o, 'showcase', lv, 3500, done);
     } },
 
+  // ---- Bestle: the weekly word game. Solve it (and solve it faster) to prestige. Results come from bestle.html ----
+  { id:'bestle', name:'Bestle Beginner', glyph:'\uD83D\uDFE9', celebrateOnVisit:true,
+    ladder:['Bestle Beginner', 'Wordsmith', 'Word Wizard', 'Lexicon Legend', 'Dictionary Defier', 'Celestial Linguist'],
+    hint:'solve the weekly Bestle',
+    level: () => bdgBestleLevel(),
+    next: lv => bdgBestleNext(lv),
+    info: lv => [
+      'Your very first Bestle, solved. One word down, and a whole pile of our in-jokes still waiting for you.',
+      'Four words solved. That is a whole month of Mondays, and you keep turning up to guess.',
+      'Eight words solved, three of them in four guesses or fewer. You are suspiciously good at this.',
+      'Fifteen solved, eight in four guesses or fewer, three in three or fewer. You are reading my mind and I am not sure I like it.',
+      'Twenty-six words. Half a year of Mondays, fourteen of them in four guesses or fewer and six in three or fewer.<br><br>The dictionary is scared of you.',
+      'Forty words solved, twenty-four in four guesses or fewer, twelve in three or fewer.<br><br>There is nothing left to teach you. Celestial, obviously.'
+    ][Math.min(lv, 6) - 1],
+    // six tiles flip over one by one to spell BESTLE, then her real numbers appear underneath
+    play(done, lv){
+      const o = dimOverlay();
+      const stage = bdgEl('div');
+      stage.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.1rem;pointer-events:none';
+      const row = bdgEl('div');
+      row.style.cssText = 'display:flex;gap:8px';
+      const letters = 'BESTLE', colours = ['var(--sage-dark)', 'var(--gold)', 'var(--sage-dark)', 'var(--sage-dark)', 'var(--gold)', 'var(--sage-dark)'];
+      const tiles = letters.split('').map(() => {
+        const t = bdgEl('div');
+        t.style.cssText = 'width:clamp(40px,12vw,56px);aspect-ratio:1;display:grid;place-items:center;border:2px solid var(--tan);background:var(--paper);color:var(--paper);font-family:var(--font-display);font-weight:700;font-size:clamp(1.4rem,6vw,1.9rem)';
+        row.appendChild(t); return t;
+      });
+      const wins = bdgBestleWins();
+      const cap = bdgEl('div', null, wins.length + (wins.length === 1 ? ' word solved' : ' words solved') + (bdgBestleCount(wins, 3) ? ' \u00b7 ' + bdgBestleCount(wins, 3) + ' in three or fewer' : ''));
+      cap.style.cssText = 'font-family:var(--font-hand);font-size:1.5rem;color:var(--cream);opacity:0;transition:opacity .6s';
+      stage.append(row, cap); o.appendChild(stage);
+      tiles.forEach((t, i) => setTimeout(() => {
+        const a = t.animate([{ transform:'rotateX(0)' }, { transform:'rotateX(90deg)' }], { duration:220, fill:'forwards' });
+        a.onfinish = () => {
+          t.textContent = letters[i]; t.style.background = colours[i]; t.style.borderColor = colours[i];
+          t.animate([{ transform:'rotateX(90deg)' }, { transform:'rotateX(0)' }], { duration:220, fill:'forwards' });
+        };
+      }, 500 + i * 260));
+      setTimeout(() => { cap.style.opacity = 1; launchConfetti(); }, 2300);
+      setTimeout(() => stage.animate([{ opacity:1 }, { opacity:0 }], { duration:400, fill:'forwards' }), 3400);
+      bdgPrestige(o, 'bestle', lv, 3700, done);
+    } },
+
 ];
 
 // true once every gift stop (1..TOTAL_GIFTS) is opened AND every Birthday 2026 page is unlocked.
@@ -1142,11 +1372,11 @@ function initWeeklyCorkboard(){
 }
 
 // ---------- EVERYWHERE TO GO: every page in NAV as a postage stamp ----------
-const CAT_COLOR = { story:'#b86858', media:'#6f9466', fun:'#c8943a', bday26:'#8a6fa8', contract:'#7a5230', wrapped26:'#d9783f' };
+const CAT_COLOR = { story:'#b86858', media:'#6f9466', fun:'#c8943a', bday26:'#8a6fa8', contract:'#7a5230' };
 const GLYPH = {
   'our_journey.html':'🗺', 'us.html':'♡', 'reasons.html':'💌',
   'passport.html':'✈', 'postcard_gallery.html':'🏞', 'letters_archive.html':'✉',
-  'bestle.html':'🔤', 'christmas_2026.html':'🎄', 'year_in_review.html':'✨', 'christmas_2026_gifts.html':'🎁', 
+  'bestle.html':'🔤', 'christmas_2026.html':'🎄', 'christmas_2026_gifts.html':'🎁', 
   'tier_list.html':'🏆', 'birthday_2026_showcase.html':'📺', 'birthday_2026.html':'🎈', 'birthday_2026_gifts.html':'🎁',
   'birthday_2026_quiz.html':'❓', 'birthday_2026_thank_you.html':'💛', 'membership.html':'📜', 'contract.html':'✎'
 };
