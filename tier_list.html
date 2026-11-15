@@ -40,6 +40,10 @@
 .biscuit-card:hover{transform:translate(-2px,-3px);box-shadow:4px 4px 0 var(--tan)}
 .biscuit-card:active{cursor:grabbing;transform:scale(1.06) rotate(2deg);box-shadow:6px 6px 0 var(--brown);z-index:100}
 .biscuit-card.dragging{opacity:0.4}
+.biscuit-card.selected{outline:3px solid var(--gold);outline-offset:2px;transform:translate(-2px,-3px) rotate(-1deg);box-shadow:5px 5px 0 var(--gold)}
+body.armed .tier-drop,body.armed .pool-inner{cursor:pointer;box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--gold) 45%,transparent)}
+body.armed .tier-drop:hover,body.armed .pool-inner:hover{background:color-mix(in srgb,var(--gold) 14%,transparent)}
+.tap-tip{font-family:'Caveat',cursive;font-size:1.05rem;color:var(--rose-dark);margin-top:.5rem}
 .biscuit-emoji{font-size:1.6rem;line-height:1}
 .biscuit-info{}
 .biscuit-name{font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;color:var(--deep);line-height:1.2}
@@ -103,6 +107,7 @@
   <h1 id="list-title">The Official Biscuit Tier List</h1>
   <p id="list-subtitle">drag each biscuit to its rightful place ♡</p>
   <p class="instructions" id="list-instructions">Open them first. Eat at least one of each. Then rank them with the authority of someone who has experienced them. This is science.</p>
+  <p class="tap-tip">on a phone or keyboard? tap a biscuit, then tap the tier you want ♡</p>
 </div>
 
 <div class="list-tabs" id="list-tabs"></div>
@@ -284,6 +289,7 @@ function applyHeader() {
 // BOARD BUILDING
 // ══════════════════════════════════════
 function rebuildBoard() {
+  setSelected(null);
   document.querySelectorAll('.tier-drop').forEach(d => d.innerHTML = '');
   document.getElementById('pool').innerHTML = '';
   const def = TIERLISTS[activeList];
@@ -301,6 +307,8 @@ function makeCard(b) {
   const el = document.createElement('div');
   el.className = 'biscuit-card';
   el.draggable = true;
+  el.tabIndex = 0; el.setAttribute('role', 'button'); el.setAttribute('aria-pressed', 'false');
+  el.setAttribute('aria-label', b.name + ': press to pick up, then choose a tier');
   el.id = 'card-'+b.id;
   el.dataset.id = b.id;
   el.innerHTML = `<span class="biscuit-emoji">${b.emoji}</span><div class="biscuit-info"><div class="biscuit-name">${b.name}</div><div class="biscuit-sub">${b.sub}</div></div>`;
@@ -314,12 +322,24 @@ function makeCard(b) {
     draggingId = null;
     checkAllPlaced();
   });
-  // Touch support
-  el.addEventListener('touchstart', () => {
+  // Tap / keyboard: pick this card up, then tap (or Enter on) a tier or the pool. Tapping another card sends the picked one to that card's tier.
+  el.addEventListener('click', e => {
+    e.stopPropagation();
+    if (selectedId && selectedId !== b.id) { placeSelected(zoneKey(el.parentElement)); return; }
+    setSelected(selectedId === b.id ? null : b.id);
+  });
+  el.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); }
+  });
+  // Touch support (only a real drag counts, so a plain tap no longer reshuffles the card)
+  let t0 = null;
+  el.addEventListener('touchstart', e => {
     draggingId = b.id;
+    t0 = e.touches[0] ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null;
   }, {passive:true});
   el.addEventListener('touchend', e => {
     const t = e.changedTouches[0];
+    if (t0 && Math.hypot(t.clientX - t0.x, t.clientY - t0.y) < 12) { draggingId = null; return; }
     const target = document.elementFromPoint(t.clientX, t.clientY);
     const drop = target?.closest('[id^="tier-"], #pool');
     if (drop) {
@@ -333,6 +353,34 @@ function makeCard(b) {
 }
 
 let draggingId = null;
+let selectedId = null;   // tap/keyboard mode: pick a card, then pick where it goes
+function setSelected(id) {
+  selectedId = id;
+  document.querySelectorAll('.biscuit-card').forEach(c => {
+    const on = c.dataset.id === id;
+    c.classList.toggle('selected', on);
+    c.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+  document.body.classList.toggle('armed', !!id);
+}
+function placeSelected(tier) {
+  if (!selectedId) return;
+  moveCard(selectedId, tier);
+  setSelected(null);
+  checkAllPlaced();
+}
+function zoneKey(zone) { return zone.id === 'pool' ? 'pool' : zone.id.replace('tier-', ''); }
+// make every drop zone clickable + keyboard-friendly (once)
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.tier-drop, #pool').forEach(z => {
+    const key = zoneKey(z);
+    z.tabIndex = 0; z.setAttribute('role', 'button');
+    z.setAttribute('aria-label', key === 'pool' ? 'Put the selected biscuit back in the pool' : 'Place the selected biscuit in tier ' + key);
+    z.addEventListener('click', () => placeSelected(key));
+    z.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target === z) { e.preventDefault(); placeSelected(key); } });
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') setSelected(null); });
+});
 
 function onDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
 function onDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
@@ -499,6 +547,6 @@ applyHeader();
 rebuildBoard();
 </script>
 <script src="js/nav.js"></script>
-<script>window.addEventListener('DOMContentLoaded',()=>buildNav('tierlist.html'));</script>
+<script>window.addEventListener('DOMContentLoaded',()=>buildNav('tier_list.html'));</script>
 </body>
 </html>

@@ -40,6 +40,7 @@
 .future-letters{margin-top:3rem;padding:1.5rem 2rem;background:var(--paper);border:1.5px dashed var(--tan);text-align:center}
 .future-letters h3{font-family:'Playfair Display',serif;font-style:italic;color:var(--deep);margin-bottom:0.5rem}
 .future-letters p{font-family:'Caveat',cursive;font-size:1rem;color:var(--brown);letter-spacing:0.5px}
+@media (prefers-reduced-motion:reduce){.letter-body.open{animation:none}.letter-entry{transition:none;opacity:1;transform:none}}
 </style>
 </head>
 <body>
@@ -58,12 +59,12 @@
   </div>
 
   <div class="letter-entry" id="l1">
-    <div class="letter-envelope" onclick="toggleLetter('l1')">
+    <div class="letter-envelope" role="button" tabindex="0" aria-expanded="false" aria-controls="body-l1" onclick="toggleLetter('l1')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleLetter('l1')}">
       <div class="envelope-icon">✉️</div>
       <div class="envelope-meta">
-        <div class="letter-date">10 April 2025, 00:33-01:01<</div>
+        <div class="letter-date">10 April 2025, 00:33-01:01</div>
         <div class="letter-title">Birthday Letter, Year Three</div>
-        <div class="letter-peek">A personal letter from Tristan, really as an emotional and heartfelt dump, that I really needed to just get off my chest. I'd been thinking of how to write this for several nights Icouldn\'t sleep, before I then did.</div>
+        <div class="letter-peek">A personal letter from Tristan, really as an emotional and heartfelt dump, that I really needed to just get off my chest. I'd been thinking of how to write this for several nights I couldn't sleep, before I then did.</div>
       </div>
       <div class="envelope-stamp">♡</div>
     </div>
@@ -84,14 +85,25 @@
 </div>
 
 <script>
-function toggleLetter(id) {
+function setLetterOpen(id, open) {
   const body = document.getElementById('body-'+id);
-  if (body.classList.contains('open')) { body.classList.remove('open'); }
-  else { body.classList.add('open'); }
+  body.classList.toggle('open', open);
+  const env = document.querySelector('#'+id+' .letter-envelope');
+  if (env) env.setAttribute('aria-expanded', String(open));
+}
+function toggleLetter(id) {
+  setLetterOpen(id, !document.getElementById('body-'+id).classList.contains('open'));
 }
 function closeLetter(id) {
-  document.getElementById('body-'+id).classList.remove('open');
+  setLetterOpen(id, false);
+  const env = document.querySelector('#'+id+' .letter-envelope');
+  if (env) { env.focus(); env.scrollIntoView({ block: 'nearest' }); }
 }
+document.addEventListener('keydown', e => {   // Escape closes whichever letter is open
+  if (e.key !== 'Escape') return;
+  const open = document.querySelector('.letter-body.open');
+  if (open) closeLetter(open.id.replace('body-', ''));
+});
 
 // scroll reveal
 const observer = new IntersectionObserver(entries => {
@@ -100,6 +112,6 @@ const observer = new IntersectionObserver(entries => {
 document.querySelectorAll('.letter-entry').forEach(el => observer.observe(el));
 </script>
 <script src="js/nav.js"></script>
-<script>window.addEventListener('DOMContentLoaded',()=>buildNav('letters.html'));</script>
+<script>window.addEventListener('DOMContentLoaded',()=>buildNav('letters_archive.html'));</script>
 </body>
 </html>

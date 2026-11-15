@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<base href="/">
+<title>Return to sender ♡ Besties</title>
+<link rel="icon" type="image/x-icon" href="media/shared/images/site_icon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/themes.css">
+<script src="js/bestie_storage.js"></script>
+<script src="js/theme.js"></script>
+<style>
+.lost{max-width:520px;margin:3rem auto 4rem;padding:0 1rem;display:flex;flex-direction:column;align-items:center;gap:1.4rem;text-align:center}
+.env{position:relative;width:100%;background:var(--paper);border:1px solid var(--tan);box-shadow:5px 5px 0 var(--tan);padding:2rem 1.6rem 1.8rem}
+.env::before{content:'';position:absolute;inset:7px;border:1px dashed var(--tan);pointer-events:none}
+.env h1{font-family:var(--font-display);font-style:italic;font-weight:700;font-size:clamp(2rem,8vw,2.7rem);color:var(--deep);line-height:1.1}
+.env p{font-size:1.2rem;line-height:1.6;color:var(--brown);margin-top:.8rem}
+.rts{position:absolute;top:-16px;right:-10px;transform:rotate(8deg);border:3px double var(--rose);color:var(--rose-dark);font-family:var(--font-display);font-weight:700;letter-spacing:2px;font-size:1rem;padding:.35rem .8rem;background:color-mix(in srgb,var(--rose) 8%,var(--paper));animation:stamp .5s .25s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes stamp{from{opacity:0;transform:rotate(8deg) scale(2.2)}to{opacity:1;transform:rotate(8deg) scale(1)}}
+.code{font-family:var(--font-hand);font-size:1.2rem;color:var(--rose-dark);margin-top:.9rem}
+.btns{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-top:1.2rem}
+.btn{font-family:var(--font-hand);font-size:1.25rem;padding:.35rem 1.3rem;border:1.5px solid var(--gold-dark);background:var(--gold);color:var(--paper);text-decoration:none;border-radius:999px;font-weight:700}
+.btn.alt{background:var(--paper);border-color:var(--tan);color:var(--brown);font-weight:400}
+.btn:hover{filter:brightness(1.06)}
+@media (prefers-reduced-motion:reduce){.rts{animation:none}}
+</style>
+</head>
+<body>
+<nav id="site-nav"><a href="index.html" class="nav-brand">Besties ♡</a><div class="nav-links"></div></nav>
+<div class="lost">
+  <div class="env">
+    <span class="rts" aria-hidden="true">RETURN TO SENDER</span>
+    <h1>This page got lost in the post</h1>
+    <p>The postie looked everywhere, but there's nothing at this address. Maybe it hasn't been written yet, or it's still sealed until the right moment ♡</p>
+    <div class="code" id="where"></div>
+    <div class="btns"><a class="btn" href="index.html">back home</a><a class="btn alt" href="javascript:history.back()">go back</a></div>
+  </div>
+</div>
+<script>
+try{document.getElementById('where').textContent='tried: '+location.pathname}catch(e){}
+</script>
+<script src="js/nav.js"></script>
+<script>window.addEventListener('DOMContentLoaded',()=>buildNav('404.html'));</script>
+</body>
+</html>
