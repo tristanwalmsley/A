@@ -3,10 +3,16 @@
    Needs fx_kit.js and journey_eggs.js. Loaded on the home page before home.js, which calls:
        JourneyReel.play(overlay, next)
 
-   Each egg is replayed with the SAME moment the page plays live (journey_eggs.js). For every egg a miniature of the real timeline card is
-   built, the firefly performs the real gesture on it (taps, a long press, a double-tap, the dot beside the card...), the moment plays, and
-   an egg hatches into the tray of sixteen at the top. Finale: the sixteen eggs become the dots of one long timeline, a spark runs down it,
-   and the "3+ Years of Besties" stamp slams down with the real number of days counting up, then a short note.
+   Each egg is replayed with the SAME moment the page plays live (journey_eggs.js), and the firefly performs the SAME gesture that finds it
+   on the page, on a miniature of the real card: keeping the nest warm until it glows, swiping the hello away, pulling the phone cord off its
+   dot, scrolling the bus card in a three-point turn, pinching the glasses open, shaking the face-reveal like a polaroid, a torch in the dark
+   for Phasmo, the three Christmases counted in order, five steady beats, two lights meeting in the middle, pumping up the protein business,
+   lighting all eight candles one by one, strumming the spine, pushing at the end of the page, winding the stamp like a dial, and the last
+   star. Each time the moment plays and an egg hatches into the tray of sixteen at the top. Finale: the sixteen eggs become the dots of one
+   long timeline, a spark runs down it, and the "3+ Years of Besties" stamp slams down with the real number of days counting up, then a note.
+
+   MUSIC: its own score, written for this reel (see "the score" below): a lo-fi groove (electric piano, soft bass, swung drums, vinyl crackle)
+   that starts quiet, finds its beat, lifts, builds, and goes up a key for the stamp.
 
    No buttons. Escape skips to the end. Reduced motion: home.js falls back to a quick ring.
    Edit SCENES to reorder or drop scenes (each one is a full egg, so it is long: roughly 5 minutes). Edit NOTE_LINES for the closing note.
@@ -14,26 +20,26 @@
    ========================================================================== */
 (function(){
   'use strict';
-  const K = window.FxKit, JE = window.JourneyEggs, DEAD = K.DEAD, mk = K.mk, rnd = K.rnd, col = K.col, CH = K.CH, PENTA = JE.util.PENTA;
+  const K = window.FxKit, JE = window.JourneyEggs, DEAD = K.DEAD, mk = K.mk, rnd = K.rnd, col = K.col, PENTA = JE.util.PENTA;
 
   // order follows the timeline: what the card says, how she found it
   const SCENES = [
-    { key:'nest',      cap:'it started in a nest',                       tag:'milestone', date:'Nov 2022',      title:'You started chatting in the Nest',      g:'taps', n:3, music:'je_quiet' },
-    { key:'hello',     cap:'then a very first hello',                    tag:'special',   date:'15 Jan 2023',   title:'First hello and the date of our first DMing', g:'hold', music:'je_tender' },
-    { key:'call',      cap:'then a very first call',                     tag:'special',   date:'28 Jan 2023',   title:'Our very first of many calls',           g:'dbl', music:'je_quiet' },
-    { key:'bus',       cap:'then a very slow bus',                       tag:'game',      date:'3 Jul 2023',    title:'Bus Sim 18',                             g:'dot', music:'je_play' },
-    { key:'glasses',   cap:'then Tristan got glasses',                   tag:'milestone', date:'9 Aug 2023',    title:'Tristan got glasses',                    g:'taps', n:4, music:'je_quiet' },
-    { key:'christmas', cap:'then three Christmases',                     tag:'christmas', date:'2023 · 2024 · 2025', title:'The Christmas exchanges',          g:'distinct', n:3, glyph:'🎁', music:'je_tender' },
-    { key:'phasmo',    cap:'then the lights went off',                   tag:'game',      date:'Mar 2024',      title:'Ann first played Phasmo',                g:'hold', music:'je_quiet' },
-    { key:'face',      cap:'then a face reveal',                         tag:'milestone', date:'Oct 2024',      title:'The “official” face reveal',             g:'taps', n:5, music:'je_play' },
-    { key:'birthday',  cap:'and every birthday along the way',           tag:'birthday',  date:'27 Jun · 5 Aug', title:'Eight birthdays',                       g:'distinct', n:5, glyph:'🎂', music:'je_play' },
-    { key:'stardew',   cap:'then a concert on a farm',                   tag:'game',      date:'Feb–Mar 2026',  title:'Stardew Concerts',                       g:'dbl', music:'je_play' },
-    { key:'insync',    cap:'then we started thinking in unison',         tag:'era',       date:'2026',          title:'The INSYNC Era',                         g:'taps', n:3, music:'je_quiet' },
-    { key:'protein',   cap:'then a business was born',                   tag:'milestone', date:'19 Aug 2026',   title:'The Protein Business',                   g:'taps', n:2, music:'je_play' },
-    { key:'spine',     cap:'and the line that holds it all together',    g:'spine', music:'je_tender' },
-    { key:'capsule',   cap:'then a long wait at the bottom of the page', g:'wait', music:'je_tender' },
-    { key:'days',      cap:'and one very big number',                    g:'stamp', music:'je_quiet' },
-    { key:'tbc',       cap:'and the last one, which was never really last', tag:'future', date:'✨ 2026 and beyond ✨', title:'The rest of it', g:'taps', n:1, music:'je_tender' }
+    { key:'nest',      cap:'it started in a nest, and it had to be kept warm',   tag:'milestone', date:'Nov 2022',      title:'You started chatting in the Nest',      g:'warm',    music:'jm_intro' },
+    { key:'hello',     cap:'then a very first hello, swiped away like a notification', tag:'special', date:'15 Jan 2023', title:'First hello and the date of our first DMing', g:'swipe', music:'jm_tender' },
+    { key:'call',      cap:'then a very first call, and a cord that stretched',   tag:'special',   date:'28 Jan 2023',   title:'Our very first of many calls',           g:'cord',    music:'jm_groove' },
+    { key:'bus',       cap:'then a very slow bus, and a three-point turn',        tag:'game',      date:'3 Jul 2023',    title:'Bus Sim 18',                             g:'turn',    music:'jm_lift' },
+    { key:'glasses',   cap:'then Tristan got glasses, for a closer look',         tag:'milestone', date:'9 Aug 2023',    title:'Tristan got glasses',                    g:'pinch',   music:'jm_groove' },
+    { key:'christmas', cap:'then three Christmases, counted in order',            tag:'christmas', date:'2023 · 2024 · 2025', title:'The Christmas exchanges',          g:'order',   music:'jm_tender' },
+    { key:'phasmo',    cap:'then the lights went off',                            tag:'game',      date:'Mar 2024',      title:'Ann first played Phasmo',                g:'torch',   music:'jm_intro' },
+    { key:'face',      cap:'then a face reveal, shaken like a polaroid',          tag:'milestone', date:'Oct 2024',      title:'The “official” face reveal',             g:'shake',   music:'jm_lift' },
+    { key:'birthday',  cap:'and every birthday along the way, one candle at a time', tag:'birthday', date:'27 Jun · 5 Aug', title:'Eight birthdays',                      g:'candles', glyph:'🎂', music:'jm_lift' },
+    { key:'stardew',   cap:'then a concert on a farm, keeping the beat',          tag:'game',      date:'Feb–Mar 2026',  title:'Stardew Concerts',                       g:'beat',    music:'jm_groove' },
+    { key:'insync',    cap:'then we started thinking in unison',                  tag:'era',       date:'2026',          title:'The INSYNC Era',                         g:'meet',    music:'jm_groove' },
+    { key:'protein',   cap:'then a business was born, and it had to be pumped',   tag:'milestone', date:'19 Aug 2026',   title:'The Protein Business',                   g:'pump',    music:'jm_lift' },
+    { key:'spine',     cap:'and the line that holds it all together',             g:'strum', music:'jm_tender' },
+    { key:'capsule',   cap:'then the very end of the page, which gave way',       g:'push',  music:'jm_tender' },
+    { key:'days',      cap:'and one very big number, wound like a dial',          g:'dial',  music:'jm_groove' },
+    { key:'tbc',       cap:'and the last one, which was never really last',       tag:'future',    date:'✨ 2026 and beyond ✨', title:'The rest of it',           g:'star',    music:'jm_tender' }
   ];
   const NOTE_LINES = [
     ['sixteen secrets.', 2400],
@@ -44,18 +50,35 @@
     ['here is to the rest of it, Ann.', 4600]
   ];
 
-  /* ------------------------------------------------------------------ the score (G major) */
+  /* ------------------------------------------------------------------ the score
+     A different sound from the other reels (those are music-box + pad): a lo-fi groove in F major. Jazzy 9th chords on an electric piano,
+     a soft bass, swung drums, a little vinyl crackle, and a lead with a gentle vibrato. It starts quiet, finds its beat, lifts into a second
+     section, builds, and goes up a key for the stamp. Pieces (all in K.PIECES):
+       jm_intro   no drums, just the piano and the crackle         jm_groove  the main beat (verse)        jm_lift    the brighter second section
+       jm_tender  slow and soft, pad underneath                    jm_gather  the build (four on the floor) jm_blast   up a key, big, with claps and a crash
+       jm_note    barely there, for the closing note
+     Chords are { r: bass note, v: the chord tones above it }. Patterns are 8 steps per bar (eighth notes; odd steps swing). Edit freely. */
   const P = K.PIECES;
-  P.je_quiet  = { tempo:64,  prog:[CH.Gmaj7, CH.Em, CH.Cmaj7, CH.D], arp:0.045, melVol:0.10, pad:0.020, bass:0.10,
-    mel:[[79,null,83,null,86,null,83,null],[88,null,86,null,83,null,79,null],[84,null,83,null,79,null,76,null],[78,null,81,null,86,null,null,null]] };
-  P.je_play   = { tempo:100, prog:[CH.G, CH.D, CH.Em, CH.C], arp:0.045, melVol:0.12, pad:0.018, bass:0.12, bass2:true,
-    mel:[[79,83,null,86,null,83,79,null],[78,81,null,86,null,81,78,null],[76,79,null,83,null,79,76,null],[79,84,null,88,null,84,79,81]] };
-  P.je_tender = { tempo:58,  prog:[CH.Cmaj7, CH.G, CH.Em, CH.D], arp:0.035, melVol:0.13, pad:0.026, bass:0.10,
-    mel:[[84,null,88,null,91,null,88,null],[86,null,83,null,79,null,83,null],[83,null,79,null,76,null,79,83],[81,null,78,null,81,null,null,null]] };
-  P.je_gather = { tempo:84,  prog:[CH.Em, CH.C, CH.G, CH.D], arp:0.06, melVol:0.12, pad:0.026, bass:0.14, bass2:true, tick:0.025,
-    mel:[[76,null,79,null,83,null,88,null],[79,null,84,null,88,null,91,null],[83,null,86,null,91,null,95,null],[90,null,93,null,90,null,86,null]] };
-  P.je_blast  = { tempo:84,  prog:[CH.G, CH.D, CH.Em, CH.C], arp:0.08, melVol:0.17, pad:0.034, bass:0.17, bass2:true,
-    mel:[[91,null,86,null,83,null,86,null],[90,null,93,null,90,null,86,null],[91,null,88,null,83,null,88,null],[91,null,88,null,84,null,88,91]] };
+  const A = [{ r:41, v:[57,60,64,67] }, { r:45, v:[60,64,67,71] }, { r:50, v:[60,64,65,69] }, { r:46, v:[62,65,69,72] }];   // Fmaj9  Am9  Dm9  Bbmaj9
+  const B = [{ r:43, v:[58,62,65,69] }, { r:48, v:[64,67,70,74] }, { r:41, v:[57,60,64,67] }, { r:50, v:[60,64,65,69] }];   // Gm9    C9   Fmaj9 Dm9
+  const G = [{ r:50, v:[60,64,65,69] }, { r:46, v:[62,65,69,72] }, { r:41, v:[57,60,64,67] }, { r:48, v:[64,67,70,74] }];   // Dm9    Bbmaj9 Fmaj9 C9   (the build)
+  const up = (prog, n) => prog.map(c => ({ r:c.r + n, v:c.v.map(x => x + n) }));
+  const MEL_A = [[84,null,81,null,null,79,81,null], [84,null,86,null,88,null,null,null], [86,null,84,null,81,null,77,null], [77,null,79,null,81,82,null,null]];
+  const MEL_B = [[82,null,79,null,82,null,86,null], [84,null,82,null,79,null,76,null], [81,null,84,null,88,null,84,81], [86,null,84,null,81,null,null,null]];
+  const MEL_T = [[81,null,null,null,84,null,null,null], [88,null,null,null,86,null,84,null], [81,null,null,null,77,null,null,null], [79,null,81,null,82,null,null,null]];
+  const MEL_G = [[74,null,77,null,81,null,86,null], [77,null,82,null,86,null,89,null], [81,null,84,null,88,null,93,null], [88,null,86,null,82,null,79,null]];
+  const MEL_X = [[86,null,83,null,86,88,91,null], [88,null,86,null,83,null,88,null], [91,null,88,null,86,null,83,null], [86,null,88,null,90,91,null,null]];
+  P.jm_intro  = { v2:true, tempo:76, swing:0.14, prog:A, comp:[1,0,0,0,0,0,0,0], compVol:0.055, bassPat:[1,0,0,0,0,0,0,0], bass:0.12, mel:MEL_A, melVol:0.045, pad:0.014, crackle:0.02 };
+  P.jm_groove = { v2:true, tempo:78, swing:0.17, prog:A, comp:[1,0,0,2,0,0,2,0], compVol:0.06, bassPat:[1,0,0,1,2,0,0,0], bass:0.16,
+                  kick:[1,0,0,0.8,0.9,0,0,0], snare:[0,0,1,0,0,0,1,0], hat:[0.6,0.3,0.5,0.3,0.6,0.3,0.5,0.35], mel:MEL_A, melVol:0.065, pad:0.012, crackle:0.02 };
+  P.jm_lift   = { v2:true, tempo:84, swing:0.15, prog:B, comp:[1,0,2,0,1,0,2,0], compVol:0.06, bassPat:[1,0,1,0,2,0,1,3], bass:0.17,
+                  kick:[1,0,0,0.7,1,0,0,0.6], snare:[0,0,1,0,0,0,1,0], clap:[0,0,0.7,0,0,0,0.7,0], hat:[0.7,0.4,0.6,0.4,0.7,0.4,0.6,0.4], mel:MEL_B, melVol:0.07, pad:0.014, crackle:0.015 };
+  P.jm_tender = { v2:true, tempo:64, swing:0.1, prog:A, comp:[1,0,0,0,2,0,0,0], compVol:0.06, bassPat:[1,0,0,0,0,0,0,0], bass:0.1, mel:MEL_T, melVol:0.075, pad:0.024, crackle:0.015 };
+  P.jm_gather = { v2:true, tempo:92, swing:0, prog:G, comp:[2,0,2,0,2,0,2,0], compVol:0.055, bassPat:[1,0,1,0,1,0,1,0], bass:0.17,
+                  kick:[1,0,0.7,0,1,0,0.7,0], snare:[0,0,0,0,0,0,0.8,0.5], hat:[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5], mel:MEL_G, melVol:0.075, pad:0.022 };
+  P.jm_blast  = { v2:true, tempo:96, swing:0.06, prog:up(A, 2), crash:true, comp:[1,0,2,0,1,0,2,0], compVol:0.068, bassPat:[1,0,0,1,2,0,1,3], bass:0.2,
+                  kick:[1,0,0,0.8,1,0,0.7,0], snare:[0,0,1,0,0,0,1,0], clap:[0,0,0.8,0,0,0,0.8,0], hat:[0.7,0.4,0.6,0.4,0.7,0.4,0.6,0.5], mel:MEL_X, melVol:0.095, pad:0.03 };
+  P.jm_note   = { v2:true, tempo:60, swing:0, prog:A, comp:[1,0,0,0,1,0,0,0], compVol:0.055, bassPat:[1,0,0,0,0,0,0,0], bass:0.09, mel:MEL_T, melVol:0.065, pad:0.03, crackle:0.01 };
 
   /* ------------------------------------------------------------------ styles */
   const CSS = `
@@ -104,6 +127,19 @@
 .jr-sig.in{opacity:1}
 .jr-fall{position:absolute;top:-2rem;z-index:3;color:#fff;opacity:.7;pointer-events:none;animation:jrFall var(--fd) linear forwards}
 @keyframes jrFall{to{transform:translate(var(--sw),112vh) rotate(var(--fr))}}
+.jr-card.jr-warming{box-shadow:0 0 calc(var(--jew,0) * 34px) calc(var(--jew,0) * 10px) rgba(255,165,60,calc(.1 + var(--jew,0) * .55)),5px 5px 0 var(--brown,#7a5230)!important}
+.jr-midline{position:absolute;left:12%;right:12%;height:0;border-top:2px dashed rgba(255,226,160,.45);z-index:38}
+.jr-cord{position:absolute;inset:0;width:100%;height:100%;z-index:44;pointer-events:none}
+.jr-cord path{fill:none;stroke:var(--rose,#b86858);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.jr-dark{position:absolute;inset:0;z-index:50;background:#000;opacity:0;transition:opacity .4s;pointer-events:none;-webkit-mask-image:radial-gradient(circle 88px at var(--x) var(--y),transparent 0,transparent 55%,#000 100%);mask-image:radial-gradient(circle 88px at var(--x) var(--y),transparent 0,transparent 55%,#000 100%)}
+.jr-mir{position:absolute;z-index:80;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:radial-gradient(circle,#fff,var(--gold,#c8943a) 60%,transparent 72%);box-shadow:0 0 16px 5px color-mix(in srgb,var(--gold,#c8943a) 60%,transparent);pointer-events:none}
+.jr-num{position:absolute;bottom:-1.25rem;left:50%;transform:translateX(-50%);font-family:'Caveat',cursive;font-weight:700;font-size:1rem;color:#fff3d6;font-style:normal;white-space:nowrap}
+.jr-bauble{position:absolute;top:-7px;right:6px;width:13px;height:13px;border-radius:50%;box-shadow:0 0 8px rgba(255,255,255,.6),inset -2px -2px 3px rgba(0,0,0,.25);animation:jrPopB .4s cubic-bezier(.3,1.8,.5,1)}
+@keyframes jrPopB{from{transform:scale(0)}to{transform:scale(1)}}
+.jr-mini.jr-nope{animation:jrNope .4s ease}
+@keyframes jrNope{0%,100%{transform:translate(-50%,-50%) scale(1)}25%{transform:translate(calc(-50% - 6px),-50%) scale(1)}75%{transform:translate(calc(-50% + 6px),-50%) scale(1)}}
+.jr-endline{position:absolute;left:10%;right:10%;z-index:38;text-align:center;font-family:'Playfair Display',serif;font-style:italic;font-size:.8rem;color:rgba(255,243,214,.6);border-top:2px solid rgba(255,226,160,.5);padding-top:.3rem}
+
 `;
   let cssDone = false;
   function injectCSS(){ if(cssDone) return; cssDone = true; const st = document.createElement('style'); st.id = 'jr-css'; st.textContent = CSS; document.head.appendChild(st); }
@@ -127,66 +163,146 @@
 
   // builds the miniature card for a scene
   function card(r, sc){
-    const c = r.el('jr-card'); c.innerHTML = '<span class="jr-tag">' + sc.tag + '</span><div class="jr-date">' + sc.date + '</div><div class="jr-title">' + sc.title + '</div>' + (sc.g === 'dot' ? '<i class="jr-dot"></i>' : '');
+    const c = r.el('jr-card'); c.innerHTML = '<span class="jr-tag">' + sc.tag + '</span><div class="jr-date">' + sc.date + '</div><div class="jr-title">' + sc.title + '</div>' + (sc.g === 'cord' ? '<i class="jr-dot"></i>' : '');
     return c;
   }
+  const NSV = 'http://www.w3.org/2000/svg';
+  const coil = (x1, y1, x2, y2) => { const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L, n = Math.max(2, Math.floor(L / 6)); let d = 'M' + x1.toFixed(1) + ',' + y1.toFixed(1);
+    for(let i = 1; i <= n; i++){ const t = i / n, a = Math.sin(i * 1.25) * 9 * Math.min(1, L / 60); d += ' L' + (x1 + dx * t + nx * a).toFixed(1) + ',' + (y1 + dy * t + ny * a).toFixed(1); } return d; };
+  const at = (e, x, y) => { e.style.transition = 'none'; e.style.left = x + 'px'; e.style.top = y + 'px'; };   // move something right now (used inside tweens)
+  const stageXY = (r, el) => { const b = el.getBoundingClientRect(), s = r.stage.getBoundingClientRect(); return { x:b.left - s.left + b.width / 2, y:b.top - s.top + b.height / 2 }; };
 
-  // the firefly performs the gesture; returns where the moment should start from
+  // the firefly performs the SAME gesture that finds the egg on the page; returns where the moment should start from
   async function perform(r, sc){
-    const W = r.W(), H = r.H(), c = centre(r);
+    const W = r.W(), H = r.H(), c = centre(r), g = sc.g;
     const o = r.orbOn(W * 0.12, H * 0.8);
-    if(sc.g === 'distinct'){
-      const k = sc.n, minis = [];
-      for(let i = 0; i < k; i++){ const m = r.el('jr-mini', sc.glyph); m.style.left = (W * (0.5 + (i - (k - 1) / 2) * (k > 3 ? 0.16 : 0.22))) + 'px'; m.style.top = (c.y + (i % 2) * 18) + 'px'; minis.push(m); }
+    const done = async (...nodes) => { r.orbOff(o); r.fade(nodes.filter(Boolean), 500); await r.wait(550); };
+
+    /* ---- gestures on a single card ---- */
+    if(['warm', 'swipe', 'cord', 'turn', 'pinch', 'shake', 'beat', 'meet', 'pump', 'star', 'torch'].includes(g)){
+      const cd = card(r, sc); await r.nextFrame(); cd.classList.add('in'); r.bell(PENTA[0], 0, 0.07, 1.4);
+      await r.wait(1400);
+      const w = cd.offsetWidth, px = c.x + w * 0.1, py = c.y + 6;
+
+      if(g === 'warm'){                                   // keep the nest warm: hold still, it glows
+        await r.orbGo(o, px, py, 1200); o.classList.add('down'); r.ripple(px, py);
+        cd.classList.add('jr-warming'); r.tone(180, 0, 3.2, 'sine', 0.04, 360);
+        await r.tween(3200, p => { cd.style.setProperty('--jew', p.toFixed(3)); if(Math.random() < 0.07) r.sparks(c.x + rnd(-w / 2, w / 2), c.y + rnd(-34, 34), 1, ['♡']); });
+        o.classList.remove('down'); r.flash(); cd.classList.remove('jr-warming');
+        await done(cd); return { x:px, y:py };
+      }
+      if(g === 'swipe'){                                  // swipe it away like a notification
+        await r.orbGo(o, c.x - w * 0.2, py, 1200); o.classList.add('down'); cd.style.transition = 'none'; r.tone(300, 0, 0.8, 'sine', 0.04, 600);
+        await r.tween(800, p => { const dx = 125 * p; cd.style.transform = 'translate(calc(-50% + ' + dx + 'px),-50%) rotate(' + (dx * 0.04) + 'deg)'; cd.style.opacity = String(1 - 0.4 * p); at(o, c.x - w * 0.2 + dx, py); });
+        o.classList.remove('down'); r.ripple(c.x + 125 - w * 0.2, py, true); cd.style.transition = 'transform .45s cubic-bezier(.3,1.6,.5,1),opacity .3s'; cd.style.transform = 'translate(-50%,-50%) scale(1)'; cd.style.opacity = '1';
+        await r.wait(550); await done(cd); return { x:px, y:py };
+      }
+      if(g === 'cord'){                                   // pull the phone cord off the dot
+        const dx0 = c.x - w / 2 - 22, dy0 = c.y;
+        const svg = document.createElementNS(NSV, 'svg'); svg.setAttribute('class', 'jr-cord'); const path = document.createElementNS(NSV, 'path'); svg.appendChild(path); r.stage.appendChild(svg); r.collect.push(svg);
+        await r.orbGo(o, dx0, dy0, 1200); o.classList.add('down'); r.ripple(dx0, dy0); r.tone(200, 0, 1, 'sine', 0.05, 500);
+        await r.tween(1000, p => { const x = dx0 + 8 * p, y = dy0 + 170 * p; at(o, x, y); path.setAttribute('d', coil(dx0, dy0, x, y)); });
+        o.classList.remove('down'); await r.wait(250); await done(cd, svg); return { x:dx0, y:dy0 };
+      }
+      if(g === 'turn'){                                   // a three-point turn: past it, back, past it again
+        const ln = r.el('jr-midline'); ln.style.top = c.y + 'px'; cd.style.transition = 'none';
+        const ox = c.x + w / 2 + 34; let lastSide = 0;
+        for(const [a0, b0] of [[-140, 140], [140, -140], [-140, 140], [140, -140]]){
+          await r.tween(720, p => { const y = a0 + (b0 - a0) * p; cd.style.top = (c.y + y) + 'px'; at(o, ox, c.y + y); const side = y > 0 ? 1 : -1; if(lastSide && side !== lastSide){ r.ripple(c.x, c.y); r.tone(260 + Math.random() * 120, 0, 0.12, 'triangle', 0.07); } lastSide = side; });
+        }
+        cd.style.top = c.y + 'px'; await done(cd, ln); return c;
+      }
+      if(g === 'pinch'){                                  // two fingers, spread open
+        const o2 = r.orbOn(c.x + 14, c.y); at(o, c.x - 14, c.y); at(o2, c.x + 14, c.y); await r.wait(500); r.tone(300, 0, 1, 'sine', 0.05, 900);
+        await r.tween(1000, p => { const d = 14 + 66 * p; at(o, c.x - d, c.y); at(o2, c.x + d, c.y); cd.style.transform = 'translate(-50%,-50%) scale(' + (1 + 0.25 * p) + ')'; });
+        r.ripple(c.x, c.y, true); r.orbOff(o2); await r.wait(300); await done(cd); return c;
+      }
+      if(g === 'shake'){                                  // shake it like a polaroid
+        await r.orbGo(o, c.x, c.y + 6, 1200); o.classList.add('down'); cd.style.transition = 'none';
+        await r.tween(1800, p => { const x = 62 * Math.sin(p * Math.PI * 9); cd.style.transform = 'translate(calc(-50% + ' + x + 'px),-50%) rotate(' + (x * 0.12) + 'deg)'; at(o, c.x + x, c.y + 6); if(Math.abs(Math.sin(p * Math.PI * 9)) > 0.97) r.tone(500 + Math.random() * 200, 0, 0.05, 'triangle', 0.05); });
+        o.classList.remove('down'); cd.style.transition = 'transform .45s cubic-bezier(.3,1.6,.5,1)'; cd.style.transform = 'translate(-50%,-50%) scale(1)'; await r.wait(550); await done(cd); return c;
+      }
+      if(g === 'beat'){                                   // five taps, keeping time
+        await r.orbGo(o, px, py, 1200);
+        for(let k = 0; k < 5; k++){ r.press(o, px, py, 520 + k * 50, k === 4); tap(cd); r.sparks(px, py - 10, 2, ['♪', '♫']); r.chip(220, 0.0, 0.08, 0.04); await r.wait(470); }
+        await done(cd); return { x:px, y:py };
+      }
+      if(g === 'meet'){                                   // meet in the middle
+        const sx = c.x + 62, sy = c.y + 46, mir = r.el('jr-mir b'); const orb2 = mir;
+        await r.orbGo(o, sx, sy, 1200); o.classList.add('down'); at(mir, c.x * 2 - sx, c.y * 2 - sy); r.ripple(sx, sy);
+        await r.nextFrame(); r.tone(250, 0, 1.6, 'sine', 0.05, 520);
+        await r.tween(1700, p => { const e = p * p * (3 - 2 * p), x = sx + (c.x - sx) * e, y = sy + (c.y - sy) * e; at(o, x, y); at(mir, 2 * c.x - x, 2 * c.y - y); });
+        r.flash(); r.ringAt(c.x, c.y, col('--gold-light'), 12); o.classList.remove('down'); await r.wait(400); r.fade(mir, 300); await done(cd); return c;
+      }
+      if(g === 'pump'){                                   // pump it up
+        await r.orbGo(o, px, py, 1200);
+        for(let k = 1; k <= 10; k++){ r.press(o, px, py, 420 + k * 40, k === 10); cd.style.transition = 'transform .08s'; cd.style.transform = 'translate(-50%,-50%) scale(' + (1 + k * 0.03) + ')'; r.later(() => { cd.style.transform = 'translate(-50%,-50%) scale(1)'; }, 120); r.sparks(px, py, 1, ['💪']); await r.wait(150); }
+        await done(cd); return { x:px, y:py };
+      }
+      if(g === 'torch'){                                  // lights off: a torch, and keep very still
+        const dk = r.el('jr-dark'); dk.style.setProperty('--x', px + 'px'); dk.style.setProperty('--y', py + 'px');
+        await r.orbGo(o, px, py, 1200); o.classList.add('down'); await r.wait(350); dk.style.opacity = '1'; r.tone(60, 0, 2.4, 'sawtooth', 0.02, 70);
+        await r.tween(2300, p => { const x = px + Math.sin(p * 9) * 10, y = py + Math.cos(p * 7) * 6; dk.style.setProperty('--x', x + 'px'); dk.style.setProperty('--y', y + 'px'); at(o, x, y); });
+        o.classList.remove('down'); dk.style.opacity = '0'; await r.wait(420); await done(cd, dk); return { x:px, y:py };
+      }
+      if(g === 'star'){                                   // the last star appears; tap it
+        const star = mk('je-star', '✦'); cd.appendChild(star); cd.style.overflow = 'visible';
+        r.cap('a star appears once all the others are found'); await r.wait(900); star.classList.add('on'); r.bell(PENTA[5], 0, 0.1, 2); r.bell(PENTA[6], 0.1, 0.08, 2);
+        await r.wait(1000); const sp = stageXY(r, star);
+        await r.orbGo(o, sp.x, sp.y, 1200); r.press(o, sp.x, sp.y, 900, true); await r.wait(400); await done(cd); return sp;
+      }
+    }
+
+    /* ---- gestures on a group of small cards ---- */
+    if(g === 'order'){                                    // count the Christmases in order
+      const minis = [], colors = ['#e0343c', '#f2c14e', '#3fa66a'];
+      for(let i = 0; i < 3; i++){ const m = r.el('jr-mini', '🎄'); m.style.left = (W * (0.5 + (i - 1) * 0.25)) + 'px'; m.style.top = c.y + 'px'; m.insertAdjacentHTML('beforeend', '<small class="jr-num">' + (2023 + i) + '</small>'); minis.push(m); }
       await r.nextFrame(); minis.forEach((m, i) => r.later(() => m.classList.add('in'), i * 120)); await r.wait(1600);
-      for(let i = 0; i < k; i++){ const mx = parseFloat(minis[i].style.left), my = parseFloat(minis[i].style.top); await r.orbGo(o, mx + 6, my + 8, 650); r.press(o, mx, my, 520 + i * 70, i === k - 1); minis[i].classList.add('hit'); r.bell(PENTA[i % 7] + 12, 0, 0.07, 1.2); await r.wait(260); }
-      r.orbOff(o); await r.wait(300); return c;
+      const hit = async (i, bauble) => { const mx = parseFloat(minis[i].style.left), my = parseFloat(minis[i].style.top); await r.orbGo(o, mx + 6, my + 8, 650); r.press(o, mx, my, 520 + i * 90, false);
+        if(bauble){ const b = mk('jr-bauble'); b.style.background = colors[i]; minis[i].appendChild(b); minis[i].classList.add('hit'); r.sparks(mx, my - 20, 4, ['❄']); r.bell(PENTA[i + 2], 0, 0.08, 1.4); }
+        else { minis[i].classList.remove('jr-nope'); void minis[i].offsetWidth; minis[i].classList.add('jr-nope'); r.tone(160, 0, 0.2, 'square', 0.05); } await r.wait(300); };
+      await hit(2, false); r.cap('wrong order: it starts over'); await r.wait(500); r.cap(sc.cap);
+      for(let i = 0; i < 3; i++) await hit(i, true);
+      await r.wait(300); await done(...minis); return c;
     }
-    if(sc.g === 'spine'){
-      const ln = r.el('jr-line'); ln.style.left = (W / 2 - 1) + 'px'; ln.style.top = (H * 0.2) + 'px'; ln.style.height = (H * 0.56) + 'px';
-      for(let i = 0; i < 6; i++){ const d = r.el('jr-fdot'); d.style.left = (W / 2) + 'px'; d.style.top = (H * 0.2 + (H * 0.56) * (i / 5)) + 'px'; }
-      await r.wait(1500); const ty = H * 0.2 + H * 0.56 * 0.3;
-      await r.orbGo(o, W / 2 + 14, ty, 1300);
-      for(let k = 0; k < 3; k++){ r.press(o, W / 2, ty, 500 + k * 90, k === 2); await r.wait(420); }
-      r.orbOff(o);
-      r.fade(r.collect.filter(e => e.classList && (e.classList.contains('jr-line') || e.classList.contains('jr-fdot'))), 450);   // clear the preview line so the moment draws its own
-      await r.wait(550); return { x:W / 2, y:ty };
+    if(g === 'candles'){                                  // light all eight candles, one long press each
+      const minis = [];
+      for(let i = 0; i < 8; i++){ const m = r.el('jr-mini', sc.glyph); m.style.left = (W * (0.5 + ((i % 4) - 1.5) * 0.19)) + 'px'; m.style.top = (c.y + (i < 4 ? -48 : 52)) + 'px'; minis.push(m); }
+      await r.nextFrame(); minis.forEach((m, i) => r.later(() => m.classList.add('in'), i * 90)); await r.wait(1500);
+      for(let i = 0; i < 8; i++){ const mx = parseFloat(minis[i].style.left), my = parseFloat(minis[i].style.top); await r.orbGo(o, mx + 5, my + 10, 320); o.classList.add('down');
+        const fl = mk('je-flame'); minis[i].appendChild(fl); await r.nextFrame(); fl.classList.add('grow'); await r.wait(380); fl.classList.add('lit'); o.classList.remove('down'); r.bell(PENTA[i % 7] + 12, 0, 0.07, 1.2); r.sparks(mx, my - 24, 2, ['✦']); await r.wait(80); }
+      await r.wait(500); await done(...minis); return c;
     }
-    if(sc.g === 'stamp'){
-      const s = r.el('jr-stampbig'); s.style.top = (H * 0.46) + 'px'; s.style.setProperty('--s', '0'); s.innerHTML = '<b>3+</b><span>Years of Besties</span>'; s.style.transition = 'transform .6s cubic-bezier(.34,1.7,.5,1)';
-      await r.nextFrame(); s.style.setProperty('--s', '1'); await r.wait(1700);
-      await r.orbGo(o, c.x + 40, c.y + 26, 1300);
-      for(let k = 0; k < 3; k++){ r.press(o, c.x + 40, c.y + 26, 520 + k * 90, k === 2); s.style.setProperty('--s', '1.08'); r.later(() => s.style.setProperty('--s', '1'), 160); await r.wait(420); }
-      r.orbOff(o); r.fade(s, 500); await r.wait(500); return c;
+
+    /* ---- gestures on the page itself ---- */
+    if(g === 'strum'){                                    // hold the line, then run down it
+      const ln = r.el('jr-line'); ln.style.left = (W / 2 - 1) + 'px'; ln.style.top = (H * 0.2) + 'px'; ln.style.height = (H * 0.56) + 'px'; const dots = [];
+      for(let i = 0; i < 9; i++){ const d = r.el('jr-fdot'); d.style.left = (W / 2) + 'px'; d.style.top = (H * 0.2 + H * 0.56 * (i / 8)) + 'px'; dots.push([d, H * 0.2 + H * 0.56 * (i / 8)]); }
+      await r.wait(1400); await r.orbGo(o, W / 2, H * 0.2 - 4, 1200); o.classList.add('down'); r.ripple(W / 2, H * 0.2); await r.wait(450);
+      let lit = 0; r.tone(250, 0, 2.6, 'sine', 0.05, 1000);
+      await r.tween(2600, p => { const y = H * 0.2 + H * 0.56 * p; at(o, W / 2, y); dots.forEach(([d, dy], i) => { if(i >= lit && y >= dy - 4){ lit = i + 1; d.classList.add('lit'); r.bell(PENTA[i % 7] + 12, 0, 0.06, 1.2); } }); });
+      o.classList.remove('down'); await r.wait(300); await done(ln, ...dots.map(d => d[0])); return { x:W / 2, y:H * 0.3 };
     }
-    if(sc.g === 'wait'){
-      const ln = r.el('jr-card'); ln.innerHTML = '<div class="jr-title" style="text-align:center;font-size:1.3rem;color:var(--rose,#b86858)">3+</div><div class="jr-date" style="text-align:center">Years of Besties</div>'; ln.style.top = (H * 0.5) + 'px';
-      await r.nextFrame(); ln.classList.add('in'); await r.wait(1000);
-      await r.orbGo(o, c.x, c.y + 120, 1200);
-      for(let k = 0; k < 4; k++){ r.ringAt(c.x, c.y + 120, col('--gold-light'), 6); r.tone(300, 0, 0.12, 'sine', 0.04); await r.wait(850); }
-      r.orbOff(o); r.fade(ln, 500); await r.wait(500); return c;
+    if(g === 'push'){                                     // keep pushing at the end of the page
+      const st = r.el('jr-stampbig'); st.style.top = (H * 0.5) + 'px'; st.style.setProperty('--s', '0.7'); st.innerHTML = '<b>3+</b><span>Years of Besties</span>';
+      const el = r.el('jr-endline'); el.style.top = (H * 0.8) + 'px'; el.textContent = 'the end of the page';
+      await r.nextFrame(); await r.wait(1500); await r.orbGo(o, W / 2, H * 0.9, 1200);
+      for(let k = 0; k < 5; k++){ await r.orbGo(o, W / 2, H * 0.83, 260); r.press(o, W / 2, H * 0.82, 320 + k * 40); st.style.transition = 'transform .15s'; st.style.setProperty('--s', '0.78'); r.later(() => st.style.setProperty('--s', '0.7'), 170); r.sparks(W / 2, H * 0.78, 2, ['✦']); await r.orbGo(o, W / 2, H * 0.9, 300); await r.wait(100); }
+      await done(st, el); return { x:W / 2, y:H * 0.5 };
     }
-    // everything else happens on a single card
-    const cd = card(r, sc); await r.nextFrame(); cd.classList.add('in'); r.bell(PENTA[0], 0, 0.07, 1.4);
-    await r.wait(1400);
-    const w = cd.offsetWidth, px = c.x + w * 0.1, py = c.y + 6;
-    const tgt = sc.g === 'dot' ? [c.x - w / 2 - 22, c.y] : [px, py];
-    await r.orbGo(o, tgt[0] + 10, tgt[1] + 8, 1250);
-    if(sc.g === 'taps'){ for(let k = 0; k < sc.n; k++){ r.press(o, tgt[0], tgt[1], 520 + k * 50, k === sc.n - 1); tap(cd); await r.wait(k < sc.n - 1 ? 340 : 380); } }
-    else if(sc.g === 'dbl'){ r.press(o, tgt[0], tgt[1], 700); tap(cd); await r.wait(170); r.press(o, tgt[0], tgt[1], 840, true); tap(cd); await r.wait(420); }
-    else if(sc.g === 'dot'){ const d = cd.querySelector('.jr-dot'); r.press(o, tgt[0], tgt[1], 760, true); if(d) d.classList.add('lit'); await r.wait(450); }
-    else if(sc.g === 'hold'){
-      o.classList.add('down'); r.tone(200, 0, 1.3, 'sine', 0.06, 520);
-      for(let k = 0; k < 3; k++){ r.ringAt(tgt[0], tgt[1], col('--gold-light'), 6 + k * 3); await r.wait(430); }
-      o.classList.remove('down'); r.press(o, tgt[0], tgt[1], 880, true); await r.wait(300);
+    if(g === 'dial'){                                     // wind the years
+      const st = r.el('jr-stampbig'); st.style.top = (H * 0.46) + 'px'; st.style.setProperty('--s', '1'); st.innerHTML = '<b>3+</b><span>Years of Besties</span>';
+      await r.nextFrame(); await r.wait(1500); const R0 = 62, cx = W / 2, cy = H * 0.46; await r.orbGo(o, cx + R0, cy, 1200); o.classList.add('down'); await r.wait(250);
+      let years = 0; r.tone(150, 0, 3.6, 'sawtooth', 0.02, 320); st.style.transition = 'none';
+      await r.tween(3600, p => { const a = p * 3.3 * 2 * Math.PI; at(o, cx + R0 * Math.cos(a), cy + R0 * Math.sin(a)); st.style.transform = 'translate(-50%,-50%) rotate(' + (a * 57.2958) + 'deg)'; const y = Math.floor(a / (2 * Math.PI)); if(y > years){ years = y; r.word(years >= 3 ? '3+ years' : '+1 year', cx, cy - 120, col('--gold-light')); r.ringAt(cx, cy, col('--gold-light'), 8); r.bell(PENTA[years + 2], 0, 0.1, 1.6); } });
+      o.classList.remove('down'); st.style.transition = 'transform .6s cubic-bezier(.3,1.5,.5,1)'; st.style.transform = 'translate(-50%,-50%) rotate(0deg)'; await r.wait(700); await done(st); return { x:cx, y:cy };
     }
-    r.orbOff(o); r.fade(cd, 500); await r.wait(500);
-    return { x:tgt[0], y:tgt[1] };
+    return c;
   }
 
   async function scene(i){
     const r = R, sc = SCENES[i], key = sc.key, c = centre(r);
-    K.music(sc.music || 'je_quiet'); r.cap(sc.cap);
+    K.music(sc.music || 'jm_groove'); r.cap(sc.cap);
     await r.wait(700);
     const anchor = await perform(r, sc);
     r.cap('');
@@ -198,7 +314,7 @@
   /* ------------------------------------------------------------------ finale: the sixteen become the line, the stamp comes down */
   async function finale(){
     const r = R, W = r.W(), H = r.H(), cx = W / 2, y0 = H * 0.17, y1 = H * 0.79, n = SCENES.length;
-    K.music('je_gather'); r.cap('sixteen secrets, one timeline');
+    K.music('jm_gather'); r.cap('sixteen secrets, one timeline');
     const ln = r.raw('jr-line'); ln.style.left = (cx - 1) + 'px'; ln.style.top = y0 + 'px'; ln.style.height = (y1 - y0) + 'px'; ln.style.opacity = '0'; ln.style.transition = 'opacity 1s';
     const fill = r.raw('jr-line'); fill.style.cssText += ';left:' + (cx - 1) + 'px;top:' + y0 + 'px;height:0;background:' + col('--gold-light') + ';box-shadow:0 0 12px ' + col('--gold-light') + ';opacity:1;z-index:57';
     const dots = [], eggs = [];
@@ -229,7 +345,7 @@
     // the stamp comes down
     const st = r.raw('jr-stampbig slam'); st.style.top = (H * 0.38) + 'px'; st.innerHTML = '<b>3+</b><span>Years of Besties</span>';
     r.tone(150, 0, 0.6, 'sine', 0.08, 800); await r.wait(420);
-    r.flash(); r.quake(); r.thud(0.6, 90); r.noise(1.2, 0.14, 700, 4500); K.music('je_blast', true);
+    r.flash(); r.quake(); r.thud(0.6, 90); r.noise(1.2, 0.14, 700, 4500); K.music('jm_blast', true);
     [62, 67, 71, 74, 79, 83].forEach((m, k) => r.bell(m, k * 0.06, 0.12, 3));
     r.sparks(cx, H * 0.38, 20, ['✦', '♡', '✨']); r.heartBurst(); r.confetti(); r.later(() => { r.confetti(); r.heartBurst(); }, 800);
     [0, 400, 900].forEach(d => r.later(() => r.ringAt(cx, H * 0.38, col('--gold-light'), 28), d));
@@ -242,7 +358,7 @@
     'FOUND EVERY ONE'.split('').forEach((ch, i) => { const sp = document.createElement('span'); sp.textContent = ch === ' ' ? '\u00a0' : ch; sp.style.setProperty('--d', (0.1 + i * 0.06) + 's'); ban.appendChild(sp); });
     await r.wait(4200);
     // the note
-    r.fade([st, odo, small, ban], 1300); K.music('je_tender');
+    r.fade([st, odo, small, ban], 1300); K.music('jm_note');
     await r.wait(1700);
     const line = r.raw('jr-line2');
     for(const [txt, ms] of NOTE_LINES){ line.classList.remove('in'); await r.wait(900); line.textContent = txt; line.classList.add('in'); await r.wait(ms); }
@@ -253,17 +369,20 @@
 
   async function show(){
     const r = R;
-    r.sky.classList.add('on'); K.music('je_quiet');
+    r.sky.classList.add('on'); K.music('jm_intro');
     r.every(() => { const f = mk('jr-fall', ['❄', '❅', '•', '✦'][Math.floor(Math.random() * 4)]), fd = rnd(8, 14); f.style.left = rnd(0, 98) + '%'; f.style.fontSize = rnd(.7, 1.6) + 'rem'; f.style.setProperty('--sw', rnd(-70, 70) + 'px'); f.style.setProperty('--fr', rnd(-200, 200) + 'deg'); f.style.setProperty('--fd', fd + 's'); r.fx(f, fd * 1000 + 200); }, 1200);
     await r.wait(1200);
     tray.classList.add('on'); r.cap('sixteen little secrets, scattered along one very long timeline');
     await r.wait(3600); r.cap(''); await r.wait(500);
-    for(let i = 0; i < SCENES.length; i++) await scene(i);
-    await finale();
+    if(OPTS.finaleOnly){ slots.forEach((sl, i) => { sl.classList.add('full'); sl.querySelector('i').textContent = JE.GLYPHS[SCENES[i].key]; }); }   // (testing) jump straight to the finale
+    else for(let i = 0; i < SCENES.length; i++) await scene(i);
+    if(!OPTS.scenesOnly) await finale();
   }
 
   /* ------------------------------------------------------------------ entry point */
-  function play(o, next){
+  let OPTS = {};
+  function play(o, next, opts){
+    OPTS = opts || {};
     injectCSS(); JE.injectCSS();
     const root = mk('jr-root'); o.appendChild(root);
     const stage = mk('', null, root); stage.style.cssText = 'position:absolute;inset:0';

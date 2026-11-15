@@ -102,6 +102,44 @@ window.FxKit = (function(){
   }
   const unmute = () => { if(master && actx){ try{ master.gain.cancelScheduledValues(actx.currentTime); master.gain.setValueAtTime(1, actx.currentTime); }catch(e){} } };
 
+  /* ------------------------------------------------------------------ v2 instruments (pieces with v2:true): electric piano, soft bass, vibrato lead, swung drums, vinyl crackle */
+  function rhodesAt(m, t, len, vol){
+    const f = mtof(m);
+    toneAt(f, t, len, 'sine', vol); toneAt(f * 1.004, t, len * 0.9, 'sine', vol * 0.45);       // a touch of chorus
+    toneAt(f * 2, t, len * 0.4, 'sine', vol * 0.3); toneAt(f * 4.02, t, 0.07, 'sine', vol * 0.2); // the "tine" at the front of each note
+  }
+  function bassAt(m, t, len, vol){ const f = mtof(m); toneAt(f, t, len, 'sine', vol); toneAt(f * 2, t, len * 0.45, 'triangle', vol * 0.22); }
+  function leadAt(m, t, len, vol){
+    const c = actx; if(!c) return; const f = mtof(m);
+    const o = c.createOscillator(), o2 = c.createOscillator(), g = c.createGain(), g2 = c.createGain(), lfo = c.createOscillator(), lg = c.createGain();
+    o.type = 'sine'; o2.type = 'triangle'; o.frequency.value = f; o2.frequency.value = f * 2.003;
+    lfo.frequency.value = 5.2; lg.gain.value = f * 0.007; lfo.connect(lg); lg.connect(o.frequency); lg.connect(o2.frequency);   // gentle vibrato
+    g2.gain.value = 0.18; o2.connect(g2); g2.connect(g); o.connect(g); g.connect(master);
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(vol, t + 0.05); g.gain.setValueAtTime(vol * 0.9, t + len * 0.55); g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+    o.start(t); o2.start(t); lfo.start(t); o.stop(t + len + 0.05); o2.stop(t + len + 0.05); lfo.stop(t + len + 0.05);
+  }
+  const kickAt  = (t, v) => { toneAt(150, t, 0.17, 'sine', 0.5 * v, 42); noiseAt(0.02, 0.05 * v, 3000, 0, t); };
+  const snareAt = (t, v) => { noiseAt(0.17, 0.16 * v, 2000, 1100, t); toneAt(190, t, 0.09, 'triangle', 0.07 * v, 150); };
+  const hatAt   = (t, v) => noiseAt(0.045, 0.06 * v, 7800, 0, t);
+  const clapAt  = (t, v) => { [0, 0.012, 0.026].forEach(d => noiseAt(0.07, 0.1 * v, 1500, 0, t + d)); };
+  const crashAt = t => noiseAt(1.6, 0.09, 6500, 3500, t);
+  // a v2 piece: prog = [{ r:bassRoot, v:[chord tones] }], and 8-step patterns (eighth notes; odd steps are swung) for bassPat / comp / kick / snare / clap / hat
+  function playStepV2(step, t0){
+    const bar = Math.floor(step / 8), s = step % 8;
+    if(s === 0 && M.pending){ Object.assign(M, M.pending); M.pending = null; M.bar0 = bar; }
+    const b = bar - M.bar0, len = M.prog.length, ch = M.prog[((b % len) + len) % len], e = 30 / M.tempo;
+    const t = t0 + ((s % 2) ? M.swing * e : 0);
+    if(s === 0){ if(M.pad) ch.v.forEach(m => padAt(mtof(m), t, e * 8, M.pad)); if(M.crash && b % 4 === 0) crashAt(t); }
+    if(M.bassPat && M.bassPat[s] && M.bass){ const k = M.bassPat[s]; bassAt(ch.r + (k === 2 ? 7 : k === 3 ? 12 : 0), t, e * (s === 0 ? 2.8 : 1.4), M.bass); }
+    if(M.comp && M.comp[s] && M.compVol){ const k = M.comp[s]; ch.v.forEach((m, i) => rhodesAt(m, t + i * 0.011, k === 1 ? e * 3.2 : e * 1.1, M.compVol * (k === 1 ? 1 : 0.7))); }
+    if(M.kick && M.kick[s]) kickAt(t, M.kick[s]);
+    if(M.snare && M.snare[s]) snareAt(t, M.snare[s]);
+    if(M.clap && M.clap[s]) clapAt(t, M.clap[s]);
+    if(M.hat && M.hat[s]) hatAt(t, M.hat[s]);
+    if(M.mel && M.melVol){ const row = M.mel[((b % M.mel.length) + M.mel.length) % M.mel.length]; if(row && row[s] != null) leadAt(row[s], t, e * 2.4, M.melVol); }
+    if(M.crackle && Math.random() < 0.5) noiseAt(0.012, M.crackle * Math.random(), 3500 + Math.random() * 3000, 0, t + Math.random() * e);
+  }
+
   /* ------------------------------------------------------------------ the sequencer + pieces */
   const CH = {   // chords as midi notes, low to high
     C:[48,52,55,60], Cmaj7:[48,52,55,59], Am7:[45,48,52,55], Am:[45,48,52,57], Fmaj7:[41,45,48,52], F:[41,45,48,53], G:[43,47,50,55], Em:[40,43,47,52], Dm:[50,53,57,62],
@@ -111,6 +149,9 @@ window.FxKit = (function(){
   const PIECES = {};   // each home file adds its own pieces here
   const M = { on:false, step:0, next:0, bar0:0, timer:null, pending:null, tempo:66, prog:[CH.C], mel:null, arp:0, melVol:0, pad:0, bass:0, bass2:false, tick:0, chip:false };
   function playStep(step, t){
+    // a queued change of piece is applied here, before we decide which kind of piece (old or v2) is playing, so switching between the two kinds is safe
+    if(step % 8 === 0 && M.pending){ Object.assign(M, M.pending); M.pending = null; M.bar0 = Math.floor(step / 8); }
+    if(M.v2){ playStepV2(step, t); return; }
     const bar = Math.floor(step / 8), s = step % 8;
     if(s === 0 && M.pending){ Object.assign(M, M.pending); M.pending = null; M.bar0 = bar; }
     const b = bar - M.bar0, len = M.prog.length, ch = M.prog[((b % len) + len) % len], e = 30 / M.tempo;
@@ -137,7 +178,8 @@ window.FxKit = (function(){
   function music(name, immediate){
     const c = ac(); if(!c) return;
     const P = typeof name === 'string' ? PIECES[name] : name; if(!P) return;
-    const cfg = { tempo:P.tempo, prog:P.prog, mel:P.mel, arp:P.arp || 0, melVol:P.melVol || 0, pad:P.pad || 0, bass:P.bass || 0, bass2:!!P.bass2, tick:P.tick || 0, chip:!!P.chip };
+    const cfg = { tempo:P.tempo, prog:P.prog, mel:P.mel, arp:P.arp || 0, melVol:P.melVol || 0, pad:P.pad || 0, bass:P.bass || 0, bass2:!!P.bass2, tick:P.tick || 0, chip:!!P.chip,
+      v2:!!P.v2, swing:P.swing || 0, bassPat:P.bassPat || null, comp:P.comp || null, compVol:P.compVol || 0, kick:P.kick || null, snare:P.snare || null, clap:P.clap || null, hat:P.hat || null, crash:!!P.crash, crackle:P.crackle || 0 };
     if(!M.on){ Object.assign(M, cfg); M.on = true; M.step = 0; M.bar0 = 0; M.pending = null; M.next = c.currentTime + 0.15; M.timer = setInterval(seqTick, 80); }
     else if(immediate){ Object.assign(M, cfg); M.bar0 = Math.floor(M.step / 8); M.pending = null; }
     else M.pending = cfg;
@@ -145,6 +187,22 @@ window.FxKit = (function(){
   function stopMusic(fadeSec){
     clearInterval(M.timer); M.timer = null; M.on = false; M.pending = null;
     if(actx && master){ try{ const t = actx.currentTime; master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(master.gain.value, t); master.gain.linearRampToValueAtTime(0.0001, t + (fadeSec || 1.2)); }catch(e){} }
+  }
+
+  // Renders a piece to audio WITHOUT playing it (used to preview / measure music). Returns { samples:Float32Array, sampleRate }.
+  async function renderPiece(name, bars, sampleRate){
+    const P = typeof name === 'string' ? PIECES[name] : name; if(!P) throw new Error('no such piece');
+    const sr = sampleRate || 22050, n = Math.ceil(bars * 8 * (30 / P.tempo) * sr) + sr * 2;
+    const off = new OfflineAudioContext(1, n, sr);
+    const saved = { actx, master, M:Object.assign({}, M) };
+    try{
+      actx = off; master = off.createGain(); const comp = off.createDynamicsCompressor(); comp.threshold.value = -16; comp.ratio.value = 4; master.connect(comp); comp.connect(off.destination);
+      Object.assign(M, { v2:!!P.v2, swing:P.swing || 0, bassPat:P.bassPat || null, comp:P.comp || null, compVol:P.compVol || 0, kick:P.kick || null, snare:P.snare || null, clap:P.clap || null, hat:P.hat || null, crash:!!P.crash, crackle:P.crackle || 0,
+        tempo:P.tempo, prog:P.prog, mel:P.mel, arp:P.arp || 0, melVol:P.melVol || 0, pad:P.pad || 0, bass:P.bass || 0, bass2:!!P.bass2, tick:P.tick || 0, chip:!!P.chip, bar0:0, pending:null });
+      const e = 30 / P.tempo; for(let st = 0; st < bars * 8; st++) playStep(st, 0.05 + st * e);
+      const buf = await off.startRendering();
+      return { samples:buf.getChannelData(0), sampleRate:sr };
+    } finally { actx = saved.actx; master = saved.master; Object.assign(M, saved.M); }
   }
 
   /* ------------------------------------------------------------------ a run: helpers tied to one stage */
@@ -256,5 +314,5 @@ window.FxKit = (function(){
     return { finish };
   }
 
-  return { DEAD, reduced, mk, rnd, esc, col, createRun, playLive, injectCSS, ac, audioReady, unmute, mtof, music, stopMusic, PIECES, CH, toneAt, bellAt };
+  return { DEAD, reduced, mk, rnd, esc, col, createRun, playLive, injectCSS, ac, audioReady, unmute, mtof, music, stopMusic, renderPiece, PIECES, CH, toneAt, bellAt };
 })();

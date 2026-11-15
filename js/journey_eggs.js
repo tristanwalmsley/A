@@ -7,15 +7,23 @@
    JourneyEggs.init()                      binds the triggers to the real timeline cards (only call on our_journey.html).
    JourneyEggs.MSG / NAMES / KEYS / GLYPHS / util   used by the page, by eggs.js's list, and by the reel.
 
-   HOW EACH ONE IS FOUND (cards are matched by their text, so re-ordering the timeline is safe):
-     nest       tap the "Nest" card 3 times            hello    press and hold the "15 Jan 2023" card
-     call       double-tap the "very first call" card  birthday tap 5 different birthday cards
-     bus        tap the dot beside "Bus Sim 18"        glasses  tap the glasses card 4 times
-     face       tap the face-reveal card 5 times       phasmo   press and hold the Phasmo card
-     christmas  tap all 3 Christmas cards              stardew  double-tap the Stardew Concerts card
-     insync     tap the INSYNC card 3 times            protein  tap the Protein Business card twice
-     spine      tap the line between cards 3 times     capsule  rest at the very bottom for 8 seconds
-     days       tap the "3+" stamp 3 times             tbc      tap "The rest of it" (only works once the other 15 are found)
+   HOW EACH ONE IS FOUND (cards are matched by their text, so re-ordering the timeline is safe). Each is a gesture that suits its card:
+     nest       KEEP IT WARM        hold the Nest card still for 3.5s; it glows
+     hello      CLEAR THE NOTIFICATION   swipe the "15 Jan 2023" card sideways like a notification
+     call       PULL THE PHONE CORD drag the dot of the first-call card away (a curly cord stretches behind it)
+     birthday   LIGHT ALL EIGHT     press and hold each of the 8 birthday cards until its flame catches
+     bus        THREE-POINT TURN    scroll past the Bus Sim card, back, and past it again within 9 seconds
+     glasses    A CLOSER LOOK       pinch the glasses card open (two fingers), or hold Ctrl and scroll to zoom in on it
+     face       SHAKE LIKE A POLAROID    grab the face-reveal card and shake it side to side
+     phasmo     LIGHTS OFF          press and hold the Phasmo card: the page goes dark with a torch, and you stay put
+     christmas  COUNT THEM IN ORDER tap the 3 Christmas cards oldest to newest (a wrong one starts you over)
+     stardew    KEEP THE BEAT       five taps on the Stardew card in a steady rhythm
+     insync     MEET IN THE MIDDLE  touch the INSYNC card away from its centre; a mirror light appears; bring the two together
+     protein    PUMP IT UP          mash the Protein card, ten taps in a couple of seconds
+     spine      STRUM THE LINE      press the spine (touch: hold a moment) and run down it, lighting 12 dots; the page follows you at the edges
+     capsule    PUSH THE END        reach the very bottom of the page and keep pushing (five pushes)
+     days       WIND THE YEARS      turn the "3+" stamp like a dial, three full turns
+     tbc        THE LAST STAR       once the other 15 are found a star appears on "The rest of it"; tap it
    Colours come from the active theme (K.col), so Winter/Christmas restyle them. Edit MSG below to change what each one says.
    ========================================================================== */
 (function(){
@@ -35,10 +43,10 @@
 
   /* what each egg says when its moment ends (Tristan's voice) */
   const MSG = {
-    nest:      { title:'Where it all began', text:'Three taps on a nest. You turned up in the Nest in November 2022, we started chatting, and somehow that turned into this entire website.' },
+    nest:      { title:'Where it all began', text:'You sat on a nest until the eggs got warm. You turned up in the Nest in November 2022, we started chatting, and somehow that turned into this entire website.' },
     hello:     { title:'First hello', text:'15 January 2023. You said hello and I said hello back, and neither of us had any idea how much was about to get rearranged around that one message.' },
     call:      { title:'Call me maybe', text:'The very first call was 28 January 2023. I do not think either of us has properly hung up since.' },
-    birthday:  { title:'Eight candles', text:'Four of yours, four of mine. Eight birthdays so far, and I have enjoyed every single one more than the cake.' },
+    birthday:  { title:'Eight candles', text:'Four of yours, four of mine, and you lit every single one. Eight birthdays so far, and I have enjoyed all of them more than the cake.' },
     bus:       { title:'Next stop: bestie', text:'Bus Sim 18, 3 July 2023. Of all the people to ride a very slow virtual bus with, there was only ever one answer.' },
     glasses:   { title:'Sharper', text:'I got glasses on 9 August 2023 and the world got a lot clearer. The best thing in it was still you.' },
     face:      { title:'The official reveal', text:'October 2024. A very big moment for a fairly small amount of face. Thank you for being so nice about it.' },
@@ -47,10 +55,10 @@
     stardew:   { title:'Pixel concert', text:'February and March 2026: some of my favourite evenings on the entire internet were spent at a concert on a farm, with you.' },
     insync:    { title:'Insync', text:'Unhinged Era, INSYNC Era. Two completely different people keep arriving at the exact same thought at the exact same time. It is frankly a bit suspicious.' },
     protein:   { title:'A new business avenue', text:'19 August 2026. We have no idea what we are doing, and the numbers on that graph are completely made up, and I believe in us entirely.' },
-    spine:     { title:'Every moment', text:'You tapped the line that holds every moment together, and it lit up all of them. Which is honestly how it feels.' },
-    capsule:   { title: 'Time capsule', text:'You waited at the bottom of the page for something to happen, and it did: there is a lot of future still waiting, and I fully intend to spend it with you.' },
-    days:      { title:'Counting', text:'That is how many days it has been since our first hello. I did the maths so you would not have to. It went up while you were reading this.' },
-    tbc:       { title:'To be continued', text:'You found all of the rest, so here is the last one: there is no last one. More birthdays, more Christmases, more calls, more postcards. To be continued, for a very long time.' }
+    spine:     { title:'Every moment', text:'You ran your finger down the line that holds every moment together, and every one of them lit up. Which is honestly how it feels.' },
+    capsule:   { title: 'Time capsule', text:'You kept pushing at the end of the page, and it gave way: there is a lot of future still waiting behind it, and I fully intend to spend it with you.' },
+    days:      { title:'Counting', text:'You wound the years like a dial, and that is how many days it has really been since our first hello. I did the maths so you would not have to. It went up while you were reading this.' },
+    tbc:       { title:'To be continued', text:'You found all of the rest, so a star turned up just for you, and here is the last one: there is no last one. More birthdays, more Christmases, more calls, more postcards. To be continued, for a very long time.' }
   };
   const NAMES = { nest:'Where it all began', hello:'First hello', call:'Call me maybe', birthday:'Eight candles', bus:'Next stop: bestie', glasses:'Sharper', face:'The official reveal', phasmo:'EMF level 5', christmas:'Under the tree', stardew:'Pixel concert', insync:'Insync', protein:'A new business avenue', spine:'Every moment', capsule:'Time capsule', days:'Counting', tbc:'To be continued' };
 
@@ -160,6 +168,34 @@
 .je-end{position:absolute;left:0;right:0;z-index:60;text-align:center;font-family:'Courier New',monospace;font-weight:700;font-size:clamp(1.5rem,7vw,2.6rem);letter-spacing:.08em;color:#fff3d6;text-shadow:0 0 14px rgba(255,200,120,.6)}
 .je-end u{display:inline-block;width:.5em;height:1em;margin-left:.1em;background:#ffb830;vertical-align:-.12em;text-decoration:none;animation:jeCur .8s steps(1) infinite}
 @keyframes jeCur{50%{opacity:0}}
+
+/* ---- feedback that lives on the PAGE while a gesture is in progress (the moments themselves are above) ---- */
+.tl-card.je-warming{box-shadow:0 0 calc(var(--jew,0) * 34px) calc(var(--jew,0) * 10px) rgba(255,165,60,calc(.1 + var(--jew,0) * .55)),4px 4px 0 var(--warm,#f0ddb8)!important;transition:none!important}
+.je-fbr{position:fixed;z-index:9000;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;border:2px solid var(--gold-light,#e8b95a);pointer-events:none;animation:jeFbR .7s ease-out forwards}
+@keyframes jeFbR{from{transform:scale(.3);opacity:1}to{transform:scale(4);opacity:0}}
+.je-fbs{position:fixed;z-index:9000;pointer-events:none;font-size:1.05rem;line-height:1;white-space:nowrap;color:var(--gold-light,#e8b95a);font-family:'Caveat',cursive;font-weight:700;animation:jeFbS .95s ease-out forwards}
+@keyframes jeFbS{from{transform:translate(-50%,-50%) scale(.6);opacity:1}to{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.1);opacity:0}}
+.je-flame{position:absolute;left:50%;top:-12px;width:14px;height:20px;margin-left:-7px;border-radius:50% 50% 50% 50%/65% 65% 35% 35%;background:radial-gradient(circle at 50% 72%,#fff6c8,#ffb830 60%,rgba(255,120,30,.25));box-shadow:0 0 14px 4px rgba(255,190,70,.5);transform:scale(.2);opacity:.4;transition:transform .65s ease-out,opacity .65s;pointer-events:none;z-index:4}
+.je-flame.grow{transform:scale(.7);opacity:.8}
+.je-flame.lit{transform:scale(1);opacity:1;animation:jeFl .18s ease-in-out infinite alternate}
+@keyframes jeFl{from{transform:scale(1) skewX(-5deg)}to{transform:scale(.93,1.08) skewX(5deg)}}
+.je-cord{position:fixed;inset:0;width:100%;height:100%;z-index:9000;pointer-events:none}
+.je-cord path{fill:none;stroke:var(--rose,#b86858);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 2px 3px rgba(0,0,0,.3))}
+.je-lights{position:fixed;inset:0;z-index:9000;background:#000;opacity:0;transition:opacity .35s;pointer-events:none;-webkit-mask-image:radial-gradient(circle 95px at var(--x) var(--y),transparent 0,transparent 55%,#000 100%);mask-image:radial-gradient(circle 95px at var(--x) var(--y),transparent 0,transparent 55%,#000 100%);animation:jeLf 1.4s steps(1) infinite}
+@keyframes jeLf{0%,100%{filter:none}41%{filter:brightness(1.8)}43%{filter:brightness(.6)}}
+.je-bauble{position:absolute;top:-7px;right:10px;width:14px;height:14px;border-radius:50%;box-shadow:0 0 8px rgba(255,255,255,.6),inset -2px -2px 3px rgba(0,0,0,.25);animation:jePopB .4s cubic-bezier(.3,1.8,.5,1);pointer-events:none;z-index:4}
+@keyframes jePopB{from{transform:scale(0)}to{transform:scale(1)}}
+.tl-card.je-nope{animation:jeNope .4s ease}
+@keyframes jeNope{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.je-mir{position:fixed;z-index:9000;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:radial-gradient(circle,#fff,var(--rose,#b86858) 60%,transparent 72%);box-shadow:0 0 16px 5px color-mix(in srgb,var(--rose,#b86858) 60%,transparent);pointer-events:none}
+.je-mir.b{background:radial-gradient(circle,#fff,var(--gold,#c8943a) 60%,transparent 72%);box-shadow:0 0 16px 5px color-mix(in srgb,var(--gold,#c8943a) 60%,transparent)}
+.tl-dot.je-strum{background:var(--gold-light,#e8b95a)!important;transform:scale(2.2)!important;box-shadow:0 0 0 8px color-mix(in srgb,var(--gold-light,#e8b95a) 40%,transparent)!important}
+.stamp-big.je-bump{animation:jeBump .45s cubic-bezier(.3,1.7,.5,1)}
+@keyframes jeBump{0%{transform:translateY(0)}30%{transform:translateY(-14px) rotate(-2deg)}100%{transform:none}}
+.je-star{position:absolute;right:-.6rem;top:-.9rem;font-size:1.7rem;line-height:1;color:var(--gold-light,#e8b95a);text-shadow:0 0 14px var(--gold,#c8943a);opacity:0;transform:scale(0);transition:opacity .6s,transform .6s cubic-bezier(.3,1.8,.5,1);pointer-events:none;cursor:pointer;z-index:5}
+.je-star.on{opacity:1;transform:scale(1);pointer-events:auto;animation:jeStarGlow 1.3s ease-in-out infinite alternate}
+@keyframes jeStarGlow{from{filter:brightness(.9)}to{filter:brightness(1.5) drop-shadow(0 0 10px var(--gold-light,#e8b95a))}}
+.je-nosel{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 `;
   let cssDone = false;
   function injectCSS(){ if(cssDone) return; cssDone = true; const st = document.createElement('style'); st.id = 'je-css'; st.textContent = CSS; document.head.appendChild(st); }
@@ -536,68 +572,183 @@
     const rows = [...document.querySelectorAll('.tl-event')];
     const T = row => (row.querySelector('.tl-title') || {}).textContent || '', D = row => (row.querySelector('.tl-date') || {}).textContent || '', G = row => (row.querySelector('.tl-tag') || {}).textContent || '';
     const by = f => rows.find(f);
+    const card = row => row && row.querySelector('.tl-card');
     const centerOf = el => { const b = el.getBoundingClientRect(); return { x:b.left + b.width / 2, y:b.top + b.height / 2 }; };
+    const NSV = 'http://www.w3.org/2000/svg';
+    let refreshStar = () => {};
 
     // one moment at a time; if a second egg is found while one plays, it waits its turn
     const queue = []; let busy = false;
-    const next = () => { const j = queue.shift(); if(!j){ busy = false; return; } busy = true; play(j.key, j.anchor, () => { PageEggs.found('journey', j.key, MSG[j.key]); setTimeout(wait, 600); }); };
+    const next = () => { const j = queue.shift(); if(!j){ busy = false; return; } busy = true; play(j.key, j.anchor, () => { PageEggs.found('journey', j.key, MSG[j.key]); refreshStar(); setTimeout(wait, 600); }); };
     const wait = () => { if(PageEggs.isOpen && PageEggs.isOpen()) return setTimeout(wait, 800); next(); };
     const fire = (key, el) => { if(queue.some(q => q.key === key) || (busy && queue.length > 2)) return; queue.push({ key, anchor:centerOf(el) }); if(!busy) next(); };
 
-    // gestures
-    const taps = (row, n, key, win) => { if(!row) return; let c = 0, t = 0; row.addEventListener('click', () => { const now = Date.now(); if(now - t > (win || 1800)) c = 0; t = now; if(++c >= n){ c = 0; fire(key, row); } }); };
-    const dbl = (row, key) => taps(row, 2, key, 520);
-    const hold = (row, ms, key) => {
-      if(!row) return; let tm = null, sx = 0, sy = 0;
-      row.style.webkitTouchCallout = 'none'; row.style.userSelect = 'none'; row.style.webkitUserSelect = 'none';
-      const stop = () => { clearTimeout(tm); tm = null; };
-      row.addEventListener('pointerdown', e => { sx = e.clientX; sy = e.clientY; stop(); tm = setTimeout(() => { tm = null; fire(key, row); }, ms); });
-      row.addEventListener('pointermove', e => { if(tm && Math.hypot(e.clientX - sx, e.clientY - sy) > 12) stop(); });
-      ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => row.addEventListener(ev, stop));
-    };
-    const distinct = (list, need, key) => { const seen = new Set(); list.forEach(row => row.addEventListener('click', () => { seen.add(row); if(seen.size >= need){ seen.clear(); fire(key, row); } })); };
+    // little bits of feedback that appear on the page itself while a gesture is going well
+    const ripple = (x, y) => { const e = mk('je-fbr'); e.style.left = x + 'px'; e.style.top = y + 'px'; document.body.appendChild(e); setTimeout(() => e.remove(), 800); };
+    const spark = (x, y, glyph, n) => { for(let i = 0; i < (n || 1); i++){ const e = mk('je-fbs', glyph), a = rnd(0, 6.28), d = rnd(24, 60); e.style.left = x + 'px'; e.style.top = y + 'px'; e.style.setProperty('--dx', Math.cos(a) * d + 'px'); e.style.setProperty('--dy', (Math.sin(a) * d - 20) + 'px'); document.body.appendChild(e); setTimeout(() => e.remove(), 1000); } };
+    const noSelect = el => { el.classList.add('je-nosel'); el.addEventListener('contextmenu', e => e.preventDefault()); };
 
-    taps(by(r => /Nest/.test(T(r))), 3, 'nest');
-    hold(by(r => D(r) === '15 Jan 2023'), 800, 'hello');
-    dbl(by(r => /very first of many calls/i.test(T(r))), 'call');
-    distinct(rows.filter(r => T(r).includes('🎂')), 5, 'birthday');
-    { const row = by(r => /Bus Sim 18/.test(T(r))); if(row){ const w = row.querySelector('.tl-dot-wrap'); if(w) w.addEventListener('click', () => fire('bus', row)); } }
-    taps(by(r => /got glasses/i.test(T(r))), 4, 'glasses');
-    taps(by(r => /face reveal/i.test(T(r))), 5, 'face');
-    hold(by(r => /first played Phasmo/i.test(T(r))), 1200, 'phasmo');
-    distinct(rows.filter(r => G(r).trim().toLowerCase() === 'christmas'), 3, 'christmas');
-    dbl(by(r => /Stardew/i.test(T(r))), 'stardew');
-    taps(by(r => /INSYNC/.test(T(r))), 3, 'insync');
-    taps(by(r => /Protein Business/i.test(T(r))), 2, 'protein', 1500);
-    taps(document.querySelector('.stamp-big'), 3, 'days');
+    /* 1 nest: keep it warm. Hold the card still for a few seconds and it glows like something is sitting on it */
+    { const c = card(by(r => /Nest/.test(T(r))));
+      if(c){ noSelect(c); let on = false, raf = 0, t0 = 0, sx = 0, sy = 0;
+        const stop = () => { on = false; cancelAnimationFrame(raf); c.classList.remove('je-warming'); c.style.removeProperty('--jew'); };
+        const loop = now => { if(!on) return; const p = Math.min(1, (now - t0) / 3500); c.style.setProperty('--jew', p.toFixed(3));
+          if(Math.random() < 0.05){ const b = c.getBoundingClientRect(); spark(b.left + rnd(0, b.width), b.top + rnd(0, b.height), '♡', 1); }
+          if(p >= 1){ stop(); fire('nest', c); return; } raf = requestAnimationFrame(loop); };
+        c.addEventListener('pointerdown', e => { if(e.button > 0) return; on = true; t0 = performance.now(); sx = e.clientX; sy = e.clientY; c.classList.add('je-warming'); raf = requestAnimationFrame(loop); });
+        c.addEventListener('pointermove', e => { if(on && Math.hypot(e.clientX - sx, e.clientY - sy) > 26) stop(); });
+        ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => c.addEventListener(ev, stop)); } }
 
-    // the line between the cards
-    const wrap = document.querySelector('.tl-wrap');
-    if(wrap){
-      let c = 0, t = 0;
-      wrap.addEventListener('click', e => {
-        if(e.target.closest('.tl-event, .era-divider, .tl-end-stamp')) return;
-        const sp = wrap.querySelector('.tl-spine'); if(!sp) return; const b = sp.getBoundingClientRect();
-        if(Math.abs(e.clientX - (b.left + b.width / 2)) > 26) return;
-        const now = Date.now(); if(now - t > 1800) c = 0; t = now;
-        if(++c >= 3){ c = 0; fire('spine', { getBoundingClientRect:() => ({ left:e.clientX, top:e.clientY, width:0, height:0 }) }); }
-      });
-    }
+    /* 2 first hello: swipe it away, like clearing a notification */
+    { const c = card(by(r => D(r) === '15 Jan 2023'));
+      if(c){ noSelect(c); c.style.touchAction = 'pan-y'; let down = false, sx = 0, sy = 0, done = false;
+        c.addEventListener('pointerdown', e => { if(e.button > 0) return; down = true; done = false; sx = e.clientX; sy = e.clientY; try{ c.setPointerCapture(e.pointerId); }catch(x){} c.style.transition = 'none'; });
+        c.addEventListener('pointermove', e => { if(!down) return; const dx = e.clientX - sx, dy = e.clientY - sy; if(Math.abs(dy) > Math.abs(dx) * 1.2 && Math.abs(dx) < 30) return;
+          const cl = Math.max(-170, Math.min(170, dx)); c.style.transform = 'translateX(' + cl + 'px) rotate(' + (cl * 0.04) + 'deg)'; c.style.opacity = String(1 - Math.min(0.5, Math.abs(cl) / 300));
+          if(!done && Math.abs(dx) >= 95 && Math.abs(dy) < Math.abs(dx) * 0.7){ done = true; fire('hello', c); } });
+        const end = () => { if(!down) return; down = false; c.style.transition = 'transform .45s cubic-bezier(.3,1.6,.5,1),opacity .3s'; c.style.transform = ''; c.style.opacity = ''; setTimeout(() => { c.style.transition = ''; }, 520); };
+        ['pointerup', 'pointercancel'].forEach(ev => c.addEventListener(ev, end)); } }
 
-    // resting at the very bottom of the page
-    const end = document.getElementById('end-stamp');
-    if(end && 'IntersectionObserver' in window){
-      let tm = null;
-      new IntersectionObserver(es => es.forEach(en => { if(en.isIntersecting && en.intersectionRatio > 0.6){ clearTimeout(tm); tm = setTimeout(() => fire('capsule', end), 8000); } else { clearTimeout(tm); } }), { threshold:[0, 0.6, 1] }).observe(end);
-    }
+    /* 3 first call: pull the phone cord. Take hold of the dot and pull it away, and a curly cord stretches out behind it */
+    { const w = (by(r => /very first of many calls/i.test(T(r))) || {}).querySelector ? by(r => /very first of many calls/i.test(T(r))).querySelector('.tl-dot-wrap') : null;
+      if(w){ w.style.touchAction = 'none'; let down = false, sx = 0, sy = 0, svg = null, path = null, done = false;
+        const coil = (x1, y1, x2, y2) => { const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L, n = Math.max(2, Math.floor(L / 6)); let d = 'M' + x1.toFixed(1) + ',' + y1.toFixed(1);
+          for(let i = 1; i <= n; i++){ const t = i / n, a = Math.sin(i * 1.25) * 9 * Math.min(1, L / 60); d += ' L' + (x1 + dx * t + nx * a).toFixed(1) + ',' + (y1 + dy * t + ny * a).toFixed(1); } return d; };
+        w.addEventListener('pointerdown', e => { if(e.button > 0) return; e.stopPropagation();   /* this dot is the cord's, so the spine-strum below must not grab it too */
+          const b = w.querySelector('.tl-dot').getBoundingClientRect(); sx = b.left + b.width / 2; sy = b.top + b.height / 2; down = true; done = false; try{ w.setPointerCapture(e.pointerId); }catch(x){}
+          svg = document.createElementNS(NSV, 'svg'); svg.setAttribute('class', 'je-cord'); path = document.createElementNS(NSV, 'path'); svg.appendChild(path); document.body.appendChild(svg); });
+        w.addEventListener('pointermove', e => { if(!down || !path) return; path.setAttribute('d', coil(sx, sy, e.clientX, e.clientY)); if(!done && Math.hypot(e.clientX - sx, e.clientY - sy) >= 150){ done = true; fire('call', w); } });
+        const end = () => { down = false; if(svg){ svg.remove(); svg = null; path = null; } };
+        ['pointerup', 'pointercancel'].forEach(ev => w.addEventListener(ev, end)); } }
 
-    // the last one only opens once the other fifteen are found
-    const future = by(r => /The rest of it/i.test(T(r)));
-    if(future) future.addEventListener('click', () => {
-      const others = KEYS.filter(k => k !== 'tbc' && PageEggs.has('journey', k)).length;
-      if(others >= KEYS.length - 1) fire('tbc', future);
-      else if(!PageEggs.has('journey', 'tbc')) PageEggs.toast('the rest of it has not been written yet ♡', 2600);
-    });
+    /* 4 birthdays: light all eight candles. Press and hold each birthday card until its little flame catches */
+    { const bd = rows.filter(r => T(r).includes('🎂'));
+      if(bd.length){ const lit = new Set();
+        bd.forEach(row => { const c = card(row); noSelect(c); let tm = null, sx = 0, sy = 0, flame = null;
+          const stop = () => { clearTimeout(tm); tm = null; if(flame && !lit.has(row)){ flame.remove(); flame = null; } };
+          c.addEventListener('pointerdown', e => { if(e.button > 0 || lit.has(row)) return; sx = e.clientX; sy = e.clientY; flame = mk('je-flame'); c.appendChild(flame); requestAnimationFrame(() => flame && flame.classList.add('grow'));
+            tm = setTimeout(() => { tm = null; lit.add(row); flame.classList.add('lit'); const b = c.getBoundingClientRect(); ripple(b.left + b.width / 2, b.top); spark(b.left + b.width / 2, b.top, '✦', 4);
+              if(lit.size >= bd.length) setTimeout(() => { bd.forEach(r => { const f = card(r).querySelector('.je-flame'); if(f) f.remove(); }); lit.clear(); fire('birthday', c); }, 600); }, 650); });
+          c.addEventListener('pointermove', e => { if(tm && Math.hypot(e.clientX - sx, e.clientY - sy) > 18) stop(); });
+          ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => c.addEventListener(ev, stop)); }); } }
+
+    /* 5 Bus Sim 18: a three-point turn. Scroll past the card, back, and past it again (reverse and go again) */
+    { const row = by(r => /Bus Sim 18/.test(T(r)));
+      if(row){ let cross = [], raf = 0; const sign = () => { const b = row.getBoundingClientRect(); return (b.top + b.height / 2) > innerHeight / 2 ? 1 : -1; }; let last = sign();
+        const check = () => { raf = 0; const s = sign(); if(s === last) return; last = s; const now = Date.now(); cross = cross.filter(t => now - t < 9000);
+          if(!cross.length || now - cross[cross.length - 1] > 250) cross.push(now); if(cross.length >= 3){ cross = []; fire('bus', row); } };
+        addEventListener('scroll', () => { if(!raf) raf = requestAnimationFrame(check); }, { passive:true }); } }
+
+    /* 6 glasses: take a closer look. Pinch the card open (two fingers), or hold Ctrl and scroll to zoom in on it */
+    { const c = card(by(r => /got glasses/i.test(T(r))));
+      if(c){ let d0 = 0, done = false; const dist = t => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+        c.addEventListener('touchstart', e => { if(e.touches.length === 2){ d0 = dist(e.touches); done = false; } }, { passive:true });
+        c.addEventListener('touchmove', e => { if(e.touches.length === 2 && !d0){ d0 = dist(e.touches); done = false; return; }      // second finger arrived mid-gesture
+          if(e.touches.length === 2 && d0 && !done){ const k = dist(e.touches) / d0; c.style.transform = 'scale(' + Math.min(1.25, k) + ')'; if(k >= 1.7){ done = true; c.style.transform = ''; fire('glasses', c); } } }, { passive:true });
+        ['touchend', 'touchcancel'].forEach(ev => c.addEventListener(ev, () => { d0 = 0; c.style.transform = ''; }, { passive:true }));
+        let z = 0, zt = 0; c.addEventListener('wheel', e => { if(!e.ctrlKey || e.deltaY >= 0) return; const now = Date.now(); if(now - zt > 800) z = 0; zt = now; z += -e.deltaY; if(z >= 180){ z = 0; fire('glasses', c); } }, { passive:true }); } }
+
+    /* 7 face reveal: shake it like a polaroid. Grab the card and shake it side to side */
+    { const c = card(by(r => /face reveal/i.test(T(r))));
+      if(c){ noSelect(c); c.style.touchAction = 'pan-y'; let down = false, ox = 0, lastX = 0, dir = 0, ext = 0, rev = 0, t0 = 0;
+        c.addEventListener('pointerdown', e => { if(e.button > 0) return; down = true; ox = lastX = ext = e.clientX; dir = 0; rev = 0; t0 = Date.now(); try{ c.setPointerCapture(e.pointerId); }catch(x){} c.style.transition = 'none'; });
+        c.addEventListener('pointermove', e => { if(!down) return; const x = e.clientX; c.style.transform = 'translateX(' + Math.max(-70, Math.min(70, x - ox)) + 'px) rotate(' + Math.max(-12, Math.min(12, (x - ox) * 0.12)) + 'deg)';
+          if(x === lastX) return; const nd = x > lastX ? 1 : -1;
+          if(dir === 0) dir = nd; else if(nd !== dir){ if(Math.abs(lastX - ext) >= 45){ rev++; ext = lastX; if(Date.now() - t0 > 4500){ rev = 1; t0 = Date.now(); } if(rev >= 6){ down = false; end(true); fire('face', c); } } dir = nd; }
+          lastX = x; });
+        const end = quiet => { down = false; c.style.transition = 'transform .45s cubic-bezier(.3,1.6,.5,1)'; c.style.transform = ''; setTimeout(() => { c.style.transition = ''; }, 520); };
+        ['pointerup', 'pointercancel'].forEach(ev => c.addEventListener(ev, () => { if(down) end(); })); } }
+
+    /* 8 Phasmo: lights off. Press and hold the card: the page goes dark with only a torch around your finger, and you stay put until something shows up */
+    { const c = card(by(r => /first played Phasmo/i.test(T(r))));
+      if(c){ noSelect(c); let ov = null, tok = 0, px = 0, py = 0;
+        const stop = () => { tok++; if(ov){ const o = ov; ov = null; o.style.opacity = '0'; setTimeout(() => o.remove(), 450); } };
+        c.addEventListener('pointerdown', e => { if(e.button > 0) return; const my = ++tok; px = e.clientX; py = e.clientY; try{ c.setPointerCapture(e.pointerId); }catch(x){}
+          setTimeout(() => { if(tok !== my) return; ov = mk('je-lights'); ov.style.setProperty('--x', px + 'px'); ov.style.setProperty('--y', py + 'px'); document.body.appendChild(ov); requestAnimationFrame(() => { if(ov) ov.style.opacity = '1'; }); }, 350);
+          setTimeout(() => { if(tok !== my) return; stop(); fire('phasmo', c); }, 2600); });
+        c.addEventListener('pointermove', e => { px = e.clientX; py = e.clientY; if(ov){ ov.style.setProperty('--x', px + 'px'); ov.style.setProperty('--y', py + 'px'); } });
+        ['pointerup', 'pointercancel'].forEach(ev => c.addEventListener(ev, stop)); } }
+
+    /* 9 Christmases: count them in order. Tap the three Christmas cards oldest to newest (a wrong one starts you over) */
+    { const xs = rows.filter(r => G(r).trim().toLowerCase() === 'christmas');
+      if(xs.length){ let step = 0, t0 = 0; const colors = ['#e0343c', '#f2c14e', '#3fa66a', '#4a8fe0'];
+        const clearB = () => xs.forEach(r => card(r).querySelectorAll('.je-bauble').forEach(b => b.remove()));
+        const advance = (c, i, e) => { if(step === 0) t0 = Date.now(); const b = mk('je-bauble'); b.style.background = colors[i % 4]; c.appendChild(b); const r = c.getBoundingClientRect(); spark(r.left + r.width / 2, r.top + 8, '❄', 5); ripple(e.clientX, e.clientY); step++;
+          if(step >= xs.length){ step = 0; setTimeout(() => { clearB(); fire('christmas', c); }, 450); } };
+        xs.forEach((row, i) => { const c = card(row); c.addEventListener('click', e => { if(step > 0 && Date.now() - t0 > 14000){ step = 0; clearB(); }
+          if(i === step) advance(c, i, e); else { step = 0; clearB(); if(i === 0) advance(c, 0, e); else { c.classList.remove('je-nope'); void c.offsetWidth; c.classList.add('je-nope'); } } }); }); } }
+
+    /* 10 Stardew Concerts: keep the beat. Five taps in a steady rhythm (not too fast, not too slow, evenly spaced) */
+    { const c = card(by(r => /Stardew/i.test(T(r))));
+      if(c){ let ts = []; c.addEventListener('click', e => { const now = Date.now(); ts = ts.filter(t => now - t < 4200); ts.push(now); ripple(e.clientX, e.clientY); spark(e.clientX, e.clientY, '♪', 2);
+        if(ts.length >= 5){ const l = ts.slice(-5), iv = []; for(let i = 1; i < 5; i++) iv.push(l[i] - l[i - 1]); const m = iv.reduce((a, b) => a + b, 0) / iv.length;
+          if(m >= 260 && m <= 800 && iv.every(v => Math.abs(v - m) <= m * 0.3)){ ts = []; fire('stardew', c); } } }); } }
+
+    /* 11 INSYNC: meet in the middle. Put a finger on the card away from its centre: a second light appears as your mirror image. Bring the two together */
+    { const c = card(by(r => /INSYNC/.test(T(r))));
+      if(c){ noSelect(c); c.style.touchAction = 'none'; let down = false, a = null, b = null, done = false;
+        const mid = () => { const r = c.getBoundingClientRect(); return { x:r.left + r.width / 2, y:r.top + r.height / 2 }; };
+        const upd = e => { const m = mid(); a.style.left = e.clientX + 'px'; a.style.top = e.clientY + 'px'; b.style.left = (2 * m.x - e.clientX) + 'px'; b.style.top = (2 * m.y - e.clientY) + 'px'; return Math.hypot(e.clientX - m.x, e.clientY - m.y); };
+        c.addEventListener('pointerdown', e => { if(e.button > 0) return; const m = mid(); if(Math.hypot(e.clientX - m.x, e.clientY - m.y) < 28) return; down = true; done = false; try{ c.setPointerCapture(e.pointerId); }catch(x){}
+          a = mk('je-mir'); b = mk('je-mir b'); document.body.appendChild(a); document.body.appendChild(b); upd(e); });
+        c.addEventListener('pointermove', e => { if(!down || !a) return; const d = upd(e); if(!done && d < 12){ done = true; ripple(e.clientX, e.clientY); fire('insync', c); } });
+        const end = () => { down = false; [a, b].forEach(n => n && n.remove()); a = b = null; };
+        ['pointerup', 'pointercancel'].forEach(ev => c.addEventListener(ev, end)); } }
+
+    /* 12 Protein Business: pump it up. Mash the card, ten taps in a couple of seconds, and it gains as you go */
+    { const c = card(by(r => /Protein Business/i.test(T(r))));
+      if(c){ let ts = []; c.addEventListener('click', e => { const now = Date.now(); ts = ts.filter(t => now - t < 2800); ts.push(now); const n = ts.length;
+        c.style.transition = 'transform .08s'; c.style.transform = 'scale(' + (1 + n * 0.03) + ')'; setTimeout(() => { c.style.transform = ''; }, 130); spark(e.clientX, e.clientY, '💪', 1);
+        if(n >= 10){ ts = []; fire('protein', c); } }); } }
+
+    /* 13 the line: strum it. Press the spine (touch: hold a moment first), then run down it: every dot you pass lights up. Hold near the bottom edge and the page follows you */
+    { const wrap = document.querySelector('.tl-wrap');
+      if(wrap){ let armed = false, down = false, tmo = null, hit = new Set(), px = 0, py = 0, raf = 0, sx = 0, sy = 0;
+        const spineX = () => { const b = wrap.querySelector('.tl-spine').getBoundingClientRect(); return b.left + b.width / 2; };
+        const dots = () => [...wrap.querySelectorAll('.tl-dot')];
+        const frame = () => { raf = 0; if(!armed) return;
+          if(py > innerHeight * 0.82) scrollBy({ top:16, behavior:'instant' }); else if(py < innerHeight * 0.18) scrollBy({ top:-16, behavior:'instant' });
+          dots().forEach(d => { if(hit.has(d) || !armed) return; const b = d.getBoundingClientRect(); if(Math.abs(b.top + b.height / 2 - py) <= 22){ hit.add(d); d.classList.add('je-strum'); setTimeout(() => d.classList.remove('je-strum'), 900); ripple(b.left + b.width / 2, b.top + b.height / 2);
+            if(hit.size >= 12){ armed = false; down = false; const at = { getBoundingClientRect:() => ({ left:px, top:py, width:0, height:0 }) }; hit = new Set(); fire('spine', at); } } });
+          raf = requestAnimationFrame(frame); };
+        const arm = () => { armed = true; document.body.classList.add('je-nosel'); if(!raf) raf = requestAnimationFrame(frame); };
+        wrap.addEventListener('pointerdown', e => { if(e.button > 0 || Math.abs(e.clientX - spineX()) > 26 || e.target.closest('.tl-card') || e.target.closest('.era-divider')) return;
+          down = true; px = sx = e.clientX; py = sy = e.clientY; hit = new Set(); try{ wrap.setPointerCapture(e.pointerId); }catch(x){} if(e.pointerType === 'touch') tmo = setTimeout(arm, 260); else arm(); });
+        wrap.addEventListener('pointermove', e => { if(!down) return; px = e.clientX; py = e.clientY; if(!armed && Math.hypot(px - sx, py - sy) > 10) clearTimeout(tmo); });
+        const end = () => { down = false; armed = false; clearTimeout(tmo); cancelAnimationFrame(raf); raf = 0; hit = new Set(); document.body.classList.remove('je-nosel'); };
+        ['pointerup', 'pointercancel'].forEach(ev => wrap.addEventListener(ev, end));
+        wrap.addEventListener('touchmove', e => { if(armed) e.preventDefault(); }, { passive:false }); } }
+
+    /* 14 the time capsule: push against the end. Reach the very bottom of the page and keep pushing; after a few pushes the page gives */
+    { let pushes = [], lastT = 0; const atBottom = () => Math.ceil(scrollY + innerHeight) >= document.documentElement.scrollHeight - 2;
+      const push = () => { if(!atBottom()) return; const now = Date.now(); if(now - lastT < 380) return; lastT = now; pushes = pushes.filter(t => now - t < 7000); pushes.push(now);
+        const st = document.querySelector('.stamp-big'); if(st){ st.classList.remove('je-bump'); void st.offsetWidth; st.classList.add('je-bump'); }
+        if(pushes.length >= 5){ pushes = []; fire('capsule', st || document.body); } };
+      addEventListener('wheel', e => { if(e.deltaY > 0) push(); }, { passive:true });
+      let ty = 0; addEventListener('touchstart', e => { ty = e.touches[0].clientY; }, { passive:true });
+      addEventListener('touchmove', e => { if(e.touches[0].clientY < ty - 18){ ty = e.touches[0].clientY; push(); } }, { passive:true });
+      addEventListener('keydown', e => { if(e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') push(); }); }
+
+    /* 15 the 3+ stamp: wind the years. Turn the stamp like a dial: three full turns is three years */
+    { const st = document.querySelector('.stamp-big');
+      if(st){ noSelect(st); st.style.touchAction = 'none'; let down = false, last = 0, acc = 0, years = 0, cx = 0, cy = 0;
+        const ang = e => Math.atan2(e.clientY - cy, e.clientX - cx);
+        const settle = () => { st.style.transition = 'transform .6s cubic-bezier(.3,1.5,.5,1)'; st.style.transform = ''; setTimeout(() => { st.style.transition = ''; }, 650); };
+        st.addEventListener('pointerdown', e => { if(e.button > 0) return; const r = st.getBoundingClientRect(); cx = r.left + r.width / 2; cy = r.top + r.height / 2; down = true; acc = 0; years = 0; last = ang(e); try{ st.setPointerCapture(e.pointerId); }catch(x){} st.style.transition = 'none'; });
+        st.addEventListener('pointermove', e => { if(!down) return; const a = ang(e); let d = a - last; if(d > Math.PI) d -= 2 * Math.PI; if(d < -Math.PI) d += 2 * Math.PI; last = a; acc += d;
+          st.style.transform = 'rotate(' + (acc * 57.2958) + 'deg)'; const y = Math.floor(Math.abs(acc) / (2 * Math.PI));
+          if(y > years){ years = y; const r = st.getBoundingClientRect(); spark(r.left + r.width / 2, r.top - 6, years >= 3 ? '3+ years' : '+1 year', 1); ripple(r.left + r.width / 2, r.top + r.height / 2);
+            if(years >= 3){ down = false; settle(); fire('days', st); } } });
+        ['pointerup', 'pointercancel'].forEach(ev => st.addEventListener(ev, () => { if(down){ down = false; settle(); } })); } }
+
+    /* 16 the rest of it: once the other fifteen are found, a star appears on this card. Tap it */
+    { const c = card(by(r => /The rest of it/i.test(T(r))));
+      if(c){ const star = mk('je-star', '✦'); c.appendChild(star);
+        const ready = () => KEYS.filter(k => k !== 'tbc' && PageEggs.has('journey', k)).length >= KEYS.length - 1;
+        refreshStar = () => { const r = ready(); star.classList.toggle('on', r); if(r && !star.dataset.told && !PageEggs.has('journey', 'tbc')){ star.dataset.told = '1'; setTimeout(() => PageEggs.toast('something has appeared at the end of the timeline ♡', 4200), 900); } };
+        star.addEventListener('click', e => { e.stopPropagation(); if(star.classList.contains('on')) fire('tbc', star); });
+        c.addEventListener('click', () => { if(!ready()) PageEggs.toast('the rest of it has not been written yet ♡', 2600); });
+        refreshStar(); } }
   }
 
   window.JourneyEggs = { moments, play, init, MSG, NAMES, KEYS, GLYPHS, injectCSS, util:{ daysSince, nextAnnBirthday, FIRST_DM, FIRST_CALL, PENTA, svgEl } };
