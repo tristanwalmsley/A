@@ -68,7 +68,11 @@
 #end .next{font-family:var(--font-hand);font-size:1.2rem;margin:.8rem 0 0}
 #toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:var(--deep);color:var(--cream);padding:.5rem 1rem;font-family:var(--font-hand);font-size:1.2rem;opacity:0;pointer-events:none;transition:opacity .2s;z-index:10000;white-space:nowrap}
 #toast.on{opacity:1}
-@media (prefers-reduced-motion:reduce){.tile.flip,.shake{animation:none}}
+.tile.win{animation:hop .55s ease both;animation-delay:calc(var(--i)*.09s)}
+@keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-14px)}70%{transform:translateY(2px)}}
+.bt-rec{font-family:var(--font-hand);font-size:1.2rem;color:var(--rose-dark);margin:.2rem 0 .6rem}
+.bt-btns{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap}
+@media (prefers-reduced-motion:reduce){.tile.flip,.shake,.tile.win{animation:none}}
 </style>
 </head>
 <body>
@@ -106,7 +110,8 @@
   <section id="end" aria-live="polite">
     <h2 id="endTitle"></h2>
     <p id="endNote"></p>
-    <button class="pill main" id="share">copy result</button>
+    <div class="bt-rec" id="rec"></div>
+    <div class="bt-btns"><button class="pill main" id="share">copy result</button><button class="pill" id="snd" type="button" aria-pressed="true">sound: on</button></div>
     <p class="next" id="endNext"></p>
   </section>
   <div id="kb"></div>
@@ -224,7 +229,7 @@ const RAW = [
   ['JANUARY','calls & games','First DM, 2023',''],
   ['NOVEMBER','calls & games','When the chatting began',''],
   ['BIRTHDAY','calls & games','Celebrated together, more than once',''],
-  ['CHRISTMAS','calls & games','Celebrated together, more than once',''],
+  ['CHRISTMAS','calls & games','The season this very update drops in',''],
   ['BESTIE','calls & games','What both of you are, on the letterhead',''],
   ['COMPUTING','calls & games','The society Tristan sits on the committee for',''],
   ['TUTOR','calls & games','A side hustle alongside everything else',''],
@@ -283,12 +288,27 @@ function score(g){
   for(let i=0;i<g.length;i++){ if(res[i]!=='ok' && left[g[i]]>0){ res[i]='near'; left[g[i]]--; } }
   return res;
 }
+/* tiny synthesized sounds (no files): a soft tick per revealed tile, a jingle on a win. Toggle saved. */
+const SND_KEY = 'bestle_sound_v1';
+let sndOn = true; try{ sndOn = localStorage.getItem(SND_KEY) !== 'off'; }catch(e){}
+let AC = null;
+function tone(f,t,d,v,type){
+  if(!sndOn) return;
+  try{
+    AC = AC || new (window.AudioContext||window.webkitAudioContext)();
+    const o = AC.createOscillator(), g = AC.createGain(), n = AC.currentTime+t;
+    o.type = type||'sine'; o.frequency.value = f;
+    g.gain.setValueAtTime(0,n); g.gain.linearRampToValueAtTime(v||.08,n+.01); g.gain.exponentialRampToValueAtTime(.0001,n+d);
+    o.connect(g).connect(AC.destination); o.start(n); o.stop(n+d+.05);
+  }catch(e){}
+}
+const tickFor = {ok:700, near:560, miss:380};
 function paintRow(r,g,animate){
   const tiles = $('board').children[r].children, res = score(g), rank = {miss:1,near:2,ok:3};
   for(let i=0;i<g.length;i++){
     const t = tiles[i]; t.textContent = g[i];
     const apply = () => { t.className = 'tile '+res[i]+(animate?' flip':''); };
-    animate ? setTimeout(apply, i*250) : apply();
+    animate ? setTimeout(()=>{ apply(); tone(tickFor[res[i]],0,.12,.05,'triangle'); }, i*250) : apply();
     if(!keyState[g[i]] || rank[res[i]]>rank[keyState[g[i]]]) keyState[g[i]] = res[i];
   }
   setTimeout(paintKeys, animate ? g.length*250+300 : 0);
@@ -337,6 +357,16 @@ function recordResult(won){
 function finish(){
   const won = guesses[guesses.length-1]===answer;
   recordResult(won);
+  if(won){
+    const row = $('board').children[guesses.length-1];
+    [...row.children].forEach((t,i)=>{ t.style.setProperty('--i',i); t.classList.add('win'); });
+    [523,659,784,1047].forEach((f,i)=>tone(f,i*.1,.4,.09));
+  } else { tone(262,0,.35,.06,'triangle'); tone(196,.15,.45,.06,'triangle'); }
+  try{
+    const wk = (JSON.parse(localStorage.getItem(RESULTS_KEY)||'{}')||{}).weeks||{}, all = Object.values(wk);
+    const w = all.filter(x=>x.won).length;
+    $('rec').textContent = all.length>1 ? ('weeks solved so far: '+w+' of '+all.length) : '';
+  }catch(e){}
   $('endTitle').textContent = won ? 'Got it in '+guesses.length+' of '+MAX+'!' : 'It was '+answer;
   $('endNote').textContent = entry.note || ''; $('endNote').style.display = entry.note ? '' : 'none';
   $('end').style.display = 'block';
@@ -363,6 +393,9 @@ document.addEventListener('keydown', e=>{
   else if(e.key==='Backspace') press('\u232B');
   else if(/^[a-zA-Z]$/.test(e.key)) press(e.key.toUpperCase());
 });
+function sndLabel(){ $('snd').textContent = 'sound: '+(sndOn?'on':'off'); $('snd').setAttribute('aria-pressed', sndOn); }
+$('snd').onclick = () => { sndOn = !sndOn; try{ localStorage.setItem(SND_KEY, sndOn?'on':'off'); }catch(e){} sndLabel(); if(sndOn) tone(660,0,.12,.06); };
+sndLabel();
 let hintOn = false;
 $('hintBtn').onclick = () => { hintOn=!hintOn; $('hint').textContent = hintOn ? (entry.clue||'') : ''; $('hintBtn').textContent = hintOn?'hide hint':'show hint'; };
 $('helpBtn').onclick = () => { const on = $('how').classList.toggle('on'); $('helpBtn').setAttribute('aria-expanded', on); };

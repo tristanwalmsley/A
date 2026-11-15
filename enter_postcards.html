@@ -148,7 +148,7 @@ h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;font-styl
       <button class="btn-modify" onclick="startModify()">✎ Modify Existing</button>
     </div>
     <div class="start-back-row">
-      <a href="postcards.html" class="btn-back-link">← Back to Postcards Page</a>
+      <a href="postcard_gallery.html" class="btn-back-link">← Back to Postcards Page</a>
     </div>
   </div>
 
@@ -177,7 +177,7 @@ h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;font-styl
     <div id="import-fallback" style="display:none">
       <div class="form-card">
         <h2>Paste existing postcard code</h2>
-        <p class="hint" style="margin-bottom:1rem;font-size:0.9rem">Couldn't load postcards.html automatically — this usually happens when opening this file directly instead of through a server. Paste the <code>POSTCARDS_TO_ANN</code> / <code>POSTCARDS_TO_TRI</code> section below instead.</p>
+        <p class="hint" style="margin-bottom:1rem;font-size:0.9rem">Couldn't load postcard_gallery.html automatically — this usually happens when opening this file directly instead of through a server. Paste the <code>POSTCARDS_TO_ANN</code> / <code>POSTCARDS_TO_TRI</code> section below instead.</p>
         <div class="field">
           <textarea id="f-import-text" placeholder="const POSTCARDS_TO_ANN = [ ... ];&#10;const POSTCARDS_TO_TRI = [ ... ];"></textarea>
         </div>
@@ -234,13 +234,13 @@ h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;font-styl
       <div class="field">
         <label>Category key <span style="font-size:0.75rem;text-transform:none;letter-spacing:0">(for filter buttons — no spaces, lowercase)</span></label>
         <input type="text" id="f-cat" placeholder="e.g. ww1">
-        <div class="hint">Must match a filter button's category value in postcards.html</div>
+        <div class="hint">Must match a filter button's category value in postcard_gallery.html</div>
       </div>
 
       <div class="field">
         <label>Colour theme</label>
         <div class="color-grid" id="color-grid"></div>
-        <div class="hint">This becomes <code>colorClass</code> — must match a CSS class in postcards.html</div>
+        <div class="hint">This becomes <code>colorClass</code> — must match a CSS class in postcard_gallery.html</div>
       </div>
 
       <div class="field">
@@ -298,14 +298,14 @@ h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;font-styl
   <div id="screen-output">
     <div class="start-actions" style="margin-bottom:2rem">
       <button class="btn-start" onclick="resetAll()">+ Enter More Postcards</button>
-      <a href="postcards.html" class="btn-back-link">← Back to Postcards Page</a>
+      <a href="postcard_gallery.html" class="btn-back-link">← Back to Postcards Page</a>
     </div>
 
     <div id="output-to-ann" style="display:none">
       <div class="which-array" id="label-to-ann">Add to POSTCARDS_TO_ANN</div>
       <div class="copy-row">
         <button class="btn-copy" onclick="copyCode('code-to-ann', this)">Copy code</button>
-        <span style="font-family:'Caveat',cursive;font-size:0.9rem;color:var(--brown)" id="hint-to-ann">paste inside the POSTCARDS_TO_ANN array in postcards.html</span>
+        <span style="font-family:'Caveat',cursive;font-size:0.9rem;color:var(--brown)" id="hint-to-ann">paste inside the POSTCARDS_TO_ANN array in postcard_gallery.html</span>
       </div>
       <div class="output-wrap">
         <pre class="code-box" id="code-to-ann"></pre>
@@ -318,14 +318,14 @@ h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;font-styl
       <div class="which-array" id="label-to-tri">Add to POSTCARDS_TO_TRI</div>
       <div class="copy-row">
         <button class="btn-copy" onclick="copyCode('code-to-tri', this)">Copy code</button>
-        <span style="font-family:'Caveat',cursive;font-size:0.9rem;color:var(--brown)" id="hint-to-tri">paste inside the POSTCARDS_TO_TRI array in postcards.html</span>
+        <span style="font-family:'Caveat',cursive;font-size:0.9rem;color:var(--brown)" id="hint-to-tri">paste inside the POSTCARDS_TO_TRI array in postcard_gallery.html</span>
       </div>
       <div class="output-wrap">
         <pre class="code-box" id="code-to-tri"></pre>
       </div>
     </div>
 
-    <p class="output-note" id="output-note">♡ Paste each block at the end of the matching array (before the closing <code>]</code>) in postcards.html</p>
+    <p class="output-note" id="output-note">♡ Paste each block at the end of the matching array (before the closing <code>]</code>) in postcard_gallery.html</p>
   </div>
 </div>
 
@@ -386,11 +386,11 @@ function resetImportSubScreens() {
 
 async function fetchExistingPostcards() {
   try {
-    const res = await fetch('postcards.html');
+    const res = await fetch('postcard_gallery.html');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const text = await res.text();
     const parsed = parsePostcardsCode(text);
-    if (!parsed || parsed.length === 0) throw new Error('no postcards found in postcards.html');
+    if (!parsed || parsed.length === 0) throw new Error('no postcards found in postcard_gallery.html');
 
     cards = parsed;
     editingIndex = null;
@@ -721,15 +721,15 @@ function generateCode() {
   if (importMode) {
     document.getElementById('label-to-ann').textContent = 'Replace POSTCARDS_TO_ANN with';
     document.getElementById('label-to-tri').textContent = 'Replace POSTCARDS_TO_TRI with';
-    document.getElementById('hint-to-ann').textContent = 'replace the whole POSTCARDS_TO_ANN array in postcards.html with this';
-    document.getElementById('hint-to-tri').textContent = 'replace the whole POSTCARDS_TO_TRI array in postcards.html with this';
+    document.getElementById('hint-to-ann').textContent = 'replace the whole POSTCARDS_TO_ANN array in postcard_gallery.html with this';
+    document.getElementById('hint-to-tri').textContent = 'replace the whole POSTCARDS_TO_TRI array in postcard_gallery.html with this';
     document.getElementById('output-note').innerHTML = '♡ This is the full, updated array — replace the old <code>const POSTCARDS_TO_ANN = [ ... ];</code> / <code>POSTCARDS_TO_TRI</code> block entirely rather than appending.';
   } else {
     document.getElementById('label-to-ann').textContent = 'Add to POSTCARDS_TO_ANN';
     document.getElementById('label-to-tri').textContent = 'Add to POSTCARDS_TO_TRI';
-    document.getElementById('hint-to-ann').textContent = 'paste inside the POSTCARDS_TO_ANN array in postcards.html';
-    document.getElementById('hint-to-tri').textContent = 'paste inside the POSTCARDS_TO_TRI array in postcards.html';
-    document.getElementById('output-note').innerHTML = '♡ Paste each block at the end of the matching array (before the closing <code>]</code>) in postcards.html';
+    document.getElementById('hint-to-ann').textContent = 'paste inside the POSTCARDS_TO_ANN array in postcard_gallery.html';
+    document.getElementById('hint-to-tri').textContent = 'paste inside the POSTCARDS_TO_TRI array in postcard_gallery.html';
+    document.getElementById('output-note').innerHTML = '♡ Paste each block at the end of the matching array (before the closing <code>]</code>) in postcard_gallery.html';
   }
 
   document.getElementById('screen-form').style.display = 'none';
@@ -786,7 +786,7 @@ function loadImport() {
   try {
     parsed = parsePostcardsCode(text);
   } catch (e) {
-    alert("Couldn't read that code — make sure it's valid, copied straight from postcards.html.\n\n" + e.message);
+    alert("Couldn't read that code — make sure it's valid, copied straight from postcard_gallery.html.\n\n" + e.message);
     return;
   }
 
@@ -836,6 +836,6 @@ function resetAll() {
 }
 </script>
 <script src="js/nav.js"></script>
-<script>window.addEventListener('DOMContentLoaded',()=>buildNav('letters.html'));</script>
+<script>window.addEventListener('DOMContentLoaded',()=>buildNav('enter_postcards.html'));</script>
 </body>
 </html>

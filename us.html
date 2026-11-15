@@ -36,6 +36,11 @@
 .pred-note{font-family:'Caveat',cursive;font-size:0.82rem;color:var(--rose);margin-top:0.2rem;letter-spacing:0.3px}
 .pred-by{font-family:'Caveat',cursive;font-size:0.85rem;color:var(--sage);margin-top:0.15rem;letter-spacing:0.3px}
 .pred-checkbox.busy{opacity:0.5;pointer-events:none}
+.pred-progress{margin:0 0 1.2rem}
+.pred-progress-text{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--rose-dark);letter-spacing:.5px;margin-bottom:.35rem}
+.pred-bar{height:10px;border:1.5px solid var(--tan);background:var(--paper)}
+.pred-bar>i{display:block;height:100%;width:0;background:var(--sage);transition:width .6s cubic-bezier(.22,1,.36,1)}
+@media (prefers-reduced-motion:reduce){.pred-bar>i{transition:none}}
 .preds-note{font-family:'Caveat',cursive;font-size:0.9rem;color:var(--brown);margin-top:1.2rem;font-style:italic;text-align:center;letter-spacing:0.5px}
 </style>
 </head>
@@ -58,6 +63,7 @@
   <div class="section-rule"><div class="rule-line"></div><div class="rule-diamond">✦</div><div class="rule-line"></div></div>
   <div class="section-title">Predictions for next year</div>
   <p style="font-family:'Caveat',cursive;font-size:0.95rem;color:var(--brown);margin:-0.5rem 0 1.2rem;letter-spacing:0.5px">check them off as they come true - that's Ann's job ♡</p>
+  <div class="pred-progress"><div class="pred-progress-text" id="pred-progress-text" aria-live="polite"></div><div class="pred-bar" aria-hidden="true"><i id="pred-bar-fill"></i></div></div>
   <div class="predictions-list" id="pred-list"></div>
   <p class="preds-note">made Apr 2026 · check back throughout the year</p>
 </div>
@@ -87,8 +93,19 @@ function buildFacts(){
     c.innerHTML=`<div class="fact-num">${f.num}</div><div class="fact-label">${f.label}</div>`;
     grid.appendChild(c);
   });
-  const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:0.1});
+  const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');countUp(e.target.querySelector('.fact-num'));obs.unobserve(e.target);}});},{threshold:0.1});
   document.querySelectorAll('.fact-card').forEach(el=>obs.observe(el));
+}
+// numbers like "30", "3.6" or "~588" tick up from zero when their card appears (skipped for reduced motion)
+function countUp(el){
+  const m=/^(~?)(\d+(?:\.\d+)?)$/.exec(el.textContent.trim());
+  if(!m||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  const pre=m[1],end=parseFloat(m[2]),dec=(m[2].split('.')[1]||'').length,dur=900,t0=performance.now();
+  (function step(t){
+    const k=Math.min(1,(t-t0)/dur),v=end*(1-Math.pow(1-k,3));
+    el.textContent=pre+v.toFixed(dec);
+    if(k<1)requestAnimationFrame(step);else el.textContent=pre+m[2];
+  })(t0);
 }
 
 // Ticks are SHARED between you both (stored on the server via /api/prediction, same record for each of you).
@@ -144,6 +161,9 @@ function renderPreds(){
     item.querySelector('.pred-text').classList.toggle('checked-text',!!rec);
     item.querySelector('.pred-by').textContent=rec?('✓ ticked by '+(WHO[rec.by]||esc(rec.by))):'';
   });
+  const total=PREDICTIONS.length,n=PREDICTIONS.filter(p=>done[p.id]).length;
+  document.getElementById('pred-progress-text').textContent=n===0?(total+' predictions, none come true yet'):(n+' of '+total+' predictions have come true'+(n===total?' ♡ all of them!':''));
+  document.getElementById('pred-bar-fill').style.width=(100*n/total)+'%';
 }
 async function togglePred(id,box){
   if(!window.BestieSync){alert('Could not reach the server - try reloading the page.');return;}

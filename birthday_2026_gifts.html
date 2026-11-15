@@ -469,7 +469,7 @@ function renderAll() {
   const allDone = count === total;
   document.getElementById('final-banner').style.display = allDone ? 'none' : 'block';
   if (allDone) launchSeasonalConfetti();
-  if (typeof buildNav === 'function') buildNav('gifts.html'); // keep the shared header nav in sync as pages unlock
+  if (typeof buildNav === 'function') buildNav('birthday_2026_gifts.html'); // keep the shared header nav in sync as pages unlock
 
   STOPS.forEach((g,i) => {
     const unlocked = isUnlocked(i);
@@ -787,7 +787,7 @@ if (params.get('signed') === '1') {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  buildNav('gifts.html');
+  buildNav('birthday_2026_gifts.html');
   renderAll();
   if (!localStorage.getItem(TUTORIAL_KEY)) showTutorial();
 });

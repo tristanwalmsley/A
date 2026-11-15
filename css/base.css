@@ -5,6 +5,9 @@
    ========================================================================== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+/* keyboard focus ring everywhere (zero specificity, so any page's own focus style still wins) */
+:where(a,button,input,select,textarea,summary,[tabindex]):focus-visible{outline:2px solid var(--gold-dark);outline-offset:2px}
 body{background:var(--page-bg);font-family:var(--font-body);color:var(--ink);min-height:100vh;overflow-x:hidden}
 
 /* paper grain over the whole page */

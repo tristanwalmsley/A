@@ -72,6 +72,8 @@ const NAV = [
     items: [
       { href: 'tier_list.html', label: 'Tier Lists' },
       { href: 'bestle.html', label: 'Bestle' },
+      { href: 'pairs.html', label: 'Pairs' },
+      { href: 'snowglobe.html', label: 'Snow Globe' },
     ],
   },
   {
@@ -97,7 +99,7 @@ const NAV = [
   {
     id: 'xmas26',
     label: 'Christmas 2026',
-    glyph: ':christmas_tree:',
+    glyph: '🎄',
     blurb: 'the winter drop',
     items: [
       { href: 'christmas_2026.html', label: 'Christmas 2026' },
@@ -157,7 +159,7 @@ function isPageUnlocked(page) {
   if (page === 'contract.html') return hasMembership();
   // contract-gated pages also open if she has already reached the final gift
   // (anyone who got to Thank You must have done the contract + gifts)
-  if (CONTRACT_GATED.includes(page)) return isContractSigned() || getOpenedGifts().has(PAGE_UNLOCKS['the_end.html']);
+  if (CONTRACT_GATED.includes(page)) return isContractSigned() || getOpenedGifts().has(PAGE_UNLOCKS['birthday_2026_thank_you.html']);
   const threshold = PAGE_UNLOCKS[page];
   if (!threshold) return true; // unknown pages default open
   return getOpenedGifts().has(threshold);
@@ -238,7 +240,13 @@ function injectNavStyles() {
     #site-nav .nav-menu .nav-a:hover,#site-nav .nav-menu .nav-a:focus-visible{background:var(--nv-menu-hover);color:var(--nv-menu-fg)}
     #site-nav .nav-menu .nav-a.current{box-shadow:inset 3px 0 0 var(--nv-accent);color:var(--nv-menu-fg)}
 
+    #site-nav .nav-toggle{display:none;margin-left:auto}
+    #site-nav .nav-toggle::before{content:'\\2630';font-size:1.1em;line-height:1}
+    #site-nav.menu-open .nav-toggle::before{content:'\\2715'}
     @media (max-width:700px){
+      #site-nav{padding:.6rem 1rem}
+      #site-nav .nav-toggle{display:inline-flex}
+      #site-nav:not(.menu-open) .nav-links{display:none}
       #site-nav .nav-links{flex-direction:column;align-items:stretch;width:100%}
       #site-nav .nav-group-btn{width:100%;justify-content:space-between}
       #site-nav .nav-menu,#site-nav .nav-menu.align-right{position:static;box-shadow:none;border:0;background:transparent;padding:0 0 0 1rem;min-width:0}
@@ -306,6 +314,21 @@ function buildNav(currentPage) {
   nav.setAttribute('data-nav-theme', nav.dataset.theme === 'dark' || nav.dataset.theme === 'light' ? nav.dataset.theme : detectNavTheme());
   linksDiv.innerHTML = '';
   recordVisit(currentPage);
+  nav.setAttribute('aria-label', 'Main');
+  if (!nav.querySelector('.nav-toggle')) {   // phone-sized screens: links tuck behind a Menu button
+    if (!linksDiv.id) linksDiv.id = 'site-nav-links';
+    const tg = document.createElement('button');
+    tg.type = 'button'; tg.className = 'nav-a nav-toggle';
+    tg.setAttribute('aria-controls', linksDiv.id); tg.setAttribute('aria-expanded', 'false');
+    tg.setAttribute('aria-label', 'Menu');
+    tg.addEventListener('click', e => {
+      e.stopPropagation();
+      const open = !nav.classList.contains('menu-open');
+      nav.classList.toggle('menu-open', open);
+      tg.setAttribute('aria-expanded', String(open));
+    });
+    nav.insertBefore(tg, linksDiv);
+  }
 
   NAV.forEach(cat => {
     // Locked pages are never rendered; empty categories disappear entirely.
@@ -360,7 +383,11 @@ function buildNav(currentPage) {
       if (!nav.contains(e.target)) closeAllNavGroups();
     });
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeAllNavGroups();
+      if (e.key === 'Escape') {
+        closeAllNavGroups();
+        const tg = nav.querySelector('.nav-toggle');
+        if (nav.classList.contains('menu-open') && tg) { nav.classList.remove('menu-open'); tg.setAttribute('aria-expanded', 'false'); tg.focus(); }
+      }
     });
   }
 }
