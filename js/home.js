@@ -890,7 +890,7 @@ const BADGES = [
     } },
 
   // ---- Two Candles: visiting on BOTH birthdays in the same year (one level per year) ----
-  { id:'candles', name:'Two Candles', glyph:'🎂', animVersion:3, celebrateOnVisit:true,
+  { id:'candles', name:'Two Candles', glyph:'🎂', animVersion:4, celebrateOnVisit:true,
     ladder:['Two Candles', 'Double Wish', 'Birthday Tradition', 'Never Missed One', 'Every Candle', 'Lifelong Guest'],
     hint:'some days are worth showing up for',
     level: () => bdgBothBirthdayYears().length,
@@ -902,6 +902,11 @@ const BADGES = [
     // trails across to hers, hers is lit, both flare and sparks rise, and a pill per year she has made both days appears
     play(done, lv){
       const o = dimOverlay();
+      // the long version: a year of dots, a candle pair per year she made both days, a note (js/candles_reel.js, with music; Escape or the skip button ends it).
+      // If it didn't load, or she prefers reduced motion, the shorter version below plays instead.
+      if(window.CandlesReel && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+        return CandlesReel.play(o, () => skReveal(o, 'candles', lv, done), { lv, years: bdgBothBirthdayYears(), tristan: BK.tristanBday, ann: BK.annBday });
+      }
       setTimeout(() => { o.style.background = 'rgba(10,4,2,.9)'; }, 60);   // darker and hushed, unlike the other badges
       const wrap = bdgEl('div');
       wrap.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4rem;pointer-events:none;padding:1rem;transition:opacity .6s';
