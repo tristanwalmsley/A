@@ -60,8 +60,6 @@ const NAV = [
       { href: 'passport.html',         label: 'Passport' },
       { href: 'postcard_gallery.html', label: 'Postcard Gallery' },
       { href: 'letters_archive.html',  label: 'Letters Archive' },
-      { href: 'videos.html',           label: 'Videos' },
-      { href: 'music.html',            label: 'Music' },
     ],
   },
   {
@@ -71,9 +69,6 @@ const NAV = [
     blurb: 'lots of silliness',
     items: [
       { href: 'tier_list.html', label: 'Tier Lists' },
-      { href: 'bestle.html', label: 'Bestle' },
-      { href: 'pairs.html', label: 'Pairs' },
-      { href: 'snowglobe.html', label: 'Snow Globe' },
     ],
   },
   {
@@ -93,26 +88,6 @@ const NAV = [
     blurb: 'applications now open',
     items: [
       { href: 'university.html', label: 'University of Besties' },
-    ],
-  },
-  {
-    id: 'recap',
-    label: 'Wrapped',
-    glyph: '🕛',
-    blurb: 'yearly recaps',
-    items: [
-      { href: 'year_in_review.html', label: '2026 Wrapped' },
-      { href: 'year_in_review2.html', label: '2027 Wrapped' },
-    ],
-  },
-  {
-    id: 'xmas26',
-    label: 'Christmas 2026',
-    glyph: '🎄',
-    blurb: 'the winter drop',
-    items: [
-      { href: 'christmas_2026.html', label: 'Christmas 2026' },
-      { href: 'christmas_2026_gifts.html', label: 'Gifts' },
     ],
   },
   {
