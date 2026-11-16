@@ -19,7 +19,7 @@ window.UOB = {
         'Start with the map: what the difference between Britain, the UK and England really is. Then move through history and institutions to how people actually behave day to day, before two regional deep dives into the Red Rose and White Rose counties.',
         'Teaching is delivered through twelve short lectures on BestieBoard, each ending with a check-your-understanding quiz. Assessment is practical, oral and exam-based, so there are no essays.'
       ],
-      highlights: ['3 modules, 40 credits each', '12 lectures and 5 assessments', 'No essays: practical, oral and exam-based assessment', 'Classified in line with the UK degree system'],
+      highlights: ['3 modules, 40 credits each', '12 lectures and 4 assessments', 'No essays: practical, oral and exam-based assessment', 'Classified in line with the UK degree system'],
       modules: [
         { code: 'BT1001', title: 'Introduction to Britain', credits: 40, exam: 'Exam 1', weight: 20,
           summary: 'The foundation for everything else: geography, history, institutions and everyday culture, including the often-misunderstood difference between Britain, the UK and England.',

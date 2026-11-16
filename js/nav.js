@@ -93,8 +93,6 @@ const NAV = [
     blurb: 'applications now open',
     items: [
       { href: 'university.html', label: 'University of Besties' },
-      { href: 'courses.html',    label: 'Courses', matchHref: 'courses.html' },
-      { href: 'apply.html',      label: 'Apply' },
     ],
   },
   {
