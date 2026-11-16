@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>University of Besties™</title>
 <link rel="icon" type="image/x-icon" href="media/shared/images/site_icon.ico">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,800;1,9..144,400&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/university.css">
 </head>
 <body data-page="home">
@@ -13,17 +13,21 @@
 <main id="main">
 <section class="hero"><div class="wrap">
   <div>
-    <span class="when">Applications open &middot; Courses start January 2027</span>
-    <h1>Where Britain gets <em>properly</em> taught.</h1>
-    <p class="lede">The University of Besties™ is a new online university in the Friendship District. Short lectures, practical assessments, no essays, and a tolerance for biscuits.</p>
-    <form class="find" id="hero-find" role="search"><input id="hero-q" type="search" placeholder="Search courses, e.g. Lancashire" aria-label="Search courses"><button>Find a course</button></form>
-    <div class="links"><a href="courses.html">Browse all courses</a><a href="apply.html">Apply now</a></div>
+    <h1>Study Britain with the University of Besties™</h1>
+    <p class="lede">A new online university in the Friendship District. Short lectures, practical assessments and no essays. Applications are now open for courses starting in January 2027.</p>
+    <form class="find" id="hero-find" role="search"><input id="hero-q" type="search" placeholder="Search for a course" aria-label="Search for a course"><button>Search</button></form>
+    <div class="links"><a href="courses.html">Browse all courses</a></div>
   </div>
-  <div class="hero-mark"><img src="images/uob_mark_light.png" alt="University of Besties™ open book and stars"></div>
+  <aside class="hero-panel" aria-label="Applications">
+    <img src="images/uob_logo.png" alt="University of Besties™">
+    <h2>Applications are now open</h2>
+    <dl><dt>Courses start</dt><dd>January 2027</dd><dt>Apply by</dt><dd>27 December 2026</dd><dt>Study mode</dt><dd>Online</dd><dt>Tuition fees</dt><dd>None</dd></dl>
+    <a class="btn" href="apply.html">Apply now</a>
+  </aside>
 </div></section>
 
 <section class="blk" id="courses"><div class="wrap">
-  <div class="head"><h2>Featured courses</h2><p class="lede">Study with us from January 2027. Every course is taught online through BestieBoard.</p></div>
+  <div class="head"><h2>Our courses</h2><p class="lede">Every course is taught online through BestieBoard and starts in January 2027.</p></div>
   <div class="cards" id="featured"></div>
   <p class="more"><a class="btn line" href="courses.html">See all courses</a></p>
 </div></section>
@@ -31,12 +35,12 @@
 <section class="blk dark"><div class="wrap"><div class="stats">
   <div class="stat"><b id="st-courses">1</b><span>Course open for applications</span></div>
   <div class="stat"><b id="st-modules">3</b><span>Modules to choose from</span></div>
-  <div class="stat"><b>0</b><span>Essays, ever</span></div>
-  <div class="stat"><b>Nil</b><span>Tuition fees</span></div>
+  <div class="stat"><b>No essays</b><span>Practical, oral and exam assessment</span></div>
+  <div class="stat"><b>No fees</b><span>Funded by PROTEIN BESTIES™</span></div>
 </div></div></section>
 
 <section class="blk" id="schools"><div class="wrap">
-  <div class="head"><h2>Our schools</h2><p class="lede">Every course lives in a school. Ours has the best biscuits in the Lord Nooks Republic.</p></div>
+  <div class="head"><h2>Our schools</h2><p class="lede">Every course belongs to a school.</p></div>
   <div class="schools" id="schools-list"></div>
 </div></section>
 
@@ -55,7 +59,7 @@
   <ol class="steps"><li><b>Choose a course</b><span>Browse the courses and find the one for you.</span></li><li><b>Complete the form</b><span>About five minutes, and one biscuit.</span></li><li><b>Receive your offer</b><span>The Admissions Office reviews every application.</span></li><li><b>Start in January</b><span>Attend induction, then lectures begin on BestieBoard.</span></li></ol>
 </div></section>
 
-<section class="cta-band"><h2>Applications close 27 December 2026</h2><p>Places are limited by how many chairs fit in the Friendship District.</p><a class="btn" href="apply.html">Start your application</a></section>
+<section class="cta-band"><h2>Apply by 27 December 2026</h2><p>Courses start in January 2027.</p><a class="btn" href="apply.html">Start your application</a></section>
 </main>
 <div id="uob-foot"></div>
 <script src="js/courses_data.js"></script>

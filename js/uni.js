@@ -18,7 +18,7 @@
   $('uob-foot').innerHTML = `<footer class="site"><div class="wrap">
     <div><img src="images/uob_logo.png" alt="University of Besties™" style="height:84px;background:#fff;padding:6px;border-radius:3px;margin-bottom:.8rem"><p>Friendship District,<br>Lord Nooks Republic</p></div>
     <div><h4>Study</h4><ul><li><a href="courses.html">All courses</a></li>${U.COURSES.map(c => `<li><a href="course.html?c=${c.slug}">${c.title}, ${c.award}</a></li>`).join('')}<li><a href="apply.html">Apply</a></li></ul></div>
-    <div><h4>Help</h4><ul><li>Dean&rsquo;s Office (replies come with a brew)</li><li>IT: bestiestechnologies@outlook.com</li><li>The Biscuit Tin (hardship fund)</li></ul></div>
+    <div><h4>Help</h4><ul><li>Admissions: universityofbesties@outlook.com</li><li>IT: bestiestechnologies@outlook.com</li><li>Dean&rsquo;s Office, for academic and personal support</li></ul></div>
     <p class="legal">The University of Besties™ is a subsidiary of Besties™ Group Holdings. &copy; 2026 University of Besties™. All rights reserved.</p></div></footer>`;
   const mb = $('menu-btn'), nv = $('mainnav');
   mb.addEventListener('click', () => { const o = nv.classList.toggle('open'); mb.setAttribute('aria-expanded', String(o)); });
@@ -73,8 +73,8 @@
           <p style="margin-top:1.4rem"><span class="big">${c.fee}</span></p><p>${c.feeNote}</p></section>
         <section id="staff"><h2>Teaching</h2><p>This course sits in the <b>${school(c.school).name}</b>, led by ${school(c.school).head}.</p><ul class="ticks">${c.staff.map(s => '<li><b>' + s.name + '</b>, ' + s.role + '</li>').join('')}</ul></section>
       </div>
-      <aside class="side"><div class="panel"><h3>${closed ? 'Applications closed' : 'Apply for ' + c.start}</h3><p>${closed ? 'Thank you to everyone who applied.' : 'Applications close on ' + U.CLOSE_TEXT + '. It takes about five minutes, and one biscuit.'}</p>${btn}</div>
-        <div class="panel o"><h3>Questions?</h3><p>Contact the Dean&rsquo;s Office. They will reply promptly, and probably with a brew.</p></div></aside></div>`;
+      <aside class="side"><div class="panel"><h3>${closed ? 'Applications closed' : 'Apply for ' + c.start}</h3><p>${closed ? 'Thank you to everyone who applied.' : 'Applications close on ' + U.CLOSE_TEXT + '. It takes about five minutes.'}</p>${btn}</div>
+        <div class="panel o"><h3>Questions?</h3><p>Email the Admissions Office at universityofbesties@outlook.com.</p></div></aside></div>`;
     }
   }
 })();
