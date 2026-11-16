@@ -72,8 +72,8 @@ async function loadPredictions(env) {
 
 async function loadShared(env) {
   await migrateAnn(env);
-  const out = { membership: {}, contract: {}, predictions: await loadPredictions(env) };
-  await Promise.all(PEOPLE.flatMap((who) => ['membership', 'contract'].map(async (kind) => { out[kind][who] = await getJson(env, kvKey(kind, who)); })));
+  const out = { membership: {}, contract: {}, application: {}, predictions: await loadPredictions(env) };
+  await Promise.all(PEOPLE.flatMap((who) => ['membership', 'contract', 'application'].map(async (kind) => { out[kind][who] = await getJson(env, kvKey(kind, who)); })));
   return out;
 }
 
@@ -105,6 +105,21 @@ export default {
       if (!(await getJson(env, kvKey('contract', user))))     // you can only ever sign your own half, once; the date is stamped here
         await env.BESTIES_KV.put(kvKey('contract', user), JSON.stringify({ name, date: today(), at: new Date().toISOString() }));
       return json({ ok: true, shared: await loadShared(env) });
+    }
+    if (url.pathname === '/api/application' && request.method === 'POST') {   // University of Besties: one application per person, locked once sent
+      if (Date.now() >= Date.parse('2026-12-26T00:00:00Z')) return json({ error: 'closed' }, 403);   // closes end of 25 Dec 2026
+      const body = await readBody(request);
+      const t = (v, n) => String((body && v) || '').trim().slice(0, n);
+      const name = t(body && body.name, 80), why = t(body && body.why, 800);
+      if (!name || !why) return json({ error: 'name and reason required' }, 400);
+      let rec = await getJson(env, kvKey('application', user));
+      if (!rec) {
+        const ref = 'UOB-27-' + user.slice(0, 1).toUpperCase() + String(Math.floor(1000 + Math.random() * 9000));
+        rec = { ref, name, preferred: t(body.preferred, 40), where: t(body.where, 80), why, knows: t(body.knows, 80), tea: t(body.tea, 60),
+          biscuit: t(body.biscuit, 60), dialect: t(body.dialect, 200), side: t(body.side, 40), pay: t(body.pay, 60), status: 'received', at: new Date().toISOString() };
+        await env.BESTIES_KV.put(kvKey('application', user), JSON.stringify(rec));
+      }
+      return json({ ok: true, application: rec, shared: await loadShared(env) });
     }
     if (url.pathname === '/api/prediction' && request.method === 'POST') {
       const body = await readBody(request);

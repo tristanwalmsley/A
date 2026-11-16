@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apply | University of Besties™</title>
+<link rel="icon" type="image/x-icon" href="media/shared/images/site_icon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/university.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="util"><div class="wrap"><span>A member of the Besties™ Group</span><span><a href="index.html">&larr; Back to Besties</a></span></div></div>
+<header class="site"><div class="wrap">
+  <a class="brand" href="university.html"><img src="images/uob_logo.png" alt=""><span>University of Besties™<small>School of Biscuits &amp; Brewing</small></span></a>
+  <button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="mainnav">Menu</button>
+  <nav class="main" id="mainnav" aria-label="Main"><ul>
+    <li><a href="university.html#course">Course</a></li>
+    <li><a href="university.html#modules">Modules</a></li>
+    <li><a href="university.html#assessment">Assessment</a></li>
+    <li><a href="university.html#team">Staff</a></li>
+    <li><a href="university.html#fees">Fees &amp; entry</a></li>
+    <li><a class="btn" href="apply.html" aria-current="page">Apply now</a></li>
+  </ul></nav>
+</div></header>
+<div class="stripe"></div>
+<main id="main">
+<section class="apply-hero"><div class="wrap"><h1>Apply to the University of Besties™</h1><p>British Studies, BA (Hons) &middot; School of Biscuits &amp; Brewing &middot; Starting January 2027. Applications close 25 December 2026.</p></div></section>
+<div class="wrap apply-grid">
+ <div id="left">
+  <div id="signin" class="note" hidden></div>
+  <form class="app" id="app" novalidate>
+   <fieldset><legend>About you</legend>
+    <div class="fld"><label for="full">Full name</label><input type="text" id="full" autocomplete="name" required><p class="err">Please enter your name.</p></div>
+    <div class="fld"><label for="pref">Preferred name</label><p class="hint">What should staff call you on BestieBoard?</p><input type="text" id="pref"></div>
+    <div class="fld"><label for="where">Where are you studying from?</label><input type="text" id="where" placeholder="Town, country"><p class="err">Please tell us where.</p></div>
+   </fieldset>
+   <fieldset><legend>Your course</legend>
+    <div class="fld"><span class="lab">Programme</span><p>British Studies, BA (Hons), Level 4, 30 credits. Entry: January 2027, online.</p></div>
+    <div class="fld"><label for="why">Why do you want to study British Studies?</label><p class="hint">A few sentences is plenty. No essays, remember.</p><textarea id="why" maxlength="800" required></textarea><div class="cnt"><span id="whyn">0</span> / 800</div><p class="err">Please tell us a little about why.</p></div>
+    <div class="fld"><label for="knows">Prior knowledge of Britain (optional)</label>
+     <select id="knows"><option value="">Choose one</option><option>None, and proud of it</option><option>I know what a queue is</option><option>I have watched a lot of British television</option><option>I know more than I let on</option></select></div>
+   </fieldset>
+   <fieldset><legend>Entry requirements</legend>
+    <div class="fld"><span class="lab" id="tealab">How would you describe your relationship with tea?</span>
+     <div class="opts" role="radiogroup" aria-labelledby="tealab">
+      <label><input type="radio" name="tea" value="Strong and committed"> Strong and committed</label>
+      <label><input type="radio" name="tea" value="Milk first, controversially"> Milk first, controversially</label>
+      <label><input type="radio" name="tea" value="Coffee, but willing to learn"> Coffee, but willing to learn</label></div><p class="err">Please choose one.</p></div>
+    <div class="fld"><label for="biscuit">Preferred biscuit</label><input type="text" id="biscuit" placeholder="Be honest"><p class="err">We need a biscuit.</p></div>
+    <div class="fld"><label for="dialect">Have you attempted Lancashire dialect?</label><p class="hint">Evidence is considered favourably.</p><input type="text" id="dialect" placeholder="Give us your best attempt"></div>
+    <div class="fld"><label for="side">Provisional allegiance (non-binding)</label>
+     <select id="side"><option value="">Undeclared</option><option>Lancashire</option><option>Yorkshire</option><option>I refuse to answer</option></select></div>
+   </fieldset>
+   <fieldset><legend>Fees &amp; declaration</legend>
+    <div class="fld"><label for="pay">Payment method</label><select id="pay"><option>Nil (no payment required)</option><option>Biscuits (optional)</option><option>A good brew (optional)</option></select></div>
+    <div class="fld"><div class="opts"><label><input type="checkbox" id="decl"> I confirm that my answers are true and I tolerate biscuits.</label></div><p class="err">Please tick to confirm.</p></div>
+   </fieldset>
+   <button class="btn mar" type="submit" id="submit">Submit application</button> <span id="msg" role="status" style="margin-left:.8rem;font-weight:700"></span>
+  </form>
+  <div id="done" class="done" hidden>
+   <h2>Application received</h2><p>Thank you, <b id="d-name"></b>. The Admissions Office will be in touch with a formal offer.</p>
+   <div class="ref" id="d-ref"></div><p style="color:var(--mute);font-size:.95rem">Submitted <span id="d-date"></span></p>
+   <ul class="status"><li class="on">Application received</li><li>Under review by the Admissions Office</li><li>Offer issued</li><li>Induction Lecture</li></ul>
+   <p style="margin-top:1.4rem"><a class="btn mar" href="university.html">Back to the University</a></p>
+  </div>
+ </div>
+ <aside class="side">
+  <div class="info"><h3>Key dates</h3><ul><li>Applications open: now</li><li>Applications close: 25 December 2026</li><li>Course starts: January 2027</li></ul></div>
+  <div class="info o"><h3>Need help?</h3><p>Contact the Admissions Office. They will reply promptly, and probably with a brew.</p></div>
+ </aside>
+</div></main>
+<footer class="site"><div class="wrap">
+  <div><img src="images/uob_logo.png" alt="University of Besties™" style="height:80px;background:#fff;padding:6px;border-radius:3px;margin-bottom:.8rem"><p>Friendship District,<br>Lord Nooks Republic</p></div>
+  <div><h4>The University</h4><ul><li><a href="university.html#course">British Studies, BA (Hons)</a></li><li><a href="university.html#team">Teaching team</a></li><li><a href="university.html#fees">Fees &amp; entry requirements</a></li><li><a href="apply.html">Apply</a></li></ul></div>
+  <div><h4>Help</h4><ul><li>Dean&rsquo;s Office (replies come with a brew)</li><li>IT: bestiestechnologies@outlook.com</li><li>The Biscuit Tin (hardship fund)</li></ul></div>
+  <p class="legal">The University of Besties™ is a subsidiary of Besties™ Group Holdings. &copy; 2026 University of Besties™. All rights reserved.</p>
+</div></footer>
+<script src="js/uni.js"></script>
+<script src="js/apply.js"></script>
+</body>
+</html>
