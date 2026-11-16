@@ -1,7 +1,11 @@
-/* apply.js - application form. Saves to /api/application (one per person per year, locked once sent). */
+/* apply.js - application form. Saves to /api/application (one per person, locked once sent). Courses come from courses_data.js. */
 (function(){
-  var $=function(i){return document.getElementById(i);},form=$('app'),done=$('done');
-  function show(a){form.hidden=true;done.hidden=false;$('d-name').textContent=a.preferred||a.name;$('d-ref').textContent=a.ref;$('d-date').textContent=new Date(a.at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});window.scrollTo(0,0);}
+  var U=window.UOB,$=function(i){return document.getElementById(i);},form=$('app'),done=$('done');
+  var closed=new Date()>=new Date(U.CLOSE+'T00:00:00'),pre=new URLSearchParams(location.search).get('c');
+  $('course').innerHTML='<option value="">Choose a course</option>'+U.COURSES.map(function(c){return '<option value="'+c.slug+'"'+(c.slug===pre||U.COURSES.length===1?' selected':'')+'>'+c.title+', '+c.award+'</option>';}).join('');
+  $('intro').textContent='Courses start '+U.START_TEXT+'. Applications close '+U.CLOSE_TEXT+'.';
+  function show(a){var c=U.COURSES.find(function(x){return x.slug===a.course;});form.hidden=true;$('closed').hidden=true;done.hidden=false;$('d-name').textContent=a.preferred||a.name;$('d-course').textContent=c?c.title+', '+c.award:'British Studies, BA (Hons)';$('d-ref').textContent=a.ref;$('d-date').textContent=new Date(a.at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});window.scrollTo(0,0);}
+  if(closed){form.hidden=true;$('closed').hidden=false;}
   fetch('/api/shared',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(j&&j.shared&&j.shared.application&&j.user&&j.shared.application[j.user])show(j.shared.application[j.user]);
   }).catch(function(){});
@@ -10,11 +14,11 @@
   form.addEventListener('submit',function(e){
     e.preventDefault();
     var tea=form.querySelector('input[name=tea]:checked'),errs=0;
-    ['full','where','why','biscuit'].forEach(function(i){if(bad($(i),!$(i).value.trim()))errs++;});
+    ['course','full','where','why','biscuit'].forEach(function(i){if(bad($(i),!$(i).value.trim()))errs++;});
     if(bad(form.querySelector('input[name=tea]'),!tea))errs++;
     if(bad($('decl'),!$('decl').checked))errs++;
     if(errs){$('msg').textContent='Please check the highlighted answers.';var f=form.querySelector('.fld.bad');if(f)f.scrollIntoView({block:'center'});return;}
-    var body={name:$('full').value.trim(),preferred:$('pref').value.trim(),where:$('where').value.trim(),why:$('why').value.trim(),knows:$('knows').value,
+    var body={course:$('course').value,name:$('full').value.trim(),preferred:$('pref').value.trim(),where:$('where').value.trim(),why:$('why').value.trim(),knows:$('knows').value,
       tea:tea.value,biscuit:$('biscuit').value.trim(),dialect:$('dialect').value.trim(),side:$('side').value,pay:$('pay').value};
     $('submit').disabled=true;$('msg').textContent='Sending…';
     fetch('/api/application',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})

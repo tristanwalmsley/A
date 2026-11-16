@@ -107,15 +107,15 @@ export default {
       return json({ ok: true, shared: await loadShared(env) });
     }
     if (url.pathname === '/api/application' && request.method === 'POST') {   // University of Besties: one application per person, locked once sent
-      if (Date.now() >= Date.parse('2026-12-26T00:00:00Z')) return json({ error: 'closed' }, 403);   // closes end of 25 Dec 2026
+      if (Date.now() >= Date.parse('2026-12-28T00:00:00Z')) return json({ error: 'closed' }, 403);   // closes end of 27 Dec 2026
       const body = await readBody(request);
       const t = (v, n) => String((body && v) || '').trim().slice(0, n);
-      const name = t(body && body.name, 80), why = t(body && body.why, 800);
-      if (!name || !why) return json({ error: 'name and reason required' }, 400);
+      const name = t(body && body.name, 80), why = t(body && body.why, 800), course = t(body && body.course, 40);
+      if (!name || !why || !/^[a-z0-9-]{1,40}$/.test(course)) return json({ error: 'name and reason required' }, 400);
       let rec = await getJson(env, kvKey('application', user));
       if (!rec) {
         const ref = 'UOB-27-' + user.slice(0, 1).toUpperCase() + String(Math.floor(1000 + Math.random() * 9000));
-        rec = { ref, name, preferred: t(body.preferred, 40), where: t(body.where, 80), why, knows: t(body.knows, 80), tea: t(body.tea, 60),
+        rec = { ref, course, name, preferred: t(body.preferred, 40), where: t(body.where, 80), why, knows: t(body.knows, 80), tea: t(body.tea, 60),
           biscuit: t(body.biscuit, 60), dialect: t(body.dialect, 200), side: t(body.side, 40), pay: t(body.pay, 60), status: 'received', at: new Date().toISOString() };
         await env.BESTIES_KV.put(kvKey('application', user), JSON.stringify(rec));
       }
