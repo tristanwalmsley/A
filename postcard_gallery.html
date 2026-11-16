@@ -119,7 +119,7 @@
 <div class="page-header page-header--std">
   <h1>Postcard Gallery</h1>
   <p>every postcard that's crossed the sea ♡</p>
-  <a href="enterpostcards.html" class="add-postcards-link">+ Add / Edit Postcards</a>
+  <a href="enter_postcards.html" class="add-postcards-link">+ Add / Edit Postcards</a>
 </div>
 
 <!-- DIRECTION TABS -->
@@ -148,6 +148,7 @@
     <button class="filter-btn" onclick="filterCards('dutch sayings','to-tri',this)">Dutch Sayings</button>
     <button class="filter-btn" onclick="filterCards('birthdayvibes','to-tri',this)">Birthday Vibes</button>
     <button class="filter-btn" onclick="filterCards('christmas2025','to-tri',this)">Christmas 2025</button>
+    <button class="filter-btn" onclick="filterCards('christmas2025','to-tri',this)">Birthday 2026</button>
   </div>
   <div class="gallery-wrap" id="gallery-to-tri"></div>
 </div>
@@ -190,6 +191,10 @@
 // ══════════════════════════════════════
 
 const POSTCARDS_TO_ANN = [
+  {id:'x', cat:'x', colorClass:'charcoal', emoji:'❌',
+    label:'', title:'The rest to be added if/whenever Ann sends them', sent:'',
+    message: '',
+    addr: [''] },
   {id:'w1', cat:'ww1', colorClass:'charcoal', emoji:'🛩',
     label:'WWI Planes', title:'Postcard No. 1', sent:'Aug 2025',
     message: 'Hii Bestie!! This is the first postcard that I\'m writing, Imma try and write one a day as I\'m sending this in ~8 days =). Anyways, happy birthday 🎉 You deserve a lovely Bday, this year has been fairly brutal for us both w ecan say ... 14/07/2026 😀<- Green ;) idk why, just felt like it.',
@@ -319,6 +324,62 @@ const POSTCARDS_TO_TRI = [
     label:'Christmas 2025', title:'Postcard No.7', sent:'Jan 2026',
     message: 'SPREEK JE OOK UIT TEGEN SLOOPMELK IN CHOCOMEL! "Triest" is like "sad" or "pathetic" about a situation or a person\'s actions. Pretty much always literal, to be taken at face value. \'Oh ja, dat is het adres van Chocomel: Stationsplein 4, 3818 LE Amersfoort\' -> e.g. a mass murder takes place. Pathetic that someone would make this happen. Damn, this got sad quickly. oops.',
     addr: ['Stillll 21/01-\'26', 'still trust!', 'not to Ann ...', '... but to ... BAG-T!'] },
+  {id:'pc-1794856666846', cat:'birthday2026', colorClass:'funny', emoji:'🤖',
+    label:'Birthday 2026', title:'Delft Scenery (Stray Person)', sent:'Aug 2026',
+    message: 'Pretty Delft scenery card!!!\nyay!\n5/yeez!',
+    addr: ['I\'ve ran out of ideas.', 'Sweden Ig cuz that\'s', 'your dream loc.', 'apparently :|'] },
+  {id:'pc-1794856833686', cat:'birthday2026', colorClass:'moss', emoji:'⚽', faceDisplay:'text', faceText:'JE BENT ZELF EEN FOUTE BAL',
+    label:'Birthday 2026', title:'Football 1', sent:'Aug 2026',
+    message: '"you yourself are a fault/foiled ball (kick)" \nFor real (this is how kids do insults here, they get insulted and go. "No, you yourself are *insult*".)\nLolzers.\n2/idk still',
+    addr: ['Yristan', 'World cup st.13', 'WC1 2WC', 'England - France (lol)'] },
+  {id:'pc-1794857606936', cat:'birthday2026', colorClass:'moss', emoji:'⚽', faceDisplay:'text', faceText:'NEE, JIJ SCOORT PUNTEN.',
+    label:'Birthday 2026', title:'Football 2', sent:'Aug 2026',
+    message: '"No, you\'re scoring points"\n(basically a "look at you,\nas if you did any better than me").\n*tee hee.*\n3/ a lot',
+    addr: ['Tri-tn Walm-walm', 'Duke-duke (hmm...)', '2626 GG', 'Netherengland'] },
+  {id:'pc-1794857701877', cat:'birthday2026', colorClass:'charcoal', emoji:'🐻', faceDisplay:'both', faceText:'Happy Birthday! Let\'s eat cake!',
+    label:'Birthday 2026', title:'Bear Cake', sent:'Aug 2026',
+    message: 'Happy Birthday!\nLet\'s eat cake!\nslay king.\n6/ ;)',
+    addr: ['Not Ann', 'No Duke', 'Not the Netherlands'] },
+  {id:'pc-1794858029501', cat:'birthday2026', colorClass:'coral', emoji:'🧸', faceDisplay:'text', faceText:'GET A LIFE',
+    label:'Birthday 2026', title:'GET A LIFE', sent:'Aug 2026',
+    message: 'GET A LIFE\nNot really,\nit\'s just a\nfunny card.\nFor real!\n9/aaA\nAAH!',
+    addr: ['mwah 👄idfk bro', 'Raaaa~_ . . _ _', '_  . .  . . a a . . aaAH!', 'Rah Ratherlands (hmm)'] },
+  {id:'pc-1794858110105', cat:'birthday2026', colorClass:'sky', emoji:'🧋', faceDisplay:'both', faceText:'you\'re my BEST-TEA',
+    label:'Birthday 2026', title:'BEST-TEA', sent:'Aug 2026',
+    message: 'O. M. G. \nThis one has tea (boba tea, I\nsuppose) on it! Quelle surprise.\nSlay.\n- Still Ann, I think.\n\nP.S. who cares about Brookslay anyway?',
+    addr: ['Trislay Walmslay', '7 Founslay Courtslay', 'Preslay PR17EA', 'UK'] },
+  {id:'pc-1794858195669', cat:'birthday2026', colorClass:'mustard', emoji:'🍧', faceDisplay:'both', faceText:'when life sucks suck this',
+    label:'Birthday 2026', title:'suck this', sent:'Aug 2026',
+    message: 'solutions\nJust a really funny\ncard. Heh.\nLol.\nLmao.\nRoflol. <- are you too\nyoung for this?\n\n10/11\nSO\nCLOSE,\nROOT FOR\nME PLS.',
+    addr: ['I\'m tired', 'Eepy st. 5133 P', 'Sleeperlands.', 'Sleepdam.'] },
+  {id:'pc-1794858512189', cat:'birthday2026', colorClass:'rosegold', emoji:'😺',
+    label:'Birthday 2026', title:'Cat-tea', sent:'Aug 2026',
+    message: 'Hiya!\nIt\'s me, Ann. Surprise surprise. Ain\'t\nthis card cute? And homegirl be\ndrinking sth... I wander\nif that\'s sth that also\nappears in the next one.\nHmm Only one way to find out...\n\\/ Ann :D',
+    addr: ['Big ole T.Walmers', '7th of the Foundriest Court', 'Broken St. in some protige', 'town @ PRI7EA in daaa UK ... woo.'] },
+  {id:'pc-1794858756483', cat:'birthday2026', colorClass:'sky', emoji:'🦦', faceDisplay:'both', faceText:'Thank you for being my unpaid therapist',
+    label:'Birthday 2026', title:'unpaid therapist', sent:'Aug 2026',
+    message: 'Dearest bestie,\nI thought you\'d\nfind this one funny,\nconsidering you\'ve\nspent a considerable\namount of time sending\nme Insta reels containing this message.\nSooo. Like it, you must.\n- Turns out, Yoda, I am.\nNo Ann here.\nP.S.:No\nAnn was\nharmed in\nthe writing of\nthis letter (well my wrist\nhurts like a mfer I\'m ngl\nso bye now).\n~~~~~~~~~~',
+    addr: ['Bla Walms. Bla found,', 'sure hope you\'re found &', 'not lost. Bla, UK.'] },
+  {id:'pc-1794858893318', cat:'birthday2026', colorClass:'coral', emoji:'🧸', faceDisplay:'text', faceText:'NO GUTS NO GLORY!',
+    label:'Birthday 2026', title:'NO GUTS NO GLORY!', sent:'Aug 2026',
+    message: 'I thought this was so\nfunny, considering Olivia\'s\nnewest album having dropped\nso recently. Just a coincidence,\nthough, I guess.\n</ random institute to help\n\n1/ idek',
+    addr: ['Teabag Walmeronies', 'Pretty close to Lancaster', 'AB1 **** 2DE (idk.)', 'Shmunited Shmingdam'] },
+  {id:'pc-1794859071429', cat:'birthday2026', colorClass:'midnight', emoji:'🧸', faceDisplay:'text', faceText:'NA NA NA NA NA NA N AN AN ANAAAAA SHOTJE VOOR DE SMEER',
+    label:'Birthday 2026', title:'NA NA NA', sent:'Aug 2026',
+    message: '<- the shot you won\'t regret -> tomorrow\n\nyeah, sunscreen.\nThe text on the  front\nis a traditional darts? song\nthe crowd will sing to support\ntheir fave darter; her adapted\nfor sunscreen :D\n\n4/ phew, what a lot',
+    addr: ['stan-stan sley-sley', 'Elington-len st. (hmmm!)', '2525 BB', 'Theeee... kingdomlands!'] },
+  {id:'pc-1794859207615', cat:'birthday2026', colorClass:'blush', emoji:'🧸', faceDisplay:'text', faceText:'Hé uitsteller! Doe het vandaag',
+    label:'Birthday 2026', title:'cervical cancer', sent:'Aug 2026',
+    message: '<-- cervical cancer.\nCard says:\n"Hey postponer!\nDo it today"\n\n... yeaah. yeah. yeahh.\n\n8/ goodness gracious it won\'t stop...',
+    addr: ['Meep', 'Meepmeep st. MEEP', 'M E E E E P !', 'Meepland Meepdom'] },
+  {id:'pc-1794859319797', cat:'birthday2026', colorClass:'mustard', emoji:'🏖', faceDisplay:'both', faceText:'Today is all about you LIKE EVERY OTHER FUCKING DAY',
+    label:'Birthday 2026', title:'about you...', sent:'Aug 2026',
+    message: 'Love the cover for\nthis card :]\n\n- Annnnn................\n\n7/xx|',
+    addr: ['Nyeh', 'Nyeh-eh eh', 'NyNy eheh', 'Ny - Eh.'] },
+  {id:'pc-1794859416933', cat:'birthday2026', colorClass:'charcoal', emoji:'🧸', faceDisplay:'text', faceText:'SKATE MOTHER FUCKER',
+    label:'Birthday 2026', title:'SKATE MOTHER FUCKER', sent:'Aug 2026',
+    message: '--> nicely playing outside\n      ~~~~~~~~~~~~~~~~\n\nOk so I\'m watching a\nshow while writing these cards\nand a kid is wwearing a shirt\nwith "SKATE" in the exact\nsame font as this card! Wtf!\nCrazy lol. Nice.\n\n- your bestie Ann :)\n\nON\nGOD\n11/11',
+    addr: ['Ann loves Volkswagen', 'Golf and British', 'slay'] },
 ];
 
 // ══════════════════════════════════════
