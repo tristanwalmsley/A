@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Admissions | University of Besties™</title>
+<link rel="icon" type="image/x-icon" href="media/shared/images/site_icon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/university.css">
+<style>
+.adm-top{background:var(--mar-d);color:#fff}
+.adm-top .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding-top:1.1rem;padding-bottom:1.1rem}
+.adm-top h1{font-size:1.5rem;color:#fff}
+.adm-top small{display:block;color:var(--gol-l);font:600 .78rem var(--f-body);letter-spacing:.16em;text-transform:uppercase;margin-bottom:.15rem}
+.adm-top a{color:var(--gol-l);font-weight:600}
+.adm-wrap{padding:2.2rem 0 4rem}
+.astats{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-bottom:2rem}
+.ast{background:var(--wh);border-top:6px solid var(--mar);padding:1rem 1.1rem}
+.ast:nth-child(2){border-top-color:var(--ora)}.ast:nth-child(3){border-top-color:var(--gol)}.ast:nth-child(4){border-top-color:var(--mar-d)}
+.ast b{display:block;font:800 2.4rem/1 var(--f-head);color:var(--mar-d)}
+.ast span{font-size:.85rem;color:var(--mute);font-weight:600;letter-spacing:.04em}
+.card{background:var(--wh);border:1px solid var(--line);border-left:8px solid var(--mar);margin-bottom:1.2rem}
+.card[data-s="under-review"]{border-left-color:var(--gol)}
+.card[data-s="offer-issued"]{border-left-color:#2e7d4f}
+.card[data-s="unsuccessful"]{border-left-color:#8a7d7f}
+.card-h{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;padding:1.2rem 1.4rem .6rem}
+.card-h h2{font-size:1.5rem;color:var(--mar);letter-spacing:-.01em}
+.card-h .ref{font:700 .8rem var(--f-body);letter-spacing:.12em;color:var(--ora)}
+.card-h .meta{font-size:.88rem;color:var(--mute)}
+.pill{display:inline-block;padding:.25rem .7rem;font:700 .78rem var(--f-body);letter-spacing:.08em;text-transform:uppercase;background:var(--cream);color:var(--mar-d)}
+.pill.s-under-review{background:var(--gol-l)}.pill.s-offer-issued{background:#d3ecd9;color:#1d5a37}.pill.s-unsuccessful{background:#e8e2e3;color:#5c5254}
+dl{display:grid;grid-template-columns:11rem 1fr;gap:.55rem 1.2rem;padding:.6rem 1.4rem 1rem}
+dt{font:700 .76rem var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--ora);padding-top:.2rem}
+dd{white-space:pre-wrap;overflow-wrap:anywhere}
+dd.why{font-size:1.05rem}
+.act{background:var(--bg);border-top:1px solid var(--line);padding:1rem 1.4rem 1.2rem;display:grid;gap:.8rem}
+.act .row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+.act .row>span{font:700 .78rem var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-right:.3rem}
+.sb{padding:.5rem .9rem;border:2px solid var(--mar);background:#fff;color:var(--mar);font:700 .88rem var(--f-body);cursor:pointer}
+.sb:hover{background:var(--cream)}.sb[aria-pressed="true"]{background:var(--mar);color:#fff}
+.act textarea{width:100%;min-height:4.5rem;padding:.7rem .8rem;border:1px solid #cfc3c0;font:inherit;resize:vertical;background:#fff}
+.act .save{display:flex;align-items:center;gap:.8rem}
+.msg{font-size:.88rem;color:var(--mute)}
+.empty,.gate{background:var(--wh);border:1px dashed #cfc3c0;padding:3rem 1.5rem;text-align:center}
+.empty h2,.gate h2{font-size:1.8rem;margin-bottom:.5rem}
+@media(max-width:720px){.astats{grid-template-columns:1fr 1fr}dl{grid-template-columns:1fr;gap:.1rem}dt{padding-top:.6rem}}
+</style>
+</head>
+<body>
+<div class="adm-top"><div class="wrap">
+ <div><small>Admissions Office · private</small><h1>University of Besties™ Applications</h1></div>
+ <a href="university.html">← Back to the University</a>
+</div></div>
+<main class="wrap adm-wrap" id="main">
+ <div id="out" aria-live="polite"><p class="msg">Loading applications…</p></div>
+</main>
+<script src="js/courses_data.js"></script>
+<script>
+(function(){
+  var U=window.UOB||{COURSES:[]},out=document.getElementById('out');
+  var LABEL={'received':'Received','under-review':'Under review','offer-issued':'Offer issued','unsuccessful':'Unsuccessful'};
+  var ORDER=['received','under-review','offer-issued','unsuccessful'];
+  function el(tag,cls,text){var e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e;}
+  function fmt(iso){return iso?new Date(iso).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'';}
+  function courseName(slug){var c=U.COURSES.find(function(x){return x.slug===slug;});return c?c.title+', '+c.award:slug;}
+  function gate(h,p){out.replaceChildren();var g=el('div','gate');g.appendChild(el('h2',null,h));g.appendChild(el('p','lede',p));out.appendChild(g);}
+
+  function card(a){
+    var c=el('article','card');c.dataset.s=a.status||'received';
+    var h=el('div','card-h'),l=el('div');
+    l.appendChild(el('div','ref',a.ref||''));
+    l.appendChild(el('h2',null,a.name||'(no name)'));
+    l.appendChild(el('div','meta',courseName(a.course)+' · sent '+fmt(a.at)));
+    h.appendChild(l);var pill=el('span','pill s-'+(a.status||'received'),LABEL[a.status||'received']);h.appendChild(pill);c.appendChild(h);
+    var dl=el('dl');
+    [['Preferred name',a.preferred],['Studying from',a.where],['Why they want it',a.why,'why'],['Prior knowledge',a.knows],['Tea',a.tea],['Biscuit',a.biscuit],
+     ['Dialect attempt',a.dialect],['Allegiance',a.side],['Fees',a.pay]].forEach(function(r){
+      if(!r[1])return;dl.appendChild(el('dt',null,r[0]));dl.appendChild(el('dd',r[2]||'',r[1]));});
+    c.appendChild(dl);
+    var act=el('div','act'),row=el('div','row');row.appendChild(el('span',null,'Status'));
+    var btns={};
+    ORDER.forEach(function(s){var b=el('button','sb',LABEL[s]);b.type='button';b.setAttribute('aria-pressed',String((a.status||'received')===s));
+      b.addEventListener('click',function(){send({who:a.who,status:s},msg,function(rec){a.status=rec.status;refreshStatus();});});btns[s]=b;row.appendChild(b);});
+    act.appendChild(row);
+    var ta=el('textarea');ta.value=a.note||'';ta.maxLength=1000;ta.placeholder='Private notes (only you see these)';ta.setAttribute('aria-label','Private notes');act.appendChild(ta);
+    var sv=el('div','save'),sb=el('button','btn mar','Save notes');sb.type='button';var msg=el('span','msg',a.statusAt?'Status changed '+fmt(a.statusAt):'');
+    sb.addEventListener('click',function(){send({who:a.who,note:ta.value},msg,function(){msg.textContent='Notes saved';});});
+    sv.appendChild(sb);sv.appendChild(msg);act.appendChild(sv);c.appendChild(act);
+    function refreshStatus(){c.dataset.s=a.status;pill.className='pill s-'+a.status;pill.textContent=LABEL[a.status];
+      ORDER.forEach(function(s){btns[s].setAttribute('aria-pressed',String(a.status===s));});msg.textContent='Status updated';counts();}
+    return c;
+  }
+
+  var list=[];
+  function counts(){
+    var n=function(s){return list.filter(function(a){return (a.status||'received')===s;}).length;};
+    var v=[[list.length,'Applications'],[n('received'),'Awaiting review'],[n('offer-issued'),'Offers issued'],[n('unsuccessful'),'Unsuccessful']];
+    var st=document.getElementById('stats');if(!st)return;st.replaceChildren();
+    v.forEach(function(x){var d=el('div','ast'),b=el('b',null,String(x[0]));d.appendChild(b);d.appendChild(el('span',null,x[1]));st.appendChild(d);});
+  }
+  function send(body,msgEl,ok){
+    msgEl.textContent='Saving…';
+    fetch('/api/admin/application',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+      .then(function(r){return r.json().then(function(j){return{ok:r.ok,j:j};});})
+      .then(function(x){if(!x.ok)throw new Error(x.j.error||'failed');ok(x.j.application);})
+      .catch(function(){msgEl.textContent='Could not save. Please try again.';});
+  }
+
+  fetch('/api/admin/applications',{cache:'no-store'}).then(function(r){
+    if(r.status===403)return gate('This page is private','Admissions is run by the Vice-Chancellor only.');
+    if(r.status===401)return gate('Please sign in','Your session has expired. Refresh the page to sign in again.');
+    if(!r.ok)throw new Error();
+    return r.json().then(function(j){
+      list=j.applications||[];out.replaceChildren();
+      if(!list.length){var e=el('div','empty');e.appendChild(el('h2',null,'No applications yet'));e.appendChild(el('p','lede','They will appear here as soon as someone applies.'));out.appendChild(e);return;}
+      var st=el('div','astats');st.id='stats';out.appendChild(st);counts();
+      list.forEach(function(a){out.appendChild(card(a));});
+    });
+  }).catch(function(){gate('Something went wrong','Could not load applications. Refresh to try again.');});
+})();
+</script>
+</body>
+</html>
