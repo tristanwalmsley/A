@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Offer letter | University of Besties™</title>
+<link rel="icon" type="image/x-icon" href="media/shared/images/site_icon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/university.css">
+<style>
+body{background:#e9e1d6}
+.bar{max-width:48rem;margin:1.2rem auto 0;padding:0 1rem;display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.paper{max-width:48rem;margin:1rem auto 3rem;background:#fff;border-top:10px solid var(--mar);box-shadow:0 8px 30px rgba(74,14,27,.15);padding:3rem 3.2rem 3.4rem}
+.lh{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;border-bottom:3px solid var(--gol);padding-bottom:1.2rem;margin-bottom:2rem}
+.lh img{height:92px;width:auto}
+.lh div{text-align:right;font-size:.88rem;color:var(--mute);line-height:1.5}
+.lh b{display:block;font:800 1.1rem var(--f-head);color:var(--mar);letter-spacing:.02em}
+.paper p{margin-bottom:1rem}
+.paper h1{font-size:1.6rem;color:var(--mar-d);margin:1.4rem 0 1rem;letter-spacing:-.01em}
+.meta{display:grid;grid-template-columns:8rem 1fr;gap:.3rem 1rem;background:var(--cream);padding:1rem 1.2rem;margin:1.2rem 0;font-size:.95rem}
+.meta dt{font:700 .74rem var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--mar)}
+.paper ul{margin:0 0 1.2rem 1.4rem}.paper li{margin-bottom:.35rem}
+.sig{margin-top:2.2rem}.sig .n{font:italic 600 1.6rem var(--f-head);color:var(--mar);margin-bottom:.1rem}
+.foot{margin-top:2.4rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.8rem;color:var(--mute);text-align:center}
+.msgbox{max-width:34rem;margin:4rem auto;padding:2rem;background:#fff;text-align:center}
+@media(max-width:640px){.paper{padding:1.6rem 1.3rem 2rem}.lh{flex-direction:column;align-items:flex-start}.lh div{text-align:left}.meta{grid-template-columns:1fr}}
+@media print{body{background:#fff}.bar{display:none}.paper{box-shadow:none;margin:0;max-width:none;padding:1.5rem 0}}
+</style>
+</head>
+<body>
+<div class="bar"><a href="my-application.html">← Back to your application</a><button class="btn mar" id="print" type="button" hidden>Print or save as PDF</button></div>
+<div id="out"><div class="msgbox"><p>Loading your letter…</p></div></div>
+<script src="js/courses_data.js"></script>
+<script>
+(function(){
+  var U=window.UOB,out=document.getElementById('out');
+  function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;}
+  function add(p){for(var i=1;i<arguments.length;i++)if(arguments[i])p.appendChild(arguments[i]);return p;}
+  function dl(d,iso){return new Date(iso+(iso.length===10?'T12:00:00':'')).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});}
+  function msg(h,p){out.replaceChildren();var b=el('div','msgbox');add(b,el('h2',null,h),el('p',null,p));out.appendChild(b);}
+  fetch('/api/shared',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){
+    var A=j.shared&&j.shared.application&&j.shared.application[j.user];
+    if(!A||!A.offer)return msg('No offer letter yet','An offer letter will appear here once the Admissions Office has made you an offer.');
+    var o=A.offer,c=U.COURSES.find(function(x){return x.slug===A.course;})||U.COURSES[0],cond=o.type==='conditional',name=A.preferred||A.name;
+    var paper=el('article','paper');
+    var lh=el('div','lh'),img=el('img');img.src='images/uob_logo.png';img.alt='University of Besties™';
+    var addr=el('div');add(addr,el('b',null,'Admissions Office'),document.createTextNode('University of Besties™'),el('br'),document.createTextNode('School of Biscuits & Brewing'),el('br'),document.createTextNode('universityofbesties@outlook.com'));
+    add(lh,img,addr);paper.appendChild(lh);
+    paper.appendChild(el('p',null,dl(0,o.issuedAt.slice(0,10))));
+    var to=el('p');to.appendChild(el('b',null,A.name));paper.appendChild(to);
+    paper.appendChild(el('p',null,'Dear '+name+','));
+    paper.appendChild(el('h1',null,cond?'Conditional offer of a place':'Offer of a place'));
+    paper.appendChild(el('p',null,'Thank you for applying to the University of Besties™. I am delighted to offer you a place on '+c.title+', '+c.award+', starting in '+U.START_TEXT+'.'));
+    var m=el('dl','meta');[['Reference',A.ref],['Course',c.title+', '+c.award],['Starts',U.START_TEXT],['Tuition fees','Nil. Biscuit donations are optional.'],['Please reply by',dl(0,o.respondBy)]].forEach(function(r){add(m,el('dt',null,r[0]),el('dd',null,r[1]));});paper.appendChild(m);
+    if(cond){paper.appendChild(el('p',null,'This offer is conditional on the following being confirmed:'));var ul=el('ul');o.conditions.forEach(function(x){ul.appendChild(el('li',null,x));});paper.appendChild(ul);}
+    else paper.appendChild(el('p',null,'This offer is unconditional. There is nothing further you need to do except say yes.'));
+    if(A.feedback)paper.appendChild(el('p',null,A.feedback));
+    paper.appendChild(el('p',null,'To accept or decline, please sign in to your application page and choose your reply before '+dl(0,o.respondBy)+'. If you have any questions, you can message the Admissions Office from the same page.'));
+    paper.appendChild(el('p',null,'We very much look forward to welcoming you to the University of Besties™.'));
+    var s=el('div','sig');add(s,el('p',null,'With warmest regards,'),el('div','n','Bestie Tristan'),el('div',null,'Vice-Chancellor & Dean'),el('div',null,'University of Besties™'));paper.appendChild(s);
+    paper.appendChild(el('div','foot','University of Besties™ · Admissions Office · Ref '+A.ref));
+    out.replaceChildren(paper);var p=document.getElementById('print');p.hidden=false;p.onclick=function(){window.print();};
+  }).catch(function(){msg('Something went wrong','Could not load your letter. Refresh to try again.');});
+})();
+</script>
+</body>
+</html>

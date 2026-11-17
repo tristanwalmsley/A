@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Your application | University of Besties™</title>
+<link rel="icon" type="image/x-icon" href="media/shared/images/site_icon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/university.css">
+<style>
+.t-grid{display:grid;grid-template-columns:minmax(0,1fr) 20rem;gap:2rem;align-items:start;padding-top:2rem;padding-bottom:4rem}
+.t-card{background:var(--wh);border:1px solid var(--line);border-top:6px solid var(--mar);padding:1.5rem 1.6rem;margin-bottom:1.4rem}
+.t-card.o{border-top-color:var(--ora)}.t-card.g{border-top-color:var(--gol)}.t-card.k{border-top-color:#2e7d4f}.t-card.x{border-top-color:#8a7d7f}
+.t-card h2{font-size:1.55rem;color:var(--mar-d);letter-spacing:-.01em;margin-bottom:.4rem}
+.t-card h3{font-size:1.1rem;color:var(--mar);margin:1.1rem 0 .4rem}
+.t-card p{margin-bottom:.6rem}
+.t-lab{font:700 .76rem var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--ora);margin-bottom:.3rem;display:block}
+.prog{display:flex;list-style:none;margin:.4rem 0 1.6rem;counter-reset:s}
+.prog li{flex:1;text-align:center;position:relative;font-size:.82rem;font-weight:600;color:var(--mute);padding-top:2.7rem}
+.prog li::before{counter-increment:s;content:counter(s);position:absolute;left:50%;top:0;transform:translateX(-50%);width:2.2rem;height:2.2rem;border-radius:50%;border:3px solid #cfc3c0;background:#fff;color:var(--mute);font:700 1rem/1.8rem var(--f-head);z-index:1}
+.prog li::after{content:"";position:absolute;top:1rem;left:-50%;width:100%;height:4px;background:#e0d6d2}
+.prog li:first-child::after{display:none}
+.prog li.p-ok{color:var(--mar-d)}.prog li.p-ok::before{background:var(--mar);border-color:var(--mar);color:#fff;content:"✓"}
+.prog li.p-ok::after,.prog li.p-now::after{background:var(--gol)}
+.prog li.p-now{color:var(--mar-d)}.prog li.p-now::before{background:var(--ora);border-color:var(--ora);color:#fff}
+.prog li.p-no::before{background:#8a7d7f;border-color:#8a7d7f;color:#fff;content:"–"}
+.facts{display:grid;grid-template-columns:9rem 1fr;gap:.45rem 1rem;margin:.6rem 0}
+.facts dt{font:700 .76rem var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--ora);padding-top:.15rem}
+.conds{margin:.4rem 0 1rem 1.2rem}.conds li{margin-bottom:.25rem}
+.btns{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1rem}
+.btns .btn{display:inline-block}
+.sid{display:inline-block;font:800 2rem var(--f-head);color:var(--mar);border:2px dashed var(--mar);padding:.3rem 1.2rem;margin:.4rem 0 .8rem;letter-spacing:.04em}
+.thread{display:flex;flex-direction:column;gap:.6rem;margin:.6rem 0 1rem;max-height:26rem;overflow:auto}
+.msg{max-width:85%;padding:.7rem .95rem;background:var(--bg);border:1px solid var(--line);white-space:pre-wrap;overflow-wrap:anywhere}
+.msg.me{align-self:flex-end;background:var(--cream);border-color:#e3cfa0}
+.msg small{display:block;color:var(--mute);font-size:.76rem;margin-top:.25rem}
+.compose textarea{width:100%;min-height:5rem;padding:.7rem .8rem;border:1px solid #cfc3c0;font:inherit;resize:vertical}
+.tl{list-style:none;border-left:3px solid var(--gol);margin-left:.4rem}
+.tl li{padding:.2rem 0 .8rem 1rem;position:relative}.tl li::before{content:"";position:absolute;left:-.65rem;top:.45rem;width:.9rem;height:.9rem;border-radius:50%;background:var(--ora);border:2px solid #fff}
+.tl small{display:block;color:var(--mute)}
+.pill{display:inline-block;padding:.2rem .65rem;font:700 .74rem var(--f-body);letter-spacing:.08em;text-transform:uppercase;background:var(--cream);color:var(--mar-d);margin-left:.5rem;vertical-align:middle}
+.dot{display:inline-block;min-width:1.3rem;height:1.3rem;border-radius:1rem;background:var(--ora);color:#fff;font:700 .78rem/1.3rem var(--f-body);text-align:center;margin-left:.4rem}
+.errline{color:#a3262a;font-weight:600;margin-top:.5rem}
+@media(max-width:900px){.t-grid{grid-template-columns:1fr}.prog li{font-size:.7rem}.facts{grid-template-columns:1fr;gap:.1rem}.facts dd{margin-bottom:.5rem}}
+@media(prefers-reduced-motion:no-preference){.t-card{transition:box-shadow .2s}.t-card:hover{box-shadow:0 4px 18px rgba(74,14,27,.08)}}
+</style>
+</head>
+<body data-page="apply">
+<div id="uob-top"></div>
+<main id="main">
+<div class="pb"><div class="wrap"><p class="crumbs"><a href="university.html">Home</a> / <a href="apply.html">Apply</a> / Your application</p><h1>Your application</h1><p id="sub"></p></div></div>
+<div class="wrap t-grid">
+ <div id="main-col" aria-live="polite"><div class="t-card"><p>Loading your application…</p></div></div>
+ <aside id="side-col">
+  <div class="t-card o"><h3 style="margin-top:0">Need help?</h3><p>Use the messages box on this page, or email universityofbesties@outlook.com.</p></div>
+ </aside>
+</div>
+</main>
+<div id="uob-foot"></div>
+<script src="js/courses_data.js"></script>
+<script src="js/uni.js"></script>
+<script>
+(function(){
+  var U=window.UOB,main=document.getElementById('main-col'),side=document.getElementById('side-col'),A=null;
+  var LABEL={'received':'Received','under-review':'Under review','interview':'Interview','conditional-offer':'Conditional offer','unconditional-offer':'Offer','unsuccessful':'Unsuccessful','accepted':'Offer accepted','declined':'Declined','enrolled':'Enrolled'};
+  function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;}
+  function add(p){for(var i=1;i<arguments.length;i++)if(arguments[i])p.appendChild(arguments[i]);return p;}
+  function dt(iso){return new Date(iso).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
+  function dlong(d){return new Date(d+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}
+  function course(){return U.COURSES.find(function(c){return c.slug===A.course;})||U.COURSES[0];}
+  function expired(o){return o&&o.respondBy&&Date.now()>=Date.parse(o.respondBy+'T00:00:00Z')+86400000;}
+  function api(path,body){return fetch(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body||{})}).then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error||'failed');return j;});});}
+
+  function tracker(){
+    var s=A.status,ol=el('ol','prog');ol.setAttribute('aria-label','Application progress');
+    var steps=['Received','Under review','Decision','Your reply','Enrolled'],pos={'received':0,'under-review':1,'interview':1,'conditional-offer':3,'unconditional-offer':3,'accepted':4,'enrolled':5,'unsuccessful':2,'declined':3};
+    var p=pos[s],neg=(s==='unsuccessful'||s==='declined');
+    if(s==='unsuccessful')steps[2]='Unsuccessful';if(s==='declined')steps[3]='Declined';
+    if(s==='conditional-offer'||s==='unconditional-offer')steps[2]='Offer made';
+    steps.forEach(function(l,i){var li=el('li','',l);
+      if(neg&&i===p)li.className='p-no';else if(i<p||(s==='unsuccessful'&&i<2))li.className='p-ok';else if(i===p&&p<5)li.className='p-now';else if(p>=5)li.className='p-ok';
+      if(neg&&i<p)li.className='p-ok';ol.appendChild(li);});
+    return ol;
+  }
+  function headline(){
+    var c=el('div','t-card'),s=A.status,h,p,cls='';
+    var n=A.preferred||A.name;
+    var M={'received':['We have your application, '+n,'The Admissions Office will review it soon. You can check back here at any time.'],
+      'under-review':['Your application is being reviewed','Someone at the Admissions Office is reading it right now (probably with a biscuit).'],
+      'interview':['You have been invited to interview','Details are below. Please reply in the messages box if you cannot make it.'],
+      'conditional-offer':['Congratulations, '+n+'! You have an offer','We would like to offer you a place, subject to the conditions below.'],
+      'unconditional-offer':['Congratulations, '+n+'! You have an offer','We are delighted to offer you a place. There are no conditions.'],
+      'unsuccessful':['Decision on your application','Thank you for applying to the University of Besties™. On this occasion we are unable to offer you a place.'],
+      'accepted':['You have accepted your offer','Once the Admissions Office confirms your conditions have been met, you will be enrolled.'],
+      'declined':['You declined this offer','Thank you for letting us know. If you change your mind, message the Admissions Office.'],
+      'enrolled':['Welcome to the University of Besties™, '+n,'You are now an enrolled student. Details are below.']};
+    if(s==='enrolled'||s==='unconditional-offer'||s==='conditional-offer')cls='k';
+    if(s==='unsuccessful'||s==='declined')cls='x';
+    c.className='t-card '+cls;
+    var lab=el('span','t-lab','Reference '+A.ref);add(c,lab);
+    var h2=el('h2',null,M[s][0]);var pill=el('span','pill',LABEL[s]);h2.appendChild(pill);add(c,h2,tracker(),el('p',null,M[s][1]));
+    if(s==='unsuccessful'&&A.feedback){var f=el('p');f.appendChild(el('b',null,'Feedback from Admissions: '));f.appendChild(document.createTextNode(A.feedback));c.appendChild(f);}
+    var d=el('dl','facts');[['Course',course().title+', '+course().award],['Submitted',dt(A.at)],['Course starts',U.START_TEXT]].forEach(function(r){add(d,el('dt',null,r[0]),el('dd',null,r[1]));});
+    c.appendChild(d);return c;
+  }
+  function interviewCard(){
+    var i=A.interview;if(!i||A.status!=='interview')return null;
+    var c=el('div','t-card g');add(c,el('span','t-lab','Interview'),el('h2',null,new Date(i.at).toLocaleString('en-GB',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})));
+    var d=el('dl','facts');add(d,el('dt',null,'Format'),el('dd',null,i.format));if(i.details){add(d,el('dt',null,'Details'),el('dd',null,i.details));}c.appendChild(d);
+    c.appendChild(el('p',null,'No preparation needed. Bring tea.'));return c;
+  }
+  function offerCard(){
+    var o=A.offer;if(!o)return null;
+    var c=el('div','t-card k');add(c,el('span','t-lab',o.type==='conditional'?'Conditional offer':'Offer of a place'),el('h2',null,course().title+', '+course().award));
+    var d=el('dl','facts');add(d,el('dt',null,'Offer date'),el('dd',null,dt(o.issuedAt)),el('dt',null,'Reply by'),el('dd',null,dlong(o.respondBy)),el('dt',null,'Starts'),el('dd',null,U.START_TEXT));c.appendChild(d);
+    if(o.type==='conditional'&&o.conditions.length){c.appendChild(el('h3',null,'Conditions'));var ul=el('ul','conds');o.conditions.forEach(function(x){ul.appendChild(el('li',null,x));});c.appendChild(ul);}
+    if(A.feedback&&A.status!=='unsuccessful'){var f=el('p');f.appendChild(el('b',null,'A note from Admissions: '));f.appendChild(document.createTextNode(A.feedback));c.appendChild(f);}
+    var b=el('div','btns'),letter=el('a','btn line','View offer letter');letter.href='offer-letter.html';b.appendChild(letter);
+    if(!o.response){
+      if(expired(o)){c.appendChild(el('p','errline','This offer has expired. Please message the Admissions Office if you would still like a place.'));}
+      else{
+        var yes=el('button','btn mar','Accept offer'),no=el('button','btn line','Decline offer');yes.type=no.type='button';
+        yes.onclick=function(){if(confirm('Accept this offer? This cannot be undone.'))respond('accept',yes,no);};
+        no.onclick=function(){if(!confirm('Decline this offer? This cannot be undone.'))return;var r=prompt('Would you like to tell us why? (optional)')||'';respond('decline',yes,no,r);};
+        b.insertBefore(yes,letter);b.insertBefore(no,letter);
+      }
+    }else c.appendChild(el('p',null,'You '+o.response+' this offer on '+dt(o.respondedAt)+'.'));
+    c.appendChild(b);var e=el('p','errline');e.id='resp-err';c.appendChild(e);return c;
+  }
+  function respond(r,y,n,reason){y.disabled=n.disabled=true;
+    api('/api/application/respond',{response:r,reason:reason}).then(function(j){A=j.application;render();window.scrollTo(0,0);})
+    .catch(function(e){y.disabled=n.disabled=false;document.getElementById('resp-err').textContent=e.message==='expired'?'Sorry, this offer has expired.':'Something went wrong. Please try again.';});}
+  function enrolCard(){
+    if(A.status!=='enrolled'&&A.status!=='accepted')return null;
+    var c=el('div','t-card'+(A.status==='enrolled'?' k':' g'));
+    if(A.status==='accepted'){add(c,el('span','t-lab','Enrolment'),el('h2',null,'Nearly there'),el('p',null,'Your place is held. The Admissions Office will confirm that your conditions have been met, and then your student number will appear here.'));return c;}
+    add(c,el('span','t-lab','Student number'),el('div','sid',A.studentId),el('h3',null,'Your next steps'));
+    var ol=el('ol','conds');['Attend your Induction Lecture, your welcome to the University, delivered by the Vice-Chancellor himself.','Begin BT1001, The Lay of the Land, when courses start in '+U.START_TEXT+'.','Keep the kettle on. It is assessed, indirectly.'].forEach(function(x){ol.appendChild(el('li',null,x));});
+    c.appendChild(ol);var a=el('a','btn mar','See your course');a.href='course.html?c='+A.course;c.appendChild(a);return c;
+  }
+  function messagesCard(){
+    var c=el('div','t-card o');var h=el('h2',null,'Messages');if(A.unread)h.appendChild(el('span','dot',String(A.unread)));add(c,el('span','t-lab','Admissions Office'),h);
+    var th=el('div','thread');th.setAttribute('role','log');
+    if(!A.messages.length)th.appendChild(el('p',null,'No messages yet. Ask us anything.'));
+    A.messages.forEach(function(m){var d=el('div','msg'+(m.from==='applicant'?' me':''),m.text);d.appendChild(el('small',null,(m.from==='applicant'?'You':'Admissions Office')+' · '+dt(m.at)));th.appendChild(d);});
+    c.appendChild(th);
+    var f=el('div','compose'),ta=el('textarea');ta.maxLength=1000;ta.placeholder='Write a message to the Admissions Office';ta.setAttribute('aria-label','Message');
+    var bt=el('button','btn mar','Send message');bt.type='button';bt.style.marginTop='.6rem';var er=el('p','errline');
+    bt.onclick=function(){if(!ta.value.trim())return;bt.disabled=true;api('/api/application/message',{text:ta.value}).then(function(j){A=j.application;render();}).catch(function(){bt.disabled=false;er.textContent='Could not send. Please try again.';});};
+    add(f,ta,bt,er);c.appendChild(f);setTimeout(function(){th.scrollTop=th.scrollHeight;},0);return c;
+  }
+  function timelineCard(){
+    var c=el('div','t-card g');add(c,el('span','t-lab','History'),el('h2',null,'Timeline'));var ul=el('ul','tl');
+    A.timeline.slice().reverse().forEach(function(e){var li=el('li',null,e.text);li.appendChild(el('small',null,dt(e.at)));ul.appendChild(li);});c.appendChild(ul);return c;
+  }
+  function render(){
+    main.replaceChildren();[headline(),interviewCard(),offerCard(),enrolCard(),messagesCard(),timelineCard()].forEach(function(x){if(x)main.appendChild(x);});
+    document.getElementById('sub').textContent=course().title+', '+course().award+' · '+A.name;
+  }
+  function none(h,p,link){main.replaceChildren();var c=el('div','t-card');add(c,el('h2',null,h),el('p',null,p));if(link){var a=el('a','btn mar',link[0]);a.href=link[1];c.appendChild(a);}main.appendChild(c);}
+  fetch('/api/shared',{cache:'no-store'}).then(function(r){
+    if(r.status===401){none('Please sign in','Your session has expired. Refresh the page to sign in again.');return;}
+    if(!r.ok)throw 0;
+    return r.json().then(function(j){
+      A=j.shared&&j.shared.application&&j.shared.application[j.user];
+      if(!A){none('No application yet','You have not applied yet. It only takes a few minutes.',['Apply now','apply.html']);return;}
+      render();
+      if(A.unread)api('/api/application/seen',{}).catch(function(){});
+    });
+  }).catch(function(){none('Something went wrong','Could not load your application. Refresh to try again.');});
+})();
+</script>
+</body>
+</html>

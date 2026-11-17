@@ -14,110 +14,231 @@
 .adm-top h1{font-size:1.5rem;color:#fff}
 .adm-top small{display:block;color:var(--gol-l);font:600 .78rem var(--f-body);letter-spacing:.16em;text-transform:uppercase;margin-bottom:.15rem}
 .adm-top a{color:var(--gol-l);font-weight:600}
-.adm-wrap{padding:2.2rem 0 4rem}
-.astats{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-bottom:2rem}
-.ast{background:var(--wh);border-top:6px solid var(--mar);padding:1rem 1.1rem}
-.ast:nth-child(2){border-top-color:var(--ora)}.ast:nth-child(3){border-top-color:var(--gol)}.ast:nth-child(4){border-top-color:var(--mar-d)}
-.ast b{display:block;font:800 2.4rem/1 var(--f-head);color:var(--mar-d)}
-.ast span{font-size:.85rem;color:var(--mute);font-weight:600;letter-spacing:.04em}
-.card{background:var(--wh);border:1px solid var(--line);border-left:8px solid var(--mar);margin-bottom:1.2rem}
-.card[data-s="under-review"]{border-left-color:var(--gol)}
-.card[data-s="offer-issued"]{border-left-color:#2e7d4f}
-.card[data-s="unsuccessful"]{border-left-color:#8a7d7f}
-.card-h{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;padding:1.2rem 1.4rem .6rem}
-.card-h h2{font-size:1.5rem;color:var(--mar);letter-spacing:-.01em}
-.card-h .ref{font:700 .8rem var(--f-body);letter-spacing:.12em;color:var(--ora)}
-.card-h .meta{font-size:.88rem;color:var(--mute)}
-.pill{display:inline-block;padding:.25rem .7rem;font:700 .78rem var(--f-body);letter-spacing:.08em;text-transform:uppercase;background:var(--cream);color:var(--mar-d)}
-.pill.s-under-review{background:var(--gol-l)}.pill.s-offer-issued{background:#d3ecd9;color:#1d5a37}.pill.s-unsuccessful{background:#e8e2e3;color:#5c5254}
-dl{display:grid;grid-template-columns:11rem 1fr;gap:.55rem 1.2rem;padding:.6rem 1.4rem 1rem}
-dt{font:700 .76rem var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--ora);padding-top:.2rem}
-dd{white-space:pre-wrap;overflow-wrap:anywhere}
-dd.why{font-size:1.05rem}
-.act{background:var(--bg);border-top:1px solid var(--line);padding:1rem 1.4rem 1.2rem;display:grid;gap:.8rem}
-.act .row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
-.act .row>span{font:700 .78rem var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-right:.3rem}
-.sb{padding:.5rem .9rem;border:2px solid var(--mar);background:#fff;color:var(--mar);font:700 .88rem var(--f-body);cursor:pointer}
-.sb:hover{background:var(--cream)}.sb[aria-pressed="true"]{background:var(--mar);color:#fff}
-.act textarea{width:100%;min-height:4.5rem;padding:.7rem .8rem;border:1px solid #cfc3c0;font:inherit;resize:vertical;background:#fff}
-.act .save{display:flex;align-items:center;gap:.8rem}
-.msg{font-size:.88rem;color:var(--mute)}
-.empty,.gate{background:var(--wh);border:1px dashed #cfc3c0;padding:3rem 1.5rem;text-align:center}
-.empty h2,.gate h2{font-size:1.8rem;margin-bottom:.5rem}
-@media(max-width:720px){.astats{grid-template-columns:1fr 1fr}dl{grid-template-columns:1fr;gap:.1rem}dt{padding-top:.6rem}}
+.adm-wrap{padding-top:1.8rem;padding-bottom:4rem}
+.pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:.7rem;margin-bottom:1.6rem}
+.ast{background:var(--wh);border-top:6px solid var(--mar);padding:.85rem 1rem}
+.ast:nth-child(2){border-top-color:var(--gol)}.ast:nth-child(3){border-top-color:var(--ora)}.ast:nth-child(4){border-top-color:#2e7d4f}.ast:nth-child(5){border-top-color:#8a7d7f}
+.ast b{display:block;font:800 2.1rem/1 var(--f-head);color:var(--mar-d)}
+.ast span{font-size:.8rem;color:var(--mute);font-weight:600;letter-spacing:.04em}
+.layout{display:grid;grid-template-columns:19rem minmax(0,1fr);gap:1.4rem;align-items:start}
+.list{background:var(--wh);border:1px solid var(--line)}
+.li{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);border-left:6px solid transparent;background:#fff;padding:.85rem 1rem;cursor:pointer;font:inherit;color:inherit}
+.li:hover{background:var(--bg)}.li[aria-current="true"]{background:var(--cream);border-left-color:var(--mar)}
+.li b{display:block;font:700 1.05rem var(--f-head);color:var(--mar-d)}
+.li .r{font:700 .72rem var(--f-body);letter-spacing:.1em;color:var(--ora)}
+.li .m{display:flex;justify-content:space-between;align-items:center;gap:.5rem;margin-top:.3rem}
+.dot{display:inline-block;min-width:1.25rem;height:1.25rem;border-radius:1rem;background:var(--ora);color:#fff;font:700 .74rem/1.25rem var(--f-body);text-align:center;margin-left:.4rem}
+.pill{display:inline-block;padding:.2rem .65rem;font:700 .72rem var(--f-body);letter-spacing:.08em;text-transform:uppercase;background:var(--cream);color:var(--mar-d)}
+.pill.s-under-review,.pill.s-interview{background:var(--gol-l)}
+.pill.s-conditional-offer,.pill.s-unconditional-offer,.pill.s-accepted,.pill.s-enrolled{background:#d3ecd9;color:#1d5a37}
+.pill.s-unsuccessful,.pill.s-declined{background:#e8e2e3;color:#5c5254}
+.panel2{background:var(--wh);border:1px solid var(--line);border-top:8px solid var(--mar)}
+.dh{padding:1.3rem 1.5rem 1rem;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap}
+.dh h2{font-size:1.8rem;color:var(--mar);letter-spacing:-.01em}
+.dh .ref{font:700 .8rem var(--f-body);letter-spacing:.12em;color:var(--ora)}
+.dh .meta{font-size:.88rem;color:var(--mute)}
+.next{margin:0 1.5rem 1rem;padding:.7rem 1rem;background:#fff7e0;border:1px solid var(--gol);font-size:.95rem}
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--line);padding:0 1.5rem;overflow-x:auto}
+.tab{border:0;background:none;padding:.75rem 1.1rem;font:700 .92rem var(--f-body);color:var(--mute);cursor:pointer;border-bottom:4px solid transparent;margin-bottom:-2px;white-space:nowrap}
+.tab:hover{color:var(--mar)}.tab[aria-selected="true"]{color:var(--mar-d);border-bottom-color:var(--ora)}
+.body{padding:1.4rem 1.5rem 1.6rem}
+.body h3{font-size:1.15rem;color:var(--mar);margin:1.4rem 0 .5rem}.body h3:first-child{margin-top:0}
+dl.kv{display:grid;grid-template-columns:11rem 1fr;gap:.5rem 1.2rem}
+dl.kv dt{font:700 .76rem var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--ora);padding-top:.2rem}
+dl.kv dd{white-space:pre-wrap;overflow-wrap:anywhere}
+.crit{display:grid;grid-template-columns:12rem 1fr;gap:.4rem 1rem;align-items:center;padding:.7rem 0;border-bottom:1px solid var(--line)}
+.crit b{display:block}.crit small{color:var(--mute)}
+.seg{display:flex;gap:.3rem;flex-wrap:wrap}
+.seg button{width:2.6rem;height:2.6rem;border:2px solid var(--mar);background:#fff;color:var(--mar);font:700 1rem var(--f-body);cursor:pointer}
+.seg button:hover{background:var(--cream)}.seg button[aria-pressed="true"]{background:var(--mar);color:#fff}
+.total{display:flex;align-items:baseline;gap:.8rem;margin:1rem 0}.total b{font:800 2.4rem var(--f-head);color:var(--mar-d)}.total span{font-weight:600;color:var(--mute)}
+.fld{margin-bottom:.9rem}.fld label,.fld .lab{display:block;font-weight:600;margin-bottom:.25rem}.fld .hint{font-size:.85rem;color:var(--mute);margin-bottom:.3rem}
+.body textarea,.body input[type=text],.body input[type=date],.body input[type=datetime-local],.body select{width:100%;padding:.6rem .75rem;border:1px solid #cfc3c0;font:inherit;background:#fff}
+.body textarea{min-height:5rem;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.rad{display:grid;gap:.5rem;margin-bottom:1rem}
+.rad label{display:flex;gap:.7rem;align-items:flex-start;border:2px solid var(--line);padding:.7rem .9rem;cursor:pointer;font-weight:600}
+.rad label:has(input:checked){border-color:var(--mar);background:var(--cream)}
+.rad small{display:block;font-weight:400;color:var(--mute)}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-top:.8rem}
+.btn.sm{padding:.55rem 1.1rem;font-size:.92rem}
+.btn[disabled]{opacity:.5;cursor:default}
+.box{border:1px solid var(--line);background:var(--bg);padding:1rem 1.1rem;margin-bottom:1rem}
+.box.k{border-color:#9fd1ac;background:#f0f9f2}
+.thread{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1rem;max-height:24rem;overflow:auto}
+.msg{max-width:85%;padding:.7rem .95rem;background:var(--bg);border:1px solid var(--line);white-space:pre-wrap;overflow-wrap:anywhere}
+.msg.me{align-self:flex-end;background:var(--cream);border-color:#e3cfa0}
+.msg small{display:block;color:var(--mute);font-size:.76rem;margin-top:.25rem}
+.tl{list-style:none;border-left:3px solid var(--gol);margin:.4rem 0 0 .4rem}
+.tl li{padding:.15rem 0 .75rem 1rem;position:relative}.tl li::before{content:"";position:absolute;left:-.65rem;top:.45rem;width:.9rem;height:.9rem;border-radius:50%;background:var(--ora);border:2px solid #fff}
+.tl li.pv::before{background:#b5aaa7}.tl small{display:block;color:var(--mute)}
+.tag{font:700 .66rem var(--f-body);letter-spacing:.08em;text-transform:uppercase;padding:.1rem .4rem;background:#e8e2e3;color:#5c5254;margin-left:.4rem}
+.tag.pub{background:#d3ecd9;color:#1d5a37}
+.gate,.empty{background:var(--wh);border:1px dashed #cfc3c0;padding:3rem 1.5rem;text-align:center}
+.gate h2,.empty h2{font-size:1.8rem;margin-bottom:.5rem}
+#toast{position:fixed;left:50%;bottom:1.4rem;transform:translateX(-50%);background:var(--mar-d);color:#fff;padding:.7rem 1.3rem;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .2s;z-index:99}
+#toast.on{opacity:1}#toast.err{background:#a3262a}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.pipe{grid-template-columns:repeat(2,1fr)}.crit,dl.kv{grid-template-columns:1fr}.two{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="adm-top"><div class="wrap">
- <div><small>Admissions Office · private</small><h1>University of Besties™ Applications</h1></div>
+ <div><small>Admissions Office · private</small><h1>University of Besties™ Admissions</h1></div>
  <a href="university.html">← Back to the University</a>
 </div></div>
-<main class="wrap adm-wrap" id="main">
- <div id="out" aria-live="polite"><p class="msg">Loading applications…</p></div>
-</main>
+<main class="wrap adm-wrap" id="main"><div id="out" aria-live="polite"><p>Loading applications…</p></div></main>
+<div id="toast" role="status"></div>
 <script src="js/courses_data.js"></script>
 <script>
 (function(){
-  var U=window.UOB||{COURSES:[]},out=document.getElementById('out');
-  var LABEL={'received':'Received','under-review':'Under review','offer-issued':'Offer issued','unsuccessful':'Unsuccessful'};
-  var ORDER=['received','under-review','offer-issued','unsuccessful'];
-  function el(tag,cls,text){var e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e;}
+  var U=window.UOB||{COURSES:[]},out=document.getElementById('out'),toastEl=document.getElementById('toast');
+  var LABEL={'received':'Received','under-review':'Under review','interview':'Interview','conditional-offer':'Conditional offer','unconditional-offer':'Offer made','unsuccessful':'Unsuccessful','accepted':'Accepted','declined':'Declined','enrolled':'Enrolled'};
+  var OPEN=['received','under-review','interview'],OFFERS=['conditional-offer','unconditional-offer'];
+  var CRIT=[['motivation','Motivation','Why they want to study British Studies'],['tea','Tea','Strength of their relationship with tea'],['biscuit','Biscuit credibility','Is the biscuit a serious one?'],['dialect','Dialect effort','Lancashire attempt, evidence considered favourably']];
+  var NEXT={'received':'Next: read the application, score it, then invite to interview or make a decision.','under-review':'Next: schedule an interview, or make a decision.','interview':'Interview booked. After it, make a decision.','conditional-offer':'Offer sent. Waiting for the applicant to reply.','unconditional-offer':'Offer sent. Waiting for the applicant to reply.','accepted':'Accepted. Confirm their conditions have been met to enrol them.','enrolled':'Fully enrolled. Nothing more to do.','unsuccessful':'Closed. You can reopen it if you change your mind.','declined':'The applicant declined. Closed.'};
+  var apps=[],sel=null,tab='application',draft={};
+  function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;}
+  function add(p){for(var i=1;i<arguments.length;i++)if(arguments[i])p.appendChild(arguments[i]);return p;}
   function fmt(iso){return iso?new Date(iso).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'';}
-  function courseName(slug){var c=U.COURSES.find(function(x){return x.slug===slug;});return c?c.title+', '+c.award:slug;}
-  function gate(h,p){out.replaceChildren();var g=el('div','gate');g.appendChild(el('h2',null,h));g.appendChild(el('p','lede',p));out.appendChild(g);}
+  function fmtDT(s){return new Date(s).toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
+  function course(slug){var c=U.COURSES.find(function(x){return x.slug===slug;});return c?c.title+', '+c.award:slug;}
+  function toast(m,err){toastEl.textContent=m;toastEl.className='on'+(err?' err':'');clearTimeout(toast.t);toast.t=setTimeout(function(){toastEl.className='';},2600);}
+  function cur(){return apps.find(function(a){return a.who===sel;});}
+  function field(label,hint,node){var f=el('div','fld'),l=el('label',null,label);add(f,l);if(hint)f.appendChild(el('div','hint',hint));f.appendChild(node);return f;}
+  function ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 
-  function card(a){
-    var c=el('article','card');c.dataset.s=a.status||'received';
-    var h=el('div','card-h'),l=el('div');
-    l.appendChild(el('div','ref',a.ref||''));
-    l.appendChild(el('h2',null,a.name||'(no name)'));
-    l.appendChild(el('div','meta',courseName(a.course)+' · sent '+fmt(a.at)));
-    h.appendChild(l);var pill=el('span','pill s-'+(a.status||'received'),LABEL[a.status||'received']);h.appendChild(pill);c.appendChild(h);
-    var dl=el('dl');
-    [['Preferred name',a.preferred],['Studying from',a.where],['Why they want it',a.why,'why'],['Prior knowledge',a.knows],['Tea',a.tea],['Biscuit',a.biscuit],
-     ['Dialect attempt',a.dialect],['Allegiance',a.side],['Fees',a.pay]].forEach(function(r){
-      if(!r[1])return;dl.appendChild(el('dt',null,r[0]));dl.appendChild(el('dd',r[2]||'',r[1]));});
-    c.appendChild(dl);
-    var act=el('div','act'),row=el('div','row');row.appendChild(el('span',null,'Status'));
-    var btns={};
-    ORDER.forEach(function(s){var b=el('button','sb',LABEL[s]);b.type='button';b.setAttribute('aria-pressed',String((a.status||'received')===s));
-      b.addEventListener('click',function(){send({who:a.who,status:s},msg,function(rec){a.status=rec.status;refreshStatus();});});btns[s]=b;row.appendChild(b);});
-    act.appendChild(row);
-    var ta=el('textarea');ta.value=a.note||'';ta.maxLength=1000;ta.placeholder='Private notes (only you see these)';ta.setAttribute('aria-label','Private notes');act.appendChild(ta);
-    var sv=el('div','save'),sb=el('button','btn mar','Save notes');sb.type='button';var msg=el('span','msg',a.statusAt?'Status changed '+fmt(a.statusAt):'');
-    sb.addEventListener('click',function(){send({who:a.who,note:ta.value},msg,function(){msg.textContent='Notes saved';});});
-    sv.appendChild(sb);sv.appendChild(msg);act.appendChild(sv);c.appendChild(act);
-    function refreshStatus(){c.dataset.s=a.status;pill.className='pill s-'+a.status;pill.textContent=LABEL[a.status];
-      ORDER.forEach(function(s){btns[s].setAttribute('aria-pressed',String(a.status===s));});msg.textContent='Status updated';counts();}
-    return c;
+  function act(payload,okMsg,btn){
+    if(btn)btn.disabled=true;
+    return fetch('/api/admin/application',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({who:sel},payload))})
+      .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error||'failed');return j;});})
+      .then(function(j){var i=apps.findIndex(function(a){return a.who===sel;});apps[i]=j.application;if(okMsg)toast(okMsg);render();return j;})
+      .catch(function(e){if(btn)btn.disabled=false;toast(e.message==='not allowed now'?'That is not possible at this stage.':'Could not save: '+e.message,true);});
   }
 
-  var list=[];
-  function counts(){
-    var n=function(s){return list.filter(function(a){return (a.status||'received')===s;}).length;};
-    var v=[[list.length,'Applications'],[n('received'),'Awaiting review'],[n('offer-issued'),'Offers issued'],[n('unsuccessful'),'Unsuccessful']];
-    var st=document.getElementById('stats');if(!st)return;st.replaceChildren();
-    v.forEach(function(x){var d=el('div','ast'),b=el('b',null,String(x[0]));d.appendChild(b);d.appendChild(el('span',null,x[1]));st.appendChild(d);});
+  /* ---------- pipeline + list ---------- */
+  function pipeline(){
+    var n=function(arr){return apps.filter(function(a){return arr.indexOf(a.status)>-1;}).length;};
+    var v=[[n(['received']),'New'],[n(['under-review','interview']),'In review'],[n(OFFERS),'Offers out'],[n(['accepted','enrolled']),'Accepted / enrolled'],[n(['unsuccessful','declined']),'Closed']];
+    var p=el('div','pipe');v.forEach(function(x){var d=el('div','ast');add(d,el('b',null,String(x[0])),el('span',null,x[1]));p.appendChild(d);});return p;
   }
-  function send(body,msgEl,ok){
-    msgEl.textContent='Saving…';
-    fetch('/api/admin/application',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
-      .then(function(r){return r.json().then(function(j){return{ok:r.ok,j:j};});})
-      .then(function(x){if(!x.ok)throw new Error(x.j.error||'failed');ok(x.j.application);})
-      .catch(function(){msgEl.textContent='Could not save. Please try again.';});
+  function listPane(){
+    var l=el('div','list');l.setAttribute('role','list');
+    apps.forEach(function(a){var b=el('button','li');b.type='button';b.setAttribute('aria-current',String(a.who===sel));
+      var nm=el('b',null,a.name);if(a.unread)nm.appendChild(el('span','dot',String(a.unread)));
+      add(b,el('span','r',a.ref),nm);var m=el('div','m');add(m,el('span','pill s-'+a.status,LABEL[a.status]),el('span','r',new Date(a.at).toLocaleDateString('en-GB',{day:'numeric',month:'short'})));b.appendChild(m);
+      b.onclick=function(){sel=a.who;tab='application';render();};l.appendChild(b);});
+    return l;
   }
+
+  /* ---------- tabs ---------- */
+  function tApplication(a){
+    var d=el('dl','kv');[['Course',course(a.course)],['Preferred name',a.preferred],['Studying from',a.where],['Why they want it',a.why],['Prior knowledge',a.knows],['Tea',a.tea],['Biscuit',a.biscuit],['Dialect attempt',a.dialect],['Allegiance',a.side],['Fees',a.pay]].forEach(function(r){if(r[1]){add(d,el('dt',null,r[0]),el('dd',null,r[1]));}});
+    var w=el('div');w.appendChild(d);
+    if(a.status==='received'){var row=el('div','row'),b=el('button','btn mar sm','Start reviewing');b.type='button';b.onclick=function(){act({action:'stage',stage:'under-review'},'Marked as under review',b);};row.appendChild(b);w.appendChild(row);}
+    return w;
+  }
+  function tAssessment(a){
+    var sc=Object.assign({motivation:null,tea:null,biscuit:null,dialect:null},(a.assessment&&a.assessment.scores)||{});
+    var d=draft[a.who+':assess']=draft[a.who+':assess']||{scores:sc,comment:(a.assessment&&a.assessment.comment)||''};
+    var w=el('div'),tot=el('div','total'),tv=el('b'),tl=el('span');
+    function upd(){var t=0,all=true;CRIT.forEach(function(c){var v=d.scores[c[0]];if(v==null)all=false;t+=v||0;});tv.textContent=t+'/20';tl.textContent=!all?'Score every criterion for a recommendation':(t>=16?'Strong candidate':t>=10?'Borderline. Consider an interview':'Weak application');}
+    CRIT.forEach(function(c){
+      var row=el('div','crit'),lab=el('div');add(lab,el('b',null,c[1]),el('small',null,c[2]));var seg=el('div','seg');seg.setAttribute('role','group');seg.setAttribute('aria-label',c[1]+' score');
+      for(var i=0;i<=5;i++)(function(i){var b=el('button',null,String(i));b.type='button';b.setAttribute('aria-pressed',String(d.scores[c[0]]===i));b.onclick=function(){d.scores[c[0]]=i;Array.prototype.forEach.call(seg.children,function(x,k){x.setAttribute('aria-pressed',String(k===i));});upd();};seg.appendChild(b);})(i);
+      add(row,lab,seg);w.appendChild(row);});
+    add(tot,tv,tl);w.appendChild(tot);
+    var ta=el('textarea');ta.value=d.comment;ta.maxLength=1000;ta.oninput=function(){d.comment=ta.value;};w.appendChild(field('Assessor comments','Private. The applicant never sees scores or comments.',ta));
+    var row=el('div','row'),b=el('button','btn mar sm','Save assessment');b.type='button';b.onclick=function(){act({action:'assess',scores:d.scores,comment:d.comment},'Assessment saved',b).then(function(){delete draft[a.who+':assess'];render();});};row.appendChild(b);
+    if(a.assessment)row.appendChild(el('span','hint','Last saved '+fmt(a.assessment.at)));w.appendChild(row);upd();return w;
+  }
+  function tDecision(a){
+    var w=el('div'),s=a.status;
+    if(OPEN.indexOf(s)>-1){
+      w.appendChild(el('h3',null,'Interview (optional)'));
+      if(a.interview){var bx=el('div','box');bx.textContent='Booked: '+fmtDT(a.interview.at)+' · '+a.interview.format+(a.interview.details?' · '+a.interview.details:'');w.appendChild(bx);}
+      var iv=draft[a.who+':iv']=draft[a.who+':iv']||{at:(a.interview&&a.interview.at)||'',format:(a.interview&&a.interview.format)||'Video call',details:(a.interview&&a.interview.details)||''};
+      var at=el('input');at.type='datetime-local';at.value=iv.at;at.oninput=function(){iv.at=at.value;};
+      var fm=el('select');['Video call','Phone call','In person','Over a cup of tea'].forEach(function(x){var o=el('option',null,x);if(x===iv.format)o.selected=true;fm.appendChild(o);});fm.onchange=function(){iv.format=fm.value;};
+      var dd=el('textarea');dd.value=iv.details;dd.maxLength=400;dd.placeholder='Link, address or anything they should bring';dd.oninput=function(){iv.details=dd.value;};
+      var tw=el('div','two');add(tw,field('Date and time',null,at),field('Format',null,fm));add(w,tw,field('Details',null,dd));
+      var r1=el('div','row'),b1=el('button','btn line sm',a.interview?'Reschedule interview':'Schedule interview');b1.type='button';
+      b1.onclick=function(){if(!iv.at){toast('Choose a date and time first',true);return;}act({action:'interview',at:iv.at,format:iv.format,details:iv.details},'Interview scheduled. The applicant can see it.',b1).then(function(){delete draft[a.who+':iv'];render();});};r1.appendChild(b1);w.appendChild(r1);
+
+      w.appendChild(el('h3',null,'Make a decision'));
+      var dc=draft[a.who+':dec']=draft[a.who+':dec']||{d:'',conds:'Attend the Induction Lecture\nConfirm a working relationship with tea',by:ymd(new Date(Date.now()+14*864e5)),fb:''};
+      var rad=el('div','rad');rad.setAttribute('role','radiogroup');
+      [['unconditional-offer','Unconditional offer','They can accept and enrol straight away'],['conditional-offer','Conditional offer','Enrolment once you confirm the conditions are met'],['unsuccessful','Unsuccessful','No place offered. You can add feedback']].forEach(function(o){
+        var l=el('label'),i=el('input');i.type='radio';i.name='dec';i.value=o[0];i.checked=dc.d===o[0];i.onchange=function(){dc.d=o[0];sync();};var t=el('span','',o[1]);t.appendChild(el('small',null,o[2]));add(l,i,t);rad.appendChild(l);});
+      w.appendChild(rad);
+      var cw=el('div'),by=el('input');by.type='date';by.value=dc.by;by.oninput=function(){dc.by=by.value;};
+      var cs=el('textarea');cs.value=dc.conds;cs.oninput=function(){dc.conds=cs.value;};
+      var cf=field('Conditions','One per line',cs);cf.dataset.k='conds';var bf=field('Applicant must reply by',null,by);bf.dataset.k='by';
+      var fb=el('textarea');fb.value=dc.fb;fb.maxLength=600;fb.oninput=function(){dc.fb=fb.value;};
+      var ff=field('Message with the decision (shown to the applicant)',null,fb);
+      add(cw,bf,cf,ff);w.appendChild(cw);
+      function sync(){cf.hidden=dc.d!=='conditional-offer';bf.hidden=!(dc.d==='conditional-offer'||dc.d==='unconditional-offer');cw.hidden=!dc.d;}
+      var r2=el('div','row'),b2=el('button','btn mar sm','Issue decision');b2.type='button';
+      b2.onclick=function(){
+        if(!dc.d){toast('Choose a decision first',true);return;}
+        var msg=dc.d==='unsuccessful'?'Tell '+a.name+' their application was unsuccessful?':'Issue a '+(dc.d==='conditional-offer'?'conditional':'unconditional')+' offer to '+a.name+'? They will see it straight away.';
+        if(!confirm(msg))return;
+        act({action:'decide',decision:dc.d,respondBy:dc.by,conditions:dc.conds.split('\n'),feedback:dc.fb},'Decision issued',b2).then(function(){delete draft[a.who+':dec'];render();});};
+      r2.appendChild(b2);w.appendChild(r2);sync();return w;
+    }
+    var bx2=el('div','box'+(s==='enrolled'||OFFERS.indexOf(s)>-1||s==='accepted'?' k':''));
+    var h=el('b',null,LABEL[s]);bx2.appendChild(h);
+    if(a.offer){var ln=el('div');ln.textContent='Offer type: '+a.offer.type+' · issued '+fmt(a.offer.issuedAt)+' · reply by '+a.offer.respondBy+(a.offer.response?' · '+a.offer.response+' '+fmt(a.offer.respondedAt):'');bx2.appendChild(ln);
+      if(a.offer.conditions&&a.offer.conditions.length){var u=el('ul');u.style.margin='.4rem 0 0 1.2rem';a.offer.conditions.forEach(function(c){u.appendChild(el('li',null,c));});bx2.appendChild(u);}}
+    if(a.feedback)bx2.appendChild(el('div',null,'Message sent with decision: '+a.feedback));
+    if(a.declineReason)bx2.appendChild(el('div',null,'Reason given for declining: '+a.declineReason));
+    if(a.studentId){var sn=el('div');sn.appendChild(el('b',null,'Student number: '));sn.appendChild(document.createTextNode(a.studentId));bx2.appendChild(sn);}
+    w.appendChild(bx2);var row=el('div','row');
+    if(s==='accepted'){var b=el('button','btn mar sm','Confirm conditions met and enrol');b.type='button';b.onclick=function(){if(confirm('Confirm '+a.name+' has met their conditions? They will be enrolled and given a student number.'))act({action:'conditions-met'},'Enrolled',b);};row.appendChild(b);}
+    if((OFFERS.indexOf(s)>-1&&!(a.offer&&a.offer.response))||s==='unsuccessful'){var r=el('button','btn line sm',s==='unsuccessful'?'Reopen application':'Withdraw offer');r.type='button';r.onclick=function(){if(confirm((s==='unsuccessful'?'Reopen':'Withdraw the offer for')+' '+a.name+'? The applicant will see this in their timeline.'))act({action:'reopen'},'Back under review',r);};row.appendChild(r);}
+    w.appendChild(row);return w;
+  }
+  function tMessages(a){
+    var w=el('div'),th=el('div','thread');th.setAttribute('role','log');
+    if(!a.messages||!a.messages.length)th.appendChild(el('p',null,'No messages yet.'));
+    (a.messages||[]).forEach(function(m){var d=el('div','msg'+(m.from==='admissions'?' me':''),m.text);d.appendChild(el('small',null,(m.from==='admissions'?'You':a.preferred||a.name)+' · '+fmt(m.at)));th.appendChild(d);});
+    w.appendChild(th);setTimeout(function(){th.scrollTop=th.scrollHeight;},0);
+    var ta=el('textarea');ta.maxLength=1000;ta.value=draft[a.who+':msg']||'';ta.oninput=function(){draft[a.who+':msg']=ta.value;};ta.placeholder='Write to '+(a.preferred||a.name);
+    w.appendChild(field('New message','The applicant sees this on their application page.',ta));
+    var row=el('div','row'),b=el('button','btn mar sm','Send message');b.type='button';b.onclick=function(){if(!ta.value.trim())return;act({action:'message',text:ta.value},'Message sent',b).then(function(){delete draft[a.who+':msg'];render();});};row.appendChild(b);w.appendChild(row);
+    if(a.unread)act({action:'seen'}).then(function(){});
+    return w;
+  }
+  function tTimeline(a){
+    var w=el('div');w.appendChild(el('h3',null,'Private notes'));
+    var ta=el('textarea');ta.value=draft[a.who+':note']!=null?draft[a.who+':note']:(a.note||'');ta.maxLength=1000;ta.oninput=function(){draft[a.who+':note']=ta.value;};ta.placeholder='Only you can see these';w.appendChild(ta);
+    var row=el('div','row'),b=el('button','btn mar sm','Save note');b.type='button';b.onclick=function(){act({action:'note',note:ta.value},'Note saved',b).then(function(){delete draft[a.who+':note'];render();});};row.appendChild(b);w.appendChild(row);
+    w.appendChild(el('h3',null,'Full timeline'));w.appendChild(el('p','hint','Green means the applicant can see it. Grey is private to you.'));
+    var ul=el('ul','tl');(a.log||[]).slice().reverse().forEach(function(e){var li=el('li',e.pub?'':'pv',e.text);li.appendChild(el('span','tag'+(e.pub?' pub':''),e.pub?'Visible':'Private'));li.appendChild(el('small',null,fmt(e.at)+' · '+e.by));ul.appendChild(li);});w.appendChild(ul);return w;
+  }
+
+  function detail(a){
+    var p=el('div','panel2'),h=el('div','dh'),l=el('div');add(l,el('div','ref',a.ref),el('h2',null,a.name),el('div','meta',course(a.course)+' · sent '+fmt(a.at)));
+    add(h,l,el('span','pill s-'+a.status,LABEL[a.status]));p.appendChild(h);p.appendChild(el('div','next',NEXT[a.status]));
+    var tabs=el('div','tabs');tabs.setAttribute('role','tablist');
+    [['application','Application'],['assessment','Assessment'],['decision','Interview & decision'],['messages','Messages'],['timeline','Timeline & notes']].forEach(function(t){
+      var b=el('button','tab',t[1]);b.type='button';b.setAttribute('role','tab');b.setAttribute('aria-selected',String(tab===t[0]));if(t[0]==='messages'&&a.unread)b.appendChild(el('span','dot',String(a.unread)));
+      b.onclick=function(){tab=t[0];render();};tabs.appendChild(b);});
+    p.appendChild(tabs);var body=el('div','body');body.setAttribute('role','tabpanel');
+    body.appendChild({application:tApplication,assessment:tAssessment,decision:tDecision,messages:tMessages,timeline:tTimeline}[tab](a));p.appendChild(body);return p;
+  }
+  function render(){
+    var y=window.scrollY;out.replaceChildren();
+    if(!apps.length){var e=el('div','empty');add(e,el('h2',null,'No applications yet'),el('p',null,'They will appear here as soon as someone applies.'));out.appendChild(e);return;}
+    out.appendChild(pipeline());var lay=el('div','layout');add(lay,listPane(),detail(cur()));out.appendChild(lay);window.scrollTo(0,y);
+  }
+  function gate(h,p){out.replaceChildren();var g=el('div','gate');add(g,el('h2',null,h),el('p',null,p));out.appendChild(g);}
 
   fetch('/api/admin/applications',{cache:'no-store'}).then(function(r){
     if(r.status===403)return gate('This page is private','Admissions is run by the Vice-Chancellor only.');
     if(r.status===401)return gate('Please sign in','Your session has expired. Refresh the page to sign in again.');
-    if(!r.ok)throw new Error();
-    return r.json().then(function(j){
-      list=j.applications||[];out.replaceChildren();
-      if(!list.length){var e=el('div','empty');e.appendChild(el('h2',null,'No applications yet'));e.appendChild(el('p','lede','They will appear here as soon as someone applies.'));out.appendChild(e);return;}
-      var st=el('div','astats');st.id='stats';out.appendChild(st);counts();
-      list.forEach(function(a){out.appendChild(card(a));});
-    });
-  }).catch(function(){gate('Something went wrong','Could not load applications. Refresh to try again.');});
+    if(!r.ok)throw new Error('The server replied '+r.status+(r.status===404?' (the new backend may not be deployed yet)':'')+'.');
+    return r.json().then(function(j){apps=j.applications||[];sel=apps.length?apps[0].who:null;render();});
+  }).catch(function(e){gate('Something went wrong',(e&&e.message?e.message+' ':'')+'Could not load applications. Refresh to try again.');});
 })();
 </script>
 </body>
