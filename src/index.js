@@ -87,6 +87,33 @@ export default {
     const user = email && users[email];
     if (!user) return json({ error: 'unauthorized' }, 401);
 
+    // ---- Admissions admin: ONLY Tristan. The check is here on the server, so hiding a link or editing the page in a browser changes nothing. ----
+    if (url.pathname.startsWith('/api/admin/')) {
+      if (user !== 'tristan') return json({ error: 'forbidden' }, 403);
+      if (url.pathname === '/api/admin/applications' && request.method === 'GET') {
+        const applications = (await Promise.all(PEOPLE.map(async (who) => {
+          const rec = await getJson(env, kvKey('application', who));
+          return rec ? { who, ...rec } : null;
+        }))).filter(Boolean).sort((a, b) => String(b.at).localeCompare(String(a.at)));
+        return json({ applications });
+      }
+      if (url.pathname === '/api/admin/application' && request.method === 'POST') {
+        const body = await readBody(request);
+        const STATUSES = ['received', 'under-review', 'offer-issued', 'unsuccessful'];
+        if (!body || !PEOPLE.includes(body.who)) return json({ error: 'unknown applicant' }, 400);
+        const rec = await getJson(env, kvKey('application', body.who));
+        if (!rec) return json({ error: 'no application' }, 404);
+        if (body.status !== undefined) {
+          if (!STATUSES.includes(body.status)) return json({ error: 'bad status' }, 400);
+          if (rec.status !== body.status) { rec.status = body.status; rec.statusAt = new Date().toISOString(); }
+        }
+        if (body.note !== undefined) rec.note = String(body.note).trim().slice(0, 1000);
+        await env.BESTIES_KV.put(kvKey('application', body.who), JSON.stringify(rec));
+        return json({ ok: true, application: { who: body.who, ...rec } });
+      }
+      return json({ error: 'not found' }, 404);
+    }
+
 
     if (url.pathname === '/api/shared' && request.method === 'GET') return json({ user, shared: await loadShared(env) });
     if (url.pathname === '/api/membership' && request.method === 'POST') {
