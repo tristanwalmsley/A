@@ -375,9 +375,37 @@ html{scrollbar-gutter:stable}body.xm-page{overflow-x:clip}
   // Memory:   3:  { title:'A memory', html:'<p>The time we ...</p>' }        Reason: 1: { title:'Reason #1', html:'<p>Because ...</p>' }
   // Clue:     4:  { title:'Clue', html:'<p>It is round. It is not a ball.</p>' }     Voucher: 13: { title:'One game session', html:'<p>You pick the game.</p>' }
   const CONTENT = {
-    13: { title:'One game session together', html:'<p>You pick the game. Tristan brings the snacks.</p>' },   // EDIT: game session vouchers (doors 13 and 21)
+    // ---- reasons ----
+    1:  { title:'Reason #1', html:'<p>You make ordinary days feel more fun than they have any right to be.</p>' },
+    6:  { title:'Reason #2', html:'<p>You are kind in a way that is never loud about it.</p>' },
+    11: { title:'Reason #3', html:'<p>You always say the thing that makes everything feel a little lighter.</p>' },
+    16: { title:'Reason #4', html:'<p>You are the first person I want to tell things to.</p>' },
+    24: { title:'Reason #5', html:'<p>Because you are you - and that is the best present of the whole year.</p>' },
+    // ---- memories ----
+    3:  { title:'A little memory', html:'<p>Think of the moment this year when we could not stop laughing. That one. Hold onto it.</p>' },
+    7:  { title:'A little memory', html:'<p>The one that started with "this is a silly idea" and somehow turned into a favourite.</p>' },
+    12: { title:'A little memory', html:'<p>A cosy evening where nothing much happened - and it was still the best part of the week.</p>' },
+    17: { title:'A little memory', html:'<p>A random ordinary day that became a good one, just because we were talking.</p>' },
+    22: { title:'A little memory', html:'<p>Whatever happens next year, I am really glad this one had you in it.</p>' },
+    // ---- funny photos (swap the image files in media/christmas_2026/ - same file names) ----
+    2:  { title:'Exhibit A', photo:'media/christmas_2026/advent_02.jpg', caption:'Evidence that we are not always serious.' },
+    5:  { title:'Caught in 4K', photo:'media/christmas_2026/advent_05.jpg', caption:'I regret nothing.' },
+    8:  { title:'Peak performance', photo:'media/christmas_2026/advent_08.jpg', caption:'A true work of art.' },
+    10: { title:'Zero context', photo:'media/christmas_2026/advent_10.jpg', caption:'You had to be there. (You were.)' },
+    15: { title:'Candid, ish', photo:'media/christmas_2026/advent_15.jpg', caption:'Not my best angle. Not yours either. Perfect.' },
+    18: { title:'The one we swore never to share', photo:'media/christmas_2026/advent_18.jpg', caption:'Surprise.' },
+    20: { title:'Festive fashion', photo:'media/christmas_2026/advent_20.jpg', caption:'The jumper situation.' },
+    // ---- clues about the box (vague on purpose) ----
+    4:  { title:'Think about it', html:'<p>It is not a toy. It is not a book. It is a little bit of both, depending on who is asking.</p>' },
+    9:  { title:'Squint a bit', html:'<p>You will use it more than once. You might even share it. You will definitely say "oh".</p>' },
+    14: { title:'Hmm, interesting', html:'<p>Something in the box is softer than it looks. Something else is harder than it looks.</p>' },
+    19: { title:'Getting warmer?', html:'<p>Two things in the box have never met each other. They will get on fine.</p>' },
+    23: { title:'Last clue!', html:'<p>The best thing in the box is not the biggest. It is also not the smallest. Good luck.</p>' },
+    // ---- game session vouchers ----
+    13: { title:'One game session together', html:'<p>You pick the game. Tristan brings the snacks.</p>' },
     21: { title:'One more game session', html:'<p>Same deal: Ann picks the game, any time she likes.</p>' },
-    25: { title:'Merry Christmas, Ann ♡', html:'<p>You made it all the way to the very last door.</p><p>This is the best one of all - Tristan saved it for last. See you at the star on the ' + GIFT_DAY + 'th!</p>' }   // EDIT door 25: put your best surprise here
+    // ---- the grand finale prize (door 25): put your very best surprise here ----
+    25: { title:'Merry Christmas, Ann ♡', html:'<p>You made it all the way to the very last door.</p><p>Thank you for this year - for the calls, the chaos, the inside jokes and every ordinary day you somehow made better.</p><p>The star goes on the tree on the ' + GIFT_DAY + 'th, and the gifts come out right after. See you there ♡</p>' }
   };
   const PRIZE = { 1:'reason', 2:'photo', 3:'memory', 4:'clue', 5:'photo', 6:'reason', 7:'memory', 8:'photo', 9:'clue', 10:'photo', 11:'reason', 12:'memory', 13:'voucher', 14:'clue', 15:'photo', 16:'reason', 17:'memory', 18:'photo', 19:'clue', 20:'photo', 21:'voucher', 22:'memory', 23:'clue', 24:'reason', 25:'grand' };
   const LBL = { photo:'a funny photo', memory:'a memory', reason:'a reason', clue:'a clue about the box', voucher:'a game session voucher', grand:'the grand prize' };
