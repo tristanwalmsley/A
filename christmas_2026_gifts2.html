@@ -259,6 +259,7 @@ body[data-z="3"] #mid{background-image:url("data:image/svg+xml,<svg xmlns='http:
 #gh.hunt{transition:none!important}
 .walk.fast{animation:fi .15s}
 .pad{position:absolute;left:0;right:0;bottom:24%;display:flex;justify-content:space-between;padding:0 3%;z-index:8;pointer-events:none}.pad b{pointer-events:auto;display:inline-flex;align-items:center;justify-content:center;width:54px;height:54px;margin:3px;background:rgba(10,12,20,.8);border:2px solid #4f8;border-radius:50%;color:#dfe;font:700 .9rem Georgia,serif;touch-action:none}.dp{display:grid;grid-template-columns:repeat(3,auto);grid-template-areas:". w ." "a s d"}.dp [data-k=w]{grid-area:w}.dp [data-k=a]{grid-area:a}.dp [data-k=s]{grid-area:s}.dp [data-k=d]{grid-area:d}.pb{display:flex;align-items:flex-end}
+.dm{position:absolute;transform:translate(-50%,-100%);z-index:3;color:#9fe8b4;font:.72rem Georgia,serif;background:rgba(0,0,0,.55);padding:.05rem .4rem;border-radius:4px;pointer-events:none;white-space:nowrap}
 
 .camv{width:min(520px,92vw);aspect-ratio:4/3;background:#031a0c;border:8px solid #2c3a46;position:relative;overflow:hidden;box-shadow:0 0 40px #4f8}.camn{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 2px,transparent 2px 4px)}.orb{position:absolute;width:30px;height:30px;border-radius:50%;background:radial-gradient(#e8ffe8,#4f8 55%,transparent 70%);animation:orbf 4s ease-in-out infinite}@keyframes orbf{50%{transform:translate(40px,-26px) scale(1.3)}}
 </style></head><body>
@@ -581,7 +582,7 @@ const DRW={
  s+=hsg(3,'grandfather clock',109,34,12,48,shd(109,58.5,14)+bx(103,12,12,46,'#3a2314',1)+rc(104,13,10,5,'#2a190d')+ci(109,25,4.4,'#e8dcb0')+ci(109,25,4.4,'none','stroke="#2a190d" stroke-width=".5"')+ln(109,25,109,22,'#222',.4)+ln(109,25,111.5,26,'#222',.4)+rc(105,34,8,17,'#1c120a')+rc(108,40,2,7,'#b8902f'));
  s+=shd(124,58.5,12)+rc(123.5,22,1,36,'#2b1c10')+[[117,28,'#3b2a2a'],[122,26,'#27374a'],[128,28,'#4a3b27']].map(c=>pa(`M${c[0]} ${c[1]}h9l1 24h-11z`,c[2])).join('')+pa('M119 22h10','none','stroke="#2b1c10" stroke-width="1"');
  let st='';for(let n=0;n<8;n++)st+=bx(136+n*3,58-n*5.6,24-n*3,5.6,n%2?'#4a3220':'#523824');s+=pa('M134 58L160 14V58Z','#120b07')+st;for(let n=0;n<9;n++)s+=ln(136+n*2.9,57-n*5.6,136+n*2.9,50-n*5.6-4,'#241810',.5);s+=ln(134,53,160,8,'#241810',1.1);
- s+=hsg(5,'stairs',154,34,12,46,'')+hidg('cupboard under the stairs',140,51,13,14,bx(133.5,44,13,14,'#3d2818')+ci(144.5,51,.8,'#c9a24a'));return s},
+ s+=hsg(5,'stairs',140,30,26,50,'')+hidg('cupboard under the stairs',140,51,13,14,bx(133.5,44,13,14,'#3d2818')+ci(144.5,51,.8,'#c9a24a'));return s},
 1:()=>{PAT='<pattern id="wp" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#4a1d2b"/><path d="M6 1l3 5-3 5-3-5z" fill="#5a2636"/><path d="M0 7l2 3-2 3zM12 7l-2 3 2 3z" fill="#5a2636"/></pattern>';LAMP={x:60,y:30};
  let s=wallB('#2a1a1c')+floorW('#4c3321')+shaft(14,28,18)+rug(30,112,62,89,'#3a1226','#d9a85a');
  s+=hsg(2,'window',28,24,36,34,wnd(12,10,32,28,'#6a1a2a'))+swp(56,30)+door(146,8,13,50,'#3a2616','door');
@@ -703,7 +704,7 @@ const mmss=s=>Math.floor(s/60)+":"+pad(Math.floor(s%60));
 const PCOL=['#3b4b45','#5a2636','#6f8a7a','#303a66','#2b5a46','#7fa0a0','#5a3a30','#5a4330'];
 const polHTML=(p,i)=>'<div class="polc" style="--r:'+((i*37%9)-4)+'deg"><div class="pic" style="background:radial-gradient(circle at 50% 60%,'+PCOL[p.room]+',#05030a)">'+(p.ghost?'<div class="gi">'+GSVG+'</div>':'<span class="em">empty room</span>')+'</div><b>'+RN[p.room]+' · '+mmss(p.t)+'</b></div>';
 const win=()=>{leaveHouse();cin(["REPORT ACCEPTED.","THE GHOST: "+GN.toUpperCase(),GHOST[2],"Back in the truck, the monitor flickers on…"],()=>{chime();V.classList.remove("strobe");const g=GHOST;
- const st=[["Time inside",mmss(G.age)],["Ghost photos",G.photos],["Reports filed",G.att],["Sanity left",Math.round(G.sanity)+"%"]];
+ const st=[["Time inside",mmss(G.age)],["Ghost photos",G.photos],["Reports filed",G.att],["Sanity left",Math.round(G.sanity)+"%"],["Times caught",G.deaths||0]];
  const pols=G.ph.filter(p=>p.ghost).concat(G.ph.filter(p=>!p.ghost)).slice(0,4).map(polHTML).join("")+VAN_PHOTOS.map((p,n)=>'<div class="polc" style="--r:'+((n*53%9)-4)+'deg"><div class="pic">'+(p?'<img src="'+p+'">':'<span class="em">evidence photo '+(n+1)+' goes here</span>')+'</div><b>evidence '+(n+1)+'</b></div>').join("");
  V.innerHTML='<div class="vint dos"><div class="dh"><small>BESTIES PARANORMAL · CASE 1225</small><h2>CASE CLOSED</h2></div><div class="dg"><div class="dcard"><div class="stamp">IDENTIFIED</div><div class="dport">'+GSVG+'</div><h3>'+GN+'</h3><div class="q">“'+g[2]+'”</div><div class="ev3">'+GE.map(e=>"<span>"+EVN[e]+"</span>").join("")+'</div><p><b>Strength</b>'+g[3]+'</p><p><b>Weakness</b>'+g[4]+'</p><div class="stats">'+st.map(s=>"<div><em>"+s[1]+"</em><small>"+s[0]+"</small></div>").join("")+'</div></div><div class="dmon"><div class="mlab">● VAN MONITOR · INCOMING TRANSMISSION</div><div class="crt">'+yt(YT_TRAILER,"trailer")+'</div></div></div><div class="cork"><div class="clab">EVIDENCE BOARD</div>'+pols+'</div><button class="btn" id="vx2" style="font-size:1.2rem;margin:.6rem 0 1.2rem">Leave the van 🚂</button></div>';$("vx2").onclick=finish})};
 /* ---- 4. a room ---- */
@@ -723,8 +724,9 @@ const bfs=(a,b)=>{if(a==b)return{next:a,dist:0};const par={[a]:null},q=[a];while
 const exitKey=(a,b)=>{for(const key of["L","R","0","5"])if(EXIT[a][key]===b)return key;return"0"};
 const P={x:44,y:72,f:1,st:1,tx:null,ty:null,act:null,mv:0};
 const roomScr=(k,sp)=>{scr="room";G.room=k;G.mapF=RFL[k];if(sp){P.x=sp.x;P.f=sp.f||1}P.tx=null;P.ty=null;P.act=null;const R=rcache(k),sw=R.hs[1],fz=k==FZ?R.hs[4]:null,E=EXIT[k];
+ const dm=(k,R)=>{let o="";for(const n in EXIT[k]){if(isNaN(n))continue;const t=EXIT[k][n],h=R.hs[+n];if(!h)continue;const up=t!="van"&&RFL[t]>RFL[k]?"▲ ":t!="van"&&RFL[t]<RFL[k]?"▼ ":"";o+='<div class="dm" style="left:'+(h.x/1.6)+"%;top:"+(Math.max(2,h.y-6)/.9)+'%">'+up+(t=="van"?"Van":RN[t])+"</div>"}return o};
  const edge=(s,t)=>t==null||t=="van"?"":'<div class="edge '+s+'">'+(s=="l"?"◀ ":"")+RN[t]+(s=="r"?" ▶":"")+"</div>";
- V.innerHTML='<div class="vroom" id="rm"><div class="stg" id="stg">'+R.svg+'<div id="glow"></div><div id="pld"></div></div><div id="dark" class="none"></div><div class="stg" id="stg2"><div id="dots2"></div><div id="fx2"></div>'+edge("l",E.L)+edge("r",E.R)+'<div id="gh">'+GSVG+'</div><i class="led" style="left:'+pcX(sw.x)+'%;top:'+pcY(sw.y)+'%"></i>'+(fz?'<i class="led r" id="fzled" style="left:'+pcX(fz.x)+'%;top:'+pcY(fz.y+11)+'%"></i>':"")+'<div class="pl" id="pl">'+PSVG+'</div><div id="prm"></div></div></div>'+hudRoom(k)+'<div class="dev" id="dev"></div><div class="vcap" id="vc"></div><div class="hotbar" id="hot"></div><div class="vmod" id="vm"></div>'+(matchMedia("(pointer:coarse)").matches?'<div class="pad"><div class="dp"><b data-k="w">▲</b><b data-k="a">◀</b><b data-k="s">▼</b><b data-k="d">▶</b></div><div class="pb"><b data-k="shift">RUN</b><b data-k="e">E</b></div></div>':"");
+ V.innerHTML='<div class="vroom" id="rm"><div class="stg" id="stg">'+R.svg+'<div id="glow"></div><div id="pld"></div></div><div id="dark" class="none"></div><div class="stg" id="stg2"><div id="dots2"></div><div id="fx2"></div>'+edge("l",E.L)+edge("r",E.R)+dm(k,R)+'<div id="gh">'+GSVG+'</div><i class="led" style="left:'+pcX(sw.x)+'%;top:'+pcY(sw.y)+'%"></i>'+(fz?'<i class="led r" id="fzled" style="left:'+pcX(fz.x)+'%;top:'+pcY(fz.y+11)+'%"></i>':"")+'<div class="pl" id="pl">'+PSVG+'</div><div id="prm"></div></div></div>'+hudRoom(k)+'<div class="dev" id="dev"></div><div class="vcap" id="vc"></div><div class="hotbar" id="hot"></div><div class="vmod" id="vm"></div>'+(matchMedia("(pointer:coarse)").matches?'<div class="pad"><div class="dp"><b data-k="w">▲</b><b data-k="a">◀</b><b data-k="s">▼</b><b data-k="d">▶</b></div><div class="pb"><b data-k="shift">RUN</b><b data-k="e">E</b></div></div>':"");
  drawPlaced();drawBar();renderDev();setDark();upd();syncLamps();
  V.querySelectorAll(".pad b").forEach(b=>{const c=b.dataset.k;b.onpointerdown=e=>{e.preventDefault();if(c=="e")useKey();else keys[c]=true};b.onpointerup=b.onpointerleave=()=>{if(c!="e")keys[c]=false}});
  msg(!G.power?"The power is off. WASD / arrows to walk · Shift to run · E to interact.":lvl(k)?"":"It’s dark. Use the light switch, or a flashlight.");
@@ -819,7 +821,7 @@ const monitors=()=>{const m=$("vm"),vc=G.placed.vcam;const draw=()=>{m.innerHTML
 const showGhost=(ms,x,y,w)=>{const g=$("gh");if(!g)return;g.className="";g.style.transform="";g.style.left=x+"%";g.style.top=y+"%";g.style.width=w+"%";void g.offsetWidth;g.classList.add("on");G.vis=Date.now()+ms;later(()=>{const q=$("gh");if(q&&!G.hunt)q.className=""},ms)};
 const flicker=()=>{V.classList.remove("flk");void V.offsetWidth;V.classList.add("flk");later(()=>V.classList.remove("flk"),1700)};
 /* the ghost does things, in its room */
-const ghostAct=()=>{const now=Date.now(),R=rcache(GR),ch=R.hs.map((h,n)=>n).filter(n=>n!=1&&R.hs[n]&&!(GR==FZ&&n==4)&&!(GR==0&&n==5));if(!ch.length)return;const n=pick(ch),lv=GE.includes("emf")&&Math.random()<.22?5:rr(2,4);G.act={n,lv,u:now+8000};G.snd=now+3000;
+const ghostAct0=()=>{const now=Date.now(),R=rcache(GR),ch=R.hs.map((h,n)=>n).filter(n=>n!=1&&R.hs[n]&&!(GR==FZ&&n==4)&&!(GR==0&&n==5));if(!ch.length)return;const n=pick(ch),lv=GE.includes("emf")&&Math.random()<.22?5:rr(2,4);G.act={n,lv,u:now+8000};G.snd=now+3000;
  const kind=pick(SK);if(kind=="whisper"){G.recTxt={t:pick(["…merry…","…behind you…","…cold…","…bestie…","…tinsel…"]),u:now+4000}}
  if(GE.includes("uv")&&Math.random()<(GN=="Obake"?.35:.6)){const h=R.hs[n];G.prints.push({room:GR,x:f1(h.x/1.6+rnd(-3,3)),y:f1(h.y/.9+rnd(-3,5)),r:rr(-30,30),u:now+120000})}
  for(const t of["motion","sound"]){const p=G.placed[t];if(p&&p.room==GR&&!(G.sen[GR]>now)){G.sen[GR]=now+120000;if(G.room!=GR)msg("📡 A sensor just triggered somewhere in the house.");chime()}}
@@ -827,7 +829,49 @@ const ghostAct=()=>{const now=Date.now(),R=rcache(GR),ch=R.hs.map((h,n)=>n).filt
  if(G.room==GR&&scr=="room"){drawPlaced();const i=R.hs[n].nm;[0,.12].forEach(d=>tone(rnd(70,130),d,.5,"triangle",.1));nse(.25,.12,300,.8);ghostSound(kind,1);if(Math.random()<.5)msg(pick(["Something just moved over by the "+i+".","A sound from the "+i+".","You hear the "+i+" shift."])+" ("+SK_TXT[kind]+")");
   if(lvl(GR)>0&&Math.random()<.18){G.lights[GR]=false;G.lamps[GR]={};flicker();setDark();msg("The lights go out.")}else if(G.power&&Math.random()<.04){G.power=false;flicker();setDark();syncFuse();upd();msg("The breaker has tripped!")}}
  else if(Math.random()<.3){ghostSound(kind,.28);msg("Somewhere in the house, you hear "+SK_TXT[kind]+"…")}};
-const ghostEvent=()=>{if(G.hunt)return;addClip("ghost",GR);if(scr!="room"||G.room!=GR)return;showGhost(3600,rnd(30,70),rnd(52,64),14);G.sanity-=6;flicker();nse(.8,.1,500,.6);tone(110,0,1,"sawtooth",.07);msg("Something is standing in the room with you.");if(lvl(GR)>0&&Math.random()<.5){G.lights[GR]=false;G.lamps[GR]={};setDark()}};
+const ghostAct=()=>{ghostAct0();PQ()};
+const ghostEvent=()=>{if(G.hunt)return;addClip("ghost",GR);if(scr!="room"||G.room!=GR)return;showGhost(3600,rnd(30,70),rnd(52,64),14);G.sanity-=GN=="Phantom"||GN=="Banshee"||GN=="Yurei"?10:6;flicker();nse(.8,.1,500,.6);tone(110,0,1,"sawtooth",.07);msg(EVL[GN=="The Mimic"?"Mimic":GN=="The Twins"?"Twins":GN]||"Something is standing in the room with you.");if(lvl(GR)>0&&Math.random()<.5){G.lights[GR]=false;G.lamps[GR]={};setDark()}};
+/* ---- ghost personalities ---- */
+const AF={Demon:.7,Oni:.55,Poltergeist:.7,Myling:.7,Revenant:1.4,Shade:1.3,Goryo:1.25,Spirit:1.1,Wraith:.9,Banshee:.85,Thaye:.8,Obambo:.85},EF={Oni:.55,Phantom:.7,Demon:.8,Shade:1.5,Goryo:1.4,Revenant:1.3,Obake:.8},
+EVL={Aswang:"A hunched shape by the wall, chewing. It smells of mince pies.",Banshee:"A pale figure keens, staring straight at you.",Dayan:"A figure mirrors your pose exactly… then stops when you do.",Deildegast:"A tall shape surveys the mess, tutting.",Demon:"Two red eyes. A grin far too wide.",Deogen:"It’s just standing there. It’s been there for a while. It nods.",Gallu:"The figure shakes with rage, fists clenched around nothing.",Goryo:"A shape is at the edge of your vision… gone when you turn.",Hantu:"Frost creeps over everything. A breathy shape drifts past.",Jinn:"The air crackles. A robed figure flickers like a faulty bulb.",Kormos:"A figure stands facing the wrong way, head tilted, listening.",Mare:"The dark thickens. Something waits in it, delighted.",Mimic:"A figure that looks different every time you blink.",Moroi:"A grey figure leans in and whispers something awful.",Myling:"Something stomps heavily towards you, then stops.",Obake:"A shape that can’t decide what it is. A coat? A child? A coat?",Obambo:"A figure laughs. Then screams. Then laughs again.",Oni:"A huge figure strides in wearing a very large coat.",Onryo:"A drenched figure stares at the lights as though they were flames.",Phantom:"A face you do not want to look at. You look at it.",Poltergeist:"Baubles hang in the air around a silent shape.",Raiju:"Blue sparks run along a figure’s fingers.",Revenant:"A slow, patient shape in the corner. Waiting.",Shade:"A shy outline hovers in the doorway, then retreats.",Spirit:"A figure raises a mug of tea and nods politely.",Thaye:"An old-looking shape, in clothes from 1998.",Twins:"Two identical figures, each pointing at the other.",Wraith:"A figure floats a hand’s breadth above the floor.",Yokai:"A figure leans in to eavesdrop on you, unashamed.",Yurei:"A drenched figure sighs. A truly miserable sigh."},
+HL={Aswang:"It scents you…",Banshee:"It’s keening. It’s found you.",Dayan:"Hold still. Or move. You can’t remember which.",Deildegast:"It’s FAST. Move things!",Demon:"The air goes red. It hisses.",Deogen:"It always knows where you are.",Gallu:"It’s FURIOUS!",Goryo:"",Hantu:"Your breath turns to fog.",Jinn:"The lights flare as it charges.",Kormos:"It heard you.",Mare:"The dark closes in.",Mimic:"It moves like… something else.",Moroi:"A whisper in your ear.",Myling:"Heavy, stomping footsteps.",Obake:"Something shifts shape in the dark.",Obambo:"It’s laughing.",Oni:"It’s huge, it’s angry, it’s coming.",Onryo:"It’s screaming at the lights.",Phantom:"Don’t look at it!",Poltergeist:"Everything in the house rattles.",Raiju:"Static crackles around you.",Revenant:"Slow… then NOT slow.",Shade:"A quiet, cold presence.",Spirit:"Even Spirits have bad days.",Thaye:"It’s young and angry.",Twins:"Two sets of footsteps.",Wraith:"It’s floating straight at you.",Yokai:"It heard that.",Yurei:"A long, wet sigh."};
+const here=()=>scr=="room"&&G.room==GR,drain=n=>{G.sanity=Math.max(1,G.sanity-n)},
+dimGR=()=>{G.lights[GR]=false;G.lamps[GR]={};if(here()){flicker();setDark()}},
+nudge=all=>{const its=Object.entries(G.placed).filter(([t,p])=>p.room==GR&&t!="salt"&&!(t=="cross"&&p.burnt));if(!its.length)return 0;(all?its:[pick(its)]).forEach(([t,p])=>{p.x=clamp(p.x+rnd(-14,14),6,94);p.y=clamp(p.y+rnd(-3,3),64,88)});if(here())drawPlaced();return its.length},
+glim=(ms,w)=>{if(here())showGhost(ms,rnd(25,75),rnd(52,64),w||12)},
+cold=()=>tempNow(GR)<4,sh=(p)=>Math.random()<p;
+const Q={
+Aswang:()=>{if(sh(.3))msg("The smell of mince pies drifts through the house…")},
+Banshee:()=>{if(here()&&sh(.5)){drain(2);tone(1100,0,1.4,"sine",.08);msg("A mournful wail. It’s singing to you. (−2%)")}},
+Dayan:()=>{if(!here())return;if(P.mv){drain(2);msg("It prowls closer as you move. (−2%)")}else if(sh(.5))msg("You stand still. It loses interest in you.")},
+Deildegast:()=>{if(nudge(false)&&sh(.6)&&here())msg("Baubles clatter off a shelf.")},
+Demon:()=>{if(here()&&sh(.35)){drain(3);flicker();msg("A low hiss from the dark. (−3%)")}},
+Deogen:()=>{if(!here()&&sh(.3)){nse(.6,.12,300,.8);msg("A voice by your ear: ‘stop hiding.’")}},
+Gallu:()=>{const c=G.placed.cross,s=G.placed.salt;if(((c&&c.room==GR)||(s&&s.room==GR))&&sh(.5)){drain(2);if(here()){flicker();msg("It snarls at the protection in the room. (−2%)")}}},
+Goryo:()=>{if(here()){if(sh(.3))msg("The room is oddly still, as if something is waiting for you to leave.")}else{const v=G.placed.vcam;if(v&&v.room==GR&&sh(.5))addClip("ghost",GR)}},
+Hantu:()=>{if(here()&&cold()&&sh(.5))msg("Your breath fogs in the freezing air.")},
+Jinn:()=>{if(G.power&&sh(.3)){flicker();drain(1);msg("The lights hum and dim as something draws on the power.")}},
+Kormos:()=>{if(sh(.3)){msg("…is someone there?… a voice, very close, asks nobody.")}},
+Mare:()=>{if(here()&&lvl(GR)>0&&sh(.4)){dimGR();msg("The lights go out. It prefers the dark.")}},
+Moroi:()=>{if(here()&&sh(.4)){drain(3);msg("A whisper curses you. You feel worse for it. (−3%)")}},
+Myling:()=>{ghostSound(pick(["steps","door","knock"]),here()?1:.4);if(here()&&sh(.4))msg("Loud, clumsy footsteps. Not much of a sneak.")},
+Obake:()=>{if(here()&&sh(.25)){glim(900,10);msg("A shape twitches. A coat rack? A person? Gone.")}},
+Obambo:()=>{G.mood=!G.mood;if(sh(.5))msg(G.mood?"It cackles somewhere nearby…":"It sulks. The house goes cold and quiet.")},
+Oni:()=>{if(here()&&sh(.35)){glim(1800,14);msg("It stomps past, grinning. It wants to be seen.")}},
+Onryo:()=>{if(here()&&sh(.3)){flicker();drain(1);msg("The fairy lights gutter. Something hisses at them.")}},
+Phantom:()=>{if(here()&&sh(.3)){glim(1100,12);drain(4);msg("Don’t look at it! (−4%)")}},
+Poltergeist:()=>{const n=nudge(true);if(n&&sh(.7)){drain(Math.min(10,2*n));if(here()){nse(.5,.15,700,.5);msg("Everything in the room is flying! (−"+Math.min(10,2*n)+"%)")}}else if(!n&&here()&&sh(.3))msg("It rattles about, but there’s nothing here to throw.")},
+Raiju:()=>{const e=Object.entries(G.placed).some(([t,p])=>p.room==GR&&["vcam","dots","motion","sound","emf","spirit"].includes(t));if(e&&sh(.4)){flicker();drain(2);if(here())msg("Your gear crackles with static. (−2%)")}},
+Revenant:()=>{if(sh(.25))msg("A low, patient groan drifts through the house.")},
+Shade:()=>{if(here()&&sh(.35))msg("It’s shy. Nothing happens while you watch.")},
+Spirit:()=>{if(sh(.3))msg("Somewhere, someone hums a carol. Off-key. Possibly over tea.")},
+Thaye:()=>{if(G.age>420&&sh(.3))msg("It seems tired now. Slower. Nostalgic.")},
+Twins:()=>{if(sh(.5)){ghostSound(pick(SK),.3);msg("A second noise answers the first, from somewhere else.")}},
+Wraith:()=>{if(sh(.25)){if(here())nse(.3,.1,400,.8);else{glim(1,1);msg("A cold hand brushes your shoulder. Nothing there.");drain(3)}}},
+Yokai:()=>{if(here()&&P.mv&&sh(.35)){nse(.4,.12,500,.8);msg("It eavesdrops on your footsteps.")}},
+Yurei:()=>{if(here()&&sh(.4)){drain(2);msg("A long, wet sigh. It’s so miserable. You feel it too. (−2%)")}}
+};Q.Mimic=()=>{const o=pick(Object.keys(Q).filter(k=>k!="Mimic"));Q[o]()};
+const PQ=()=>{const f=Q[GN.replace(/^The /,"")];if(f)f()};
 /* crucifix */
 const burnCross=()=>{const p=G.placed.cross;p.burnt=true;G.gone.add("cross");if(scr=="room"&&G.room==p.room){const d=V.querySelector('.pi[data-k="cross"]');if(d)d.classList.add("burn");$("fx2").insertAdjacentHTML("beforeend",'<div class="burnfx" style="left:'+p.x+"%;top:"+p.y+'%">🔥</div><div class="burnfx" style="left:'+(p.x+2)+"%;top:"+p.y+'%;animation-delay:.3s">🔥</div>');nse(1.8,.12,2500,.4);tone(90,0,1.4,"sawtooth",.08);flicker();msg("✝️ The crucifix blazes and burns to ash. Whatever was coming… backed off.");later(()=>{drawPlaced();const f=$("fx2");if(f)f.innerHTML=""},2500)}else msg("You smell something burning… far off in the house, a crucifix has burned.")};
 /* doors, travel */
@@ -845,7 +889,7 @@ const ghostSpeed=(same,d)=>{const H=G.hunt,g=H.g,mv=P.mv;let s=38;
 const startHunt=()=>{const k=G.room;const g={room:GR,x:rnd(30,130),y:rnd(64,80),pause:1.5,nx:null,tr:0,f:1};if(GR==k)g.x=P.x<80?rnd(118,145):rnd(15,42);
  G.hunt={t0:G.age,len:rr(35,50),g,seq:false,catch:false,agg:Math.random()<.5,hbT:0,st:0};V.classList.add("hunting");addClip("ghost",GR);
  if(G.power&&Math.random()<.6){G.lights[k]=false;G.lamps[k]={}}setDark();flicker();upd();const h=$("hout");if(h)h.disabled=true;
- tone(60,0,3,"sawtooth",.1);nse(1.5,.1,400,.5);msg("👻 IT’S HUNTING! RUN OR HIDE!"+(GR==k?"":" It’s coming from the "+RN[GR].toLowerCase()+"…"))};
+ tone(60,0,3,"sawtooth",.1);nse(1.5,.1,400,.5);msg("👻 IT’S HUNTING! RUN OR HIDE! "+(HL[GN=="The Mimic"?"Mimic":GN=="The Twins"?"Twins":GN]||"")+(GR==k?"":" It’s coming from the "+RN[GR].toLowerCase()+"…"))};
 const huntStep=dt=>{const H=G.hunt;if(!H)return;const g=H.g,same=g.room==G.room,rm=rcache(G.room),bf=bfs(g.room,G.room);
  if(G.age-H.t0>H.len&&!H.seq&&!H.catch){msg("The air warms. The hunt is over.");return endHunt()}
  const dist=same?Math.abs(g.x-P.x):160+bf.dist*60;H.hbT-=dt;if(H.hbT<=0){tone(52,0,.25,"sine",.3);tone(52,.2,.25,"sine",.22);H.hbT=clamp(.3+dist/200,.35,1.1)}
@@ -858,7 +902,10 @@ const huntStep=dt=>{const H=G.hunt;if(!H)return;const g=H.g,same=g.room==G.room,
  else{const nx=bf.next;if(nx==null)return;if(g.nx!==nx){g.nx=nx;g.tr=70/sp}g.tr-=dt;H.st-=dt;if(H.st<=0){H.st=.6;if(bf.dist==1)nse(.1,.1,150,1.2)}
   if(g.tr<=0){const from=g.room,key=exitKey(from,nx);g.room=nx;g.x=arrX(from,nx,key);g.y=rnd(66,80);g.f=key=="L"?-1:1;g.pause=1;g.nx=null;if(nx==G.room){flicker();msg("It’s here!")}}}};
 const endHunt=()=>{G.hunt=null;clearInterval(G.hb);V.classList.remove("hunting","shk");const g=$("gh");if(g){g.className="";g.style.transform=""}const h=$("hout");if(h)h.disabled=false;const q=V.querySelector("#hp");if(q&&G.hiding)q.textContent="It’s gone quiet. You can step out.";G.next=G.age+rr(35,60);upd()};
-const caught=()=>{G.sanity-=35;G.hiding=0;V.querySelectorAll(".hid").forEach(e=>e.remove());endHunt();flash();tone(40,0,1.2,"sawtooth",.15);msg("It found you. A chill runs down your spine. (−35% sanity)");if(G.sanity<=0)flee()};
+const caught=()=>{const k=G.room,n=G.slots.filter(Boolean).length;G.deaths=(G.deaths||0)+1;
+ G.slots.forEach((t,i)=>{if(!t)return;if(t=="salt")G.salt={room:k,pr:[]};G.placed[t]={room:k,x:clamp(Math.round(P.x/1.6)+(i-1)*5,6,94),y:clamp(Math.round(P.y/.9),64,88),t0:G.age,written:false,wr:false,writeAt:G.age+rr(45,110)};G.slots[i]=null});
+ G.tool="";G.torch=false;G.hiding=0;V.querySelectorAll(".hid").forEach(e=>e.remove());endHunt();G.sanity=Math.max(15,G.sanity-35);G.next=G.age+rr(60,90);flash();tone(40,0,1.2,"sawtooth",.15);
+ leaveHouse();cin(["It got you.","You come to in the van, shaking. Your hands are empty.",n?"Everything you carried is lying in the "+RN[k].toLowerCase()+", where you fell.":"The house is waiting.","It’s angrier now. Hunts will come sooner. (Caught: "+G.deaths+")"],()=>scTruck())};
 const hideIn=()=>{if(G.hiding)return;G.hiding=1;const k=G.room,d=document.createElement("div");d.className="hid";d.innerHTML='<div class="slats"></div><div class="gp2">'+GSVG.replace("<svg",'<svg style="width:9rem"')+'</div><p id="hp">'+(G.hunt?"You hold your breath…":"You pull the door shut. It’s very dark in here.")+'</p><button class="btn" id="hout" style="position:absolute;top:6%;right:5%"'+(G.hunt?" disabled":"")+'>Step out</button>';V.appendChild(d);tone(60,0,1,"sawtooth",.04);d.querySelector("#hout").onclick=()=>{if(G.hunt)return;G.hiding=0;d.remove();msg("You step out of the "+rcache(k).hide.nm+".")};};
 const hideSeq=()=>{const o=V.querySelector(".hid");if(!o||!G.hunt)return;const gp=o.querySelector(".gp2"),p=o.querySelector("#hp");if(p)p.textContent="You hold your breath…";if(gp)gp.style.animation="pass2 7s linear forwards";clearInterval(G.hb);G.hb=setInterval(()=>{tone(52,0,.25,"sine",.35);tone(52,.2,.25,"sine",.28)},650);const fast=GN=="Aswang";
  later(()=>{const q=o.querySelector("#hp");if(q)q.textContent="It’s right outside…";nse(1,.1,300,.6)},fast?600:3000);
@@ -872,9 +919,9 @@ const tick=()=>{if(!V.classList.contains("on")||!iv){clearInterval(iv);return}
  const book=G.placed.book;if(book&&book.room==GR&&GE.includes("book")&&!book.written&&G.age>=book.writeAt){book.written=true;book.text=pick(WR);if(G.room==GR&&scr=="room"){book.wr=true;drawPlaced();nse(3,.08,4500,.8);msg("You hear a scratching… the pages are moving.");later(()=>{book.wr=false;drawPlaced()},5000)}}
  const dp=G.placed.dots;if(dp&&dp.room==GR&&GE.includes("dots")&&G.age>=G.nextDots){G.dots=now+3600;G.nextDots=G.age+rr(35,80);addClip("dots",GR);if(G.room==GR&&scr=="room"&&v<1&&!G.torch&&GN!="Goryo"){$("fx2").insertAdjacentHTML("beforeend",'<div class="sil" id="sil">🧍</div>');later(()=>{const s=$("sil");if(s)s.remove()},3000)}}
  const vc=G.placed.vcam;if(vc&&vc.room==GR&&ORBS){const c=(G.age-vc.t0)%40;if(G.age-vc.t0>26&&c>=26&&c<35)addClip("orb",GR)}
- if(G.age>=G.nextAct){G.nextAct=G.age+rr(16,38)*(.55+G.sanity/220);ghostAct()}
- if(G.age>=G.nextEv){G.nextEv=G.age+rr(70,130);ghostEvent()}
- if(scr=="room"){const th=GN=="Mare"?(lit(GR)?40:60):GHOST[5];if(!G.hunt&&G.age>=G.next&&now>G.calm&&G.sanity<th){const c=G.placed.cross;if(c&&c.room==GR&&!c.burnt){burnCross();G.next=G.age+rr(25,40)}else startHunt()}devUpd();upd()}};
+ if(G.age>=G.nextAct){G.nextAct=G.age+rr(16,38)*(.55+G.sanity/220)*(AF[GN]||1)*(GN=="Thaye"?1+G.age/700:1);ghostAct()}
+ if(G.age>=G.nextEv){G.nextEv=G.age+rr(70,130)*(EF[GN]||1);ghostEvent()}
+ if(scr=="room"){const th=GN=="Mare"?(lit(GR)?40:60):GHOST[5]+5*(G.deaths||0);if(!G.hunt&&G.age>=G.next&&now>G.calm&&G.sanity<th){const c=G.placed.cross;if(c&&c.room==GR&&!c.burnt){burnCross();G.next=G.age+rr(25,40)}else startHunt()}devUpd();upd()}};
 /* the player */
 let lastT=0;
 const nearest=()=>{const k=G.room,R=rcache(k);let best=null,bd=1e9;const hsd=(h,n)=>{const d=Math.abs(P.x-h.x)-h.w/2;if(d<10&&d<bd){bd=d;best={t:"hs",n,nm:h.nm}}};R.hs.forEach((h,n)=>{if(h)hsd(h,n)});if(R.hide)hsd(R.hide,"h");
@@ -898,7 +945,7 @@ const loop=ts=>{if((scr!="room"&&scr!="walk")||!V.classList.contains("on")){raf=
   P.x+=dx*sp*dt*(dy?.85:1);P.y+=dy*sp*.45*dt;P.y=clamp(P.y,60,86);if(dx)P.f=dx>0?1:-1;P.mv=mv?1:0;P.run=run;
   P.x=clamp(P.x,E.L!=null?0:4,E.R!=null?160:156);
   if(mv&&(P.nz=(P.nz||0)-dt)<=0){P.nz=run?.26:.4;nse(.05,run?.06:.035,300,1)}
-  if(P.x<=1.2&&E.L!=null)return goRoom(E.L,"L");if(P.x>=158.8&&E.R!=null)return goRoom(E.R,"R")}
+  const pe=P.x<=1.2&&E.L!=null?"L":P.x>=158.8&&E.R!=null?"R":null;if(pe&&dx){const nc=nearest(),hold=nc&&nc.t=="hs"&&nc.n!="h"&&nc.n!=1&&EXIT[k][nc.n]!=null?1.1:.3;P.eh=(P.eh||0)+dt;if(P.eh>hold){P.eh=0;return goRoom(E[pe],pe)}}else P.eh=0}
  const s=.72+(P.y-60)/26*.4,pl=$("pl");if(pl){pl.style.display=G.hiding?"none":"";pl.style.left=(P.x/1.6)+"%";pl.style.top=(P.y/.9)+"%";pl.style.height=(27*s)+"%";pl.style.transform="translate(-50%,-100%) scaleX("+P.f+")";pl.classList.toggle("walking",!!P.mv);pl.classList.toggle("run",!!P.run)}
  const r=$("stg").getBoundingClientRect();V.style.setProperty("--mx",(r.left+r.width*(P.x+P.f*12)/160)+"px");V.style.setProperty("--my",(r.top+r.height*(P.y-16*s)/90)+"px");
  const c=G.hiding?null:nearest(),pr=$("prm");if(pr){const t=c?promptTxt(c):"";if(pr.textContent!=t)pr.textContent=t;pr.style.display=t?"":"none";pr.style.left=(P.x/1.6)+"%";pr.style.top=((P.y-32*s)/.9)+"%"}
